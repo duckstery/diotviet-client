@@ -9,7 +9,7 @@
     outside-arrows
     switch-indicator
     align="left"
-    active-bg-color="white"
+    active-bg-color="grey-3"
     active-color="primary"
     active-class="d-tab-shape"
     indicator-color="transparent"
@@ -56,6 +56,7 @@ export default {
      * Add new order to tabList (order list)
      */
     onCreateOrder() {
+      this.$q.dark.set(true)
       // Check if number of receipt is exceed 10
       if (this.getTotalSize < 10) {
         // Add new tab
@@ -101,8 +102,8 @@ export default {
   -moz-border-radius: 0 0 0 10px;
   -webkit-border-radius: 0 0 0 10px;
 
-  -webkit-box-shadow: -10px 0 0 0 #fff;
-  box-shadow: -10px 0 0 0 #fff;
+  -webkit-box-shadow: -10px 0 0 0 #eee;
+  box-shadow: -10px 0 0 0 #eee;
 }
 
 .d-tab-shape:before {
@@ -112,8 +113,8 @@ export default {
   -moz-border-radius: 0 0 10px 0;
   -webkit-border-radius: 0 0 10px 0;
 
-  -webkit-box-shadow: 10px 0 0 0 #fff;
-  box-shadow: 10px 0 0 0 #fff;
+  -webkit-box-shadow: 10px 0 0 0 #eee;
+  box-shadow: 10px 0 0 0 #eee;
 }
 
 @keyframes fadeIn {

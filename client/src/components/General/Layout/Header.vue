@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import RightDrawer from "components/General/Layout/RightDrawer.vue";
+import RightDrawer from "components/General/Layout/NavigateDrawer.vue";
 import TextField from "components/General/Other/TextField.vue";
 import OrderBar from "components/General/Layout/OrderBar.vue";
 
