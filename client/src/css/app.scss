@@ -1,0 +1,12 @@
+// app global css in SCSS form
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "https://fonts.googleapis.com/css?family=Pacifico:400,500,700";
+
+.brand {
+  font-family: 'Pacifico', sans-serif;
+  font-weight: bolder;
+  color: #f5f5f5;
+}
