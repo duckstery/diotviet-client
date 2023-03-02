@@ -1,22 +1,30 @@
 <template>
-  <q-card class="my-card">
-    <q-card-section>
-      <div class="text-h6">Our Changing Planet</div>
-      <div class="text-subtitle2">by John Doe</div>
-    </q-card-section>
+  <q-tab-panels v-model="tab" animated class="bg-warning tw-h-full tw-w-full">
+    <q-tab-panel name="mails">
+      <div class="text-h6">Mails</div>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </q-tab-panel>
 
-    <q-separator />
+    <q-tab-panel name="alarms">
+      <div class="text-h6">Alarms</div>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </q-tab-panel>
 
-    <q-card-actions vertical>
-      <q-btn flat>Action 1</q-btn>
-      <q-btn flat>Action 2</q-btn>
-    </q-card-actions>
-  </q-card>
+    <q-tab-panel name="movies">
+      <div class="text-h6">Movies</div>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </q-tab-panel>
+  </q-tab-panels>
 </template>
 
 <script>
+import OrderItem from "components/Work/OrderItem.vue";
+
 export default {
-  // name: 'ComponentName',
+  name: 'OrderPanel',
+
+  components: {OrderItem},
+
   setup () {
     return {}
   }

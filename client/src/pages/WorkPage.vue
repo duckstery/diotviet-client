@@ -1,11 +1,12 @@
 <template>
-  <q-page class="bg-grey-3 tw-p-5 tw-pr-20">
-    <div class="row">
-      <div class="col-6">
+  <q-page class="bg-grey-3 tw-p-5 tw-pr-20 ">
+    <div class="row fill-page" :style="`height: ${orderPanelHeight}px`">
+      <div class="col-6 ">
         <OrderPanel/>
       </div>
-      <div class="col-6">
-        <ItemPanel class="tw-ml-5"/>
+      <div class="col-6 tw-pl-5">
+        <ItemPanel ref="itemPanel"/>
+        <StatisticPanel class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
       </div>
     </div>
 
@@ -16,10 +17,30 @@
 import {defineComponent} from 'vue'
 import OrderPanel from "components/Work/OrderPanel.vue";
 import ItemPanel from "components/Work/SamplePanel.vue";
+import StatisticPanel from "components/Work/StatisticPanel.vue";
 
 export default defineComponent({
   name: 'IndexPage',
 
-  components: {ItemPanel, OrderPanel}
+  components: {StatisticPanel, ItemPanel, OrderPanel},
+
+  data: () => ({
+    isMounted: false,
+  }),
+
+  computed: {
+    // Calculate OrderPanel (by subtract header height and top, bot padding from screen height
+    orderPanelHeight() {
+      return this.$q.screen.height - 50 - 40
+    },
+    // Calculate StatisticPanel height (by subtract ItemPanel height from OrderPanel)
+    statisticPanelHeight() {
+      return this.isMounted ? this.orderPanelHeight - this.$refs['itemPanel']?.$el.offsetHeight - 20 : 0
+    }
+  },
+
+  mounted() {
+    this.isMounted = true
+  }
 })
 </script>
