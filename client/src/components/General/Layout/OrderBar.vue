@@ -24,15 +24,17 @@
       <q-icon class="q-tab__icon" name="receipt"/>
       <div class="q-tab__label">{{`${$t('field.order')} ${index + 1}`}}</div>
       <Button
+        flat
+        size="sm"
+        icon="close"
         v-if="getTotalSize > 1"
         class="tw--right-2 tw-bottom-2"
-        icon="close"
-        size="sm"
         :color="id === getActiveId ? 'primary' : 'white'"
-        @click.stop="removeOrder(index)"/>
+        @click.stop="removeOrder(index)"
+      />
     </q-tab>
   </q-tabs>
-  <Button icon="add" @click="onCreateOrder"/>
+  <Button icon="add" @click="onCreateOrder" flat :tooltip="$t('field.new_order')"/>
 </template>
 
 <script>
@@ -56,7 +58,6 @@ export default {
      * Add new order to tabList (order list)
      */
     onCreateOrder() {
-      this.$q.dark.set(true)
       // Check if number of receipt is exceed 10
       if (this.getTotalSize < 10) {
         // Add new tab

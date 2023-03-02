@@ -2,17 +2,21 @@
   <q-btn
     v-bind="$attrs"
 
-    flat
     color="white"
-    dense
+    :dense="!stretch"
 
+    :flat="flat"
+    unelevated
     :label="isUsingImage ? undefined : label"
     :icon="isUsingImage ? undefined : icon"
   >
     <template v-if="isUsingImage">
       <img class="d-btn-img" :src="src">
-      <span class="tw-ml-3">{{label}}</span>
+      <span class="tw-ml-3">{{ label }}</span>
     </template>
+    <q-tooltip v-if="tooltip" transition-show="scale" transition-hide="scale">
+      {{ tooltip }}
+    </q-tooltip>
   </q-btn>
 </template>
 
@@ -36,6 +40,21 @@ export default {
       type: String,
       default: ''
     },
+    // No flat
+    flat: {
+      type: Boolean,
+      default: false
+    },
+    // No dense
+    stretch: {
+      type: Boolean,
+      default: false
+    },
+    // Tooltip
+    tooltip: {
+      type: String,
+      default: null
+    }
   },
 
   data: () => ({

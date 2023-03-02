@@ -1,34 +1,41 @@
 <template>
-  <q-input
+  <q-select
     v-model="text"
 
     v-bind="$attrs"
+    :options="options"
     :label="label"
 
+    options-dense
     outlined
     dense
     bg-color="white"
     clearable
   >
-    <template #prepend>
+    <template v-if="icon" #prepend>
       <q-icon :name="icon"/>
     </template>
-  </q-input>
+  </q-select>
 </template>
 
 <script>
 export default {
-  name: "TextField",
+  name: "Select",
 
   props: {
     // Value
     modelValue: String,
     // Label
     label: String,
+    // Select options
+    options: {
+      type: Array,
+      default: () => (['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'])
+    },
     // Icon
     icon: {
       type: String,
-      default: 'search'
+      default: null
     },
   },
 
