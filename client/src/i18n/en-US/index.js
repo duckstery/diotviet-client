@@ -15,7 +15,21 @@ export default {
     categorize: 'Categorize',
     filter: 'Filter',
     visualize: 'Visualize',
-    compactize: 'Compact'
+    compactize: 'Compact',
+    remove: 'Remove',
+    more: 'More',
+    quantity: 'Quantity',
+    price: 'Price',
+    total: 'Total',
+    add: 'Add',
+    edit_price: 'Edit price',
+    save: 'Save',
+    cancel: 'Cancel',
+    original_price: 'Original price',
+    discount: 'Discount',
+    discount_by: 'Discount by',
+    actual_price: 'Actual price',
+    note: 'Note'
   },
 
   // ****************************

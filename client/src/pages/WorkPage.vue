@@ -2,9 +2,9 @@
   <q-page class="bg-grey-3 tw-p-5 tw-pr-20 ">
     <div class="row fill-page" :style="`height: ${orderPanelHeight}px`">
       <div class="col-6 ">
-        <OrderPanel/>
+        <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
       </div>
-      <div class="col-6 tw-pl-5">
+      <div class="col-6">
         <ItemPanel ref="itemPanel"/>
         <StatisticPanel class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
       </div>

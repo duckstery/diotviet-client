@@ -14,7 +14,7 @@
       <img class="d-btn-img" :src="src">
       <span class="tw-ml-3">{{ label }}</span>
     </template>
-    <q-tooltip v-if="tooltip" transition-show="scale" transition-hide="scale">
+    <q-tooltip v-if="tooltip" transition-show="scale" transition-hide="scale" class="tw-text-sm">
       {{ tooltip }}
     </q-tooltip>
   </q-btn>

@@ -1,24 +1,18 @@
 <template>
   <q-card class="sample-panel">
+    <!-- Toolbar section -->
     <q-card-section class="flex tw-w-full">
-      <TextField v-model="search" class="tw-w-5/12 tw-max-w-lg" :label="$t('field.search_customer')"/>
-      <Button icon="add" :tooltip="$t('new_order')" color="positive" no-flat class="tw-w-[41px] tw-ml-1"
-              @click="onAddCustomer"/>
-
-      <q-space/>
-
-      <Button icon="list" text-color="dark" class="tw-w-[41px]" :tooltip="$t('field.categorize')"
-              @click="onCategorize"/>
-      <Button icon="filter_alt" text-color="dark" class="tw-w-[41px]" :tooltip="$t('field.filter')"
-              @click="onFilter"/>
-      <Button :icon="displayMode.icon" text-color="dark" class="tw-w-[41px]" :tooltip="displayMode.tooltip"
-              @click="isVisualizing = !isVisualizing"/>
+      <SamplePanelToolbar v-model:is-visualizing="isVisualizing"/>
     </q-card-section>
 
-    <q-card-section class="row tw-w-full tw-py-0">
-      <SampleItem v-for="item in pageItems" :class="displayMode.class" :visualize="isVisualizing"/>
+    <!-- Items section -->
+    <q-card-section class="tw-w-full tw-min-h-[424px] tw-py-0">
+      <div class="row">
+        <SampleItem v-for="item in pageItems" :class="isVisualizing ? 'col-3' : 'col-4'" :visualize="isVisualizing" @click="onAddItem(item)"/>
+      </div>
     </q-card-section>
 
+    <!-- Actions section -->
     <q-card-actions>
       <q-pagination
         v-model="page"
@@ -57,78 +51,59 @@
 </template>
 
 <script>
-import TextField from "components/General/Other/TextField.vue";
+import {mapActions} from "pinia";
+import {useOrderStore} from "stores/order";
+
 import Button from "components/General/Other/Button.vue";
 import Select from "components/General/Other/Select.vue";
 import SampleItem from "components/Work/SampleItem.vue";
+import SamplePanelToolbar from "components/Work/SamplePanelToolbar.vue";
 
 export default {
   name: 'SamplePanel',
 
-  components: {SampleItem, Select, Button, TextField},
+  components: {SamplePanelToolbar, SampleItem, Select, Button},
 
   data: () => ({
     // Design
     isVisualizing: false,
-    // Other
-    search: '',
     // Pagination
     page: 1,
+    // Items
+    items: Array(17).fill({
+      code: '001',
+      title: 'Title of cdddd ddddd ddddd ddd dddddddddd ddddddddd'.toUpperCase(),
+      originalPrice: '50000',
+      discount: '10',
+      discountUnit: '%',
+      actualPrice: '45000',
+      measureUnit: 'Kg',
+      src: 'https://cdn.quasar.dev/img/parallax2.jpg'
+    })
   }),
 
   computed: {
-    // Display mode
-    displayMode() {
-      return this.isVisualizing
-        ? {
-          icon: 'fa-solid fa-down-left-and-up-right-to-center',
-          class: 'col-3',
-          tooltip: this.$t('field.compactize')
-        }
-        : {
-          icon: 'fa-solid fa-image',
-          class: 'col-4',
-          tooltip: this.$t('field.visualize')
-        }
-    },
     // Max item can be display in a page
     itemsPerPage() {
       return this.isVisualizing ? 8 : 15
     },
     // Max page to display all items
     maxPage() {
-      return 2
+      return Math.ceil(this.items.length / this.itemsPerPage)
+    },
+    // Calculate the start index that indicate the start of "page"
+    startIndexOfPage() {
+      return (this.page - 1) * this.itemsPerPage
     },
     // Items of a page
     pageItems() {
-      return this.itemsPerPage;
+      return this.items.slice(this.startIndexOfPage, this.startIndexOfPage + this.itemsPerPage);
     }
   },
 
   methods: {
     /**
-     * On add new customer
-     */
-    onAddCustomer() {
-
-    },
-
-    /**
-     * On categorize sample item event handler
-     */
-    onCategorize() {
-
-    },
-
-    /**
-     * On filter sample item event handler
-     */
-    onFilter() {
-
-    },
-
-    /**
-     * On placing order event handler
+     * On place order event handler
      */
     onOrder() {
 
@@ -139,7 +114,17 @@ export default {
      */
     onPurchase() {
 
-    }
+    },
+
+    /**
+     * On add item to order
+     */
+    onAddItem(item) {
+      this.addItem(item);
+    },
+
+    // "Order" store
+    ...mapActions(useOrderStore, ['addItem'])
   }
 }
 </script>

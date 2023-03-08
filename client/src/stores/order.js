@@ -1,10 +1,13 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
     counter: 1,
     activeId: 0,
-    orders: [{id: 0, items: []}]
+    orders: [{
+      id: 0,
+      items: []
+    }]
   }),
 
   getters: {
@@ -38,23 +41,61 @@ export const useOrderStore = defineStore('order', {
      * @param state
      * @returns {*}
      */
-    getActiveOrder: (state) => state.orders.at(state.activeId)
+    getActiveOrder: (state) => state.orders.at(state.activeId),
   },
 
   actions: {
     /**
      * Add item to active order
      *
-     * @param item
+     * @param {Object} item
      */
     addItem(item) {
-      this.orders.at(this.activeId).items.push(item)
+      // Get activeOrder reference
+      const activeOrder = this.orders.at(this.activeId)
+
+      // Check if item is already exist in order's item list
+      const index = activeOrder.items.findIndex(i => i.code === item.code)
+
+      if (index !== -1) {
+        // If item is existed, edit item with increased quantity
+        this.editItem(index, {
+          ...item,
+          quantity: `${parseInt(activeOrder.items.at(index).quantity) + 1}`,
+          totalPrice: '',
+        })
+      } else {
+        // Else, just add item
+        this.orders.at(this.activeId).items.push({
+          ...item,
+          quantity: '1',
+          totalPrice: item.actualPrice
+        })
+      }
     },
 
     /**
-     * Remove item out of order
+     * Edit item to active order
      *
-     * @param index
+     * @param {number} index
+     * @param {Object} item
+     */
+    editItem(index, item) {
+      // Splice old item and push new item in
+      this.orders.at(this.activeId).items.splice(index, 1, item)
+    },
+
+    /**
+     * Remove item from active order
+     *
+     * @param {Number} index
+     */
+    removeItem(index) {
+      this.orders.at(this.activeId).items.splice(index, 1)
+    },
+
+    /**
+     * Create new order
      */
     createOrder() {
       // Add new order
@@ -66,9 +107,10 @@ export const useOrderStore = defineStore('order', {
     },
 
     /**
-     * Set new order
+     * Remove order at index
      *
-     * @param index
+     * @param {number} index
+     * @returns {Object}
      */
     removeOrder(index) {
       // Get index of removed item
@@ -85,7 +127,7 @@ export const useOrderStore = defineStore('order', {
     /**
      * Set active order
      *
-     * @param id
+     * @param {number} id
      */
     setActive(id) {
       this.activeId = id

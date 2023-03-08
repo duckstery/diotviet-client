@@ -21,5 +21,9 @@ export default {
   name: "Header",
 
   components: {OrderBar, TextField, RightDrawer},
+
+  data: () => ({
+    search: ''
+  })
 }
 </script>

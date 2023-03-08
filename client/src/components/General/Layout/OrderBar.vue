@@ -38,10 +38,10 @@
 </template>
 
 <script>
-import Button from "components/General/Other/Button.vue";
-
 import {mapState, mapActions} from "pinia";
 import {useOrderStore} from "stores/order";
+
+import Button from "components/General/Other/Button.vue";
 
 export default {
   name: 'OrderBar',
