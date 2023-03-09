@@ -115,7 +115,29 @@
           :label="$t('field.total')"
         />
 
-        
+        <TextField
+          :model-value="value.note"
+
+          compact
+          readonly
+          class="tw-ml-10 tw-w-24"
+          :label="$t('field.note')"
+        >
+          <q-popup-edit
+            buttons
+            v-model="note"
+            v-slot="scope"
+          >
+            <q-input
+              type="textarea"
+              v-model="scope.value"
+              autofocus
+              counter
+              @keyup.enter.stop
+            />
+          </q-popup-edit>
+        </TextField>
+
       </div>
     </q-card-section>
   </q-card>
@@ -234,6 +256,10 @@ export default {
         this.bill.discount = '0'
       }
     },
+    // Update item when add note
+    note() {
+      this.onEdit()
+    },
     value: {
       immediate: true,
       handler(value) {
@@ -281,6 +307,7 @@ export default {
     onEdit() {
       // Send request to update item's data
       this.editItem(this.index, {
+        note: this.note,
         ...this.value,
         ...this.bill,
         ...{

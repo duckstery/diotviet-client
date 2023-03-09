@@ -63,13 +63,15 @@ export const useOrderStore = defineStore('order', {
           ...item,
           quantity: `${parseInt(activeOrder.items.at(index).quantity) + 1}`,
           totalPrice: '',
+          note: activeOrder.items.at(index).note,
         })
       } else {
         // Else, just add item
         this.orders.at(this.activeId).items.push({
           ...item,
           quantity: '1',
-          totalPrice: item.actualPrice
+          totalPrice: item.actualPrice,
+          note: ''
         })
       }
     },
