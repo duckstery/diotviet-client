@@ -134,6 +134,7 @@
               autofocus
               counter
               @keyup.enter.stop
+              input-class="virtual-class"
             />
           </q-popup-edit>
         </TextField>
@@ -161,6 +162,7 @@ export default {
     value: {
       type: Object,
       default: () => ({
+        id: 1,
         code: '000',
         title: 'Title of cdddd ddddd ddddd ddd dddddddddd ddddddddd'.toUpperCase(),
         measureUnit: 'Kg',

@@ -6,7 +6,9 @@ export const useOrderStore = defineStore('order', {
     activeId: 0,
     orders: [{
       id: 0,
-      items: []
+      items: [],
+      total: '',
+      discount: '',
     }]
   }),
 
@@ -55,7 +57,7 @@ export const useOrderStore = defineStore('order', {
       const activeOrder = this.orders.at(this.activeId)
 
       // Check if item is already exist in order's item list
-      const index = activeOrder.items.findIndex(i => i.code === item.code)
+      const index = activeOrder.items.findIndex(i => i.id === item.id)
 
       if (index !== -1) {
         // If item is existed, edit item with increased quantity
@@ -101,7 +103,13 @@ export const useOrderStore = defineStore('order', {
      */
     createOrder() {
       // Add new order
-      this.orders.push({id: this.counter++, items: []})
+      this.orders.push({
+        id: this.counter++,
+        items: [],
+        total: '0',
+        discount: '0',
+        discountUnit: '%',
+      })
       // Added order will be active
       this.activeId = this.orders.at(-1).id
 

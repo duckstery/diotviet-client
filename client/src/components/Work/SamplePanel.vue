@@ -71,6 +71,7 @@ export default {
     page: 1,
     // Items
     items: Array(17).fill({
+      id: 1,
       code: '001',
       title: 'Title of cdddd ddddd ddddd ddd dddddddddd ddddddddd'.toUpperCase(),
       originalPrice: '50000',

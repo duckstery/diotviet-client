@@ -48,6 +48,7 @@ export default {
     value: {
       type: Object,
       default: () => ({
+        id: 1,
         code: '001',
         title: 'Title of cdddd ddddd ddddd ddd dddddddddd ddddddddd'.toUpperCase(),
         originalPrice: '50000',

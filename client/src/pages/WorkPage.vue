@@ -6,7 +6,7 @@
       </div>
       <div class="col-6">
         <ItemPanel ref="itemPanel"/>
-        <StatisticPanel class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
+        <StatisticPanel :max-height="statisticPanelHeight" class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
       </div>
     </div>
 
