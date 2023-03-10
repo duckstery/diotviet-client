@@ -8,7 +8,7 @@
     <!-- Items section -->
     <q-card-section class="tw-w-full tw-min-h-[424px] tw-py-0">
       <div class="row">
-        <SampleItem v-for="item in pageItems" :class="isVisualizing ? 'col-3' : 'col-4'" :visualize="isVisualizing" @click="onAddItem(item)"/>
+        <SampleItem v-for="item in pageItems" :value="item" :class="isVisualizing ? 'col-3' : 'col-4'" :visualize="isVisualizing" @click="onAddItem(item)"/>
       </div>
     </q-card-section>
 
@@ -70,17 +70,17 @@ export default {
     // Pagination
     page: 1,
     // Items
-    items: Array(17).fill({
-      id: 1,
-      code: '001',
+    items: Array(15).fill().map((v, i) => ({
+      id: i,
+      code: `00${i + 1}`,
       title: 'Title of cdddd ddddd ddddd ddd dddddddddd ddddddddd'.toUpperCase(),
-      originalPrice: '50000',
-      discount: '10',
+      originalPrice: `${i + 1}0000`,
+      discount: '0',
       discountUnit: '%',
-      actualPrice: '45000',
+      actualPrice: `${i + 1}0000`,
       measureUnit: 'Kg',
       src: 'https://cdn.quasar.dev/img/parallax2.jpg'
-    })
+    }))
   }),
 
   computed: {
@@ -99,7 +99,7 @@ export default {
     // Items of a page
     pageItems() {
       return this.items.slice(this.startIndexOfPage, this.startIndexOfPage + this.itemsPerPage);
-    }
+    },
   },
 
   methods: {

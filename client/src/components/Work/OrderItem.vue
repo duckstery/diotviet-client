@@ -134,7 +134,7 @@
               autofocus
               counter
               @keyup.enter.stop
-              input-class="virtual-class"
+              input-class="virtual-scrollbar"
             />
           </q-popup-edit>
         </TextField>

@@ -29,7 +29,9 @@ export default {
     discount: 'Discount',
     discount_by: 'Discount by',
     actual_price: 'Actual price',
-    note: 'Note'
+    note: 'Note',
+    provisional_amount: 'Provisional amount',
+    payment_amount: 'Payment amount'
   },
 
   // ****************************
