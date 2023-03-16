@@ -31,7 +31,16 @@ export default {
     actual_price: 'Actual price',
     note: 'Note',
     provisional_amount: 'Provisional amount',
-    payment_amount: 'Payment amount'
+    payment_amount: 'Payment amount',
+    welcome: 'Welcome',
+    login: 'Login',
+    username: 'Username',
+    password: 'Password',
+    manage: 'Manage',
+    sell: 'Sell',
+    remember_password: 'Remember password',
+    forget_password: 'Forget password',
+    awesome: 'Awesome'
   },
 
   // ****************************

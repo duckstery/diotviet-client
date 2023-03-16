@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-grey-3 tw-p-5 tw-pr-20 ">
+  <q-page class="bg-grey-3 tw-p-5 tw-pr-20">
     <div class="row fill-page" :style="`height: ${orderPanelHeight}px`">
       <div class="col-6 ">
         <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>

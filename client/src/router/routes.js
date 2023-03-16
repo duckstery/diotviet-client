@@ -2,6 +2,13 @@
 const routes = [
   {
     path: '/',
+    component: () => import('layouts/BlankLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/IndexPage.vue') }
+    ]
+  },
+  {
+    path: '/work',
     component: () => import('layouts/WorkLayout.vue'),
     children: [
       { path: '', component: () => import('pages/WorkPage.vue') }
