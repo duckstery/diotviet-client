@@ -2,8 +2,12 @@ package diotviet.server.entities;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -26,21 +30,24 @@ public class AccessToken {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "access_tokens_seq")
     @SequenceGenerator(name = "access_tokens_seq", sequenceName = "access_tokens_seq", allocationSize = 1)
+    @JsonIgnore
     private long id;
     /**
      * Value
      */
     @Column(length = 300, nullable = false)
-    private String value;
+    private String token;
     /**
      * Issue at
      */
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     private Date issuedAt;
     /**
      * Expire at
      */
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     private Date expiredAt;
     /**
      * Corresponding User
@@ -63,7 +70,7 @@ public class AccessToken {
      * @param jwt
      */
     public AccessToken(DecodedJWT jwt) {
-        this.value = jwt.getToken();
+        this.token = jwt.getToken();
         this.issuedAt = jwt.getIssuedAt();
         this.expiredAt = jwt.getExpiresAt();
     }
@@ -78,12 +85,12 @@ public class AccessToken {
     }
 
     /**
-     * Check if this token's value match value
+     * Check if this token's value match token
      *
-     * @param value
+     * @param token
      * @return
      */
-    public boolean match(String value) {
-        return this.value.equals(value);
+    public boolean match(String token) {
+        return this.token.equals(token);
     }
 }

@@ -14,8 +14,8 @@
     <q-card-section>
       <div class="text-h6 text-dark brand tw-w-fit tw-mx-auto">{{ $t('field.welcome') }}</div>
 
-      <TextField v-model="username" :label="$t('field.username')" icon="fa-solid fa-user" class="tw-mt-4"/>
-      <TextField v-model="password" :label="$t('field.password')" icon="fa-solid fa-lock" class="tw-mt-4"
+      <TextField v-model="credential.email" :label="$t('field.username')" icon="fa-solid fa-user" class="tw-mt-4"/>
+      <TextField v-model="credential.password" :label="$t('field.password')" icon="fa-solid fa-lock" class="tw-mt-4"
                  type="password"/>
       <div class="tw-flex">
         <q-checkbox
@@ -32,9 +32,9 @@
     <q-card-actions>
       <q-space/>
       <Button :label="$t('field.manage')" icon="fa-solid fa-chart-line" color="primary" stretch align="around"
-              class="tw-w-1/4"/>
+              class="tw-w-1/4" @click="onLogin"/>
       <Button :label="$t('field.sell')" icon="fa-solid fa-cart-shopping" color="positive" stretch align="around"
-              class="tw-w-1/4"/>
+              class="tw-w-1/4" @click="onLogin"/>
     </q-card-actions>
   </q-card>
 </template>
@@ -49,8 +49,10 @@ export default {
   components: {Button, TextField},
 
   data: () => ({
-    username: '',
-    password: '',
+    credential: {
+      email: "ahihi@gmail.com",
+      password: "123456",
+    },
     remember: true,
   }),
 
@@ -59,7 +61,20 @@ export default {
      * On nonsense button click handler
      */
     onBlinkBlink() {
-      this.$q.notify({ message: this.$t('field.awesome'), icon: 'thumb_up', color: 'info' })
+      this.$q.notify({
+        message: this.$t('field.awesome'),
+        icon: 'thumb_up', color: 'accent',
+        actions: [
+          { dense: true, icon: 'fa-solid fa-xmark' , color: 'white', handler: () => { /* ... */ } }
+        ]
+      })
+    },
+
+    /**
+     * On login
+     */
+    onLogin() {
+      this.$auth.login(this.credential)
     }
   }
 }

@@ -94,7 +94,7 @@ public class User implements UserDetails {
      * @param token
      * @return
      */
-    public void subscribeToken(DecodedJWT token) {
+    public AccessToken subscribeToken(DecodedJWT token) {
         // Create AccessToken instance
         AccessToken accessToken = new AccessToken(token);
 
@@ -102,6 +102,8 @@ public class User implements UserDetails {
         accessToken.subscribe(this);
         // Create token instance and add it into token list
         tokens.add(accessToken);
+
+        return accessToken;
     }
 
     // ****************************

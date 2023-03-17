@@ -61,19 +61,19 @@ public class UserService implements UserDetailsService {
      * @param user
      * @return
      */
-    public String issueToken(Authentication authentication) {
+    public AccessToken issueToken(Authentication authentication) {
         // Get authenticated user
         User user = (User) authentication.getPrincipal();
 
         // Generate token
         String jwt = jwtUtils.generate(user);
         // Subscribe token
-        user.subscribeToken(jwtUtils.decode(jwt));
+        AccessToken token = user.subscribeToken(jwtUtils.decode(jwt));
 
         // Save
         repository.save(user);
 
-        return jwt;
+        return token;
     }
 
     /**

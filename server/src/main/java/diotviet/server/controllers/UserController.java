@@ -1,8 +1,9 @@
 package diotviet.server.controllers;
 
+import diotviet.server.entities.AccessToken;
 import diotviet.server.entities.User;
-import diotviet.server.requests.LoginRequest;
-import diotviet.server.requests.SignupRequest;
+import diotviet.server.templates.LoginRequest;
+import diotviet.server.templates.SignupRequest;
 import diotviet.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -51,7 +53,7 @@ public class UserController extends BaseController {
      * @param request
      * @return
      */
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         // Authenticate user's credential
         Authentication authentication = authenticationManager.authenticate(
@@ -61,9 +63,9 @@ public class UserController extends BaseController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Generate JWT
-        String token = service.issueToken(authentication);
-
-        return ResponseEntity.ok(token);
+        AccessToken token = service.issueToken(authentication);
+System.out.println(token);
+        return ok(token);
     }
 
     /**
@@ -88,6 +90,6 @@ public class UserController extends BaseController {
 
         service.save(user);
 
-        return ResponseEntity.ok("Okie");
+        return ok(user);
     }
 }

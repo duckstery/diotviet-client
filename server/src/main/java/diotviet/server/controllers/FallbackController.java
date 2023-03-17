@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value="/api/v1", produces="application/json")
+@RequestMapping(value="/api/fallback", produces="application/json")
 public class FallbackController extends BaseController {
     @GetMapping("/")
     public String index() {
@@ -16,7 +16,7 @@ public class FallbackController extends BaseController {
 
     @GetMapping("/ping")
     @PreAuthorize("hasRole('STAFF')")
-    public String ping() {
-        return "ahehe";
+    public String ping() throws Exception {
+        throw new Exception("ahihi");
     }
 }

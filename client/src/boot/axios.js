@@ -18,24 +18,26 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error);
 })
 
-const api = axios.create({
-  baseURL: 'http://localhost:8000',
-  headers: {
-    'Accept-Language': 'en',
+// Config Axios
+axios.defaults.baseURL = `${process.env.API_BASE_URL}${process.env.API_PREFIX_PATH}`
+axios.defaults.headers = {
+  'Accept-Language': 'en',
+  'Accept': 'application/json;charset=utf-8',
+  'Cache-Control': 'no-store',
+  'Content-Type': 'application/json;charset=utf-8'
+}
+axios.defaults.withCredentials = false
 
-  }
-})
-
-export default boot(({ app }) => {
+export default boot(({app}) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
-  app.config.globalProperties.$api = api
+  app.config.globalProperties.$api = axios
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
+  //       so you won't necessarily have to import axios in each vue file
 })
 
-export { api }
+export {axios}

@@ -7,10 +7,9 @@
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
-
-
 const { configure } = require('quasar/wrappers');
 const path = require('path');
+require('dotenv').config()
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -33,7 +32,8 @@ module.exports = configure(function (/* ctx */) {
       'i18n',
       'axios',
       'notify',
-      'util'
+      'util',
+      'auth'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -71,7 +71,10 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        API_BASE_URL: process.env.API_BASE_URL,
+        API_PREFIX_PATH: process.env.API_PREFIX_PATH
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -97,7 +100,15 @@ module.exports = configure(function (/* ctx */) {
       // https: true
       open: true, // opens browser window automatically
 
-      port: 3001
+      port: process.env.DEV_PORT,
+
+      proxy: {
+        // proxy all requests starting with /api to jsonplaceholder
+        '/api': {
+          target: 'http://localhost:8080',
+          changeOrigin: true,
+        }
+      }
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework

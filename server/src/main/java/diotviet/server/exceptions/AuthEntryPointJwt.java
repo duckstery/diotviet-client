@@ -1,6 +1,7 @@
-package diotviet.server.handlers;
+package diotviet.server.exceptions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import diotviet.server.templates.GeneralResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,12 +39,10 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         // Create body
-        Map<String, Object> body = new HashMap<>();
-        body.put("success", false);
-        body.put("message", authException.getMessage());
+        GeneralResponse responseBody = new GeneralResponse(false, authException.getMessage(), authException.getClass());
 
         // Write body
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(), body);
+        mapper.writeValue(response.getOutputStream(), responseBody);
     }
 }

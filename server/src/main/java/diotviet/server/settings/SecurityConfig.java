@@ -2,7 +2,7 @@ package diotviet.server.settings;
 
 import diotviet.server.filters.AuthTokenFilter;
 import diotviet.server.services.UserService;
-import diotviet.server.handlers.AuthEntryPointJwt;
+import diotviet.server.exceptions.AuthEntryPointJwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -103,13 +102,15 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+        http
+                .cors().disable()
+                .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .authenticationProvider(authenticationProvider())
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/fallback/**", "/api/auth/**", "/api/test/**", "/images/**").permitAll()
-                .anyRequest().authenticated();
+                .requestMatchers("/api/v1/**", "/api/v2/**").authenticated()
+                .anyRequest().permitAll();
 
         // Set authentication token filter
         // Look like request will be filtered by JWT Token, if failed, proceed to filter by username and password
