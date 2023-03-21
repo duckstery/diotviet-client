@@ -81,8 +81,14 @@ public class User implements UserDetails {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @Where(clause = "expired_at > CURRENT_TIMESTAMP")
+    @Where(clause = "expired_at > CURRENT_TIMESTAMP and is_deleted = false")
     private Collection<AccessToken> validTokens;
+
+    @Transient
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private String activeToken;
 
     // ****************************
     // Public API

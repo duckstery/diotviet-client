@@ -4,12 +4,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.util.Date;
 import java.util.Objects;
@@ -18,6 +19,10 @@ import java.util.Objects;
 @Table(name = "access_tokens")
 @Getter
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE access_tokens SET is_deleted = true WHERE id=?")
+//@SQLDeleteAll(sql = "UPDATE access_tokens SET is_deleted = true")
+//@FilterDef(name = "softDeleteAccessToken", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+//@Filter(name = "softDeleteAccessToken", condition = "is_deleted = :isDeleted")
 public class AccessToken {
 
     // ****************************
@@ -59,6 +64,12 @@ public class AccessToken {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private User user;
+
+    @Column
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private boolean isDeleted = Boolean.FALSE;
 
     // ****************************
     // Constructors

@@ -1,5 +1,5 @@
 import {boot} from 'quasar/wrappers'
-import axios from 'axios'
+import axios, {CanceledError} from 'axios'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -13,6 +13,10 @@ axios.interceptors.response.use(function (response) {
   // Do something with response data
   return response;
 }, function (error) {
+  // Do something if error is a CanceledError
+  if (error instanceof CanceledError) {
+    throw new Error(error.config.signal.reason)
+  }
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
   return Promise.reject(error);

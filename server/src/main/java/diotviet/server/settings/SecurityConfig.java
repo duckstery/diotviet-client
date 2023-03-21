@@ -109,7 +109,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/**", "/api/v2/**").authenticated()
+                .requestMatchers("/api/v1/**", "/api/v2/**", "api/auth/logout").authenticated()
                 .anyRequest().permitAll();
 
         // Set authentication token filter

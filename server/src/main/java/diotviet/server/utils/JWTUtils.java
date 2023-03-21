@@ -72,7 +72,8 @@ public class JWTUtils {
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + Integer.parseInt(expiration)))
                 .withJWTId(UUID.randomUUID().toString())
-                .withSubject(userPrincipal.getId() + "|" + userPrincipal.getName())
+                .withSubject(userPrincipal.getName())
+                .withClaim("id", userPrincipal.getId())
                 .withClaim("email", userPrincipal.getEmail())
                 .withClaim("role", userPrincipal.getRole().toString())
                 .sign(algorithm);

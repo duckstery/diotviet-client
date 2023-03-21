@@ -1,7 +1,5 @@
 import { boot } from 'quasar/wrappers'
 import { Notify } from 'quasar'
-import axios from "boot/axios";
-
 /**
  * Create a snackbar to notify user
  *
@@ -13,6 +11,7 @@ const notify = (content, type = 'positive') => {
     type: type,
     message: content,
     position: 'top-right',
+    textColor: 'white',
     actions: [
       { icon: 'close', color: 'white', handler: () => { /* ... */ } }
     ]
@@ -21,6 +20,8 @@ const notify = (content, type = 'positive') => {
 
 export default boot(({ app }) => {
   app.config.globalProperties.$notify = notify
+  app.config.globalProperties.$notifyWarn = (content) => notify(content, 'warning')
+  app.config.globalProperties.$notifyErr = (content) => notify(content, 'negative')
 })
 
 export { notify }

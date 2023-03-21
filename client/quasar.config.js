@@ -31,6 +31,7 @@ module.exports = configure(function (/* ctx */) {
     boot: [
       'i18n',
       'axios',
+      'loader',
       'notify',
       'util',
       'auth'
@@ -127,7 +128,8 @@ module.exports = configure(function (/* ctx */) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'Loading',
       ],
     },
 

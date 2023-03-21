@@ -64,7 +64,7 @@ export default {
         this.createOrder();
       } else {
         // Notify and prevent adding new tab
-        this.$notify(this.$t('error.limit_exceeded'))
+        this.$notifyWarn(this.$t('error.limit_exceeded'))
       }
     },
 

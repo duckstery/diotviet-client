@@ -5,48 +5,48 @@ package diotviet.server.templates;
  *
  * @param success
  * @param message
- * @param data
+ * @param payload
  */
-public record GeneralResponse(boolean success, String message, Object data) {
+public record GeneralResponse(boolean success, String message, Object payload) {
     /**
      * Success response body with message
      *
      * @param message
-     * @param data
+     * @param payload
      * @return
      */
-    public static GeneralResponse success(String message, Object data) {
-        return new GeneralResponse(true, message, data);
+    public static GeneralResponse success(String message, Object payload) {
+        return new GeneralResponse(true, message, payload);
     }
 
     /**
      * Success response body without message
      *
-     * @param data
+     * @param payload
      * @return
      */
-    public static GeneralResponse success(Object data) {
-        return new GeneralResponse(true, "", data);
+    public static GeneralResponse success(Object payload) {
+        return new GeneralResponse(true, "", payload);
     }
 
     /**
      * Fail response body with message
      *
      * @param message
-     * @param data
+     * @param payload
      * @return
      */
-    public static GeneralResponse fail(String message, Object data) {
-        return new GeneralResponse(true, message, data);
+    public static GeneralResponse fail(String message, Object payload) {
+        return new GeneralResponse(true, message, payload);
     }
 
     /**
      * Fail response body without message
      *
-     * @param data
+     * @param payload
      * @return
      */
-    public static GeneralResponse fail(Object data) {
-        return new GeneralResponse(true, "", data);
+    public static GeneralResponse fail(Object payload) {
+        return new GeneralResponse(true, "", payload);
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Locale;
+
 @Controller
 @RequestMapping(value = "/api/auth", produces = "application/json")
 public class UserController extends BaseController {
@@ -64,8 +66,23 @@ public class UserController extends BaseController {
 
         // Generate JWT
         AccessToken token = service.issueToken(authentication);
-System.out.println(token);
-        return ok(token);
+
+        return ok(__("login_success"), token);
+    }
+
+    /**
+     * Logout
+     *
+     * @return
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        // Unsubscribe current active token
+        service.unsubscribeToken(SecurityContextHolder.getContext().getAuthentication());
+        // Clear authentication
+        SecurityContextHolder.getContext().setAuthentication(null);
+
+        return ok(__("logout_success"));
     }
 
     /**

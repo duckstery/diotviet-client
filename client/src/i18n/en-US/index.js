@@ -40,19 +40,25 @@ export default {
     sell: 'Sell',
     remember_password: 'Remember password',
     forget_password: 'Forget password',
-    awesome: 'Awesome'
+  },
+
+  easter: {
+    awesome: 'Yeah! Awesome~~~'
   },
 
   // ****************************
   // Message
   // ****************************
   message: {
+    please_wait: 'Please kindly wait...'
   },
 
   // ****************************
   // Error
   // ****************************
   error: {
-    limit_exceeded: 'Total size has exceeded maximum limit'
+    limit_exceeded: 'Total size has exceeded maximum limit',
+    status_403: 'You are not authorized to enter this page. Please go back.',
+    status_404: 'Oops. Nothing here...',
   }
 }

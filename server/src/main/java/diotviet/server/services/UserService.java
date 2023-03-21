@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import diotviet.server.entities.AccessToken;
 import diotviet.server.entities.User;
+import diotviet.server.repositories.AccessTokenRepository;
 import diotviet.server.repositories.UserRepository;
 import diotviet.server.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository repository;
+    @Autowired
+    private AccessTokenRepository accessTokenRepository;
     /**
      * JWT Utility
      */
@@ -77,6 +80,18 @@ public class UserService implements UserDetailsService {
     }
 
     /**
+     * Unsubscribe token (unauthenticated)
+     *
+     * @param authentication
+     */
+    public void unsubscribeToken(Authentication authentication) {
+        // Get authenticated user
+        User user = (User) authentication.getPrincipal();
+        // Delete current active token
+        accessTokenRepository.deleteAccessTokenByToken(user.getActiveToken());
+    }
+
+    /**
      * Verify token
      *
      * @return
@@ -91,6 +106,9 @@ public class UserService implements UserDetailsService {
         if (user.getValidTokens().stream().noneMatch(accessToken -> accessToken.match(jwt.getToken()))) {
             throw new TokenExpiredException("Token is expired", jwt.getExpiresAtAsInstant());
         }
+
+        // Set active token
+        user.setActiveToken(jwt.getToken());
 
         return user;
     }
