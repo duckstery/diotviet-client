@@ -1,5 +1,5 @@
 <template>
-  <q-card class="sample-panel">
+  <q-card class="sample-panel" flat>
     <q-card-section class="tw-w-full tw-overflow-y-auto virtual-scrollbar tw-py-0"
                     :style="`max-height: ${maxHeight}px`">
       <div class="row">

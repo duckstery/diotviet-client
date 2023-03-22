@@ -1,5 +1,5 @@
 <template>
-  <q-card class="order-item hover:tw-border-sky-400 tw-border-transparent tw-border-solid tw-cursor-pointer">
+  <q-card class="order-item hover:tw-border-sky-400 tw-border-transparent tw-border-solid tw-cursor-pointer" flat>
     <q-card-section class="">
       <!-- Title section -->
       <div class="row tw-text-[16px]">

@@ -5,11 +5,11 @@
 
   <q-space/>
 
-  <Button icon="list" text-color="dark" class="tw-w-[41px]" :tooltip="$t('field.categorize')"
+  <Button icon="list" class="tw-w-[41px]" flat :tooltip="$t('field.categorize')"
           @click="onCategorize"/>
-  <Button icon="filter_alt" text-color="dark" class="tw-w-[41px]" :tooltip="$t('field.filter')"
+  <Button icon="filter_alt" class="tw-w-[41px]" flat :tooltip="$t('field.filter')"
           @click="onFilter"/>
-  <Button :icon="displayMode.icon" text-color="dark" class="tw-w-[41px]" :tooltip="displayMode.tooltip"
+  <Button :icon="displayMode.icon" class="tw-w-[41px]" flat :tooltip="displayMode.tooltip"
           @click="$emit('update:isVisualizing', !isVisualizing)"/>
 </template>
 

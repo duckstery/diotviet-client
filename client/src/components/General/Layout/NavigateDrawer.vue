@@ -12,7 +12,6 @@
     :width="200"
     :breakpoint="500"
     bordered
-    elevated
   >
     <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
       <q-list padding>

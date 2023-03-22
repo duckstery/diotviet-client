@@ -1,5 +1,5 @@
 <template>
-  <q-card class="sample-panel">
+  <q-card class="sample-panel" flat>
     <!-- Toolbar section -->
     <q-card-section class="flex tw-w-full">
       <SamplePanelToolbar v-model:is-visualizing="isVisualizing"/>
@@ -18,7 +18,7 @@
         v-model="page"
         flat
         :max="maxPage"
-        color="dark"
+        color="brand"
         max-pages="3"
         direction-links
         :ellipses="false"

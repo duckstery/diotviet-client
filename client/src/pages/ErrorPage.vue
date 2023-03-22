@@ -2,7 +2,7 @@
   <q-layout>
     <q-page-container>
       <q-page class="bg-grey-3 tw-p-5 tw-pr-20 tw-flex tw-h-screen">
-        <q-card class="bg-blue tw-w-2/3 tw-m-auto">
+        <q-card class="bg-blue tw-w-2/3 tw-m-auto" flat>
           <q-card-section class="text-white text-center">
             <div style="font-size: 20vh">
               {{ status }}

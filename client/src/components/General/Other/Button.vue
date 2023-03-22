@@ -2,7 +2,7 @@
   <q-btn
     v-bind="$attrs"
 
-    color="white"
+    color="brand"
     :dense="!stretch"
 
     :flat="flat"

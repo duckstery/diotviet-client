@@ -1,5 +1,5 @@
 <template>
-  <q-card class="tw-w-1/3 tw-m-auto">
+  <q-card class="tw-w-1/3 tw-m-auto" flat>
     <q-bar class="bg-primary">
       <q-avatar>
         <img src="/images/duck.png">

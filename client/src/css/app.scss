@@ -29,3 +29,50 @@
     background-color: #555;
   }
 }
+
+.body--light {
+  // Brand -- light
+  .text-brand {
+    color: #000 !important;
+  }
+  .bg-brand {
+    background: #fff !important;
+  }
+}
+.body--dark {
+  // Brand -- dark
+  .text-brand {
+    color: #FFFFFFDE !important;
+  }
+  .bg-brand {
+    background: $dark !important;
+  }
+
+  // Primary -- dark
+  .text-primary {
+    color: #1976D2DE !important;
+  }
+  .bg-primary {
+    background: #1976D2DE !important;
+  }
+
+  // Primary -- dark
+  .text-teal {
+    color: #009688DE !important;
+  }
+  .bg-teal {
+    background: #009688DE !important;
+  }
+
+  // Text -- dark
+  .q-dark {
+    color: #FFFFFFDE !important;
+  }
+
+  .text-grey-3 {
+    color: $grey-10 !important;
+  }
+  .bg-grey-3 {
+    background: $grey-10 !important;
+  }
+}

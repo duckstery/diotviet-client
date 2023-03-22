@@ -6,7 +6,8 @@
 
     :outlined="!compact"
     dense
-    bg-color="white"
+    color="brand"
+    bg-color="brand"
     :clearable="!required"
     :unmasked-value="!!mask"
     :reverse-fill-mask="!!mask"

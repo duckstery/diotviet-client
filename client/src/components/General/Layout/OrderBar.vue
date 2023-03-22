@@ -34,7 +34,7 @@
       />
     </q-tab>
   </q-tabs>
-  <Button icon="add" @click="onCreateOrder" flat :tooltip="$t('field.new_order')"/>
+  <Button icon="add" @click="onCreateOrder" color="white" flat :tooltip="$t('field.new_order')"/>
 </template>
 
 <script>
@@ -116,6 +116,19 @@ export default {
 
   -webkit-box-shadow: 10px 0 0 0 #eee;
   box-shadow: 10px 0 0 0 #eee;
+}
+
+.body--dark {
+  .d-tab-shape:after {
+    -webkit-box-shadow: -10px 0 0 0 $grey-10;
+    box-shadow: -10px 0 0 0 $grey-10;
+
+  }
+
+  .d-tab-shape:before {
+    -webkit-box-shadow: 10px 0 0 0 $grey-10;
+    box-shadow: 10px 0 0 0 $grey-10;
+  }
 }
 
 @keyframes fadeIn {
