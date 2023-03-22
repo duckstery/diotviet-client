@@ -1,9 +1,7 @@
 <template>
   <q-card class="tw-w-1/3 tw-m-auto" flat>
     <q-bar class="bg-primary">
-      <q-avatar>
-        <img src="/images/duck.png">
-      </q-avatar>
+      <IconMage src="images/duck.png"/>
       <q-toolbar-title class="brand tw-ml-3">DiotViet</q-toolbar-title>
       <q-space/>
       <Button flat :icon="castIcon" @click="onYeahAwesome"/>
@@ -49,11 +47,12 @@ import {date} from "quasar";
 
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
+import IconMage from "components/General/Other/IconMage.vue";
 
 export default {
   name: 'LoginPanel',
 
-  components: {Button, TextField},
+  components: {IconMage, Button, TextField},
 
   data: () => ({
     credential: {

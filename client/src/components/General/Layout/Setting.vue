@@ -4,9 +4,7 @@
       <!--  -->
       <q-banner class="tw-mt-1">
         <template v-slot:avatar>
-          <q-avatar size="32px" square>
-            <img src="images/translation.png">
-          </q-avatar>
+          <IconMage src="images/translation.png"/>
         </template>
         <div class="tw-font-medium">{{ $t('field.language') }}</div>
       </q-banner>
@@ -19,9 +17,7 @@
 
       <q-banner class="tw-mt-1">
         <template v-slot:avatar>
-          <q-avatar size="32px" square>
-            <img src="images/dark-mode.png">
-          </q-avatar>
+          <IconMage src="images/dark-mode.png"/>
         </template>
         <div class="tw-font-medium">{{ $t('field.display_mode') }}</div>
       </q-banner>
@@ -39,11 +35,12 @@
 import {env} from "boot/env";
 
 import Button from "components/General/Other/Button.vue";
+import IconMage from "components/General/Other/IconMage.vue";
 
 export default {
   name: 'Setting',
 
-  components: {Button},
+  components: {IconMage, Button},
 
   data: () => ({
     language: env.get("language") ?? 'en', // Default is English

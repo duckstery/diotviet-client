@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-5 tw-px-2">
             <div class="tw-text-lg tw-pt-2">
-              <q-icon name="fa-solid fa-comment text-info"/>
+              <IconMage src="images/note.png" size="20px"/>
               <span class="tw-ml-2 tw-underline tw-underline-offset-4">{{ $t('field.note') }}:</span>
             </div>
 
@@ -27,7 +27,7 @@
           <!-- Total -->
           <div class="flex">
             <div class="tw-text-lg tw-pt-2">
-              <q-icon name="fa-solid fa-money-bill-wave text-positive"/>
+              <IconMage src="images/provisional_amount.png" size="20px"/>
               <span class="tw-ml-2 tw-underline tw-underline-offset-4">{{ $t('field.provisional_amount') }}:</span>
             </div>
             <q-space/>
@@ -48,7 +48,7 @@
           <!-- Discount -->
           <div class="flex">
             <div class="tw-text-lg tw-pt-2">
-              <q-icon name="fa-solid fa-tag text-warning"/>
+              <IconMage src="images/discount.png" size="20px"/>
               <span class="tw-ml-2 tw-underline tw-underline-offset-4">{{ $t('field.discount') }}:</span>
             </div>
             <q-toggle
@@ -77,7 +77,7 @@
           <div>
             <div class="flex">
               <div class="tw-text-lg tw-pt-2">
-                <q-icon name="fa-solid fa-coins text-secondary"/>
+                <IconMage src="images/payment_amount.png" size="20px"/>
                 <span class="tw-ml-2 tw-underline tw-underline-offset-4">{{ $t('field.payment_amount') }}:</span>
               </div>
               <q-space/>
@@ -104,11 +104,12 @@ import {useOrderStore} from "stores/order";
 import {mapState} from "pinia";
 
 import TextField from "components/General/Other/TextField.vue";
+import IconMage from "components/General/Other/IconMage.vue";
 
 export default {
   name: 'StatisticPanel',
 
-  components: {TextField},
+  components: {IconMage, TextField},
 
   props: {
     maxHeight: Number
