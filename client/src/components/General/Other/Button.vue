@@ -17,6 +17,7 @@
     <q-tooltip v-if="tooltip" transition-show="scale" transition-hide="scale" class="tw-text-sm">
       {{ tooltip }}
     </q-tooltip>
+    <slot/>
   </q-btn>
 </template>
 

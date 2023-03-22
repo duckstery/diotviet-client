@@ -64,7 +64,7 @@
 
 <script>
 export default {
-  name: "RightDrawer",
+  name: "NavigateDrawer",
 
   data: () => ({
     drawer: true,

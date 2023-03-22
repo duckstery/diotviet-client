@@ -6,24 +6,51 @@
       </q-avatar>
       <TextField v-model="search" class="tw-w-1/4 tw-max-w-lg tw-ml-4"/>
       <OrderBar/>
+      <q-space/>
+      <Setting/>
+      <q-item clickable class="tw-h-[32px] tw-p-0 tw-px-3 tw-rounded-lg tw-ml-3">
+        <q-item-section side>
+          <q-avatar rounded size="32px">
+            <img src="images/man.png" />
+          </q-avatar>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label class="tw-font-medium">{{ getUserName }}</q-item-label>
+          <q-item-label caption class="text-grey-13">{{ roleDisplayText }}</q-item-label>
+        </q-item-section>
+      </q-item>
     </q-toolbar>
   </q-header>
 
-  <RightDrawer/>
+  <NavigateDrawer/>
 </template>
 
 <script>
-import RightDrawer from "components/General/Layout/NavigateDrawer.vue";
+import {useAuthStore} from "stores/auth";
+import {mapState} from "pinia";
+
+import NavigateDrawer from "components/General/Layout/NavigateDrawer.vue";
 import TextField from "components/General/Other/TextField.vue";
 import OrderBar from "components/General/Layout/OrderBar.vue";
+import Button from "components/General/Other/Button.vue";
+import Setting from "components/General/Layout/Setting.vue";
 
 export default {
   name: "Header",
 
-  components: {OrderBar, TextField, RightDrawer},
+  components: {Setting, Button, OrderBar, TextField, NavigateDrawer},
 
   data: () => ({
-    search: ''
-  })
+    search: '',
+  }),
+
+  computed: {
+    // Get role display text
+    roleDisplayText() {
+      return this.$t(`field.role_${this.getPrivilege}`)
+    },
+    // "Auth" store
+    ...mapState(useAuthStore, ['getUserName', 'getPrivilege'])
+  }
 }
 </script>

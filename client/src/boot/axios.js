@@ -7,7 +7,6 @@ import axios, {CanceledError} from 'axios'
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-
 axios.interceptors.response.use(function (response) {
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
@@ -25,7 +24,6 @@ axios.interceptors.response.use(function (response) {
 // Config Axios
 axios.defaults.baseURL = `${process.env.API_BASE_URL}${process.env.API_PREFIX_PATH}`
 axios.defaults.headers = {
-  'Accept-Language': 'en',
   'Accept': 'application/json;charset=utf-8',
   'Cache-Control': 'no-store',
   'Content-Type': 'application/json;charset=utf-8'

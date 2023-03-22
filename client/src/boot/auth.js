@@ -109,24 +109,21 @@ function decodeJWT(jwt) {
 export default boot(({app, router}) => {
   // Register request interceptor to embed JWT and priorly check for JWT validity
   axios.interceptors.request.use(function (config) {
-    // Create new config
-    const cfg = {...config}
-
     // Check if target API is /login
-    if (cfg.url.includes("/api/auth/login")) {
+    if (config.url.includes("/api/auth/login")) {
       // This API won't be affect if token is expired
-      return cfg
+      return config
     }
 
     // Check if token is expired or not
     if (auth.isAuthenticated()) {
-      cfg.headers.Authorization = `Bearer ${store.getToken}`
+      config.headers.Authorization = `Bearer ${store.getToken}`
     } else {
       // Abort request if token is expired
-      cfg.signal = AbortSignal.abort("Token expired")
+      config.signal = AbortSignal.abort("Token expired")
     }
 
-    return cfg
+    return config
   })
 
   // Register middleware to check if user is authenticated

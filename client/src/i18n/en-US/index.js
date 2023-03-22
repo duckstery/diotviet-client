@@ -40,6 +40,17 @@ export default {
     sell: 'Sell',
     remember_password: 'Remember password',
     forget_password: 'Forget password',
+    settings: 'Settings',
+    language: 'Language',
+    en: 'English',
+    vi: 'Vietnamese',
+    display_mode: 'Display mode',
+    light_mode: 'Light mode',
+    dark_mode: 'Dark mode',
+
+    role_1: 'Admin',
+    role_2: 'Supervisor',
+    role_3: 'Staff'
   },
 
   easter: {

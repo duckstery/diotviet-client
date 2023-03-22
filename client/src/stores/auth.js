@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('auth', {
      * Get role
      *
      * @param state
-     * @returns {string|string|*}
+     * @returns {number}
      */
     getPrivilege: (state) => state.privilege
   },

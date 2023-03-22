@@ -1,5 +1,7 @@
 import enUS from './en-US'
+import viVN from './vi-VN'
 
 export default {
-  'en-US': enUS
+  'en': enUS,
+  'vi': viVN
 }

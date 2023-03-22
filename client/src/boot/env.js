@@ -1,12 +1,29 @@
-export default ({app}, inject) => {
-  inject('env', (config = {}) => {
-    Object.entries(config).forEach(([k, v]) => {
-      localStorage.setItem(k, v)
-    })
+import {boot} from 'quasar/wrappers'
+import {LocalStorage} from 'quasar'
 
-    return {
-      'theme': localStorage.getItem('theme'),
-      'locale': localStorage.getItem('locale')
-    }
-  })
+const env = {
+  /**
+   * Get item in LocalStorage
+   *
+   * @param {string} key
+   * @returns {any}
+   */
+  get(key) {
+    return LocalStorage.getItem(key)
+  },
+  /**
+   * Set item to LocalStorage
+   *
+   * @param {String} key
+   * @param {any} value
+   */
+  set(key, value) {
+    return LocalStorage.set(key, value)
+  }
 }
+
+export default boot(({app}) => {
+  app.config.globalProperties.$env = env
+})
+
+export {env}
