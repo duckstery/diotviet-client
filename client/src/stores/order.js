@@ -4,6 +4,7 @@ export const useOrderStore = defineStore('order', {
   state: () => ({
     counter: 1,
     activeId: 0,
+    activeIndex: 0,
     orders: [{
       id: 0,
       items: [],
@@ -46,7 +47,15 @@ export const useOrderStore = defineStore('order', {
      * @param state
      * @returns {*}
      */
-    getActiveOrder: (state) => state.orders.at(state.activeId),
+    getActiveOrder: (state) => state.orders.at(state.activeIndex),
+
+    /**
+     * Find index of active order in orders
+     *
+     * @param state
+     * @returns {number}
+     */
+    getActiveIndex: (state) => state.activeIndex
   },
 
   actions: {
@@ -57,7 +66,7 @@ export const useOrderStore = defineStore('order', {
      */
     addItem(item) {
       // Get activeOrder reference
-      const activeOrder = this.orders.at(this.activeId)
+      const activeOrder = this.orders.at(this.getActiveIndex)
 
       // Check if item is already exist in order's item list
       const index = activeOrder.items.findIndex(i => i.id === item.id)
@@ -72,7 +81,7 @@ export const useOrderStore = defineStore('order', {
         })
       } else {
         // Else, just add item
-        this.orders.at(this.activeId).items.push({
+        activeOrder.items.push({
           ...item,
           quantity: '1',
           totalPrice: item.actualPrice,
@@ -89,7 +98,7 @@ export const useOrderStore = defineStore('order', {
      */
     editItem(index, item) {
       // Get order
-      const order = this.orders.at(this.activeId);
+      const order = this.orders.at(this.getActiveIndex);
       // Splice old item and push new item in
       order.items.splice(index, 1, item)
       // Update provisional amount
@@ -102,7 +111,7 @@ export const useOrderStore = defineStore('order', {
      * @param {Number} index
      */
     removeItem(index) {
-      this.orders.at(this.activeId).items.splice(index, 1)
+      this.orders.at(this.getActiveIndex).items.splice(index, 1)
     },
 
     /**
@@ -113,13 +122,14 @@ export const useOrderStore = defineStore('order', {
       this.orders.push({
         id: this.counter++,
         items: [],
-        total: '0',
+        provisionalAmount: '0',
         discount: '0',
         discountUnit: '%',
-        note: '',
+        paymentAmount: '0',
+        note: ''
       })
       // Added order will be active
-      this.activeId = this.orders.at(-1).id
+      this.setActive(this.orders.at(-1).id)
 
       return this.activeId
     },
@@ -130,12 +140,8 @@ export const useOrderStore = defineStore('order', {
      * @param {object} order
      */
     editActiveOrder(order) {
-      console.warn(Object.assign({}, {
-        ...this.orders.at(this.activeId),
-        ...order
-      }))
-      this.orders.splice(this.activeId, 1, {
-        ...this.orders.at(this.activeId),
+      this.orders.splice(this.getActiveIndex, 1, {
+        ...this.getActiveOrder,
         ...order
       })
     },
@@ -152,7 +158,10 @@ export const useOrderStore = defineStore('order', {
       // Check if index is 0 (first item)
       if (removedOrder.id === this.activeId) {
         // Set tab to new first item
-        this.activeId = this.orders.at(0).id
+        this.setActive(this.orders.at(0).id)
+      } else {
+        // Re-activate activeId to force getting activeIndex
+        this.setActive(this.activeId)
       }
 
       return removedOrder
@@ -165,6 +174,7 @@ export const useOrderStore = defineStore('order', {
      */
     setActive(id) {
       this.activeId = id
+      this.activeIndex = this.orders.findIndex(order => order.id === this.activeId)
     }
   }
 })

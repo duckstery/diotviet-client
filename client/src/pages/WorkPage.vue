@@ -35,7 +35,7 @@ export default defineComponent({
     },
     // Calculate StatisticPanel height (by subtract ItemPanel height from OrderPanel)
     statisticPanelHeight() {
-      return this.isMounted ? Math.max(this.orderPanelHeight - this.$refs['itemPanel']?.$el.offsetHeight - 20, 134) : 0
+      return this.isMounted ? this.orderPanelHeight - this.$refs['itemPanel']?.$el.offsetHeight - 20 : 0
     }
   },
 
