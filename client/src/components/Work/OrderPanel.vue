@@ -7,7 +7,7 @@
         class="virtual-scrollbar"
         :style="`max-height: ${maxHeight}px`"
       >
-        <OrderItem :value="item" :index="index" class="tw-mt-2 first:tw-mt-0"/>
+        <OrderItem :value="item" :index="index" :key="item.id" class="tw-mt-2 first:tw-mt-0"/>
       </q-virtual-scroll>
     </q-tab-panel>
   </q-tab-panels>

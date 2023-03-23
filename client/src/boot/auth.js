@@ -79,7 +79,15 @@ const auth = {
    */
   logout() {
     return axios.get(`${process.env.API_BASE_URL}/api/auth/logout`)
-      .then(res => res.data.message)
+      .then(res => {
+        // Clear cookie
+        Cookies.remove(tokenKey)
+        // Reset store
+        store.reset()
+
+        // Resolve promise
+        return res.data.message
+      })
       .catch(err => Promise.reject(err.response.data.message))
   }
 }

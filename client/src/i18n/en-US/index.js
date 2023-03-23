@@ -47,6 +47,9 @@ export default {
     display_mode: 'Display mode',
     light_mode: 'Light mode',
     dark_mode: 'Dark mode',
+    logout: 'Logout',
+    confirm: 'Confirm',
+    confirm_cancel: 'Cancel',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -61,7 +64,8 @@ export default {
   // Message
   // ****************************
   message: {
-    please_wait: 'Please kindly wait...'
+    please_wait: 'Please kindly wait...',
+    confirm: 'Are you sure?'
   },
 
   // ****************************

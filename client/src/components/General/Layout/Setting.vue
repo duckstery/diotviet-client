@@ -75,18 +75,12 @@ export default {
 
   watch: {
     // Handler for changing language
-    language: {
-      immediate: true,
-      handler(value) {
+    language(value) {
         this.$i18n.locale = value
-      }
     },
     // Handler for changing display
-    isLight: {
-      immediate: true,
-      handler(value) {
+    isLight(value) {
         this.$q.dark.set(!value)
-      }
     }
   },
 }

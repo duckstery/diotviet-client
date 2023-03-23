@@ -1,4 +1,5 @@
 import {boot} from 'quasar/wrappers'
+import {Dialog} from "quasar";
 
 const util = {
   /**
@@ -22,6 +23,20 @@ const util = {
 
     return value;
   },
+
+  /**
+   * Prompt for confirm
+   *
+   * @param {Vue} root
+   */
+  promptConfirm(root) {
+    return Dialog.create({
+      title: root.$t('field.confirm'),
+      message: root.$t('message.confirm'),
+      cancel: {icon: 'fa-solid fa-xmark', color: 'negative', label: root.$t('field.confirm_cancel')},
+      ok: {icon: 'fa-solid fa-check', color: 'positive', label: root.$t('field.confirm')},
+    })
+  }
 }
 
 export default boot(({app}) => {

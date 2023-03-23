@@ -12,7 +12,7 @@
     </q-bar>
 
     <q-card-section>
-      <div class="text-h6 text-dark brand tw-w-fit tw-mx-auto">{{ $t('field.welcome') }}</div>
+      <div class="text-h6 text-brand brand tw-w-fit tw-mx-auto">{{ $t('field.welcome') }}</div>
 
       <TextField v-model="credential.email" :label="$t('field.username')" icon="fa-solid fa-user" class="tw-mt-4"/>
       <TextField v-model="credential.password" :label="$t('field.password')" icon="fa-solid fa-lock" class="tw-mt-4"

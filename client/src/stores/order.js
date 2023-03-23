@@ -99,10 +99,11 @@ export const useOrderStore = defineStore('order', {
     editItem(index, item) {
       // Get order
       const order = this.orders.at(this.getActiveIndex);
+      console.warn(item)
       // Splice old item and push new item in
       order.items.splice(index, 1, item)
       // Update provisional amount
-      order.provisionalAmount = order.items.reduce((acc, cur) => acc + parseInt(cur.totalPrice), 0) + ""
+      this.updateProvisionalAmount()
     },
 
     /**
@@ -112,6 +113,8 @@ export const useOrderStore = defineStore('order', {
      */
     removeItem(index) {
       this.orders.at(this.getActiveIndex).items.splice(index, 1)
+      // Update provisional amount
+      this.updateProvisionalAmount()
     },
 
     /**
@@ -175,6 +178,16 @@ export const useOrderStore = defineStore('order', {
     setActive(id) {
       this.activeId = id
       this.activeIndex = this.orders.findIndex(order => order.id === this.activeId)
+    },
+
+    /**
+     * Update provisional amount
+     */
+    updateProvisionalAmount() {
+      // Get active order
+      const order = this.orders.at(this.getActiveIndex);
+      // Update provisional amount
+      order.provisionalAmount = order.items.reduce((acc, cur) => acc + parseInt(cur.totalPrice), 0) + ""
     }
   }
 })

@@ -3,9 +3,16 @@
     <q-toolbar>
       <IconMage src="images/duck.png" rounded/>
       <TextField v-model="search" class="tw-w-1/4 tw-max-w-lg tw-ml-4"/>
+
       <OrderBar/>
+
       <q-space/>
+
       <Setting/>
+
+      <Button flat icon="fa-solid fa-right-from-bracket" color="white" :tooltip="$t('field.logout')"
+              class="tw-ml-3" @click="onLogout"/>
+
       <q-item clickable class="tw-h-[32px] tw-p-0 tw-px-3 tw-rounded-lg tw-ml-3">
         <q-item-section side>
           <IconMage src="images/man.png"/>
@@ -48,6 +55,30 @@ export default {
     },
     // "Auth" store
     ...mapState(useAuthStore, ['getUserName', 'getPrivilege'])
+  },
+
+  methods: {
+    /**
+     * On logout event handler
+     */
+    onLogout() {
+      this.$util.promptConfirm(this)
+        .onOk(this.logout)
+    },
+
+    /**
+     * Logout logic
+     */
+    logout() {
+      this.$auth.logout()
+        .then(res => {
+          // Redirect to 'Login'
+          this.$router.push({name: 'Login'})
+          // Notify
+          this.$notify(res)
+        })
+        .catch(this.$notifyErr)
+    }
   }
 }
 </script>

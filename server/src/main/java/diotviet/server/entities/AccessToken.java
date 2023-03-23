@@ -19,7 +19,7 @@ import java.util.Objects;
 @Table(name = "access_tokens")
 @Getter
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE access_tokens SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE diotviet.access_tokens SET is_deleted = true WHERE id=?")
 //@SQLDeleteAll(sql = "UPDATE access_tokens SET is_deleted = true")
 //@FilterDef(name = "softDeleteAccessToken", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
 //@Filter(name = "softDeleteAccessToken", condition = "is_deleted = :isDeleted")
@@ -57,7 +57,7 @@ public class AccessToken {
     /**
      * Corresponding User
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore

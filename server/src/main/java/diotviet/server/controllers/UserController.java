@@ -75,14 +75,14 @@ public class UserController extends BaseController {
      *
      * @return
      */
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity<?> logout() {
         // Unsubscribe current active token
         service.unsubscribeToken(SecurityContextHolder.getContext().getAuthentication());
         // Clear authentication
         SecurityContextHolder.getContext().setAuthentication(null);
 
-        return ok(__("logout_success"));
+        return ok(__("logout_success"), null);
     }
 
     /**
