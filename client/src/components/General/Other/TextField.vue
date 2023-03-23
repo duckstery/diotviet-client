@@ -13,7 +13,7 @@
     :reverse-fill-mask="!!mask"
     :mask="mask"
   >
-    <template v-if="!compact" #prepend>
+    <template v-if="!compact && !!icon" #prepend>
       <q-icon :name="icon"/>
     </template>
     <template v-for="(_, slot) of $slots" #[slot]="scope">
@@ -34,7 +34,7 @@ export default {
     // Icon
     icon: {
       type: String,
-      default: 'search'
+      default: null
     },
     // Compact mode
     compact: {

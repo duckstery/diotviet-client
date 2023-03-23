@@ -4,19 +4,26 @@
       <IconMage src="images/duck.png"/>
       <q-toolbar-title class="brand tw-ml-3">DiotViet</q-toolbar-title>
       <q-space/>
-      <Button flat :icon="castIcon" @click="onYeahAwesome"/>
-      <Button flat :icon="batteryIcon" @click="onYeahAwesome"/>
-      <Button flat :icon="wifiAndSignalIcon[0]" @click="onYeahAwesome"/>
-      <Button flat :icon="wifiAndSignalIcon[1]" @click="onYeahAwesome"/>
+      <Button flat text-color="white" :icon="castIcon" @click="onYeahAwesome"/>
+      <Button flat text-color="white" :icon="batteryIcon" @click="onYeahAwesome"/>
+      <Button flat text-color="white" :icon="wifiAndSignalIcon[0]" @click="onYeahAwesome"/>
+      <Button flat text-color="white" :icon="wifiAndSignalIcon[1]" @click="onYeahAwesome"/>
       <div class="tw-w-[52px] text-white">{{ time }}</div>
     </q-bar>
 
     <q-card-section>
       <div class="text-h6 text-brand brand tw-w-fit tw-mx-auto">{{ $t('field.welcome') }}</div>
 
-      <TextField v-model="credential.email" :label="$t('field.username')" icon="fa-solid fa-user" class="tw-mt-4"/>
-      <TextField v-model="credential.password" :label="$t('field.password')" icon="fa-solid fa-lock" class="tw-mt-4"
-                 type="password"/>
+      <TextField v-model="credential.email" :label="$t('field.username')" class="tw-mt-4">
+        <template #before>
+          <IconMage src="images/mail.png"/>
+        </template>
+      </TextField>
+      <TextField v-model="credential.password" :label="$t('field.password')" class="tw-mt-4" type="password">
+        <template #before>
+          <IconMage src="images/pass.png"/>
+        </template>
+      </TextField>
       <div class="tw-flex">
         <q-checkbox
           v-model="remember"

@@ -2,7 +2,7 @@
   <q-btn
     v-bind="$attrs"
 
-    color="brand"
+    :color="color"
     :dense="!stretch"
 
     :flat="flat"
@@ -55,6 +55,11 @@ export default {
     tooltip: {
       type: String,
       default: null
+    },
+    // Color
+    color: {
+      type: String,
+      default: 'brand'
     }
   },
 

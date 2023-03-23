@@ -1,5 +1,5 @@
 <template>
-  <Button flat icon="settings" color="white" :tooltip="$t('field.settings')">
+  <Button v-bind="$attrs" icon="settings" color="white" :tooltip="$t('field.settings')">
     <q-popup-proxy class="tw-pb-3">
       <!--  -->
       <q-banner class="tw-mt-1">

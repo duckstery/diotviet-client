@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-grey-3 tw-p-5 tw-pr-20">
+  <q-page class="bg-grey-3 tw-p-5 tw-pr-20 tw-h-full">
     <div class="row fill-page" :style="`height: ${orderPanelHeight}px`">
       <div class="col-6 ">
         <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
@@ -35,7 +35,7 @@ export default defineComponent({
     },
     // Calculate StatisticPanel height (by subtract ItemPanel height from OrderPanel)
     statisticPanelHeight() {
-      return this.isMounted ? this.orderPanelHeight - this.$refs['itemPanel']?.$el.offsetHeight - 20 : 0
+      return this.isMounted ? Math.max(this.orderPanelHeight - this.$refs['itemPanel']?.$el.offsetHeight - 20, 134) : 0
     }
   },
 

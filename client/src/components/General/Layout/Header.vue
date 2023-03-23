@@ -8,7 +8,7 @@
 
       <q-space/>
 
-      <Setting/>
+      <Setting flat/>
 
       <Button flat icon="fa-solid fa-right-from-bracket" color="white" :tooltip="$t('field.logout')"
               class="tw-ml-3" @click="onLogout"/>
