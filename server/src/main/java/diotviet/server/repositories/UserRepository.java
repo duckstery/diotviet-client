@@ -1,6 +1,7 @@
 package diotviet.server.repositories;
 
 import diotviet.server.entities.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email
      * @return
      */
+    @EntityGraph(value = "User.validTokens", type = EntityGraph.EntityGraphType.FETCH)
     Optional<User> findByEmail(String email);
 
     /**

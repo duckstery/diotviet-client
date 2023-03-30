@@ -6,6 +6,7 @@
     :mini="miniState"
     @mouseover="miniState = false"
     @mouseout="miniState = true"
+    persistent
 
     side="right"
     overlay
@@ -15,47 +16,18 @@
   >
     <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
       <q-list padding>
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="inbox" />
-          </q-item-section>
+        <template v-for="link in links">
+          <q-item v-if="link.key" :to="link.to" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon :name="`fa-solid ${link.icon}`"/>
+            </q-item-section>
 
-          <q-item-section>
-            Inbox
-          </q-item-section>
-        </q-item>
-
-        <q-item active clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="star" />
-          </q-item-section>
-
-          <q-item-section>
-            Star
-          </q-item-section>
-        </q-item>
-
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="send" />
-          </q-item-section>
-
-          <q-item-section>
-            Send
-          </q-item-section>
-        </q-item>
-
-        <q-separator />
-
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="drafts" />
-          </q-item-section>
-
-          <q-item-section>
-            Drafts
-          </q-item-section>
-        </q-item>
+            <q-item-section>
+              {{ $t(`field.${link.key}`) }}
+            </q-item-section>
+          </q-item>
+          <q-separator v-else inset/>
+        </template>
       </q-list>
     </q-scroll-area>
   </q-drawer>
@@ -67,7 +39,46 @@ export default {
 
   data: () => ({
     drawer: true,
-    miniState: true
+    miniState: true,
+    links: [
+      {
+        key: 'store',
+        icon: 'fa-store',
+        to: '/work'
+      },
+      {
+        key: 'outstream',
+        icon: 'fa-hand-holding-dollar',
+        to: '/outstream'
+      },
+      {},
+      {
+        key: 'product',
+        icon: 'fa-box',
+        to: '/product'
+      },
+      {
+        key: 'transaction',
+        icon: 'fa-arrow-right-arrow-left',
+        to: '/transaction'
+      },
+      {
+        key: 'partner',
+        icon: 'fa-handshake',
+        to: '/partner'
+      },
+      {
+        key: 'staff',
+        icon: 'fa-user-tie',
+        to: '/staff'
+      },
+      {},
+      {
+        key: 'report',
+        icon: 'fa-chart-line',
+        to: '/report'
+      },
+    ]
   }),
 }
 </script>

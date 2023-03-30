@@ -6,12 +6,9 @@ import diotviet.server.constants.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.Where;
-import org.hibernate.annotations.WhereJoinTable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +21,7 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "users")
+@NamedEntityGraph(name = "User.validTokens", attributeNodes = @NamedAttributeNode("validTokens"))
 @Data
 @Accessors(chain = true)
 public class User implements UserDetails {

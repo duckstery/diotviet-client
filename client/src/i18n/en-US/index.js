@@ -50,6 +50,21 @@ export default {
     logout: 'Logout',
     confirm: 'Confirm',
     confirm_cancel: 'Cancel',
+    store: 'Store',
+    product: 'Product',
+    transaction: 'Transaction',
+    partner: 'Partner',
+    staff: 'Staff',
+    outstream: 'Outstream',
+    report: 'Report',
+    list: 'List',
+    receipt: 'Receipt',
+    return: 'Return',
+    customer: 'Customer',
+    timekeeping: 'Timekeeping',
+    home: 'Home',
+    records_per_page: 'Records per page',
+
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -65,7 +80,8 @@ export default {
   // ****************************
   message: {
     please_wait: 'Please kindly wait...',
-    confirm: 'Are you sure?'
+    confirm: 'Are you sure?',
+    table_empty_data: 'Well this is sad... I didn\'t find anything for you',
   },
 
   // ****************************

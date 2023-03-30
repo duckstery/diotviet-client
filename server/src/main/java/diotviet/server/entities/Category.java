@@ -1,0 +1,51 @@
+package diotviet.server.entities;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import diotviet.server.constants.Type;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+
+import java.util.Set;
+
+/**
+ * Predefined category
+ */
+@Entity
+@Table(name = "categories")
+@Data
+@Accessors(chain = true)
+public class Category {
+    /**
+     * Id
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categories_seq")
+    @SequenceGenerator(name = "categories_seq", sequenceName = "categories_seq", allocationSize = 1)
+    private long id;
+
+    /**
+     * Name
+     */
+    @Column(length = 10)
+    private String name;
+
+    /**
+     * Type
+     */
+    @Enumerated
+    @Column(columnDefinition = "smallint")
+    @JsonIgnore
+    private Type type;
+
+    /**
+     * Products
+     */
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Product> products;
+}

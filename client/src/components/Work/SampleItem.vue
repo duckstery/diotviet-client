@@ -21,7 +21,7 @@
       <q-card-section class="tw-p-0 tw-ml-2">
         <q-card-section class="tw-p-0 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-2 tw-max-w-[135px]">
           {{ value.title }}
-          <q-tooltip class="tw-text-md">{{ value.title }}</q-tooltip>
+          <q-tooltip class="tw-text-base">{{ value.title }}</q-tooltip>
         </q-card-section>
         <div v-if="!visualize" class="text-primary tw-mb-2.5">
           <q-card-section class="tw-p-0 tw-font-medium tw-absolute tw-bottom-0">

@@ -2,14 +2,16 @@
   <q-header v-bind="$attrs" reveal class="bg-primary text-white">
     <q-toolbar>
       <IconMage src="images/duck.png" rounded/>
-      <TextField v-model="search" class="tw-w-1/4 tw-max-w-lg tw-ml-4"/>
 
-      <OrderBar/>
+      <slot/>
 
       <q-space/>
-
-      <Setting flat/>
-
+      <!-- Print -->
+      <Button flat icon="fa-solid fa-print" color="white" :tooltip="$t('field.logout')"
+              class="tw-ml-3" @click="onLogout"/>
+      <!-- Setting -->
+      <Setting flat class="tw-ml-3"/>
+      <!-- Logout -->
       <Button flat icon="fa-solid fa-right-from-bracket" color="white" :tooltip="$t('field.logout')"
               class="tw-ml-3" @click="onLogout"/>
 
@@ -33,8 +35,6 @@ import {useAuthStore} from "stores/auth";
 import {mapState} from "pinia";
 
 import NavigateDrawer from "components/General/Layout/NavigateDrawer.vue";
-import TextField from "components/General/Other/TextField.vue";
-import OrderBar from "components/General/Layout/OrderBar.vue";
 import Button from "components/General/Other/Button.vue";
 import Setting from "components/General/Layout/Setting.vue";
 import IconMage from "components/General/Other/IconMage.vue";
@@ -42,11 +42,7 @@ import IconMage from "components/General/Other/IconMage.vue";
 export default {
   name: "Header",
 
-  components: {IconMage, Setting, Button, OrderBar, TextField, NavigateDrawer},
-
-  data: () => ({
-    search: '',
-  }),
+  components: {IconMage, Setting, Button, NavigateDrawer},
 
   computed: {
     // Get role display text

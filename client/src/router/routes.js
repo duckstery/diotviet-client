@@ -26,6 +26,34 @@ const routes = [
       r('', 'Work', () => import('pages/WorkPage.vue')),
     ]
   },
+  {
+    path: '/product',
+    component: () => import('layouts/ManageLayout.vue'),
+    children: [
+      r('', 'Product', () => import('pages/Product/ProductPage.vue')),
+    ]
+  },
+  {
+    path: '/transaction',
+    component: () => import('layouts/ManageLayout.vue'),
+    children: [
+      r('', 'Transaction', () => import('pages/Transaction/OrderPage.vue')),
+    ]
+  },
+  {
+    path: '/partner',
+    component: () => import('layouts/ManageLayout.vue'),
+    children: [
+      r('', 'Partner', () => import('pages/Partner/CustomerPage.vue')),
+    ]
+  },
+  {
+    path: '/staff',
+    component: () => import('layouts/ManageLayout.vue'),
+    children: [
+      r('', 'Staff', () => import('pages/Staff/StaffPage.vue')),
+    ]
+  },
 
   // Error page
   {
