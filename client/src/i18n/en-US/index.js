@@ -64,6 +64,7 @@ export default {
     timekeeping: 'Timekeeping',
     home: 'Home',
     records_per_page: 'Records per page',
+    display_col: 'Display column',
 
 
     role_1: 'Admin',
@@ -82,6 +83,7 @@ export default {
     please_wait: 'Please kindly wait...',
     confirm: 'Are you sure?',
     table_empty_data: 'Well this is sad... I didn\'t find anything for you',
+    rows_selected: '{attr} record(s) selected.'
   },
 
   // ****************************

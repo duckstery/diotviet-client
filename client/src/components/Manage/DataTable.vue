@@ -1,30 +1,48 @@
 <template>
   <q-table
     v-bind="$attrs"
+    v-model:selected="selected"
 
     flat
     bordered
     virtual-scroll
+    class="tw-h-full sticky-header"
+    table-class="virtual-scrollbar"
+    no-results-label="The filter didn't uncover any results"
+
     :title="title"
     :rows="items"
     :columns="headers"
     :loading="loading"
     :selection="selection"
+    :visible-columns="visibleCols"
     :rows-per-page-options="[10, 25, 50]"
     :rows-per-page-label="$t('field.records_per_page')"
     :no-data-label="$t('message.table_empty_data')"
-    no-results-label="The filter didn't uncover any results"
-    class="tw-min-h-[500px] sticky-header"
-    table-class="virtual-scrollbar"
-    row-key="name"
-    v-model:selected="selected"
+    :selected-rows-label="numberOfRows => $t('message.rows_selected', {attr: numberOfRows})"
   >
+    <template #top>
+      <TextField v-model="search" label="Search" icon="search"/>
+
+      <q-space/>
+
+      <Button :label="$t('field.add')" icon="fa-solid fa-plus"
+              stretch color="positive" class="tw-ml-2" no-caps/>
+      <!-- Columns visibility controls -->
+      <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
+              stretch color="positive" class="tw-ml-2" no-caps
+      >
+        <div class="row">
+          <div v-for="header in headers" class="col-6">
+            <q-checkbox v-model="visibleCols" size="xs"
+                        :label="header.label" :val="header.name" :disable="header.name === 'code'"/>
+          </div>
+        </div>
+      </DropdownButton>
+    </template>
+
     <template v-slot:top-right>
-      <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-        <template v-slot:append>
-          <q-icon name="search"/>
-        </template>
-      </q-input>
+
     </template>
 
     <!-- Loading -->
@@ -87,8 +105,14 @@
 </template>
 
 <script>
+import TextField from "components/General/Other/TextField.vue";
+import Button from "components/General/Other/Button.vue";
+import DropdownButton from "components/General/Other/DropdownButton.vue";
+
 export default {
   name: 'DataTable',
+
+  components: {DropdownButton, Button, TextField},
 
   props: {
     // Table title
@@ -100,15 +124,16 @@ export default {
     headers: {
       type: Array,
       default: () => ([
-        {name: 'calcium', label: 'Calcium (%)', field: 'calcium'},
-        {name: 'iron', label: 'Iron (%)', field: 'iron'}
+        {name: 'code', label: 'Code', field: 'code', isInitDisplay: true},
+        {name: 'calcium', label: 'Calcium (%)', field: 'calcium', isInitDisplay: true},
+        {name: 'iron', label: 'Iron (%)', field: 'iron', isInitDisplay: true}
       ])
     },
     // Table items
     items: {
       type: Array,
       default: () => ([
-        {id: 1, calcium: '14%', iron: '1%'},
+        {code: 1, calcium: '14%', iron: '1%'},
 
       ])
     },
@@ -120,11 +145,17 @@ export default {
   },
 
   data: () => ({
+    // Search
+    search: '',
+
     selection: "multiple",
     selected: [],
 
     // Table state
     isSelecting: false,
+
+    // Visible columns
+    visibleCols: [],
 
     // Style header background
 
@@ -137,6 +168,18 @@ export default {
         ? '#1d1d1d'
         : '#fff'
     },
+  },
+
+  watch: {
+    // Initiate column to be displayed
+    headers: {
+      immediate: true,
+      handler(value) {
+        this.visibleCols = value
+          .filter(header => header.name === 'code' || header.isInitDisplay) // Header is visible at initiation if it's 'code' or it's allow to be
+          .map(header => header.name) // Get header name only
+      }
+    }
   }
 }
 </script>
@@ -152,9 +195,11 @@ export default {
     position: sticky;
     z-index: 1
   }
+
   thead > tr:first-child > th {
     top: 0
   }
+
   /* this is when the loading indicator appears */
   &.q-table--loading > thead > tr:last-child > th {
     /* height of all previous header rows */
@@ -163,10 +208,10 @@ export default {
 
 
   /* prevent scrolling behind sticky top row on focus */
-tbody {
-  /* height of all previous header rows */
-  scroll-margin-top: 48px
-}
+  tbody {
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+  }
 
 }
 </style>
