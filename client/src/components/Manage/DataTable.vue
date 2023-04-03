@@ -10,10 +10,8 @@
     table-class="virtual-scrollbar"
     no-results-label="The filter didn't uncover any results"
 
-    :title="title"
     :rows="items"
     :columns="headers"
-    :loading="loading"
     :selection="selection"
     :visible-columns="visibleCols"
     :rows-per-page-options="[10, 25, 50]"
@@ -30,7 +28,7 @@
               stretch color="positive" class="tw-ml-2" no-caps/>
       <!-- Columns visibility controls -->
       <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
-              stretch color="positive" class="tw-ml-2" no-caps
+                      stretch color="positive" class="tw-ml-2" no-caps
       >
         <div class="row">
           <div v-for="header in headers" class="col-6">
@@ -43,13 +41,6 @@
 
     <template v-slot:top-right>
 
-    </template>
-
-    <!-- Loading -->
-    <template v-slot:loading>
-      <q-inner-loading showing color="primary">
-        <q-spinner-gears size="100px" color="primary"/>
-      </q-inner-loading>
     </template>
 
     <!-- Header -->
@@ -80,7 +71,10 @@
           :key="col.name"
           :props="props"
         >
-          <span class="tw-text-sm">{{ col.value }}</span>
+          <q-badge v-if="typeof col.value === 'boolean'" :color="col.value ? 'positive' : 'negative'">
+            {{ $t(`field.${col.value}`) }}
+          </q-badge>
+          <span v-else class="tw-text-sm">{{ col.value }}</span>
         </q-td>
       </q-tr>
 
@@ -115,11 +109,6 @@ export default {
   components: {DropdownButton, Button, TextField},
 
   props: {
-    // Table title
-    title: {
-      type: String,
-      default: 'Title'
-    },
     // Table header
     headers: {
       type: Array,
@@ -137,11 +126,6 @@ export default {
 
       ])
     },
-    // Table loading state
-    loading: {
-      type: Boolean,
-      default: false
-    }
   },
 
   data: () => ({

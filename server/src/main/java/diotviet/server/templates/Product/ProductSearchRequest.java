@@ -28,10 +28,5 @@ public record ProductSearchRequest(
         Integer page,
         Integer itemsPerPage
 ) {
-    /**
-     * Default constructor
-     */
-    public ProductSearchRequest() {
-        this(null, null, null, null, null, null, null, null, null);
-    }
+
 }

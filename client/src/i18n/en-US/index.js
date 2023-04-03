@@ -65,7 +65,8 @@ export default {
     home: 'Home',
     records_per_page: 'Records per page',
     display_col: 'Display column',
-
+    true: 'True',
+    false: 'False',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
