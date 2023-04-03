@@ -109,6 +109,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests()
+                .requestMatchers("/api/fallback/**").permitAll()
                 .requestMatchers("/api/v1/**", "/api/v2/**", "api/auth/logout").authenticated()
                 .anyRequest().permitAll();
 

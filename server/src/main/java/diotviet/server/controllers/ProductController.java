@@ -1,0 +1,89 @@
+package diotviet.server.controllers;
+
+import diotviet.server.constants.Type;
+import diotviet.server.entities.Category;
+import diotviet.server.entities.Group;
+import diotviet.server.entities.Product;
+import diotviet.server.entities.User;
+import diotviet.server.services.CategoryService;
+import diotviet.server.services.GroupService;
+import diotviet.server.services.ProductService;
+import diotviet.server.templates.EntityHeader;
+import diotviet.server.templates.Product.ProductInitResponse;
+import diotviet.server.templates.Product.ProductSearchRequest;
+import diotviet.server.templates.User.LoginRequest;
+import diotviet.server.utils.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@Controller
+@RequestMapping(value = "/api/v1", produces = "application/json")
+public class ProductController extends BaseController {
+    // ****************************
+    // Properties
+    // ****************************
+
+    /**
+     * Product service
+     */
+    @Autowired
+    private ProductService productService;
+    /**
+     * Category service
+     */
+    @Autowired
+    private CategoryService categoryService;
+    /**
+     * Group service
+     */
+    @Autowired
+    private GroupService groupService;
+    /**
+     * Utilities for Entity interact
+     */
+    @Autowired
+    private EntityUtils entityUtils;
+
+    // ****************************
+    // Public API
+    // ****************************
+
+    /**
+     * Index page
+     *
+     * @return
+     */
+    @GetMapping("/index")
+    public ResponseEntity<?> index() {
+        // Get headers
+        EntityHeader[] headers = entityUtils.getHeaders(User.class);
+        // Get list of Products (get all data, no need to filter anything)
+        List<Product> items = productService.paginate(new ProductSearchRequest()).getContent();
+
+        // Get category list for FilterPanel
+        List<Category> categories = categoryService.getCategories(Type.PRODUCT);
+        // Get group list for FilterPanel
+        List<Group> groups = groupService.getGroups(Type.PRODUCT);
+
+        return ok(new ProductInitResponse(headers, items, categories, groups));
+    }
+
+    /**
+     * Search for Product that satisfy condition
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> search(ProductSearchRequest request) {
+        // Search for data and response
+        return ok(productService.paginate(request));
+    }
+}

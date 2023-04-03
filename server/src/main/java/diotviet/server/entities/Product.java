@@ -1,6 +1,7 @@
 package diotviet.server.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.querydsl.core.annotations.QueryEntity;
+import diotviet.server.annotations.InitIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Table(name = "products")
 @Data
 @Accessors(chain = true)
+@QueryEntity
 public class Product {
     /**
      * Id
@@ -31,7 +33,7 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+    @InitIgnore
     private Category category;
 
     /**
@@ -43,6 +45,7 @@ public class Product {
             joinColumns = {@JoinColumn(name = "product_id")},
             inverseJoinColumns = {@JoinColumn(name = "group_id")}
     )
+    @InitIgnore
     private Set<Group> groups;
 
     /**
@@ -61,24 +64,28 @@ public class Product {
      * Description
      */
     @Column
+    @InitIgnore
     private String description;
 
     /**
      * Price before discount
      */
     @Column(length = 11)
+    @InitIgnore
     private String originalPrice;
 
     /**
      * Discount's amount
      */
     @Column(length = 11)
+    @InitIgnore
     private String discount;
 
     /**
      * Discount's unit
      */
     @Column(length = 4)
+    @InitIgnore
     private String discountUnit;
 
     /**
@@ -97,6 +104,7 @@ public class Product {
      * Image source
      */
     @Column
+    @InitIgnore
     private String src;
 
     /**

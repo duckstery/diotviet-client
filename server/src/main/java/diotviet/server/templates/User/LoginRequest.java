@@ -1,4 +1,4 @@
-package diotviet.server.templates;
+package diotviet.server.templates.User;
 
 /**
  * Login request format

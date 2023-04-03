@@ -2,8 +2,8 @@ package diotviet.server.controllers;
 
 import diotviet.server.entities.AccessToken;
 import diotviet.server.entities.User;
-import diotviet.server.templates.LoginRequest;
-import diotviet.server.templates.SignupRequest;
+import diotviet.server.templates.User.LoginRequest;
+import diotviet.server.templates.User.SignupRequest;
 import diotviet.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Locale;
 
 @Controller
 @RequestMapping(value = "/api/auth", produces = "application/json")
@@ -66,7 +64,6 @@ public class UserController extends BaseController {
 
         // Generate JWT
         AccessToken token = service.issueToken(authentication);
-
         return ok(__("login_success"), token);
     }
 
