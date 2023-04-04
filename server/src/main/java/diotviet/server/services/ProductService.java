@@ -2,11 +2,11 @@ package diotviet.server.services;
 
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
-import diotviet.server.entities.Product;
 import diotviet.server.entities.QProduct;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.utils.OtherUtils;
+import diotviet.server.views.Product.ProductSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +39,7 @@ public class ProductService {
      * @param request
      * @return
      */
-    public Page<Product> paginate(ProductSearchRequest request) {
+    public Page<ProductSearchView> paginate(ProductSearchRequest request) {
         // Create filter
         BooleanBuilder filter = createFilter(request);
         // Create pageable
@@ -50,7 +50,7 @@ public class ProductService {
         );
 
         // Query for Product's data
-        return productRepository.findAll(filter, pageable);
+        return productRepository.findBy(filter, q -> q.as(ProductSearchView.class).project("title").page(pageable));
     }
 
     // ****************************

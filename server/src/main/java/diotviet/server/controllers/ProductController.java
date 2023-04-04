@@ -12,6 +12,7 @@ import diotviet.server.templates.Product.ProductInitResponse;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.templates.Product.ProductSearchResponse;
 import diotviet.server.utils.EntityUtils;
+import diotviet.server.views.Product.ProductSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -63,9 +64,8 @@ public class ProductController extends BaseController {
         // Get headers
         EntityHeader[] headers = entityUtils.getHeaders(Product.class);
         // Get list of Products (get all data, no need to filter anything)
-        Page<Product> items = productService.paginate(request);
+        Page<ProductSearchView> items = productService.paginate(request);
 
-        // Get category list for FilterPanel
         List<Category> categories = categoryService.getCategories(Type.PRODUCT);
         // Get group list for FilterPanel
         List<Group> groups = groupService.getGroups(Type.PRODUCT);

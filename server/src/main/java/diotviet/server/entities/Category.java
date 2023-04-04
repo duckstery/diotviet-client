@@ -1,6 +1,7 @@
 package diotviet.server.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import diotviet.server.constants.Type;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.Set;
 @Table(name = "categories")
 @Data
 @Accessors(chain = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Category {
     /**
      * Id
