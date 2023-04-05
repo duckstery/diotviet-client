@@ -67,6 +67,13 @@ export default {
     display_col: 'Display column',
     true: 'True',
     false: 'False',
+    expand: 'Expand',
+    category: 'Category',
+    group: 'Group',
+    all: 'All',
+    price_range: 'Price range',
+    can_be_accumulated: 'Can be accumulated',
+    is_in_business: 'Is in business',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -84,7 +91,8 @@ export default {
     please_wait: 'Please kindly wait...',
     confirm: 'Are you sure?',
     table_empty_data: 'Well this is sad... I didn\'t find anything for you',
-    rows_selected: '{attr} record(s) selected.'
+    rows_selected: '{attr} record(s) selected.',
+    from_to: 'From {from} to {to}'
   },
 
   // ****************************

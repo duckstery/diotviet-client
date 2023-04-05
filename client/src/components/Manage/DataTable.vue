@@ -6,7 +6,7 @@
     flat
     bordered
     virtual-scroll
-    class="tw-h-full sticky-header"
+    class="sticky-header"
     table-class="virtual-scrollbar"
     no-results-label="The filter didn't uncover any results"
 
@@ -79,12 +79,16 @@
       </q-tr>
 
       <!-- Item's details -->
-      <q-tr v-if="props.expand" :props="props">
-        <q-td colspan="100%">
-          <!-- Will be defined by caller -->
-          <slot :cols="props.cols"/>
-        </q-td>
-      </q-tr>
+      <q-slide-transition>
+        <div v-if="props.expand">
+          <q-tr :props="props">
+            <q-td colspan="100%">
+              <!-- Will be defined by caller -->
+              <slot :cols="props.cols"/>
+            </q-td>
+          </q-tr>
+        </div>
+      </q-slide-transition>
     </template>
 
     <!-- Empty scenario -->

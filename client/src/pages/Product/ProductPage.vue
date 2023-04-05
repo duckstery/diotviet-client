@@ -3,12 +3,18 @@
     <!-- Breadcrumbs -->
     <Breadcrumbs :items="breadcrumbs" ref="breadcrumbs"/>
     <div class="row tw-pt-5" :style="`min-height: ${contentHeight}px`">
-      <div class="col-3">
+      <div class="col-3 tw-pr-3">
+        <!-- Title -->
+        <div class="tw-text-3xl tw-font-semibold">{{ $t('field.product') }}</div>
 
+        <!-- Filter -->
+        <ProductFilter v-model="filter" :categories="categories" :groups="groups"/>
       </div>
       <div class="col-9">
+        <!-- Data table -->
         <DataTable v-model:pagination="paginate" :headers="headers" :items="items" :loading="loading"
                    @request="search"/>
+
       </div>
     </div>
   </Page>
@@ -18,25 +24,40 @@
 import Page from "components/General/Layout/Page.vue";
 import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
 import DataTable from "components/Manage/DataTable.vue";
+import ProductFilter from "components/Manage/Product/ProductFilter.vue";
 
 export default {
   name: 'ProductPage',
 
-  components: {Page, DataTable, Breadcrumbs},
+  components: {ProductFilter, Page, DataTable, Breadcrumbs},
 
   inject: ['globalVars'],
 
   data: () => ({
+    // General
+    categories: [],
+    groups: [],
+
     // Filter
-    paginate: {
-      page: 1,
-      rowsPerPage: 10
+    filter: {
+      category: [],
+      group: null,
+      min: '',
+      max: '',
+      canBeAccumulated: null,
+      isInBusiness: null
     },
 
     // Table
     headers: [],
     items: [],
-    title: ''
+    title: '',
+
+    // Paging
+    paginate: {
+      page: 1,
+      rowsPerPage: 10
+    },
   }),
 
   computed: {
@@ -54,7 +75,7 @@ export default {
       return isNaN(contentHeight)
         ? this.globalVars.usableHeight - 30
         : contentHeight
-    }
+    },
   },
 
   mounted() {

@@ -79,11 +79,11 @@ public class ProductService {
         }
         // Filter by min price
         if (Objects.nonNull(request.minPrice())) {
-            query.and(product.actualPrice.gt(request.minPrice()));
+            query.and(product.actualPrice.goe(request.minPrice()));
         }
         // Filter by max price
         if (Objects.nonNull(request.maxPrice())) {
-            query.and(product.actualPrice.lt(request.maxPrice()));
+            query.and(product.actualPrice.loe(request.maxPrice()));
         }
         // Filter by canBeAccumulated flag
         if (Objects.nonNull(request.canBeAccumulated())) {
