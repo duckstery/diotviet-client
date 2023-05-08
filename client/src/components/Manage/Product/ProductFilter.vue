@@ -4,7 +4,7 @@
     <q-scroll-area class="tw-h-[100px]">
       <q-item v-for="category in categories" tag="label" dense>
         <q-item-section avatar>
-          <q-checkbox v-model="filter.category" :val="category.id" color="primary" dense/>
+          <q-checkbox v-model="filter.categories" :val="category.id" color="primary" dense/>
         </q-item-section>
         <q-item-section>
           <q-item-label>{{ category.name }}</q-item-label>
@@ -101,9 +101,21 @@ export default {
   },
 
   computed: {
-    // Get satisfied group
+    // Group: All
+    getGroupAll() {
+      return {
+        id: null,
+        name: this.$t('field.all')
+      }
+    },
+    // Get satisfied group and always add group: All to front
     satisfiedGroup() {
-      return this.groups?.filter(group => group.name.includes(this.groupName))
+      // Get satisfiedGroup
+      const satisfiedGroup = this.groups?.filter(group => group.name.includes(this.groupName))
+      // Add group: All
+      satisfiedGroup.unshift(this.getGroupAll)
+
+      return satisfiedGroup
     },
     // Get price range
     priceRanges() {
@@ -116,7 +128,7 @@ export default {
     },
     // Get current price range
     currentPriceRange() {
-      return `${this.modelValue.min}-${this.modelValue.max}`
+      return `${this.modelValue.minPrice}-${this.modelValue.maxPrice}`
     },
     // Boolean options for all boolean filter
     booleanOptions() {
@@ -130,21 +142,24 @@ export default {
 
     // Filter
     filter: {
-      category: [],
+      categories: [],
       group: null,
-      min: '',
-      max: '',
+      minPrice: '',
+      maxPrice: '',
       canBeAccumulated: null,
       isInBusiness: null
     },
   }),
 
+  emits: ['request'],
+
   watch: {
-    // Watch to emit model whether model is changed
+    // Watch to emit filter event
     filter: {
       deep: true,
       handler(value) {
         this.$emit('update:modelValue', value)
+        this.$emit('request')
       }
     }
   },
@@ -160,8 +175,8 @@ export default {
       const range = value.split('-');
 
       // Set value to filter
-      this.filter.min = range[0]
-      this.filter.max = range[1]
+      this.filter.minPrice = this.$util.nullIfEmpty(range[0])
+      this.filter.maxPrice = this.$util.nullIfEmpty(range[1])
     }
   }
 }

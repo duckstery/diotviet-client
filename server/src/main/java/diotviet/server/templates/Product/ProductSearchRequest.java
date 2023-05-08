@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
  * @param itemsPerPage
  */
 public record ProductSearchRequest(
-        Long category,
-        Long[] groups,
+        Long[] categories,
+        Long group,
         String minPrice,
         String maxPrice,
         Boolean canBeAccumulated,

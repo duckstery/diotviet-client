@@ -1,5 +1,6 @@
-import { boot } from 'quasar/wrappers'
-import { Notify } from 'quasar'
+import {boot} from 'quasar/wrappers'
+import {Notify} from 'quasar'
+
 /**
  * Create a snackbar to notify user
  *
@@ -13,15 +14,15 @@ const notify = (content, type = 'positive') => {
     position: 'top-right',
     textColor: 'white',
     actions: [
-      { icon: 'close', color: 'white', handler: () => { /* ... */ } }
+      {icon: 'close', color: 'white', handler: () => { /* ... */ }}
     ]
   })
 }
 
-export default boot(({ app }) => {
+export default boot(({app}) => {
   app.config.globalProperties.$notify = notify
   app.config.globalProperties.$notifyWarn = (content) => notify(content, 'warning')
   app.config.globalProperties.$notifyErr = (content) => notify(content, 'negative')
 })
 
-export { notify }
+export {notify}

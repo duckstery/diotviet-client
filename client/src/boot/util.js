@@ -36,6 +36,16 @@ const util = {
       cancel: {icon: 'fa-solid fa-xmark', color: 'negative', label: root.$t('field.confirm_cancel')},
       ok: {icon: 'fa-solid fa-check', color: 'positive', label: root.$t('field.confirm')},
     })
+  },
+
+  /**
+   * Return null if value is an empty string
+   *
+   * @param value
+   * @returns {any}
+   */
+  nullIfEmpty(value) {
+    return value === '' ? null : value
   }
 }
 

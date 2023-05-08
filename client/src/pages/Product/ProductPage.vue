@@ -8,13 +8,12 @@
         <div class="tw-text-3xl tw-font-semibold">{{ $t('field.product') }}</div>
 
         <!-- Filter -->
-        <ProductFilter v-model="filter" :categories="categories" :groups="groups"/>
+        <ProductFilter v-model="filter" :categories="categories" :groups="groups" @request="search"/>
       </div>
       <div class="col-9">
         <!-- Data table -->
         <DataTable v-model:pagination="paginate" :headers="headers" :items="items" :loading="loading"
                    @request="search"/>
-
       </div>
     </div>
   </Page>
@@ -40,10 +39,10 @@ export default {
 
     // Filter
     filter: {
-      category: [],
+      categories: [],
       group: null,
-      min: '',
-      max: '',
+      minPrice: '',
+      maxPrice: '',
       canBeAccumulated: null,
       isInBusiness: null
     },
@@ -127,18 +126,19 @@ export default {
     /**
      * On request new page data
      *
-     * @param pagination
+     * @param data
      */
-    search({pagination}) {
+    search(data) {
       // Call API to get data for table
       this.$axios.get('/product/search', {
         params: {
-          page: pagination.page - 1,
-          itemsPerPage: pagination.rowsPerPage
+          ...this.filter,
+          page: data ? data.pagination.page - 1 : 0,
+          itemsPerPage: data ? data.pagination.rowsPerPage : this.paginate.rowsPerPage
         }
       })
         .then(this.applyItems)
-    }
+    },
   }
 }
 </script>

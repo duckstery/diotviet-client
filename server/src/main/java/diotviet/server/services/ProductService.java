@@ -68,14 +68,14 @@ public class ProductService {
         QProduct product = QProduct.product;
         // Final expressions
         BooleanBuilder query = new BooleanBuilder();
-
+System.out.println(request);
         // Filter by category
-        if (Objects.nonNull(request.category())) {
-            query.and(product.category.id.eq(request.category()));
+        if (Objects.nonNull(request.categories())) {
+            query.and(product.category.id.in(request.categories()));
         }
         // Filter by groups
-        if (Objects.nonNull(request.groups())) {
-            query.and(product.groups.any().id.in(request.groups()));
+        if (Objects.nonNull(request.group())) {
+            query.and(product.groups.any().id.eq(request.group()));
         }
         // Filter by min price
         if (Objects.nonNull(request.minPrice())) {

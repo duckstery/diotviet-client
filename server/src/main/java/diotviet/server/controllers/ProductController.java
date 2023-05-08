@@ -81,7 +81,6 @@ public class ProductController extends BaseController {
      */
     @GetMapping("/search")
     public ResponseEntity<?> search(ProductSearchRequest request) {
-        System.out.println(request);
         // Search for data and response
         return ok(new ProductSearchResponse(productService.paginate(request)));
     }

@@ -71,7 +71,7 @@
           :key="col.name"
           :props="props"
         >
-          <q-badge v-if="typeof col.value === 'boolean'" :color="col.value ? 'positive' : 'negative'">
+          <q-badge v-if="typeof col.value === 'boolean'" :color="col.value ? 'positive' : 'negativeư'">
             {{ $t(`field.${col.value}`) }}
           </q-badge>
           <span v-else class="tw-text-sm">{{ col.value }}</span>

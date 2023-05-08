@@ -13,6 +13,6 @@ import java.util.function.Function;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, QuerydslPredicateExecutor<Product> {
     @Override
-    @EntityGraph(attributePaths = {"category"})
+    @EntityGraph(attributePaths = {"category", "groups"})
     <S extends Product, R> R findBy(Predicate predicate, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction);
 }
