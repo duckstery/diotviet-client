@@ -6,7 +6,7 @@
       <Button :icon="expandIcon" flat :tooltip="$t('field.expand')" @click="expanded = !expanded"/>
     </q-card-section>
 
-    <q-slide-transition duration="300">
+    <q-slide-transition :duration="300">
       <div v-show="expanded">
         <div class="tw-p-2">
           <slot/>

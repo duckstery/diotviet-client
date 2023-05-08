@@ -39,12 +39,12 @@
       </DropdownButton>
     </template>
 
-    <template v-slot:top-right>
+    <template #top-right>
 
     </template>
 
     <!-- Header -->
-    <template v-slot:header="props">
+    <template #header="props">
       <q-tr>
         <q-th auto-width>
           <q-checkbox size="xs" v-model="props.selected"/>
@@ -60,7 +60,7 @@
     </template>
 
     <!-- Body -->
-    <template v-slot:body="props">
+    <template #body="props">
       <!-- Item's row -->
       <q-tr :props="props" class="tw-cursor-pointer" @click="props.expand = !props.expand">
         <q-td auto-width>
@@ -79,20 +79,13 @@
       </q-tr>
 
       <!-- Item's details -->
-      <q-slide-transition>
-        <div v-if="props.expand">
-          <q-tr :props="props">
-            <q-td colspan="100%">
-              <!-- Will be defined by caller -->
-              <slot :cols="props.cols"/>
-            </q-td>
-          </q-tr>
-        </div>
-      </q-slide-transition>
+      <ExpandableTr :props="props" :expand="props.expand" :height="detailRowHeight">
+        <slot :cols="props.cols"/>
+      </ExpandableTr>
     </template>
 
     <!-- Empty scenario -->
-    <template v-slot:no-data="{ icon, message, filter }">
+    <template #no-data="{ icon, message, filter }">
       <div class="full-width row flex-center q-gutter-sm">
         <q-icon size="sm" name="fa-solid fa-face-sad-cry"/>
         <span>{{ message }}</span>
@@ -106,11 +99,12 @@
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import DropdownButton from "components/General/Other/DropdownButton.vue";
+import ExpandableTr from "components/Manage/ExpandableTr.vue";
 
 export default {
   name: 'DataTable',
 
-  components: {DropdownButton, Button, TextField},
+  components: {ExpandableTr, DropdownButton, Button, TextField},
 
   props: {
     // Table header
@@ -144,9 +138,6 @@ export default {
 
     // Visible columns
     visibleCols: [],
-
-    // Style header background
-
   }),
 
   computed: {
@@ -156,6 +147,10 @@ export default {
         ? '#1d1d1d'
         : '#fff'
     },
+    // Detail (expandable) row's height
+    detailRowHeight() {
+      return Math.floor(this.$q.screen.height * 2 / 3)
+    }
   },
 
   watch: {
@@ -200,6 +195,5 @@ export default {
     /* height of all previous header rows */
     scroll-margin-top: 48px
   }
-
 }
 </style>

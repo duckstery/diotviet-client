@@ -13,7 +13,11 @@
       <div class="col-9">
         <!-- Data table -->
         <DataTable v-model:pagination="paginate" :headers="headers" :items="items" :loading="loading"
-                   @request="search"/>
+                   @request="search">
+          <template #default="props">
+            {{props.cols}}
+          </template>
+        </DataTable>
       </div>
     </div>
   </Page>
@@ -57,6 +61,9 @@ export default {
       page: 1,
       rowsPerPage: 10
     },
+
+    // Loading flag
+    loading: false
   }),
 
   computed: {
