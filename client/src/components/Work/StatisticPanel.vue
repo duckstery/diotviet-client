@@ -4,11 +4,7 @@
                     :style="`max-height: ${maxHeight}px`">
       <div class="row">
         <div class="col-5 tw-px-2">
-            <div class="tw-text-lg tw-pt-2">
-              <IconMage src="images/note.png" size="20px"/>
-              <span class="tw-ml-2 tw-underline tw-underline-offset-4">{{ $t('field.note') }}:</span>
-            </div>
-
+          <LabelField src="images/note.png" :label="$t('field.note')" class="tw-pt-2"/>
           <div class="">
             <q-input
               v-model="getActiveOrder.note"
@@ -25,32 +21,18 @@
         </div>
         <div class="col-7 tw-px-2">
           <!-- Total -->
-          <div class="flex">
-            <div class="tw-text-lg tw-pt-2">
-              <IconMage src="images/provisional_amount.png" size="20px"/>
-              <span class="tw-ml-2 tw-underline tw-underline-offset-4">{{ $t('field.provisional_amount') }}:</span>
-            </div>
-            <q-space/>
-            <div>
-              <TextField
-                :model-value="getActiveOrder.provisionalAmount"
-
-                compact
-                required
-                readonly
-                mask="###,###,###,###"
-                class="tw-w-28 tw-p-0 tw-float-right"
-                input-class="tw-font-semibold tw-text-center tw-p-0"
-              />
-            </div>
-          </div>
+          <DisplayField
+            :model-value="getActiveOrder.provisionalAmount"
+            mask="###,###,###,###"
+            src="images/provisional_amount.png"
+            inner-class="tw-w-28"
+            :label="$t('field.provisional_amount')"
+            space
+          />
 
           <!-- Discount -->
           <div class="flex">
-            <div class="tw-text-lg tw-pt-2">
-              <IconMage src="images/discount.png" size="20px"/>
-              <span class="tw-ml-2 tw-underline tw-underline-offset-4">{{ $t('field.discount') }}:</span>
-            </div>
+            <LabelField src="images/discount.png" :label="$t('field.discount')" class="tw-pt-2"/>
             <q-toggle
               v-model="getActiveOrder.discountUnit"
 
@@ -75,23 +57,14 @@
 
           <!-- Discount -->
           <div>
-            <div class="flex">
-              <div class="tw-text-lg tw-pt-2">
-                <IconMage src="images/payment_amount.png" size="20px"/>
-                <span class="tw-ml-2 tw-underline tw-underline-offset-4">{{ $t('field.payment_amount') }}:</span>
-              </div>
-              <q-space/>
-              <TextField
-                :model-value="getActiveOrder.paymentAmount"
-
-                compact
-                required
-                readonly
-                mask="###,###,###,###"
-                class="tw-w-28 tw-p-0 tw-float-right"
-                input-class="tw-font-semibold tw-text-center tw-p-0"
-              />
-            </div>
+            <DisplayField
+              :model-value="getActiveOrder.paymentAmount"
+              mask="###,###,###,###"
+              src="images/payment_amount.png"
+              inner-class="tw-w-28"
+              :label="$t('field.payment_amount')"
+              space
+            />
           </div>
         </div>
       </div>
@@ -104,12 +77,13 @@ import {useOrderStore} from "stores/order";
 import {mapState} from "pinia";
 
 import TextField from "components/General/Other/TextField.vue";
-import IconMage from "components/General/Other/IconMage.vue";
+import DisplayField from "components/General/Other/DisplayField.vue";
+import LabelField from "components/General/Other/LabelField.vue";
 
 export default {
   name: 'StatisticPanel',
 
-  components: {IconMage, TextField},
+  components: {LabelField, DisplayField, TextField},
 
   props: {
     maxHeight: Number
