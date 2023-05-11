@@ -70,14 +70,25 @@ export default {
     expand: 'Expand',
     category: 'Category',
     group: 'Group',
+    groups: 'Groups',
     all: 'All',
     price_range: 'Price range',
     can_be_accumulated: 'Can be accumulated',
     is_in_business: 'Is in business',
+    collapse: 'Collapse',
+    code: 'Code',
+    measure_unit: 'Measure unit',
+    edit: 'Edit',
+    copy: 'Copy',
+    stop_business: 'Stop business',
+    delete: 'Delete',
+    history: 'History',
+
 
     role_1: 'Admin',
     role_2: 'Supervisor',
-    role_3: 'Staff'
+    role_3: 'Staff',
+    role_4: 'Guest',
   },
 
   easter: {

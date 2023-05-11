@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -83,5 +84,16 @@ public class ProductController extends BaseController {
     public ResponseEntity<?> search(ProductSearchRequest request) {
         // Search for data and response
         return ok(new ProductSearchResponse(productService.paginate(request)));
+    }
+
+    /**
+     * Show detail
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> show(@PathVariable Long id) {
+        return ok(productService.findById(id));
     }
 }

@@ -1,50 +1,52 @@
 package diotviet.server.views.Product;
 
 import org.springframework.beans.factory.annotation.Value;
+import java.util.ArrayList;
 
-public interface ProductSearchView {
+public interface ProductDetailView extends ProductSearchView {
+
     /**
-     * ID
+     * Name of groups
      *
      * @return
      */
-    long getId();
+    @Value("#{T(String).join(', ', T(diotviet.server.utils.OtherUtils).sort(target.groups.![name]))}")
+    String getGroups();
 
     /**
-     * Category name
+     * Description
      *
      * @return
      */
-    @Value("#{target.category.name}")
-    String getCategory();
+    String getDescription();
 
     /**
-     * Code
+     * Get original price
      *
      * @return
      */
-    String getCode();
+    String getOriginalPrice();
 
     /**
-     * Title
+     * Get discount
      *
      * @return
      */
-    String getTitle();
-
-    /**
-     * Actual price
-     *
-     * @return
-     */
-    String getActualPrice();
+    String getDiscount();
 
     /**
      * Measure unit
      *
      * @return
      */
-    String getMeasureUnit();
+    String getDiscountUnit();
+
+    /**
+     * Weight
+     *
+     * @return
+     */
+    String getSrc();
 
     /**
      * Weight
@@ -52,18 +54,4 @@ public interface ProductSearchView {
      * @return
      */
     String getWeight();
-
-    /**
-     * Can be accumulated
-     *
-     * @return
-     */
-    String getCanBeAccumulated();
-
-    /**
-     * Is in business
-     *
-     * @return
-     */
-    String getIsInBusiness();
 }

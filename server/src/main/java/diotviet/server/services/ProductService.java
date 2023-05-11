@@ -6,6 +6,7 @@ import diotviet.server.entities.QProduct;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.utils.OtherUtils;
+import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,6 +54,16 @@ public class ProductService {
         return productRepository.findBy(filter, q -> q.as(ProductSearchView.class).project("title").page(pageable));
     }
 
+    /**
+     * Get Product by id
+     *
+     * @param id
+     * @return
+     */
+    public ProductDetailView findById(Long id) {
+        return productRepository.findById(id, ProductDetailView.class);
+    }
+
     // ****************************
     // Private
     // ****************************
@@ -68,7 +79,7 @@ public class ProductService {
         QProduct product = QProduct.product;
         // Final expressions
         BooleanBuilder query = new BooleanBuilder();
-System.out.println(request);
+
         // Filter by category
         if (Objects.nonNull(request.categories())) {
             query.and(product.category.id.in(request.categories()));
@@ -78,11 +89,11 @@ System.out.println(request);
             query.and(product.groups.any().id.eq(request.group()));
         }
         // Filter by min price
-        if (Objects.nonNull(request.minPrice())) {
+        if (Objects.nonNull(request.minPrice()) && !request.minPrice().isBlank()) {
             query.and(product.actualPrice.goe(request.minPrice()));
         }
         // Filter by max price
-        if (Objects.nonNull(request.maxPrice())) {
+        if (Objects.nonNull(request.maxPrice()) && !request.minPrice().isBlank()) {
             query.and(product.actualPrice.loe(request.maxPrice()));
         }
         // Filter by canBeAccumulated flag

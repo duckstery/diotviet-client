@@ -151,7 +151,7 @@ export default {
     },
   }),
 
-  emits: ['request'],
+  emits: ['request', 'update:modelValue'],
 
   watch: {
     // Watch to emit filter event

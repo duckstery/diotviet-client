@@ -25,7 +25,9 @@ const auth = {
       // Save JWT and payload to $store
       store.subscribe({...payload, jwt})
     } catch (e) {
-      console.warn(e)
+      if (process.env.DEV) {
+        console.warn(e)
+      }
       // Clear cookie
       Cookies.remove(tokenKey)
       // Reset store

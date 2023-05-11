@@ -2,11 +2,11 @@
   <q-tr :props="props">
     <!-- Show container first (slide down), then active "inner" to open content (fade in) -->
     <transition name="resize" @after-enter="onAfterShowContainer">
-      <q-td v-if="isContainerExpanded" colspan="100%" :style="`height: ${height}px`">
+      <q-td v-if="isContainerExpanded" no-hover colspan="100%" :style="containerStyle">
         <!-- Hide content first (fade out), then deactivate "expand" to hide container (slide up) -->
-        <transition-group name="fade" @after-leave="onAfterHideContent">
+        <transition-group name="fade" @after-enter="onAfterShowContent" @after-leave="onAfterHideContent">
           <div v-if="isContentExpanded">
-            <slot/>
+            <slot :active="isActive"/>
           </div>
         </transition-group>
       </q-td>
@@ -17,23 +17,33 @@
 <script>
 import {scroll} from "quasar"
 
-const {getScrollTarget, setVerticalScrollPosition} = scroll
-
 export default {
   name: "ExpandableTr",
 
   props: {
     props: Object,
     expand: Boolean,
-    height: Number
+    height: Number,
+    width: Number
   },
 
   data: () => ({
     // Expand supporter
-    contentExpand: false
+    contentExpand: false,
+    // Is active
+    isActive: false
   }),
 
   computed: {
+    // Container style
+    containerStyle() {
+      return {
+        height: this.height + 'px',
+        width: this.width + 'px',
+        overflow: 'hidden'
+      }
+    },
+
     // Container is considered "expand" if itself and its content is expanding
     isContainerExpanded() {
       return this.expand || this.contentExpand
@@ -62,11 +72,23 @@ export default {
     },
 
     /**
+     * After content's enter transition is finished, make <slot/> active
+     */
+    onAfterShowContent() {
+      // Active <slot/> so it can do stuff after animation is finished
+      this.isActive = true
+      // Make content inactive, so it can be active again
+      this.$nextTick(() => this.isActive = false)
+    },
+
+    /**
      * After content's leave transition is finished, hide container
      */
     onAfterHideContent() {
       // Save inner expand status
       this.contentExpand = false
+      // Make content inactive
+      this.isActive = false
     }
   },
 }

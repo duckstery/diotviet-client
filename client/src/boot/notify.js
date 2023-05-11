@@ -8,6 +8,14 @@ import {Notify} from 'quasar'
  * @param {string} type
  */
 const notify = (content, type = 'positive') => {
+  if (process.env.DEV) {
+    if (type === 'warning') {
+      console.warn(content)
+    } else if (type === 'negative') {
+      console.error(content)
+    }
+  }
+
   return Notify.create({
     type: type,
     message: content,

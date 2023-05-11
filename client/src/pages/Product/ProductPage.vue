@@ -8,14 +8,14 @@
         <div class="tw-text-3xl tw-font-semibold">{{ $t('field.product') }}</div>
 
         <!-- Filter -->
-        <ProductFilter v-model="filter" :categories="categories" :groups="groups" @request="search"/>
+        <ProductFilter v-model="filter" :categories="categories" :groups="groups" @request="onSearch"/>
       </div>
       <div class="col-9">
         <!-- Data table -->
         <DataTable v-model:pagination="paginate" :headers="headers" :items="items" :loading="loading"
-                   @request="search">
+                   @request="onSearch">
           <template #default="props">
-            {{props.cols}}
+            <ProductDetail v-bind="props"/>
           </template>
         </DataTable>
       </div>
@@ -28,11 +28,12 @@ import Page from "components/General/Layout/Page.vue";
 import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
 import DataTable from "components/Manage/DataTable.vue";
 import ProductFilter from "components/Manage/Product/ProductFilter.vue";
+import ProductDetail from "components/Manage/Product/ProductDetail.vue";
 
 export default {
   name: 'ProductPage',
 
-  components: {ProductFilter, Page, DataTable, Breadcrumbs},
+  components: {ProductDetail, ProductFilter, Page, DataTable, Breadcrumbs},
 
   inject: ['globalVars'],
 
@@ -135,7 +136,7 @@ export default {
      *
      * @param data
      */
-    search(data) {
+    onSearch(data) {
       // Call API to get data for table
       this.$axios.get('/product/search', {
         params: {
@@ -145,7 +146,7 @@ export default {
         }
       })
         .then(this.applyItems)
-    },
+    }
   }
 }
 </script>

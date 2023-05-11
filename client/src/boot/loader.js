@@ -13,23 +13,31 @@ const loading = {
    * Hide loading overlay
    */
   hide() {
-    Loading.hide()
+    if (Loading.isActive) {
+      Loading.hide()
+    }
   }
 }
 
 export default boot(({app}) => {
   // Show loading screen when sending axios request
   axios.interceptors.request.use((cfg) => {
-    loading.show()
+    // Disable loading option
+    if (cfg.loading !== false) {
+      loading.show()
+    }
+
     return cfg
   })
 
   // Hide loading screen when receiving axios request
   axios.interceptors.response.use((res) => {
     loading.hide()
+
     return res
   }, (error) => {
     loading.hide()
+
     throw error
   })
 

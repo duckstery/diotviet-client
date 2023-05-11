@@ -1,17 +1,30 @@
 <template>
-  <div class="tw-flex">
-    <LabelField :src="src" :label="label" class="tw-pt-2"/>
+  <div :class="{'tw-flex': !horizontal}">
+    <LabelField :src="src" :label="label" class="tw-pt-2 tw-flex-grow"/>
+    <slot/>
     <q-space v-if="space"/>
+    <div v-if="textarea">
+      <q-input
+        :model-value="modelValue"
+        dense
+        filled
+        readonly
+        type="textarea"
+        :class="classObject"
+        :maxlength="textareaLength"
+        input-class="virtual-scrollbar"
+        :input-style="{maxHeight: `${textareaHeight}px`, height: `${textareaHeight}px`}"
+      />
+    </div>
     <TextField
+      v-else
       :model-value="modelValue"
       compact
-      required
       readonly
-      :class="classObject"
-      class="innerClass"
-      input-class="tw-font-semibold tw-text-center tw-p-0"
-
+      required
       :mask="mask"
+      :class="classObject"
+      input-class="tw-font-semibold tw-text-center tw-p-0"
     />
   </div>
 </template>
@@ -37,6 +50,14 @@ export default {
     label: String,
     // Mask
     mask: String,
+    // Use textarea instead
+    textarea: Boolean,
+    // Display horizontally
+    horizontal: Boolean,
+    // Textarea max character length
+    textareaLength: String,
+    // Textarea max height
+    textareaHeight: String,
     // Inner class
     innerClass: {
       type: String,
@@ -48,10 +69,12 @@ export default {
     // Class object
     classObject() {
       return Object.entries({
-        'tw-p-0': true,
-        'tw-float-right': true,
-        'tw-ml-3': !this.space,
-        'tw-flex-grow': !this.space
+        'tw-p-0': !this.horizontal,
+        'tw-float-right': !this.horizontal,
+        'tw-ml-3': !this.space && !this.horizontal,
+        'tw-flex-grow': !this.space && !this.horizontal,
+        'tw-mt-3': this.horizontal,
+        'tw-w-full': this.horizontal
       })
         .filter(entry => entry[1])
         .map(entry => entry[0])

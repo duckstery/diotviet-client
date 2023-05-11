@@ -1,5 +1,7 @@
 package diotviet.server.utils;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,5 +22,18 @@ public abstract class OtherUtils {
      */
     public static Object get(Object o1, Object o2) {
         return Objects.nonNull(o1) ? o1 : o2;
+    }
+
+    /**
+     * Sort
+     *
+     * @param list
+     * @return
+     */
+    public static List<String> sort(List<String> list) {
+        // Sort list
+        Collections.sort(list);
+
+        return list;
     }
 }

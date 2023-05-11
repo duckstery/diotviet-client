@@ -42,7 +42,7 @@
     <q-card-actions>
       <q-space/>
       <Button :label="$t('field.manage')" icon="fa-solid fa-chart-line" color="primary" stretch align="around"
-              class="tw-w-1/4" @click="onLogin('Manage')"/>
+              class="tw-w-1/4" @click="onLogin('Product')"/>
       <Button :label="$t('field.sell')" icon="fa-solid fa-cart-shopping" color="positive" stretch align="around"
               class="tw-w-1/4" @click="onLogin('Work')"/>
     </q-card-actions>

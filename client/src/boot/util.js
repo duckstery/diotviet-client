@@ -46,6 +46,16 @@ const util = {
    */
   nullIfEmpty(value) {
     return value === '' ? null : value
+  },
+
+  /**
+   * Turn camelCase to snake_case
+   *
+   * @param value
+   * @returns {*}
+   */
+  camelToSnake(value) {
+    return value.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
   }
 }
 

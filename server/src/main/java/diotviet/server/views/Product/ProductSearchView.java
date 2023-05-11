@@ -58,12 +58,12 @@ public interface ProductSearchView {
      *
      * @return
      */
-    String getCanBeAccumulated();
+    Boolean getCanBeAccumulated();
 
     /**
      * Is in business
      *
      * @return
      */
-    String getIsInBusiness();
+    Boolean getIsInBusiness();
 }

@@ -2,9 +2,11 @@
   <q-table
     v-bind="$attrs"
     v-model:selected="selected"
+    v-model:expanded="expanded"
 
     flat
     bordered
+    ref="table"
     virtual-scroll
     class="sticky-header"
     table-class="virtual-scrollbar"
@@ -24,16 +26,27 @@
 
       <q-space/>
 
+      <!-- Row controls -->
       <Button :label="$t('field.add')" icon="fa-solid fa-plus"
               stretch color="positive" class="tw-ml-2" no-caps/>
+      <Button :label="$t('field.collapse')" icon="fa-solid fa-down-left-and-up-right-to-center" @click="onCollapse"
+              stretch color="positive" class="tw-ml-2" no-caps/>
+
+      <q-space/>
+
       <!-- Columns visibility controls -->
       <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
                       stretch color="positive" class="tw-ml-2" no-caps
       >
         <div class="row">
           <div v-for="header in headers" class="col-6">
-            <q-checkbox v-model="visibleCols" size="xs"
-                        :label="header.label" :val="header.name" :disable="header.name === 'code'"/>
+            <q-checkbox
+              v-model="visibleCols"
+              size="xs"
+              :label="header.label"
+              :val="header.name"
+              :disable="header.name === 'code' || header.name === 'id'"
+            />
           </div>
         </div>
       </DropdownButton>
@@ -62,7 +75,8 @@
     <!-- Body -->
     <template #body="props">
       <!-- Item's row -->
-      <q-tr :props="props" class="tw-cursor-pointer" @click="props.expand = !props.expand">
+      <q-tr :props="props" :class="`tw-cursor-pointer ${props.expand ? 'bg-blue-1' : ''}`"
+            @click="props.expand = !props.expand">
         <q-td auto-width>
           <q-checkbox size="xs" v-model="props.selected"/>
         </q-td>
@@ -71,7 +85,7 @@
           :key="col.name"
           :props="props"
         >
-          <q-badge v-if="typeof col.value === 'boolean'" :color="col.value ? 'positive' : 'negativeư'">
+          <q-badge v-if="typeof col.value === 'boolean'" :color="col.value ? 'positive' : 'negative'">
             {{ $t(`field.${col.value}`) }}
           </q-badge>
           <span v-else class="tw-text-sm">{{ col.value }}</span>
@@ -79,8 +93,10 @@
       </q-tr>
 
       <!-- Item's details -->
-      <ExpandableTr :props="props" :expand="props.expand" :height="detailRowHeight">
-        <slot :cols="props.cols"/>
+      <ExpandableTr :props="props" :expand="props.expand" :height="detailRowHeight" :width="detailRowWidth">
+        <template #default="{active}">
+          <slot :item="props.cols" :width="detailRowWidth" :active="active"/>
+        </template>
       </ExpandableTr>
     </template>
 
@@ -121,7 +137,6 @@ export default {
       type: Array,
       default: () => ([
         {code: 1, calcium: '14%', iron: '1%'},
-
       ])
     },
   },
@@ -132,6 +147,7 @@ export default {
 
     selection: "multiple",
     selected: [],
+    expanded: [],
 
     // Table state
     isSelecting: false,
@@ -150,6 +166,12 @@ export default {
     // Detail (expandable) row's height
     detailRowHeight() {
       return Math.floor(this.$q.screen.height * 2 / 3)
+    },
+    // Product detail width
+    detailRowWidth() {
+      return isNaN(this.$refs.table?.$el.clientWidth)
+        ? 500
+        : this.$refs.table?.$el.clientWidth - 32
     }
   },
 
@@ -159,9 +181,23 @@ export default {
       immediate: true,
       handler(value) {
         this.visibleCols = value
-          .filter(header => header.name === 'code' || header.isInitDisplay) // Header is visible at initiation if it's 'code' or it's allow to be
+          .filter(header => header.isInitDisplay) // Header is visible at initiation if it's 'code' or it's allow to be
           .map(header => header.name) // Get header name only
       }
+    },
+    // Clear expand and select status when items are changed
+    items() {
+      this.selected = []
+      this.expanded = []
+    }
+  },
+
+  methods: {
+    /**
+     * Collapse all expanded row
+     */
+    onCollapse() {
+      this.$refs.table.setExpanded([])
     }
   }
 }
