@@ -137,10 +137,12 @@ export default {
      * @param data
      */
     onSearch(data) {
+      console.warn(data)
       // Call API to get data for table
       this.$axios.get('/product/search', {
         params: {
           ...this.filter,
+          search: data ? data.search : '',
           page: data ? data.pagination.page - 1 : 0,
           itemsPerPage: data ? data.pagination.rowsPerPage : this.paginate.rowsPerPage
         }

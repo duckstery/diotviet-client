@@ -3,6 +3,7 @@
     v-bind="$attrs"
     v-model:selected="selected"
     v-model:expanded="expanded"
+    v-model:pagination="pagination"
 
     flat
     bordered
@@ -20,9 +21,11 @@
     :rows-per-page-label="$t('field.records_per_page')"
     :no-data-label="$t('message.table_empty_data')"
     :selected-rows-label="numberOfRows => $t('message.rows_selected', {attr: numberOfRows})"
+
+    @request="onRequest"
   >
     <template #top>
-      <TextField v-model="search" label="Search" icon="search"/>
+      <TextField v-model="search" label="Search" icon="search" @keydown.enter="onRequest(null)"/>
 
       <q-space/>
 
@@ -85,9 +88,11 @@
           :key="col.name"
           :props="props"
         >
-          <q-badge v-if="typeof col.value === 'boolean'" :color="col.value ? 'positive' : 'negative'">
-            {{ $t(`field.${col.value}`) }}
-          </q-badge>
+          <q-icon
+            v-if="typeof col.value === 'boolean'"
+            :name="`fa-solid fa-${col.value ? 'check' : 'xmark'}`"
+            :color="col.value ? 'positive' : 'negative'"
+          />
           <span v-else class="tw-text-sm">{{ col.value }}</span>
         </q-td>
       </q-tr>
@@ -139,15 +144,19 @@ export default {
         {code: 1, calcium: '14%', iron: '1%'},
       ])
     },
+    // Selection type
+    selection: {
+      type: String,
+      default: 'multiple'
+    }
   },
 
   data: () => ({
     // Search
     search: '',
-
-    selection: "multiple",
     selected: [],
     expanded: [],
+    pagination: [],
 
     // Table state
     isSelecting: false,
@@ -192,12 +201,36 @@ export default {
     }
   },
 
+  emits: ['request'],
+
   methods: {
     /**
      * Collapse all expanded row
      */
     onCollapse() {
       this.$refs.table.setExpanded([])
+    },
+
+    /**
+     * On request
+     *
+     * @param data
+     */
+    onRequest(data) {
+      // Get default pagination
+      if (data === null || data === undefined) {
+        data = {
+          pagination: {
+            ...this.pagination,
+            page: 1
+          }
+        }
+      }
+
+      this.$emit('request', {
+        search: this.search,
+        ...data
+      })
     }
   }
 }

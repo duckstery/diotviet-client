@@ -78,7 +78,7 @@
               textarea
               horizontal
               :src="'images/note.png'"
-              :label="$t(`field.note`)"
+              :label="$t(`field.description`)"
               textarea-height="248"
               textarea-length="100"
             />

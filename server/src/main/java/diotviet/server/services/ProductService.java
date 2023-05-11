@@ -105,8 +105,8 @@ public class ProductService {
             query.and(product.isInBusiness.eq(request.isInBusiness()));
         }
         // Filter by search string
-        if (Objects.nonNull(request.search())) {
-            query.and(product.code.concat(product.title).eq(request.search()));
+        if (Objects.nonNull(request.search()) && !request.search().isBlank()) {
+            query.and(product.code.concat(product.title).contains(request.search()));
         }
 
         // Connect expression

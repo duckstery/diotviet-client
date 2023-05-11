@@ -83,7 +83,7 @@ export default {
     stop_business: 'Stop business',
     delete: 'Delete',
     history: 'History',
-
+    description: 'Description',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
