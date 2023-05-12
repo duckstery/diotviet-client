@@ -48,7 +48,7 @@
 
                 compact
                 required
-                :mask="discountUnitMask"
+                :mask="discountMask"
                 class="tw-w-28 tw-p-0 tw-float-right"
                 input-class="tw-font-semibold tw-text-center tw-p-0"
               />
@@ -74,7 +74,8 @@
 
 <script>
 import {useOrderStore} from "stores/order";
-import {mapState} from "pinia";
+import {mapState, storeToRefs} from "pinia";
+import usePriceControl from "src/composables/usePriceControl";
 
 import TextField from "components/General/Other/TextField.vue";
 import DisplayField from "components/General/Other/DisplayField.vue";
@@ -90,54 +91,18 @@ export default {
   },
 
   computed: {
-    // Icon of discountUnit switch
-    discountUnitIcon() {
-      return 'fa-solid ' + (this.getActiveOrder.discountUnit === 'cash' ? 'fa-money-bill-wave' : 'fa-percent')
-    },
-    // Label of discountUnit text
-    discountUnitLabel() {
-      return this.$t('field.discount_by') + ' ' + this.getActiveOrder.discountUnit
-    },
-    // TextField mask of discountUnit
-    discountUnitMask() {
-      return this.getActiveOrder.discountUnit === 'cash' ? '###,###,###,###' : '##%'
-    },
-    // Calculate paymentAmount
-    paymentAmount() {
-      const discountAmount = this.getActiveOrder.discountUnit === '%'
-        // Discount by percentage
-        ? parseInt(this.getActiveOrder.provisionalAmount) / 100 * parseInt(this.getActiveOrder.discount)
-        // Discount by plain value
-        : parseInt(this.getActiveOrder.discount)
-
-      return `${parseInt(this.getActiveOrder.provisionalAmount) - Math.round(discountAmount)}`
-    },
-
     // "Order" store
     ...mapState(useOrderStore, ['getActiveOrder'])
   },
 
-  watch: {
-    // Update order's payment amount when computed "payment amount" is changed
-    paymentAmount(value) {
-      this.getActiveOrder.paymentAmount = value
-    },
-    // Reset discount if discountUnit is changed
-    'getActiveOrder.discountUnit'() {
-      this.getActiveOrder.discount = '0'
-    },
-    // Control discount max value
-    'getActiveOrder.discount'(value) {
-      // Get int value of discount
-      const intValue = parseInt(value)
+  setup() {
+    // Turn store to ref and get activeOrder only
+    const {getActiveOrder} = storeToRefs(useOrderStore())
 
-      // Check for max base on discountUnit
-      if (this.getActiveOrder.discountUnit === '%' && intValue > 100) {
-        this.$nextTick(() => this.getActiveOrder.discount = '100')
-      } else if (this.getActiveOrder.discountUnit === 'cash' && intValue > this.getActiveOrder.provisionalAmount) {
-        this.$nextTick(() => this.getActiveOrder.discount = this.getActiveOrder.provisionalAmount)
-      }
+    return {
+      getActiveOrder,
+      ...usePriceControl(getActiveOrder.value, 'provisionalAmount', 'paymentAmount')
     }
-  },
+  }
 }
 </script>

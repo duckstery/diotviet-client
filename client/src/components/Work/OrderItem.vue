@@ -3,7 +3,7 @@
     <q-card-section class="">
       <!-- Title section -->
       <div class="row tw-text-[16px]">
-        <div class="tw-font-semibold">{{this.index + 1}}.&nbsp;</div>
+        <div class="tw-font-semibold">{{ this.index + 1 }}.&nbsp;</div>
         <div class="tw-overflow-hidden tw-text-ellipsis tw-h-6 tw-max-w-sm tw-line-clamp-1">
           {{ value.title }}
           <q-tooltip class="tw-text-[14px]">{{ value.title }}</q-tooltip>
@@ -60,7 +60,7 @@
                   required
                   icon="fa-solid fa-tag"
                   class="tw-w-36"
-                  mask="###,###,###"
+                  :mask="discountMask"
                   :label="$t('field.discount')"
                 >
                   <template #before>
@@ -150,6 +150,8 @@ import {useOrderStore} from "stores/order";
 
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
+import usePriceControl from "src/composables/usePriceControl";
+import {reactive} from "vue";
 
 export default {
   name: 'OrderItem',
@@ -177,35 +179,24 @@ export default {
     }
   },
 
-  data: () => ({
-    bill: {
+  setup() {
+    // Create bill reactive
+    const bill = reactive({
       quantity: null,
       originalPrice: null,
       discount: null,
       discountUnit: null,
-    },
-    note: '',
-  }),
+    })
+
+    console.warn(bill)
+    return {
+      bill,
+      note: '',
+      ...usePriceControl(bill, 'originalPrice', 'actualPrice')
+    }
+  },
 
   computed: {
-    // Icon of discountUnit switch
-    discountUnitIcon() {
-      return 'fa-solid ' + (this.bill.discountUnit === 'cash' ? 'fa-money-bill-wave' : 'fa-percent')
-    },
-    // Label of discountUnit text
-    discountUnitLabel() {
-      return this.$t('field.discount_by') + ' ' + this.bill.discountUnit
-    },
-    // Calculate actual price
-    actualPrice() {
-      const discountAmount = this.bill.discountUnit === '%'
-        // Discount by percentage
-        ? parseInt(this.bill.originalPrice) / 100 * parseInt(this.bill.discount)
-        // Discount by plain value
-        : parseInt(this.bill.discount)
-
-      return `${parseInt(this.bill.originalPrice) - Math.round(discountAmount)}`
-    },
     // Calculate total price
     totalPrice() {
       return `${parseInt(this.actualPrice) * parseInt(this.bill.quantity)}`
@@ -224,38 +215,6 @@ export default {
         this.$nextTick(() => this.bill.quantity = '1')
       } else {
         this.onEdit()
-      }
-    },
-    // Control originalPrice max and min value
-    'bill.originalPrice'(value) {
-      // Get value as integer
-      const intValue = parseInt(value);
-      if (intValue > 999999999) {
-        this.$nextTick(() => this.bill.originalPrice = '999999999')
-      } else if (intValue < 1) {
-        this.$nextTick(() => this.bill.originalPrice = '1000')
-      }
-    },
-    // Control discount max and min value
-    'bill.discount'(value) {
-      // Get value as integer
-      const intValue = parseInt(value);
-      // Can not lower than 0
-      if (intValue < 0) {
-        this.$nextTick(() => this.bill.discount = '0')
-      }
-
-      // Check discountUnit
-      if (this.bill.discountUnit === 'cash' && intValue > parseInt(this.bill.originalPrice)) {
-        this.$nextTick(() => this.bill.discount = this.bill.originalPrice)
-      } else if (this.bill.discountUnit === '%' && intValue > 100) {
-        this.$nextTick(() => this.bill.discount = '100')
-      }
-    },
-    // Reset discount to 0 if discountUnit is changed
-    'bill.discountUnit'(value, oldValue) {
-      if (oldValue) {
-        this.bill.discount = '0'
       }
     },
     // Update item when add note
@@ -288,19 +247,17 @@ export default {
      * On click "More" event handler
      */
     onMore() {
-
+      this.$notifyWarn('Under development!')
     },
 
     /**
      * On reset local bill
      */
     onResetPrice() {
-      this.bill = {
-        originalPrice: this.value.originalPrice,
-        discount: this.value.discount,
-        discountUnit: this.value.discountUnit,
-        quantity: this.value.quantity,
-      }
+      this.bill.originalPrice = this.value.originalPrice
+      this.bill.discount = this.value.discount
+      this.bill.discountUnit = this.value.discountUnit
+      this.bill.quantity = this.value.quantity
     },
 
     /**
