@@ -1,6 +1,6 @@
 <template>
   <div :class="{'tw-flex': !horizontal}">
-    <LabelField :src="src" :label="label" class="tw-pt-2 tw-flex-grow"/>
+    <LabelField :src="src" :label="label" class="tw-pt-2"/>
     <slot/>
     <q-space v-if="space"/>
     <div v-if="textarea">

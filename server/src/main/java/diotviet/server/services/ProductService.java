@@ -50,8 +50,8 @@ public class ProductService {
                 Sort.by("code")
         );
 
-        // Query for Product's data
-        return productRepository.findBy(filter, q -> q.as(ProductSearchView.class).project("title").page(pageable));
+        // Query for Product's data // .project("title") ??????????
+        return productRepository.findBy(filter, q -> q.as(ProductSearchView.class).page(pageable));
     }
 
     /**

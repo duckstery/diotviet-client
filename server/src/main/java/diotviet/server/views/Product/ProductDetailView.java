@@ -4,6 +4,20 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.ArrayList;
 
 public interface ProductDetailView extends ProductSearchView {
+    /**
+     * Category ID
+     *
+     * @return
+     */
+    @Value("#{target.category.id}")
+    long getCategoryId();
+    /**
+     * ID of groups
+     *
+     * @return
+     */
+    @Value("#{target.groups.![id]}")
+    long[] getGroupIds();
 
     /**
      * Name of groups

@@ -1,30 +1,9 @@
 <template>
   <div :class="{'tw-flex': !horizontal}">
     <LabelField :src="src" :label="label" class="tw-pt-2"/>
+    <slot name="before"/>
     <q-space v-if="space"/>
-    <div v-if="textarea">
-      <q-input
-        :model-value="modelValue"
-        dense
-        filled
-        readonly
-        type="textarea"
-        :class="classObject"
-        :maxlength="textareaLength"
-        input-class="virtual-scrollbar"
-        :input-style="{maxHeight: `${textareaHeight}px`, height: `${textareaHeight}px`}"
-      />
-    </div>
-    <TextField
-      v-else
-      :model-value="modelValue"
-      compact
-      readonly
-      required
-      :mask="mask"
-      :class="classObject"
-      input-class="tw-font-semibold tw-text-center tw-p-0"
-    />
+    <slot :class="classObject"/>
   </div>
 </template>
 
@@ -34,29 +13,19 @@ import TextField from "components/General/Other/TextField.vue";
 import LabelField from "components/General/Other/LabelField.vue";
 
 export default {
-  name: "DisplayField",
+  name: "InputField",
 
   components: {LabelField, TextField, IconMage},
 
   props: {
-    // Model-value
-    modelValue: String,
     // Put space between label and content
     space: Boolean,
     // IconMage src
     src: String,
     // Label
     label: String,
-    // Mask
-    mask: String,
-    // Use textarea instead
-    textarea: Boolean,
     // Display horizontally
     horizontal: Boolean,
-    // Textarea max character length
-    textareaLength: String,
-    // Textarea max height
-    textareaHeight: String,
   },
 
   computed: {

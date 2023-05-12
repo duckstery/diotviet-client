@@ -48,12 +48,13 @@
           </template>
 
           <div class="tw-mt-5"/>
-          <template v-for="key in ['measureUnit', 'originalPrice', 'actualPrice']">
+          <template v-for="key in ['measureUnit', 'weight', 'originalPrice', 'actualPrice']">
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 space
                 inner-class="tw-w-48"
-                :mask="key === 'measureUnit' ? '' : '###,###,###,###'"
+                :mask="key === 'measureUnit' || key === 'weight' ? '' : '###,###,###,###'"
+                :suffix="key === 'weight' ? 'Kg' : ''"
                 :modelValue="detail[key]"
                 :src="`images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"

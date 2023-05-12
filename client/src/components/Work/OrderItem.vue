@@ -147,11 +147,12 @@
 <script>
 import {mapActions} from "pinia";
 import {useOrderStore} from "stores/order";
+import {reactive} from "vue";
+import {usePriceControl} from "src/composables/usePriceControl";
+import {useRangeControl} from "src/composables/useRangeControl";
 
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
-import usePriceControl from "src/composables/usePriceControl";
-import {reactive} from "vue";
 
 export default {
   name: 'OrderItem',
@@ -187,11 +188,12 @@ export default {
       discount: null,
       discountUnit: null,
     })
+    // Put range control on bill.quantity
 
-    console.warn(bill)
     return {
       bill,
       note: '',
+      ...useRangeControl(bill, 'quantity', 99, 1),
       ...usePriceControl(bill, 'originalPrice', 'actualPrice')
     }
   },
@@ -204,18 +206,9 @@ export default {
   },
 
   watch: {
-    // If quantity is changed, update item's data
-    'bill.quantity'(value) {
-      // Get value as integer
-      const intValue = parseInt(value);
-
-      if (intValue > 99) {
-        this.$nextTick(() => this.bill.quantity = '99')
-      } else if (intValue < 1) {
-        this.$nextTick(() => this.bill.quantity = '1')
-      } else {
-        this.onEdit()
-      }
+    // If quantity is changed and committed by range control, update item's data
+    rangeControlCommit() {
+      this.onEdit()
     },
     // Update item when add note
     note() {

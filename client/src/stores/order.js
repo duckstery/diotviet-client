@@ -99,7 +99,6 @@ export const useOrderStore = defineStore('order', {
     editItem(index, item) {
       // Get order
       const order = this.orders.at(this.getActiveIndex);
-      console.warn(item)
       // Splice old item and push new item in
       order.items.splice(index, 1, item)
       // Update provisional amount

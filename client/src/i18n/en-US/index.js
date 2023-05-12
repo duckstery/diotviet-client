@@ -27,7 +27,7 @@ export default {
     cancel: 'Cancel',
     original_price: 'Original price',
     discount: 'Discount',
-    discount_by: 'Discount by',
+    discount_by: 'By',
     actual_price: 'Actual price',
     note: 'Note',
     provisional_amount: 'Provisional amount',
@@ -84,6 +84,11 @@ export default {
     delete: 'Delete',
     history: 'History',
     description: 'Description',
+    create: 'Create',
+    update: 'Update',
+    image: 'Image',
+    weight: 'Weight',
+    title: 'Title',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -103,7 +108,10 @@ export default {
     confirm: 'Are you sure?',
     table_empty_data: 'Well this is sad... I didn\'t find anything for you',
     rows_selected: '{attr} record(s) selected.',
-    from_to: 'From {from} to {to}'
+    from_to: 'From {from} to {to}',
+    pick_file: 'Drop file or browse',
+    invalid_file: 'Too big or invalid file(s)',
+    blank_for_auto: 'Leave this field blank for auto creation'
   },
 
   // ****************************

@@ -75,7 +75,7 @@
 <script>
 import {useOrderStore} from "stores/order";
 import {mapState, storeToRefs} from "pinia";
-import usePriceControl from "src/composables/usePriceControl";
+import {usePriceControl} from "src/composables/usePriceControl";
 
 import TextField from "components/General/Other/TextField.vue";
 import DisplayField from "components/General/Other/DisplayField.vue";

@@ -31,7 +31,7 @@
 
       <!-- Row controls -->
       <Button :label="$t('field.add')" icon="fa-solid fa-plus"
-              stretch color="positive" class="tw-ml-2" no-caps/>
+              stretch color="positive" class="tw-ml-2" no-caps @click="$emit('request', 'create')"/>
       <Button :label="$t('field.collapse')" icon="fa-solid fa-down-left-and-up-right-to-center" @click="onCollapse"
               stretch color="positive" class="tw-ml-2" no-caps/>
 
@@ -201,7 +201,7 @@ export default {
     }
   },
 
-  emits: ['request'],
+  emits: ['search', 'request'],
 
   methods: {
     /**

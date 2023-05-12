@@ -1,7 +1,15 @@
 import {computed, watch, nextTick} from 'vue'
 import {useI18n} from 'vue-i18n'
 
-export default function (refObj, originalKey, actualKey) {
+/**
+ * Setup control price system
+ *
+ * @param {object} refObj
+ * @param {string} originalKey
+ * @param {string} actualKey
+ * @returns {object}
+ */
+export function usePriceControl (refObj, originalKey, actualKey) {
   // Make a computed fragments to modify computed key dynamically
   const computedFragments = {}
   computedFragments[actualKey] = computed(() => {

@@ -13,7 +13,7 @@
       <div class="col-9">
         <!-- Data table -->
         <DataTable v-model:pagination="paginate" :headers="headers" :items="items" :loading="loading"
-                   @request="onSearch">
+                   @search="onSearch" @request="onRequest">
           <template #default="props">
             <ProductDetail v-bind="props"/>
           </template>
@@ -29,6 +29,7 @@ import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
 import DataTable from "components/Manage/DataTable.vue";
 import ProductFilter from "components/Manage/Product/ProductFilter.vue";
 import ProductDetail from "components/Manage/Product/ProductDetail.vue";
+import ProductEditor from "components/Manage/Product/ProductEditor.vue";
 
 export default {
   name: 'ProductPage',
@@ -132,12 +133,11 @@ export default {
     },
 
     /**
-     * On request new page data
+     * On search
      *
      * @param data
      */
     onSearch(data) {
-      console.warn(data)
       // Call API to get data for table
       this.$axios.get('/product/search', {
         params: {
@@ -148,6 +148,31 @@ export default {
         }
       })
         .then(this.applyItems)
+    },
+
+    /**
+     * On request an operation
+     */
+    onRequest(mode, item = null) {
+      // Create props so item("null") won't override Editor default value
+      const componentProps = {mode, categories: this.categories, groups: this.groups}
+      // Add item
+      if (item !== null) {
+        componentProps.item = item
+      }
+
+      // Invoke dialog
+      this.$q.dialog({
+        component: ProductEditor,
+        componentProps: componentProps
+      }).onOk((data) => {
+        console.warn(data)
+        this.onSearch()
+      }).onCancel(() => {
+
+      }).onDismiss(() => {
+
+      })
     }
   }
 }
