@@ -17,8 +17,5 @@ module.exports = {
       pacifico: ['Pacifico', 'san-serif'],
     }
   },
-  prefix: 'tw-',
-  plugins: [
-    require('@tailwindcss/line-clamp'),
-  ],
+  prefix: 'tw-'
 }
