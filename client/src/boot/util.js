@@ -56,6 +56,16 @@ const util = {
    */
   camelToSnake(value) {
     return value.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+  },
+
+  /**
+   * Check if value is unset
+   *
+   * @param {any} value
+   * @return {boolean}
+   */
+  isUnset(value) {
+    return value === null || value === undefined
   }
 }
 

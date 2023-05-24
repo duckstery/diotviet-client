@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onHide">
-    <q-card class="q-dialog-plugin tw-w-[900px]" style="max-width: 80vw;">
+    <q-card class="q-dialog-plugin tw-w-[900px] virtual-scrollbar" style="max-width: 80vw;">
       <q-card-section>
         <div class="tw-text-lg tw-font-semibold">
           {{ mode === 'update' ? $t('field.update') : $t('field.create') }}
@@ -8,67 +8,41 @@
       </q-card-section>
       <q-card-section>
         <div class="row">
-          <div class="tw-mt-3 col-12 col-md-6 tw-px-2">
+          <div class="tw-mt-3 col-12 col-md-6">
             <InputField
-              :src="`images/title.png`"
-              :label="$t(`field.title`)"
+              v-for="key in ['code', 'title', 'category', 'groups']"
+              :src="`images/${key}.png`"
+              :label="$t(`field.${key}`)"
+              :vuelidate="v$.input[key]"
             >
               <template #default="props">
-                <TextField v-model="input.title" v-bind="props" compact input-class="tw-p-0"/>
-              </template>
-            </InputField>
-
-            <InputField
-              :src="`images/code.png`"
-              :label="$t(`field.code`)"
-            >
-              <template #default="props">
-                <TextField v-model="input.code" v-bind="props" compact input-class="tw-p-0"
-                           :placeholder="$t('message.blank_for_auto')"/>
-              </template>
-            </InputField>
-
-            <InputField
-              :src="`images/category.png`"
-              :label="$t(`field.category`)"
-            >
-              <template #default="props">
-                <q-select v-model="input.category" v-bind="props" dense :options="categories"
-                          option-label="name" option-value="id" map-options emit-value use-chips/>
-              </template>
-            </InputField>
-
-            <InputField
-              :src="`images/groups.png`"
-              :label="$t(`field.groups`)"
-            >
-              <template #default="props">
-                <q-select v-model="input.groups" v-bind="props" dense :options="groups"
-                          option-label="name" option-value="id" map-options emit-value use-chips multiple/>
+                <TextField
+                  v-if="key in ['code', 'title']" v-bind="props" v-model="v$.input[key].$model"
+                  compact input-class="tw-p-0"
+                  :placeholder="key === 'code' ? $t('message.blank_for_auto') : ''"
+                />
+                <q-select
+                  v-else v-bind="props" v-model="input[key]"
+                  dense
+                  map-options emit-value use-chips
+                  :options="key === 'category' ? categories : groups" option-label="name" option-value="id"
+                  :multiple="key === 'groups'"
+                />
               </template>
             </InputField>
           </div>
 
-          <div class="tw-mt-3 col-12 col-md-6 tw-px-2">
+          <div class="tw-mt-3 col-12 col-md-6">
             <InputField
-              :src="`images/original_price.png`"
-              :label="$t(`field.original_price`)"
+              v-for="key in ['originalPrice', 'discount']"
               space
+              :src="`images/${$util.camelToSnake(key)}.png`"
+              :label="$t(`field.${$util.camelToSnake(key)}`)"
+              :vuelidate="v$.input[key]"
             >
-              <template #default="props">
-                <TextField v-model="input.originalPrice" v-bind="props"
-                           compact required class="tw-w-48" input-class="tw-p-0 tw-text-center" mask="###,###,###,###"/>
-              </template>
-            </InputField>
-
-            <InputField
-              :src="`images/discount.png`"
-              :label="$t(`field.discount`)"
-              space
-            >
-              <template #before>
+              <template #before v-if="key === 'discount'">
                 <q-toggle
-                  v-model="input.discountUnit"
+                  v-model="v$.input.discountUnit.$model"
 
                   true-value="cash"
                   false-value="%"
@@ -77,9 +51,11 @@
                 />
               </template>
               <template #default="props">
-                <TextField v-model="input.discount" v-bind="props"
-                           compact class="tw-w-48" input-class="tw-p-0 tw-text-center"
-                           :mask="discountMask"/>
+                <TextField
+                  v-model="v$.input[key].$model" v-bind="props"
+                  compact class="tw-w-48" input-class="tw-p-0 tw-text-center"
+                  :mask="key === 'discount' ? discountMask : '###,###,###,###'"
+                />
               </template>
             </InputField>
 
@@ -90,39 +66,45 @@
               :modelValue="input.actualPrice"
               :src="`images/actual_price.png`"
               :label="$t(`field.actual_price`)"
+              class="tw-mb-5"
             />
 
             <InputField
-              :src="`images/measure_unit.png`"
-              :label="$t(`field.measure_unit`)"
+              v-for="key in ['measureUnit', 'weight']"
+              :src="`images/${$util.camelToSnake(key)}.png`"
+              :label="$t(`field.${$util.camelToSnake(key)}`)"
+              :vuelidate="v$.input[key]"
             >
               <template #default="props">
-                <TextField v-model="input.measureUnit" v-bind="props" compact input-class="tw-p-0"/>
-              </template>
-            </InputField>
-
-            <InputField
-              :src="`images/weight.png`"
-              :label="$t(`field.weight`)"
-            >
-              <template #default="props">
-                <TextField v-model="input.weight" v-bind="props" compact suffix="Kg" mask="#,###"/>
+                <TextField
+                  v-if="key === 'measureUnit'" v-model="input.measureUnit" v-bind="props"
+                  compact input-class="tw-p-0"
+                />
+                <TextField
+                  v-else-if="key === 'weight'" v-model="input.weight" v-bind="props"
+                  compact suffix="Kg" mask="#,###"/>
               </template>
             </InputField>
           </div>
 
-          <div class="tw-mt-3 col-12 tw-px-2">
+          <div v-for="key in ['src', 'description']" class="tw-mt-3 col-12">
             <InputField
-              :src="`images/image.png`"
-              :label="$t(`field.image`)"
               horizontal
+              :src="`images/${key === 'src' ? 'image' : 'note'}.png`"
+              :label="$t(`field.${key}`)"
+              :vuelidate="v$.input[key]"
             >
               <template #default="props">
-                <UploadMage v-model="file" v-bind="props" :max-size="5242880"/>
+                <UploadMage
+                  v-if="key === 'src'" v-model="v$.input[key].$model" v-bind="props"
+                  :max-size="5242880"
+                />
+                <RichTextField
+                  v-else v-model="v$.input[key].$model" v-bind="props"
+                />
               </template>
             </InputField>
           </div>
-
         </div>
       </q-card-section>
       <q-card-actions align="right">
@@ -140,16 +122,19 @@ import {useDialogPluginComponent} from 'quasar'
 import {reactive} from 'vue'
 import {usePriceControl} from "src/composables/usePriceControl";
 import {useRangeControl} from "src/composables/useRangeControl";
+import {useVuelidate} from '@vuelidate/core'
+import {required} from '@vuelidate/validators'
 
 import InputField from "components/General/Other/InputField.vue";
 import Button from "components/General/Other/Button.vue";
 import DisplayField from "components/General/Other/DisplayField.vue";
 import TextField from "components/General/Other/TextField.vue";
 import UploadMage from "components/General/Other/UploadMage.vue";
+import RichTextField from "components/General/Other/RichTextField.vue";
 
 export default {
   name: 'ProductEditor',
-  components: {UploadMage, TextField, InputField, DisplayField, Button},
+  components: {RichTextField, UploadMage, TextField, InputField, DisplayField, Button},
   props: {
     // Editor mode: 'create', 'update', 'copy'
     mode: String,
@@ -160,7 +145,7 @@ export default {
     // Target item
     item: {
       type: Object,
-      default: () => ({
+      default: () => (/**{
         id: null,
         title: null,
         code: null,
@@ -176,7 +161,24 @@ export default {
         canBeAccumulated: false,
         weight: '1',
         description: null,
-      })
+      }*/
+        {
+          id: null,
+          title: 'Ahihi',
+          code: null,
+          category: 7,
+          groups: [7, 8, 9],
+          originalPrice: '1000',
+          discount: '0',
+          discountUnit: "%",
+          actualPrice: '1000',
+          measureUnit: 'Pack',
+          src: null,
+          isInBusiness: true,
+          canBeAccumulated: false,
+          weight: '1',
+          description: 'Ahihoheha',
+        })
     }
   },
 
@@ -202,6 +204,7 @@ export default {
     useRangeControl(input, 'weight', 1000, 1)
 
     return {
+      v$: useVuelidate({$rewardEarly: true}),
       ...usePriceControl(input, 'originalPrice', 'actualPrice'),
       // This is REQUIRED;
       // Need to inject these (from useDialogPluginComponent() call)
@@ -218,10 +221,35 @@ export default {
     file: []
   }),
 
+  validations() {
+    return {
+      input: {
+        code: {},
+        title: {required},
+        category: {required},
+        groups: {},
+        originalPrice: {required},
+        discount: {required},
+        discountUnit: {required},
+        measureUnit: {},
+        src: {},
+        // isInBusiness: true,
+        // canBeAccumulated: false,
+        weight: {},
+        description: {},
+      },
+      file: {required}
+    }
+  },
+
   methods: {
-    onConfirm() {
-      console.warn(this.input)
-      this.ok()
+    async onConfirm() {
+      console.warn(this.v$.file)
+
+
+      await this.v$.$validate()
+
+      // this.ok()
     },
   }
 }

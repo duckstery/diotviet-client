@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.3",
+    "@vuelidate/core": "^2.0.2",
+    "@vuelidate/validators": "^2.0.2",
     "axios": "^1.4.0",
     "pinia": "^2.0.36",
     "qs": "^6.11.1",

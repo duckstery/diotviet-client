@@ -59,6 +59,8 @@ export default {
     maxSize: Number,
     // Allow multiple file
     multiple: Boolean,
+    // Use component native notifier
+    nativeNotify: Boolean
   },
 
   emits: ['update:model-value'],
@@ -70,7 +72,9 @@ export default {
     onRejected() {
       // Notify plugin needs to be installed
       // https://quasar.dev/quasar-plugins/notify#Installation
-      this.$notifyErr(this.$t('message.invalid_file'))
+      if (!this.nativeNotify) {
+        this.$notifyErr(this.$t('message.invalid_file'))
+      }
     },
 
     /**

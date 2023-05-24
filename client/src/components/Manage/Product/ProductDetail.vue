@@ -140,7 +140,7 @@ export default {
   computed: {
     // Check if component is ready to display data
     isReady() {
-      return !(this.detail === undefined || this.detail === null || Object.keys(this.detail).length === 0)
+      return !(this.$util.isUnset(this.detail) || Object.keys(this.detail).length === 0)
     },
     // Get item id
     getItemId() {

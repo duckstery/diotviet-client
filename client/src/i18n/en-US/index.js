@@ -87,6 +87,7 @@ export default {
     create: 'Create',
     update: 'Update',
     image: 'Image',
+    src: 'Image',
     weight: 'Weight',
     title: 'Title',
 
@@ -111,7 +112,8 @@ export default {
     from_to: 'From {from} to {to}',
     pick_file: 'Drop file or browse',
     invalid_file: 'Too big or invalid file(s)',
-    blank_for_auto: 'Leave this field blank for auto creation'
+    blank_for_auto: 'Leave this field blank for auto creation',
+    required: 'This field is required'
   },
 
   // ****************************

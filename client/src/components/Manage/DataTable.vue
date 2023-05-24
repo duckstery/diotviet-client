@@ -218,7 +218,7 @@ export default {
      */
     onRequest(data) {
       // Get default pagination
-      if (data === null || data === undefined) {
+      if (this.$util.isUnset(data)) {
         data = {
           pagination: {
             ...this.pagination,

@@ -2,16 +2,17 @@
   <q-input
     :model-value="modelValue"
     v-bind="$attrs"
-    :label="label"
 
-    :outlined="!compact"
     dense
     color="brand"
     bg-color="brand"
+
+    :mask="mask"
+    :label="label"
+    :outlined="!compact"
     :clearable="!required"
     :unmasked-value="!!mask"
     :reverse-fill-mask="!!mask"
-    :mask="mask"
   >
     <template v-if="!compact && !!icon" #prepend>
       <q-icon :name="icon"/>
