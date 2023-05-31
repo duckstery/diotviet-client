@@ -1,7 +1,7 @@
 <template>
   <q-header v-bind="$attrs" reveal class="bg-primary text-white">
     <q-toolbar>
-      <IconMage src="images/duck.png" rounded/>
+      <IconMage src="images/duck.png" force-visual rounded/>
 
       <slot/>
 
@@ -17,7 +17,7 @@
 
       <q-item clickable class="tw-h-[32px] tw-p-0 tw-px-3 tw-rounded-lg tw-ml-3">
         <q-item-section side>
-          <IconMage src="images/man.png"/>
+          <IconMage src="images/man.png" color="white"/>
         </q-item-section>
         <q-item-section>
           <q-item-label class="tw-font-medium">{{ getUserName }}</q-item-label>

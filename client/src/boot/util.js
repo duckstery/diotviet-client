@@ -66,6 +66,44 @@ const util = {
    */
   isUnset(value) {
     return value === null || value === undefined
+  },
+
+  /**
+   * Get corresponding icon of image
+   *
+   * @param {string} key
+   * @return {string}
+   */
+  getMatchedIcon(key) {
+    return {
+      'actual_price': 'fa-solid fa-money-bill',
+      'category': 'list',
+      'code': 'fingerprint',
+      'dark': 'dark_mode',
+      'dark-mode': 'fa-solid fa-circle-half-stroke',
+      'discount': 'fa-solid fa-tags',
+      'en_US': 'fa-solid fa-e',
+      'groups': 'fa-solid fa-people-group',
+      'image': 'fa-solid fa-images',
+      'light': 'light_mode',
+      'mail': 'fa-solid fa-envelope',
+      'man': 'fa-solid fa-user',
+      'measure_unit': 'fa-solid fa-weight-scale',
+      'note': 'fa-solid fa-comment',
+      'open_folder': 'fa-solid fa-folder-open',
+      'optimize': 'fa-solid fa-gauge',
+      'original_price': 'fa-solid fa-coins',
+      'pass': 'fa-solid fa-lock',
+      'payment_amount': 'fa-solid fa-hand-holding-dollar',
+      'provisional_amount': 'fa-solid fa-hand-holding-dollar',
+      'speed': 'fa-solid fa-rocket',
+      'title': 'fa-solid fa-signature',
+      'translation': 'fa-solid fa-language',
+      'vi_VN': 'fa-solid fa-v',
+      'visual': 'fa-solid fa-chart-pie',
+      'weight': 'fa-solid fa-weight-hanging',
+      'woman': 'fa-solid fa-user',
+    }[key]
   }
 }
 

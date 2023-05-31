@@ -1,6 +1,7 @@
 <template>
   <q-avatar :square="!rounded" :rounded="rounded" :size="size">
-    <img :src="src" alt="">
+    <img v-if="isOptimizeVisual" :src="src" alt="">
+    <q-icon :name="getParsedIcon" size="20px" :color="color"/>
   </q-avatar>
 </template>
 
@@ -22,7 +23,27 @@ export default {
     rounded: {
       type: Boolean,
       default: false
+    },
+    // Only work if it is optimizing for performance
+    color: {
+      type: String,
+      default: 'primary'
+    },
+    // Force using visual (image)
+    forceVisual: {
+      type: Boolean
     }
+  },
+
+  computed: {
+    // Check if optimize for visual
+    isOptimizeVisual() {
+      return this.forceVisual || this.$env.get('optimize') === 'visual'
+    },
+    // Parse img source to icon
+    getParsedIcon() {
+      return this.$util.getMatchedIcon(this.src.slice(7, -4))
+    },
   }
 }
 </script>

@@ -8,10 +8,10 @@
     :flat="flat"
     unelevated
     :label="isUsingImage ? undefined : label"
-    :icon="isUsingImage ? undefined : icon"
+    :icon="getIcon"
   >
     <template v-if="isUsingImage">
-      <img class="d-btn-img" :src="src">
+      <IconMage v-if="$env.isOptimizeVisual()" class="d-btn-img" :src="src" :color="color"/>
       <span class="tw-ml-3">{{ label }}</span>
     </template>
     <q-tooltip v-if="tooltip" transition-show="scale" transition-hide="scale" class="tw-text-sm">
@@ -22,8 +22,11 @@
 </template>
 
 <script>
+import IconMage from "components/General/Other/IconMage.vue";
+
 export default {
   name: "Button",
+  components: {IconMage},
 
   props: {
     // Image src
@@ -75,6 +78,16 @@ export default {
      */
     isUsingImage() {
       return !!this.src
+    },
+    /**
+     * Get icon for button only if not using image or is optimized for performance
+     *
+     * @return {undefined|string}
+     */
+    getIcon() {
+      return this.isUsingImage
+        ? this.$env.isOptimizeVisual() ? undefined : this.$util.getMatchedIcon(this.src.slice(7, -4))
+        : this.icon
     }
   }
 }

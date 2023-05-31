@@ -90,6 +90,9 @@ export default {
     src: 'Image',
     weight: 'Weight',
     title: 'Title',
+    optimize: 'Optimize',
+    visual: 'Visual',
+    speed: 'Speed',
 
     role_1: 'Admin',
     role_2: 'Supervisor',

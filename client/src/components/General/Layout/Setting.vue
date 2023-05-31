@@ -27,6 +27,19 @@
         <Button src="images/dark.png" color="primary" :flat="isLight" stretch :label="$t('field.dark_mode')"
                 class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('display', 'dark')"/>
       </div>
+
+      <q-banner class="tw-mt-1">
+        <template v-slot:avatar>
+          <IconMage src="images/optimize.png"/>
+        </template>
+        <div class="tw-font-medium">{{ $t('field.optimize') }}</div>
+      </q-banner>
+      <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
+        <Button src="images/visual.png" color="primary" :flat="!isOptimizeVisual" stretch :label="$t('field.visual')"
+                class="tw-w-[140px]" @click="onChangeEnv('optimize', 'visual')"/>
+        <Button src="images/speed.png" color="primary" :flat="isOptimizeVisual" stretch :label="$t('field.speed')"
+                class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('optimize', 'speed')"/>
+      </div>
     </q-popup-proxy>
   </Button>
 </template>
@@ -45,6 +58,7 @@ export default {
   data: () => ({
     language: env.get("language") ?? 'en', // Default is English
     display: env.get("display") ?? 'light', // Default is light
+    optimize: env.get("optimize") ?? 'visual, // Default is visual'
   }),
 
   computed: {
@@ -56,6 +70,10 @@ export default {
     isLight() {
       return this.display === 'light'
     },
+    // Check if optimize for visual. Why? cuz it is default value
+    isOptimizeVisual() {
+      return this.optimize === 'visual'
+    }
   },
 
   methods: {
@@ -76,11 +94,15 @@ export default {
   watch: {
     // Handler for changing language
     language(value) {
-        this.$i18n.locale = value
+      this.$i18n.locale = value
     },
     // Handler for changing display
     isLight(value) {
-        this.$q.dark.set(!value)
+      this.$q.dark.set(!value)
+    },
+    // Handler for changing optimize aspect
+    isOptimizeVisual() {
+      window.location.reload()
     }
   },
 }

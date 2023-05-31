@@ -19,6 +19,15 @@ const env = {
    */
   set(key, value) {
     return LocalStorage.set(key, value)
+  },
+
+  /**
+   * Check if is optimized for visual
+   *
+   * @return {boolean}
+   */
+  isOptimizeVisual() {
+    return this.get('optimize') === 'visual'
   }
 }
 
