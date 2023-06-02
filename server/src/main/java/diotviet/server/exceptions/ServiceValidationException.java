@@ -9,11 +9,17 @@ public class ServiceValidationException extends RuntimeException {
     // Properties
     // ****************************
 
-    // Exception message key
+    /**
+     * Exception message key
+     */
     private String key;
-    // Attribute prefix
+    /**
+     * Attribute prefix
+     */
     private String prefix;
-    // Invalid attributes
+    /**
+     * Invalid attributes
+     */
     private String attribute;
 
     // ****************************

@@ -53,6 +53,7 @@ public class GlobalExceptionHandler {
     public void handleGeneralError(HttpServletRequest request, HttpServletResponse response, Exception ex) throws IOException {
         // Create body
         GeneralResponse responseBody = new GeneralResponse(false, ex.getMessage(), ex.getClass());
+        ex.printStackTrace();
         // Common handle logic
         commonLog(ex, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, responseBody);
     }

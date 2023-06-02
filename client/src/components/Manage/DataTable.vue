@@ -227,7 +227,7 @@ export default {
         }
       }
 
-      this.$emit('request', {
+      this.$emit('search', {
         search: this.search,
         ...data
       })

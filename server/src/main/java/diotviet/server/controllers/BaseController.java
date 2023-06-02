@@ -16,7 +16,7 @@ public abstract class BaseController {
     private MessageSource messageSource;
 
     // ****************************
-    // Public API
+    // Protected API
     // ****************************
 
     /**
@@ -25,7 +25,7 @@ public abstract class BaseController {
      * @param any
      * @return
      */
-    protected ResponseEntity<GeneralResponse> ok (Object any) {
+    protected ResponseEntity<GeneralResponse> ok(Object any) {
         return ResponseEntity.ok(GeneralResponse.success(any));
     }
 
@@ -35,7 +35,7 @@ public abstract class BaseController {
      * @param any
      * @return
      */
-    protected ResponseEntity<GeneralResponse> ok (String message, Object any) {
+    protected ResponseEntity<GeneralResponse> ok(String message, Object any) {
         return ResponseEntity.ok(GeneralResponse.success(message, any));
     }
 
@@ -61,7 +61,6 @@ public abstract class BaseController {
     }
 
     /**
-     *
      * @param key
      * @param args
      * @return

@@ -13,12 +13,43 @@ import java.util.function.Function;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, QuerydslPredicateExecutor<Product> {
+    /**
+     * Find by multiple condition
+     *
+     * @param predicate
+     * @param queryFunction
+     * @return
+     * @param <S>
+     * @param <R>
+     */
     @Override
     @EntityGraph(attributePaths = {"category", "groups"})
     <S extends Product, R> R findBy(Predicate predicate, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction);
 
+    /**
+     * Find by id
+     *
+     * @param id
+     * @param classType
+     * @return
+     * @param <T>
+     */
     @EntityGraph(attributePaths = {"category", "groups"})
     <T> T findById(Long id, Class<T> classType);
 
+    /**
+     * Check if exist by code
+     *
+     * @param code
+     * @return
+     */
     boolean existsByCode(String code);
+
+    /**
+     * Find first Product where code like "?" Order by code desc
+     *
+     * @param code
+     * @return
+     */
+    Product findFirstByCodeLikeOrderByCodeDesc(String code);
 }

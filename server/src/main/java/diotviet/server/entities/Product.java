@@ -51,7 +51,7 @@ public class Product {
     /**
      * Code
      */
-    @Column(length = 3)
+    @Column(length = 10)
     private String code;
 
     /**

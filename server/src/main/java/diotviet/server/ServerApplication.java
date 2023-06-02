@@ -5,6 +5,10 @@ import diotviet.server.entities.Category;
 import diotviet.server.entities.Group;
 import diotviet.server.repositories.CategoryRepository;
 import diotviet.server.repositories.GroupRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.config.Configuration;
+import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -57,5 +61,15 @@ public class ServerApplication {
                 }
             }
         };
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        // Config
+        modelMapper.getConfiguration()
+                .setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
+        return modelMapper;
     }
 }

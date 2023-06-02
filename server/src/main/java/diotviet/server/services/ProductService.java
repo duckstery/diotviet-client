@@ -2,16 +2,16 @@ package diotviet.server.services;
 
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
+import diotviet.server.entities.Product;
 import diotviet.server.entities.QProduct;
-import diotviet.server.exceptions.ServiceValidationException;
 import diotviet.server.repositories.ProductRepository;
-import diotviet.server.templates.Product.ProductParam;
+import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.utils.StorageUtils;
+import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductSearchView;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +35,11 @@ public class ProductService {
      */
     @Autowired
     private ProductRepository productRepository;
+    /**
+     * Product validator
+     */
+    @Autowired
+    private ProductValidator validator;
 
     // ****************************
     // Public API
@@ -76,17 +81,21 @@ public class ProductService {
      *
      * @param param
      */
-    public void store(ProductParam param) throws IOException {
+    public void store(ProductInteractRequest request) {
         // Common validate for create and update
-        validate(param);
+        Product product = validator.validateAndExtract(request);
 
         // Try to add file first and save file src
-        if (Objects.nonNull(param.getFile())) {
-            param.setSrc(StorageUtils.save(param.getFile()));
+        if (Objects.nonNull(request.file())) {
+            try {
+                product.setSrc(StorageUtils.save(request.file()));
+            } catch (IOException e) {
+                validator.interrupt("upload_fail", "", "file");
+            }
         }
 
         // Create file
-        productRepository.save(param);
+        productRepository.save(product);
     }
 
     // ****************************
@@ -136,15 +145,5 @@ public class ProductService {
 
         // Connect expression
         return query;
-    }
-
-    /**
-     *
-     */
-    private void validate(ProductParam param) throws ValidationException {
-        // Check if code is exist
-        if (this.productRepository.existsByCode(param.getCode())) {
-            throw new ServiceValidationException("exists_by", "product", "code");
-        }
     }
 }

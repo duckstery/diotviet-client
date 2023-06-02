@@ -9,7 +9,7 @@ import diotviet.server.services.GroupService;
 import diotviet.server.services.ProductService;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Product.ProductInitResponse;
-import diotviet.server.templates.Product.ProductParam;
+import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.templates.Product.ProductSearchResponse;
 import diotviet.server.utils.EntityUtils;
@@ -101,10 +101,17 @@ public class ProductController extends BaseController {
         return ok(productService.findById(id));
     }
 
+    /**
+     * Store (Create) item
+     *
+     * @param request
+     * @return
+     */
     @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> store(ProductParam param) throws IOException {
+    public ResponseEntity<?> store(ProductInteractRequest request) {
         // Store item
-        this.productService.store(param);
-        return ok("OK");
+        this.productService.store(request);
+
+        return ok("");
     }
 }

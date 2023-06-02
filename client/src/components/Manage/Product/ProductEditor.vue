@@ -245,14 +245,17 @@ export default {
         // Craft formData
         const formData = this.$util.craftFormData(this.input)
         // Send request
-        this.$axios.post('/product/store', formData, {headers: { "Content-Type": "multipart/form-data" }})
-          .then(console.warn)
+        this.$axios.post('/product/store', formData, {headers: {"Content-Type": "multipart/form-data"}})
+          .then(() => {
+            this.$notify(this.$t("message.success", {attr: this.$t(`field.${this.mode}`)}))
+            // Close dialog
+            this.ok()
+          })
           .catch(this.$error.$422.bind(this, 'input'))
       } else {
         // Notify about invalid
         this.$notifyErr(this.$t("message.invalid_input"))
       }
-      // this.ok()
     }
   }
 }
