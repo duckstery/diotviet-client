@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -65,6 +66,17 @@ public class GlobalExceptionHandler {
         commonLog(ex, response, HttpServletResponse.SC_BAD_REQUEST, responseBody);
     }
 
+    @ExceptionHandler(ServiceValidationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public void handleServiceValidation(HttpServletRequest request, HttpServletResponse response, ServiceValidationException ex) throws IOException {
+        // Get validation error message
+        String message = __(ex.getKey(), ex.getPrefix(), ex.getAttribute());
+        // Create body
+        GeneralResponse responseBody = new GeneralResponse(false, message, ex.getAttribute());
+        // Common handle logic
+        commonLog(ex, response, HttpStatus.UNPROCESSABLE_ENTITY.value(), responseBody);
+    }
+
     // ****************************
     // Private
     // ****************************
@@ -95,5 +107,16 @@ public class GlobalExceptionHandler {
      */
     private String __(String key) {
         return messageSource.getMessage(key, null, key, LocaleContextHolder.getLocale());
+    }
+
+    /**
+     * Translate message with attribute
+     *
+     * @param key
+     */
+    private String __(String key, String prefix, String attribute) {
+        String[] args = new String[]{__(prefix + "_" + attribute)};
+        // Pre-translate all attributes before translate key
+        return messageSource.getMessage(key, args, key, LocaleContextHolder.getLocale());
     }
 }

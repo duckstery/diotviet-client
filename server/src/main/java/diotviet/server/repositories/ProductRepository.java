@@ -19,4 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
 
     @EntityGraph(attributePaths = {"category", "groups"})
     <T> T findById(Long id, Class<T> classType);
+
+    boolean existsByCode(String code);
 }

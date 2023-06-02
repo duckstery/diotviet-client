@@ -35,6 +35,7 @@ module.exports = configure(function (/* ctx */) {
       'loader',
       'notify',
       'util',
+      'error',
       'auth',
     ],
 

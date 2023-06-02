@@ -104,6 +104,24 @@ const util = {
       'weight': 'fa-solid fa-weight-hanging',
       'woman': 'fa-solid fa-user',
     }[key]
+  },
+
+  /**
+   * Craft FormData with object
+   *
+   * @param {object} input
+   * @return {FormData}
+   */
+  craftFormData(input) {
+    // Create output
+    const formData = new FormData()
+
+    // Set data
+    if (!this.isUnset(input)) {
+      Object.entries(input).forEach(entry => this.isUnset(entry[1]) || formData.append(...entry))
+    }
+
+    return formData
   }
 }
 

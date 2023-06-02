@@ -3,7 +3,7 @@
     <LabelField :src="src" :label="label" class="tw-pt-2"/>
     <slot name="before"/>
     <q-space v-if="space"/>
-    <slot :class="classObject" v-bind="vuelidateUsageProp"/>
+    <slot :class="classObject" v-bind="vuelidateUsageProp" @update:modelValue="modelProxy"/>
   </div>
 </template>
 
@@ -52,7 +52,7 @@ export default {
     vuelidateUsageProp() {
       return this.isUsingVuelidate && {
         'bottom-slots': true,
-        'error': this.vuelidate.$error,
+        'error': this.vuelidate.$error || this.vuelidate.$server?.$error,
         'error-message': this.getFirstErrorMessage(),
       }
     },
@@ -62,30 +62,41 @@ export default {
     /**
      * Get the first error message
      *
-     * @return {string|null}
+     * @return {string}
      */
     getFirstErrorMessage() {
+      let errors = [];
+
+      // Check if field has no client error
       if (this.$util.isUnset(this.vuelidate.$errors) || this.vuelidate.$errors.length === 0) {
-        return null
+        // Check if field has no server error
+        if (this.$util.isUnset(this.vuelidate.$server)) {
+          return null
+        } else {
+          errors = this.vuelidate.$server.$errors
+        }
+      } else {
+        errors = this.vuelidate.$errors
       }
 
       // Get error type and property
-      const type = this.vuelidate.$errors[0].$validator
-      const property = this.vuelidate.$errors[0].$property
+      const type = errors[0].$validator
 
-      return this.$t(
+      return type === 'server'
+      ? errors[0].$message
+      : this.$t(
         `message.${this.$util.camelToSnake(type)}`,
-        {attr: this.getAttributeString(property), ...this.vuelidate.$errors[0].$params}
+        {...errors[0].$params}
       )
     },
 
     /**
-     * Get attribute string
-     *
-     * @param attr
+     * Proxy @update:modelValue event to clear $external error
      */
-    getAttributeString(attr) {
-      return this.$t(`field.${this.$util.camelToSnake(attr)}`)?.toLowerCase()
+    modelProxy() {
+      if (!this.$util.isUnset(this.vuelidate.$server)) {
+        this.vuelidate.$server = null
+      }
     }
   },
 }

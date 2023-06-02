@@ -3,18 +3,24 @@ package diotviet.server.services;
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
 import diotviet.server.entities.QProduct;
+import diotviet.server.exceptions.ServiceValidationException;
 import diotviet.server.repositories.ProductRepository;
+import diotviet.server.templates.Product.ProductParam;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.utils.OtherUtils;
+import diotviet.server.utils.StorageUtils;
 import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductSearchView;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @Service
@@ -40,6 +46,7 @@ public class ProductService {
      * @param request
      * @return
      */
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public Page<ProductSearchView> paginate(ProductSearchRequest request) {
         // Create filter
         BooleanBuilder filter = createFilter(request);
@@ -62,6 +69,24 @@ public class ProductService {
      */
     public ProductDetailView findById(Long id) {
         return productRepository.findById(id, ProductDetailView.class);
+    }
+
+    /**
+     * Store item
+     *
+     * @param param
+     */
+    public void store(ProductParam param) throws IOException {
+        // Common validate for create and update
+        validate(param);
+
+        // Try to add file first and save file src
+        if (Objects.nonNull(param.getFile())) {
+            param.setSrc(StorageUtils.save(param.getFile()));
+        }
+
+        // Create file
+        productRepository.save(param);
     }
 
     // ****************************
@@ -111,5 +136,15 @@ public class ProductService {
 
         // Connect expression
         return query;
+    }
+
+    /**
+     *
+     */
+    private void validate(ProductParam param) throws ValidationException {
+        // Check if code is exist
+        if (this.productRepository.existsByCode(param.getCode())) {
+            throw new ServiceValidationException("exists_by", "product", "code");
+        }
     }
 }

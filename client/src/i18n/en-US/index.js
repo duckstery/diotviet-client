@@ -116,7 +116,8 @@ export default {
     pick_file: 'Drop file or browse',
     invalid_file: 'Too big or invalid file(s)',
     blank_for_auto: 'Leave this field blank for auto creation',
-    required: 'This field is required'
+    required: 'This field is required',
+    invalid_input: 'Invalid input'
   },
 
   // ****************************

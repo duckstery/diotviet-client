@@ -8,7 +8,7 @@
       </q-card-section>
       <q-card-section>
         <div class="row">
-          <div class="tw-mt-3 col-12 col-md-6">
+          <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
             <InputField
               v-for="key in ['code', 'title', 'category', 'groups']"
               :src="`images/${key}.png`"
@@ -17,7 +17,7 @@
             >
               <template #default="props">
                 <TextField
-                  v-if="key in ['code', 'title']" v-bind="props" v-model="v$.input[key].$model"
+                  v-if="['code', 'title'].includes(key)" v-bind="props" v-model="v$.input[key].$model"
                   compact input-class="tw-p-0"
                   :placeholder="key === 'code' ? $t('message.blank_for_auto') : ''"
                 />
@@ -32,7 +32,7 @@
             </InputField>
           </div>
 
-          <div class="tw-mt-3 col-12 col-md-6">
+          <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
             <InputField
               v-for="key in ['originalPrice', 'discount']"
               space
@@ -87,16 +87,16 @@
             </InputField>
           </div>
 
-          <div v-for="key in ['src', 'description']" class="tw-mt-3 col-12">
+          <div v-for="key in ['file', 'description']" class="tw-mt-3 col-12">
             <InputField
               horizontal
-              :src="`images/${key === 'src' ? 'image' : 'note'}.png`"
-              :label="$t(`field.${key}`)"
+              :src="`images/${key === 'file' ? 'image' : 'note'}.png`"
+              :label="$t(`field.${key === 'file' ? 'image' : key}`)"
               :vuelidate="v$.input[key]"
             >
               <template #default="props">
                 <UploadMage
-                  v-if="key === 'src'" v-model="v$.input[key].$model" v-bind="props"
+                  v-if="key === 'file'" v-model="v$.input[key].$model" v-bind="props"
                   :max-size="5242880"
                 />
                 <RichTextField
@@ -217,10 +217,6 @@ export default {
     }
   },
 
-  data: () => ({
-    file: []
-  }),
-
   validations() {
     return {
       input: {
@@ -232,25 +228,32 @@ export default {
         discount: {required},
         discountUnit: {required},
         measureUnit: {},
-        src: {},
+        file: {},
         // isInBusiness: true,
         // canBeAccumulated: false,
         weight: {},
         description: {},
-      },
-      file: {required}
+      }
     }
   },
 
   methods: {
     async onConfirm() {
-      console.warn(this.v$.file)
+      // Validate file
+      if (await this.v$.$validate()) {
 
-
-      await this.v$.$validate()
-
+        // Craft formData
+        const formData = this.$util.craftFormData(this.input)
+        // Send request
+        this.$axios.post('/product/store', formData, {headers: { "Content-Type": "multipart/form-data" }})
+          .then(console.warn)
+          .catch(this.$error.$422.bind(this, 'input'))
+      } else {
+        // Notify about invalid
+        this.$notifyErr(this.$t("message.invalid_input"))
+      }
       // this.ok()
-    },
+    }
   }
 }
 </script>

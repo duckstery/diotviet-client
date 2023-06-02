@@ -9,18 +9,22 @@ import diotviet.server.services.GroupService;
 import diotviet.server.services.ProductService;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Product.ProductInitResponse;
+import diotviet.server.templates.Product.ProductParam;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.templates.Product.ProductSearchResponse;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Product.ProductSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -95,5 +99,12 @@ public class ProductController extends BaseController {
     @GetMapping("/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return ok(productService.findById(id));
+    }
+
+    @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> store(ProductParam param) throws IOException {
+        // Store item
+        this.productService.store(param);
+        return ok("OK");
     }
 }

@@ -59,4 +59,14 @@ public abstract class BaseController {
     protected String __(String key) {
         return __(key, key);
     }
+
+    /**
+     *
+     * @param key
+     * @param args
+     * @return
+     */
+    protected String __(String key, Object[] args) {
+        return messageSource.getMessage(key, args, key, LocaleContextHolder.getLocale());
+    }
 }

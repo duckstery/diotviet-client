@@ -14,8 +14,7 @@
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template v-slot:file="{ index, file }">
-      <div
-        class="tw-rounded-md tw-border-solid tw-border tw-m-2 tw-border-neutral-500 tw-max-w-[130px] tw-max-h-[130px]">
+      <div class="tw-rounded-md tw-border-solid tw-border tw-m-2 tw-border-neutral-500 tw-max-w-[130px] tw-max-h-[130px]">
         <div class="tw-absolute z-max tw-w-[128px] tw-float">
           <Button
             flat
