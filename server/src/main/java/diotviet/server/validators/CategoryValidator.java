@@ -32,7 +32,7 @@ public class CategoryValidator extends BaseValidator {
         if (Objects.isNull(id)) {
             return null;
         }
-System.out.println(id);
+
         // Check if category is exists
         Category category = categoryRepository.findById(id).orElse(null);
         if (Objects.isNull(category)) {

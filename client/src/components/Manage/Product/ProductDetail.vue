@@ -94,15 +94,16 @@
                 stretch color="info" class="tw-ml-2" no-caps @click="request('history')"/>
         <q-separator class="tw-ml-2" inset vertical/>
         <Button :label="$t('field.edit')" icon="fa-solid fa-pen-to-square"
-                stretch color="primary" class="tw-ml-2" no-caps @click="request('update')"/>
+                stretch color="primary" class="tw-ml-2" no-caps @click="request('update', this.detail)"/>
         <Button :label="$t('field.copy')" icon="fa-solid fa-copy"
-                stretch color="positive" class="tw-ml-2" no-caps @click="request('copy')"/>
+                stretch color="positive" class="tw-ml-2" no-caps @click="request('copy', this.detail)"/>
         <q-separator class="tw-ml-2" inset vertical/>
         <Button v-for="operation in statusOperations"
                 :label="$t(`field.${operation.key}`)" :icon="`fa-solid ${operation.icon}`"
-                stretch :color="operation.color" class="tw-ml-2" no-caps @click="request(operation.key, true)"/>
+                stretch :color="operation.color" class="tw-ml-2" no-caps
+                @click="request(operation.key, [this.getItemId])"/>
         <Button :label="$t('field.delete')" icon="fa-solid fa-trash"
-                stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', true)"/>
+                stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', [this.getItemId])"/>
       </Skeleton>
     </q-card-section>
   </q-card>
@@ -214,10 +215,10 @@ export default {
      * Request an operation
      *
      * @param {string} key
-     * @param {boolean} asMany
+     * @param {*} data
      */
-    request(key, asMany = false) {
-      this.$emit('request', key, asMany ? [this.getItemId] : this.getItemId)
+    request(key, data) {
+      this.$emit('request', key, data)
     }
   }
 }

@@ -214,9 +214,16 @@ export default {
     onInteractiveRequest(mode, item) {
       // Create props so item("null") won't override Editor default value
       const componentProps = {mode, categories: this.categories, groups: this.groups}
+      
       // Add item
       if (item !== null) {
-        componentProps.item = item
+        componentProps.item = {
+          ...item,
+          id: mode === 'copy' ? null : item.id,
+          code: mode === 'copy' ? null : item.code,
+          category: item.categoryId,
+          groups: item.groupIds
+        }
       }
 
       // Invoke dialog

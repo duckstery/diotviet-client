@@ -41,12 +41,12 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
     <T> T findById(Long id, Class<T> classType);
 
     /**
-     * Check if exist by code
+     * Get first by code
      *
      * @param code
      * @return
      */
-    boolean existsByCode(String code);
+    Product findFirstByCode(String code);
 
     /**
      * Find first Product where code like "?" Order by code desc

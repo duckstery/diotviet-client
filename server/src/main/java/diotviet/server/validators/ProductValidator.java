@@ -48,8 +48,7 @@ public class ProductValidator extends BaseValidator {
         Product product = map(request, Product.class);
 
         // Check and get the valid code
-        product.setCode(this.isCodeValid(request.code()));
-        System.out.println(product.getCode());
+        product.setCode(this.isCodeValid(request.id(), request.code()));
         // Check and get valid Category
         product.setCategory(categoryValidator.isExistById(request.category()));
         // Check and get valid Group
@@ -64,18 +63,31 @@ public class ProductValidator extends BaseValidator {
      * @param code
      * @return
      */
-    public String isCodeValid(String code) {
+    public String isCodeValid(Long id, String code) {
         if (Objects.isNull(code)) {
             return this.generateCode();
         }
 
-        // Check if code format is reserved
-        if (code.startsWith("MS")) {
-            throw new ServiceValidationException("reserved", "product", "code");
-        }
-        // Check if code is exist
-        if (this.productRepository.existsByCode(code)) {
-            throw new ServiceValidationException("reserved", "product", "code");
+        if (Objects.isNull(id)) {
+            // Validate for "CREATE"
+            if (code.startsWith("MS")) {
+                // Check if code format is reserved
+                throw new ServiceValidationException("reserved", "product", "code");
+            } else if (Objects.nonNull(this.productRepository.findFirstByCode(code))) {
+                // Check if code is exist
+                throw new ServiceValidationException("exists_by", "product", "code");
+            }
+        } else {
+            // Validate for "UPDATE"
+            // Get first Product that has matched code
+            Product product = this.productRepository.findFirstByCode(code);System.out.println(product);
+            if (Objects.isNull(product) && code.startsWith("MS")) {
+                // Check if Product with code is not exist and code format is reserved
+                throw new ServiceValidationException("reserved", "product", "code");
+            } else if (product.getId() != id) {
+                // Else, check if Product exist and that Product is not self
+                throw new ServiceValidationException("exists_by", "product", "code");
+            }
         }
 
         return code;

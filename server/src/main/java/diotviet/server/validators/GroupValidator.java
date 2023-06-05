@@ -39,7 +39,7 @@ public class GroupValidator extends BaseValidator {
 
         // Check if groups are exists
         List<Group> group = groupRepository.findAllById(List.of(ids));
-        if (group.isEmpty() || group.size() != ids.length) {
+        if (group.size() != ids.length) {
             throw new ServiceValidationException("invalid_groups", "", "groups");
         }
 
