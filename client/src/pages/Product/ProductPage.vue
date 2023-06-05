@@ -12,10 +12,10 @@
       </div>
       <div class="col-9">
         <!-- Data table -->
-        <DataTable v-model:pagination="paginate" :headers="headers" :items="items" :loading="loading"
+        <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
                    @search="onSearch" @request="onRequest">
           <template #default="props">
-            <ProductDetail v-bind="props"/>
+            <ProductDetail v-bind="props" @request="onRequest"/>
           </template>
         </DataTable>
       </div>
@@ -59,10 +59,11 @@ export default {
     title: '',
 
     // Paging
-    paginate: {
+    pagination: {
       page: 1,
       rowsPerPage: 10
     },
+    previousSearch: '',
 
     // Loading flag
     loading: false
@@ -84,6 +85,13 @@ export default {
         ? this.globalVars.usableHeight - 30
         : contentHeight
     },
+    // Get previous search data
+    getPreviousSearchData() {
+      return {
+        search: this.previousSearch,
+        pagination: this.pagination
+      }
+    }
   },
 
   mounted() {
@@ -113,7 +121,7 @@ export default {
       // Table's items
       this.items = res.data.payload.items.content
       // Pageable
-      this.paginate = {
+      this.pagination = {
         page: res.data.payload.items.number + 1,
         rowsPerPage: res.data.payload.items.size,
         rowsNumber: res.data.payload.items.totalElements
@@ -138,13 +146,15 @@ export default {
      * @param data
      */
     onSearch(data) {
+      // Save search content
+      this.previousSearch = data ? data.search : ''
       // Call API to get data for table
       this.$axios.get('/product/search', {
         params: {
           ...this.filter,
-          search: data ? data.search : '',
+          search: this.previousSearch,
           page: data ? data.pagination.page - 1 : 0,
-          itemsPerPage: data ? data.pagination.rowsPerPage : this.paginate.rowsPerPage
+          itemsPerPage: data ? data.pagination.rowsPerPage : this.pagination.rowsPerPage
         }
       })
         .then(this.applyItems)
@@ -152,8 +162,56 @@ export default {
 
     /**
      * On request an operation
+     *
+     * @param {string} mode
+     * @param {*} item
      */
     onRequest(mode, item = null) {
+      if (['create', 'update', 'copy'].includes(mode)) {
+        // Need to be interacted before sending request
+        this.onInteractiveRequest(mode, item)
+      } else {
+        // Directly send to server
+        this.$util.promptConfirm(this)
+          .onOk(() => this.onDirectRequest(mode, item))
+      }
+    },
+
+    /**
+     * On direct request (non-interactive)
+     *
+     * @param {string} mode
+     * @param {array} item
+     */
+    onDirectRequest(mode, item) {
+      let api, option, target
+
+      if (mode === 'delete') {
+        api = 'delete'
+      } else {
+        // Split mode by _
+        [option, target] = mode.split('_')
+        // Convert option to boolean
+        option = option === 'start'
+        api = 'patch'
+
+        // Send request
+        this.$axios[api](`/product/${api}`, {ids: item, target, option})
+          .then(() => {
+            this.$notify(this.$t('message.success', {attr: this.$t('field.operation')}))
+            this.onSearch(this.getPreviousSearchData)
+          })
+          .catch(() => this.$notifyErr(this.$t('message.fail', {attr: this.$t('field.operation')})))
+      }
+    },
+
+    /**
+     * On interactive request like add, edit, copy
+     *
+     * @param {string} mode
+     * @param {*} item
+     */
+    onInteractiveRequest(mode, item) {
       // Create props so item("null") won't override Editor default value
       const componentProps = {mode, categories: this.categories, groups: this.groups}
       // Add item
@@ -166,8 +224,7 @@ export default {
         component: ProductEditor,
         componentProps: componentProps
       }).onOk((data) => {
-        console.warn(data)
-        this.onSearch()
+        this.onSearch(this.getPreviousSearchData)
       }).onCancel(() => {
 
       }).onDismiss(() => {

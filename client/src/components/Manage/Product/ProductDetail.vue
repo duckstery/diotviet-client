@@ -91,17 +91,18 @@
       <q-space/>
       <Skeleton v-model="isReady" height="40px" width="300px" skeleton-class="tw-w-full">
         <Button :label="$t('field.history')" icon="fa-solid fa-clock-rotate-left"
-                stretch color="info" class="tw-ml-2" no-caps/>
+                stretch color="info" class="tw-ml-2" no-caps @click="request('history')"/>
         <q-separator class="tw-ml-2" inset vertical/>
         <Button :label="$t('field.edit')" icon="fa-solid fa-pen-to-square"
-                stretch color="primary" class="tw-ml-2" no-caps/>
+                stretch color="primary" class="tw-ml-2" no-caps @click="request('update')"/>
         <Button :label="$t('field.copy')" icon="fa-solid fa-copy"
-                stretch color="positive" class="tw-ml-2" no-caps/>
+                stretch color="positive" class="tw-ml-2" no-caps @click="request('copy')"/>
         <q-separator class="tw-ml-2" inset vertical/>
-        <Button :label="$t('field.stop_business')" icon="fa-solid fa-stop"
-                stretch color="negative" class="tw-ml-2" no-caps/>
+        <Button v-for="operation in statusOperations"
+                :label="$t(`field.${operation.key}`)" :icon="`fa-solid ${operation.icon}`"
+                stretch :color="operation.color" class="tw-ml-2" no-caps @click="request(operation.key, true)"/>
         <Button :label="$t('field.delete')" icon="fa-solid fa-trash"
-                stretch color="negative" class="tw-ml-2" no-caps/>
+                stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', true)"/>
       </Skeleton>
     </q-card-section>
   </q-card>
@@ -114,7 +115,9 @@ import Skeleton from "components/General/Other/Skeleton.vue";
 
 export default {
   name: 'ProductDetail',
+
   components: {Skeleton, Button, DisplayField},
+
   props: {
     // Product props
     item: {
@@ -132,6 +135,8 @@ export default {
       default: false
     }
   },
+
+  emits: ['request'],
 
   data: () => ({
     detail: {},
@@ -167,9 +172,21 @@ export default {
           // Set up output
           output = `${this.detail.discount}% (~${this.$util.formatMoney(estimatedAmount.toString())})`
         }
-      } catch (e) {}
+      } catch (e) {
+      }
 
       return output
+    },
+    // Dynamic status operation
+    statusOperations() {
+      return [
+        this.detail.isInBusiness
+          ? {key: 'stop_business', icon: 'fa-ban', color: 'negative'}
+          : {key: 'start_business', icon: 'fa-check', color: 'positive'},
+        this.detail.canBeAccumulated
+          ? {key: 'stop_accumulating', icon: 'fa-stop', color: 'negative'}
+          : {key: 'start_accumulating', icon: 'fa-play', color: 'positive'}
+      ]
     }
   },
 
@@ -192,6 +209,15 @@ export default {
     async fetch() {
       this.$axios.get(`/product/${this.getItemId}`, {loading: false})
         .then(res => this.detail = res.data.payload)
+    },
+    /**
+     * Request an operation
+     *
+     * @param {string} key
+     * @param {boolean} asMany
+     */
+    request(key, asMany = false) {
+      this.$emit('request', key, asMany ? [this.getItemId] : this.getItemId)
     }
   }
 }

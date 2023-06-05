@@ -80,7 +80,10 @@ export default {
     measure_unit: 'Measure unit',
     edit: 'Edit',
     copy: 'Copy',
+    start_business: 'Start business',
     stop_business: 'Stop business',
+    start_accumulating: 'Start accumulating',
+    stop_accumulating: 'Stop accumulating',
     delete: 'Delete',
     history: 'History',
     description: 'Description',
@@ -93,6 +96,7 @@ export default {
     optimize: 'Optimize',
     visual: 'Visual',
     speed: 'Speed',
+    operation: 'Operation',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -118,7 +122,8 @@ export default {
     blank_for_auto: 'Leave this field blank for auto creation',
     required: 'This field is required',
     invalid_input: 'Invalid input',
-    success: '{attr} successfully!'
+    success: '{attr} successfully',
+    fail: '{attr} failed'
   },
 
   // ****************************

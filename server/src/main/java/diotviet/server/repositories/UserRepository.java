@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email
      * @return
      */
-    @EntityGraph(value = "User.validTokens", type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = {"validTokens"})
     Optional<User> findByEmail(String email);
 
     /**

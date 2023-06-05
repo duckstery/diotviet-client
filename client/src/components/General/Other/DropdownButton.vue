@@ -10,6 +10,7 @@
     unelevated
     :label="isUsingImage ? undefined : label"
     :icon="isUsingImage ? undefined : icon"
+    :disable="disable"
   >
     <template v-if="isUsingImage">
       <img class="d-btn-img" :src="src">
@@ -61,6 +62,11 @@ export default {
     color: {
       type: String,
       default: 'brand'
+    },
+    // Color
+    disable: {
+      type: Boolean,
+      default: 'false'
     }
   },
 

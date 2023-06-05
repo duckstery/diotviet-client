@@ -29,6 +29,26 @@
 
       <q-space/>
 
+      <!-- Business operations -->
+      <DropdownButton :label="$t('field.operation')" icon="fa-solid fa-ellipsis-vertical"
+                      stretch color="positive" class="tw-ml-2" no-caps :disable="!isSelecting">
+        <q-list>
+          <template v-for="operation in operations">
+            <q-item v-if="operation.key" clickable v-close-popup
+                    @click="$emit('request', `${operation.key}`, getSelectedIds)">
+              <q-item-section avatar>
+                <q-icon :name="`fa-solid ${operation.icon}`" :color="operation.color"/>
+              </q-item-section>
+
+              <q-item-section>
+                {{ $t(`field.${operation.key}`) }}
+              </q-item-section>
+            </q-item>
+            <q-separator v-else inset/>
+          </template>
+        </q-list>
+      </DropdownButton>
+
       <!-- Row controls -->
       <Button :label="$t('field.add')" icon="fa-solid fa-plus"
               stretch color="positive" class="tw-ml-2" no-caps @click="$emit('request', 'create')"/>
@@ -158,9 +178,6 @@ export default {
     expanded: [],
     pagination: [],
 
-    // Table state
-    isSelecting: false,
-
     // Visible columns
     visibleCols: [],
   }),
@@ -181,6 +198,26 @@ export default {
       return isNaN(this.$refs.table?.$el.clientWidth)
         ? 500
         : this.$refs.table?.$el.clientWidth - 32
+    },
+    // Check if table is selecting something
+    isSelecting() {
+      return this.selected.length !== 0
+    },
+    // Business operations
+    operations() {
+      return [
+        {icon: 'fa-check', key: 'start_business', color: 'positive', event: 'start_business'},
+        {icon: 'fa-play', key: 'start_accumulating', color: 'positive', event: 'start_accumulating'},
+        {},
+        {icon: 'fa-ban', key: 'stop_business', color: 'negative', event: 'stop_business'},
+        {icon: 'fa-stop', key: 'stop_accumulating', color: 'negative', event: 'stop_accumulating'},
+        {},
+        {icon: 'fa-trash', key: 'delete', color: 'negative', event: 'delete'},
+      ]
+    },
+    // Get selected item's id
+    getSelectedIds() {
+      return this.selected.map(item => item.id)
     }
   },
 

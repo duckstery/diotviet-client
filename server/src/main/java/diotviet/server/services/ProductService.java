@@ -6,6 +6,7 @@ import diotviet.server.entities.Product;
 import diotviet.server.entities.QProduct;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductInteractRequest;
+import diotviet.server.templates.Product.ProductPatchRequest;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.utils.StorageUtils;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -98,6 +101,30 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    /**
+     * Patch item
+     *
+     * @param request
+     */
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    public void patch(ProductPatchRequest request) {
+        if (request.target().equals("business")) {
+            productRepository.updateIsInBusinessByIds(request.option(), request.ids());
+        } else if (request.target().equals("accumulating")) {
+            productRepository.updateCanBeAccumulatedByIds(request.option(), request.ids());
+        }
+    }
+
+    /**
+     * Delete multiple item with ids
+     *
+     * @param ids
+     */
+    @Transactional
+    public void delete(Long[] ids) {
+        productRepository.deleteByIds(ids);
+    }
+
     // ****************************
     // Private
     // ****************************
@@ -124,11 +151,11 @@ public class ProductService {
         }
         // Filter by min price
         if (Objects.nonNull(request.minPrice()) && !request.minPrice().isBlank()) {
-            query.and(product.actualPrice.goe(request.minPrice()));
+            query.and(product.actualPrice.castToNum(Long.class).goe(Long.parseLong(request.minPrice())));
         }
         // Filter by max price
         if (Objects.nonNull(request.maxPrice()) && !request.minPrice().isBlank()) {
-            query.and(product.actualPrice.loe(request.maxPrice()));
+            query.and(product.actualPrice.castToNum(Long.class).loe(Long.parseLong(request.maxPrice())));
         }
         // Filter by canBeAccumulated flag
         if (Objects.nonNull(request.canBeAccumulated())) {
