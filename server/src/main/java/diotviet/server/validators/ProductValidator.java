@@ -1,10 +1,7 @@
 package diotviet.server.validators;
 
-import diotviet.server.entities.Category;
 import diotviet.server.entities.Product;
 import diotviet.server.exceptions.ServiceValidationException;
-import diotviet.server.repositories.CategoryRepository;
-import diotviet.server.repositories.GroupRepository;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductInteractRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +62,7 @@ public class ProductValidator extends BaseValidator {
      */
     public String isCodeValid(Long id, String code) {
         if (Objects.isNull(code)) {
-            return this.generateCode();
+            return null;
         }
 
         if (Objects.isNull(id)) {
@@ -91,23 +88,5 @@ public class ProductValidator extends BaseValidator {
         }
 
         return code;
-    }
-
-    // ****************************
-    // Private API
-    // ****************************
-
-    /**
-     * Generate code
-     *
-     * @return
-     */
-    private String generateCode() {
-        // Get Product with "largest" code
-        Product product = productRepository.findFirstByCodeLikeOrderByCodeDesc("MS%");
-        // Get number part from code
-        String alphanumeric = Objects.isNull(product) ? "0" : product.getCode().substring(2);
-
-        return String.format("MS%05d", Integer.parseInt(alphanumeric) + 1);
     }
 }

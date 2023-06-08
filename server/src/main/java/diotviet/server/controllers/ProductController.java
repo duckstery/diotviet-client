@@ -1,9 +1,12 @@
 package diotviet.server.controllers;
 
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import diotviet.server.constants.Type;
 import diotviet.server.entities.Category;
 import diotviet.server.entities.Group;
 import diotviet.server.entities.Product;
+import diotviet.server.exceptions.FileUploadingException;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.ProductService;
@@ -17,8 +20,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 @Controller
@@ -133,6 +140,23 @@ public class ProductController extends BaseController {
     public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
         // Store item
         this.productService.delete(ids);
+
+        return ok("");
+    }
+
+    @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            CsvToBean<Product> csvToBean = new CsvToBeanBuilder<Product>(reader)
+                    .withType(Product.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .withIgnoreEmptyLine(true)
+                    .build();
+
+            List<Product> products = csvToBean.parse();
+        } catch (IOException ignored) {
+            throw new FileUploadingException();
+        }
 
         return ok("");
     }

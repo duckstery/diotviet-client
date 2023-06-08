@@ -97,6 +97,8 @@ export default {
     visual: 'Visual',
     speed: 'Speed',
     operation: 'Operation',
+    import: 'Import',
+    export: 'Export',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -123,7 +125,8 @@ export default {
     required: 'This field is required',
     invalid_input: 'Invalid input',
     success: '{attr} successfully',
-    fail: '{attr} failed'
+    fail: '{attr} failed',
+    from: 'From {attr}'
   },
 
   // ****************************

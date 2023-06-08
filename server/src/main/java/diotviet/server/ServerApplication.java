@@ -37,29 +37,29 @@ public class ServerApplication {
     @Bean
     CommandLineRunner commandLineRunner(){
         return args -> {
-            if (categoryRepository.count() <= 0) {
-                for(String name : new String[]{"Product", "Service", "Combo"})
-                {
-                    Category category = new Category();
-
-                    category.setName(name);
-                    category.setType(Type.PRODUCT);
-
-                    categoryRepository.save(category);
-                }
-            }
-
-            if (groupRepository.count() <= 0) {
-                for(String name : new String[]{"Group 1", "Group 2", "Group 3"})
-                {
-                    Group category = new Group();
-
-                    category.setName(name);
-                    category.setType(Type.PRODUCT);
-
-                    groupRepository.save(category);
-                }
-            }
+//            if (categoryRepository.count() <= 0) {
+//                for(String name : new String[]{"Product", "Service", "Combo"})
+//                {
+//                    Category category = new Category();
+//
+//                    category.setName(name);
+//                    category.setType(Type.PRODUCT);
+//
+//                    categoryRepository.save(category);
+//                }
+//            }
+//
+//            if (groupRepository.count() <= 0) {
+//                for(String name : new String[]{"Group 1", "Group 2", "Group 3"})
+//                {
+//                    Group category = new Group();
+//
+//                    category.setName(name);
+//                    category.setType(Type.PRODUCT);
+//
+//                    groupRepository.save(category);
+//                }
+//            }
         };
     }
 

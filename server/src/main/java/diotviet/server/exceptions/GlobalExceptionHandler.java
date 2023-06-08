@@ -12,14 +12,13 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
-import java.util.Arrays;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     // ****************************
@@ -54,7 +53,8 @@ public class GlobalExceptionHandler {
         // Create body
         GeneralResponse responseBody = new GeneralResponse(false, ex.getMessage(), ex.getClass());
         ex.printStackTrace();
-        // Common handle logic
+        System.out.println("ahihi");
+// Common handle logic
         commonLog(ex, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, responseBody);
     }
 
@@ -76,6 +76,24 @@ public class GlobalExceptionHandler {
         GeneralResponse responseBody = new GeneralResponse(false, message, ex.getAttribute());
         // Common handle logic
         commonLog(ex, response, HttpStatus.UNPROCESSABLE_ENTITY.value(), responseBody);
+    }
+
+    @ExceptionHandler(FileServingException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void handleFileServing(HttpServletRequest request, HttpServletResponse response, FileServingException ex) throws IOException {
+        // Create body
+        GeneralResponse responseBody = new GeneralResponse(false, __(ex.getKey()), "");
+        // Common handle logic
+        commonLog(ex, response, HttpStatus.NOT_FOUND.value(), responseBody);
+    }
+
+    @ExceptionHandler(FileUploadingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void handleFileServing(HttpServletRequest request, HttpServletResponse response, FileUploadingException ex) throws IOException {
+        // Create body
+        GeneralResponse responseBody = new GeneralResponse(false, __(ex.getKey()), "");
+        // Common handle logic
+        commonLog(ex, response, HttpStatus.BAD_REQUEST.value(), responseBody);
     }
 
     // ****************************

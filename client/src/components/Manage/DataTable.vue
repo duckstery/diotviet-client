@@ -57,6 +57,7 @@
 
       <q-space/>
 
+      <ImEx @request="onImExRequest"/>
       <!-- Columns visibility controls -->
       <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
                       stretch color="positive" class="tw-ml-2" no-caps
@@ -141,11 +142,12 @@ import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import DropdownButton from "components/General/Other/DropdownButton.vue";
 import ExpandableTr from "components/Manage/ExpandableTr.vue";
+import ImEx from "components/Manage/ImEx.vue";
 
 export default {
   name: 'DataTable',
 
-  components: {ExpandableTr, DropdownButton, Button, TextField},
+  components: {ImEx, ExpandableTr, DropdownButton, Button, TextField},
 
   props: {
     // Table header
@@ -246,6 +248,16 @@ export default {
      */
     onCollapse() {
       this.$refs.table.setExpanded([])
+    },
+
+    /**
+     * On import and export request
+     *
+     * @param {string} mode
+     * @param {File} item
+     */
+    onImExRequest(mode, item) {
+      this.$emit('request', mode, item)
     },
 
     /**

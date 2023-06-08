@@ -29,7 +29,7 @@ public class Group {
     /**
      * Name
      */
-    @Column(length = 10)
+    @Column(length = 20)
     private String name;
 
     /**

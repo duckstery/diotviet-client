@@ -49,14 +49,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
     Product findFirstByCode(String code);
 
     /**
-     * Find first Product where code like "?" Order by code desc
-     *
-     * @param code
-     * @return
-     */
-    Product findFirstByCodeLikeOrderByCodeDesc(String code);
-
-    /**
      * Update Product isInBusiness flag
      *
      * @param isInBusiness

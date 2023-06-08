@@ -106,6 +106,14 @@ export default {
     applyCommon(res) {
       // Table's headers
       this.headers = res.data.payload.headers
+      // Add formatter for actualPricek
+      if (Array.isArray(this.headers)) {
+        this.headers.forEach(header => {
+          if (header.name === 'actualPrice') {
+            header["format"] = this.$util.formatMoney
+          }
+        })
+      }
       // Categories
       this.categories = res.data.payload.categories
       // Groups
@@ -170,11 +178,36 @@ export default {
       if (['create', 'update', 'copy'].includes(mode)) {
         // Need to be interacted before sending request
         this.onInteractiveRequest(mode, item)
+      } else if (['legacy', 'import'].includes(mode)) {
+        // Need to send file to server
+        this.$util.promptConfirm(this)
+          .onOk(() => this.onFileRequest(mode, item))
       } else {
         // Directly send to server
         this.$util.promptConfirm(this)
           .onOk(() => this.onDirectRequest(mode, item))
       }
+    },
+
+    /**
+     * On send file request
+     *
+     * @param {string} mode
+     * @param {File} item
+     */
+    onFileRequest(mode, item) {
+      console.warn(mode)
+      console.warn(item)
+
+      // Craft formData
+      const formData = this.$util.craftFormData({file: item})
+
+      // Send request
+      this.$axios.post((mode === 'legacy' ? 'legacy' : '') + '/product/import', formData, {headers: {"Content-Type": "multipart/form-data"}})
+        .then(() => {
+          this.$notify(this.$t('message.success', {attr: this.$t('field.operation')}))
+        })
+        .catch(this.$error.$422.bind(this, 'input'))
     },
 
     /**
@@ -194,15 +227,15 @@ export default {
         // Convert option to boolean
         option = option === 'start'
         api = 'patch'
-
-        // Send request
-        this.$axios[api](`/product/${api}`, {ids: item, target, option})
-          .then(() => {
-            this.$notify(this.$t('message.success', {attr: this.$t('field.operation')}))
-            this.onSearch(this.getPreviousSearchData)
-          })
-          .catch(() => this.$notifyErr(this.$t('message.fail', {attr: this.$t('field.operation')})))
       }
+
+      // Send request
+      this.$axios[api](`/product/${api}`, {ids: item, target, option})
+        .then(() => {
+          this.$notify(this.$t('message.success', {attr: this.$t('field.operation')}))
+          this.onSearch(this.getPreviousSearchData)
+        })
+        .catch(() => this.$notifyErr(this.$t('message.fail', {attr: this.$t('field.operation')})))
     },
 
     /**
@@ -214,7 +247,7 @@ export default {
     onInteractiveRequest(mode, item) {
       // Create props so item("null") won't override Editor default value
       const componentProps = {mode, categories: this.categories, groups: this.groups}
-      
+
       // Add item
       if (item !== null) {
         componentProps.item = {

@@ -3,12 +3,14 @@ package diotviet.server.entities;
 import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
+import diotviet.server.generators.ProductCodeGenerator;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -125,4 +127,16 @@ public class Product {
      */
     @Column(nullable = false)
     private Boolean isInBusiness;
+
+    /**
+     * Generate code before persist
+     */
+    @PrePersist
+    @PreUpdate
+    public void prePersist() {
+        if (Objects.isNull(code)) {
+            // Generate code
+            code = ProductCodeGenerator.generate("MS");
+        }
+    }
 }
