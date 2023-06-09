@@ -2,9 +2,8 @@ package diotviet.server.controllers;
 
 import diotviet.server.entities.Product;
 import diotviet.server.exceptions.FileUploadingException;
-import diotviet.server.repositories.ProductRepository;
-import diotviet.server.services.LegacyImportService;
-import diotviet.server.validators.ProductValidator;
+import diotviet.server.services.imports.ImportService;
+import diotviet.server.services.imports.ProductImportService;
 import org.dhatim.fastexcel.reader.ReadableWorkbook;
 import org.dhatim.fastexcel.reader.Row;
 import org.dhatim.fastexcel.reader.Sheet;
@@ -18,12 +17,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Support import from legacy (KiotViet)
+ * Support imports from legacy (KiotViet)
  */
 @Controller
 @RequestMapping(value = "/api/v1/legacy", produces = "application/json")
@@ -37,7 +35,7 @@ public class LegacyImportController extends BaseController {
      * Service
      */
     @Autowired
-    private LegacyImportService service;
+    private ProductImportService service;
 
     // ****************************
     // Public API
@@ -52,11 +50,11 @@ public class LegacyImportController extends BaseController {
     @PostMapping(value = "product/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
         // Create Product list
-        List<Product> products = service.prepImportProduct();
+        List<Product> products = service.prep();
         // Open stream to file
-        openStream(file, row -> products.add(service.convertToProduct(row)));
+        openStream(file, row -> products.add(service.convert(row)));
         // Import data
-        service.importProduct(products);
+        service.runImport(products);
 
         return ok("");
     }

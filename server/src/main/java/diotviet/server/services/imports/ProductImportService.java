@@ -1,4 +1,4 @@
-package diotviet.server.services;
+package diotviet.server.services.imports;
 
 import diotviet.server.entities.Category;
 import diotviet.server.entities.Group;
@@ -12,9 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class LegacyImportService {
+public class ProductImportService implements ImportService<Product> {
 
     // ****************************
     // Properties
@@ -50,15 +51,16 @@ public class LegacyImportService {
     private HashMap<String, Group> groupMap;
 
     // ****************************
-    // Public Prep API
+    // Public API
     // ****************************
 
     /**
-     * Prepare to import Product
+     * Prepare to imports Product
      *
      * @return
      */
-    public List<Product> prepImportProduct() {
+    @Override
+    public List<Product> prep() {
         // Cache category
         categoryMap = new HashMap<>();
         for (Category category : categoryRepository.findAll()) {
@@ -73,11 +75,14 @@ public class LegacyImportService {
         return new ArrayList<>();
     }
 
-    // ****************************
-    // Public Convert API
-    // ****************************
-
-    public Product convertToProduct(Row row) {
+    /**
+     * Convert legacy to Product
+     *
+     * @param row
+     * @return
+     */
+    @Override
+    public Product convert(Row row) {
         // Create output
         Product product = new Product();
 
@@ -100,18 +105,53 @@ public class LegacyImportService {
         return product;
     }
 
-    // ****************************
-    // Public SQL API
-    // ****************************
+    /**
+     * Re-attach any relationship
+     *
+     * @param e
+     * @return
+     */
+    @Override
+    public void pull(List<Product> products) {
+        for (Product product : products) {
+            // Pull Category
+            product.setCategory(categoryMap.getOrDefault(
+                    product.getCategory().getName(), // This is the staled Category name, use it to pull from the persisted Category
+                    null)
+            );
+
+            // Create new Set
+            product.setGroups(product
+                    .getGroups()
+                    .stream()
+                    .map(group -> groupMap.getOrDefault(group.getName(), null)) // Iterate through each staled Group, use it to pull from the persisted Group
+                    .collect(Collectors.toCollection(HashSet::new)));
+        }
+    }
 
     /**
      * Import Product
      *
      * @param products
      */
+    @Override
     @Transactional
-    public void importProduct(List<Product> products) {
+    public void runImport(List<Product> products) {
         // Bulk insert
         productRepository.saveAll(products);
+        // Flush all cache
+        this.flush();
+    }
+
+    /**
+     * Flush cache
+     */
+    @Override
+    public void flush() {
+        categoryMap.clear();
+        categoryMap = null;
+
+        groupMap.clear();
+        groupMap = null;
     }
 }

@@ -53,8 +53,8 @@ public class GlobalExceptionHandler {
         // Create body
         GeneralResponse responseBody = new GeneralResponse(false, ex.getMessage(), ex.getClass());
         ex.printStackTrace();
-        System.out.println("ahihi");
-// Common handle logic
+
+        // Common handle logic
         commonLog(ex, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, responseBody);
     }
 
@@ -94,6 +94,15 @@ public class GlobalExceptionHandler {
         GeneralResponse responseBody = new GeneralResponse(false, __(ex.getKey()), "");
         // Common handle logic
         commonLog(ex, response, HttpStatus.BAD_REQUEST.value(), responseBody);
+    }
+
+    @ExceptionHandler(ExportCSVException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public void handleExportCSV(HttpServletRequest request, HttpServletResponse response, ExportCSVException ex) throws IOException {
+        // Create body
+        GeneralResponse responseBody = new GeneralResponse(false, ex.getKey(), "");
+        // Common handle logic
+        commonLog(ex, response, HttpStatus.INTERNAL_SERVER_ERROR.value(), responseBody);
     }
 
     // ****************************

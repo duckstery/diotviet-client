@@ -30,6 +30,9 @@ import DataTable from "components/Manage/DataTable.vue";
 import ProductFilter from "components/Manage/Product/ProductFilter.vue";
 import ProductDetail from "components/Manage/Product/ProductDetail.vue";
 import ProductEditor from "components/Manage/Product/ProductEditor.vue";
+import {saveAs} from 'file-saver'
+import {date} from "quasar";
+
 
 export default {
   name: 'ProductPage',
@@ -181,7 +184,11 @@ export default {
       } else if (['legacy', 'import'].includes(mode)) {
         // Need to send file to server
         this.$util.promptConfirm(this)
-          .onOk(() => this.onFileRequest(mode, item))
+          .onOk(() => this.onImportRequest(mode, item))
+      } else if (['export'].includes(mode)) {
+        // Need to send file to server
+        this.$util.promptConfirm(this)
+          .onOk(() => this.onExportRequest())
       } else {
         // Directly send to server
         this.$util.promptConfirm(this)
@@ -195,19 +202,23 @@ export default {
      * @param {string} mode
      * @param {File} item
      */
-    onFileRequest(mode, item) {
-      console.warn(mode)
-      console.warn(item)
-
+    onImportRequest(mode, item) {
       // Craft formData
       const formData = this.$util.craftFormData({file: item})
 
       // Send request
       this.$axios.post((mode === 'legacy' ? 'legacy' : '') + '/product/import', formData, {headers: {"Content-Type": "multipart/form-data"}})
-        .then(() => {
-          this.$notify(this.$t('message.success', {attr: this.$t('field.operation')}))
-        })
+        .then(this.onSuccessOperation)
         .catch(this.$error.$422.bind(this, 'input'))
+    },
+
+    /**
+     * On export file request
+     */
+    onExportRequest() {
+      // Send request
+      this.$axios.get('/product/export', {responseType: "blob"})
+        .then(res => saveAs(res.data, `Products_${date.formatDate(Date.now(), 'YYMMDD')}.csv`))
     },
 
     /**
@@ -231,10 +242,7 @@ export default {
 
       // Send request
       this.$axios[api](`/product/${api}`, {ids: item, target, option})
-        .then(() => {
-          this.$notify(this.$t('message.success', {attr: this.$t('field.operation')}))
-          this.onSearch(this.getPreviousSearchData)
-        })
+        .then(this.onSuccessOperation)
         .catch(() => this.$notifyErr(this.$t('message.fail', {attr: this.$t('field.operation')})))
     },
 
@@ -270,6 +278,14 @@ export default {
       }).onDismiss(() => {
 
       })
+    },
+
+    /**
+     * On any operation success
+     */
+    onSuccessOperation() {
+      this.$notify(this.$t('message.success', {attr: this.$t('field.operation')}))
+      this.onSearch(this.getPreviousSearchData)
     }
   }
 }

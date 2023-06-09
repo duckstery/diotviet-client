@@ -2,6 +2,7 @@ package diotviet.server.repositories;
 
 import com.querydsl.core.types.Predicate;
 import diotviet.server.entities.Product;
+import diotviet.server.views.Product.ProductDetailView;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -39,6 +41,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      */
     @EntityGraph(attributePaths = {"category", "groups"})
     <T> T findById(Long id, Class<T> classType);
+
+    @Override
+    @EntityGraph(attributePaths = {"category", "groups"})
+    List<Product> findAll();
 
     /**
      * Get first by code

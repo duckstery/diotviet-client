@@ -3,6 +3,7 @@ package diotviet.server.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import diotviet.server.constants.Type;
+import diotviet.server.views.Nameable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,7 +20,7 @@ import java.util.Set;
 @Data
 @Accessors(chain = true)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Category {
+public class Category implements Nameable {
     /**
      * Id
      */

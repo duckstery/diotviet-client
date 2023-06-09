@@ -77,7 +77,7 @@ public class ProductValidator extends BaseValidator {
         } else {
             // Validate for "UPDATE"
             // Get first Product that has matched code
-            Product product = this.productRepository.findFirstByCode(code);System.out.println(product);
+            Product product = this.productRepository.findFirstByCode(code);
             if (Objects.isNull(product) && code.startsWith("MS")) {
                 // Check if Product with code is not exist and code format is reserved
                 throw new ServiceValidationException("reserved", "product", "code");

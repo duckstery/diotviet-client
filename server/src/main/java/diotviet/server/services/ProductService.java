@@ -13,15 +13,14 @@ import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductSearchView;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -121,6 +120,15 @@ public class ProductService {
     @Transactional
     public void delete(Long[] ids) {
         productRepository.deleteByIds(ids);
+    }
+
+    /**
+     * Get all Product for export
+     *
+     * @return
+     */
+    public List<Product> export() {
+        return productRepository.findAll();
     }
 
     // ****************************

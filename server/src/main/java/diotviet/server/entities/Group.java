@@ -1,7 +1,9 @@
 package diotviet.server.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opencsv.bean.CsvBindByName;
 import diotviet.server.constants.Type;
+import diotviet.server.views.Nameable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +19,7 @@ import java.util.Set;
 @Table(name = "groups")
 @Data
 @Accessors(chain = true)
-public class Group {
+public class Group implements Nameable {
     /**
      * Id
      */

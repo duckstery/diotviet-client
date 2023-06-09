@@ -1,7 +1,6 @@
 package diotviet.server.controllers;
 
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.*;
 import diotviet.server.constants.Type;
 import diotviet.server.entities.Category;
 import diotviet.server.entities.Group;
@@ -10,11 +9,13 @@ import diotviet.server.exceptions.FileUploadingException;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.ProductService;
+import diotviet.server.services.imports.ProductImportService;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Product.*;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Product.ProductSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.List;
 
 @Controller
@@ -50,6 +48,11 @@ public class ProductController extends BaseController {
      */
     @Autowired
     private GroupService groupService;
+    /**
+     * Product import service
+     */
+    @Autowired
+    private ProductImportService importService;
     /**
      * Utilities for Entity interact
      */
@@ -144,20 +147,35 @@ public class ProductController extends BaseController {
         return ok("");
     }
 
+    /**
+     * Import CSV
+     *
+     * @param file
+     * @return
+     */
     @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
-        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-            CsvToBean<Product> csvToBean = new CsvToBeanBuilder<Product>(reader)
-                    .withType(Product.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .withIgnoreEmptyLine(true)
-                    .build();
-
-            List<Product> products = csvToBean.parse();
-        } catch (IOException ignored) {
-            throw new FileUploadingException();
-        }
+        // Parse CSV file
+        List<Product> products = parse(file, Product.class);
+        // Prep the importer
+        importService.prep();
+        // Re-attach (or pull) any relationship
+        importService.pull(products);
+        // Run import
+        importService.runImport(products);
 
         return ok("");
+    }
+
+    @GetMapping(value = "/export")
+    public ResponseEntity<?> exportCSV() {
+        // Export Bean to CSV
+        byte[] bytes = export(productService.export());
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=ahihi.imports")
+                .contentLength(bytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new ByteArrayResource(bytes));
     }
 }

@@ -8,10 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -103,15 +108,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors().disable()
-                .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(this::configExceptionHandling)
                 .authenticationProvider(authenticationProvider())
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/fallback/**").permitAll()
-                .requestMatchers("/api/v1/**", "/api/v2/**", "api/auth/logout").authenticated()
-                .anyRequest().permitAll();
+                .sessionManagement(this::configSessionManagement)
+                .authorizeHttpRequests(this::configAuthorizeHttpRequests);
 
         // Set authentication token filter
         // Look like request will be filtered by JWT Token, if failed, proceed to filter by username and password
@@ -121,5 +123,39 @@ public class SecurityConfig {
         http.authenticationProvider(authenticationProvider());
 
         return http.build();
+    }
+
+    // ****************************
+    // Private
+    // ****************************
+
+    /**
+     * Apply exceptionHandling config
+     *
+     * @param configurer
+     */
+    private void configExceptionHandling(ExceptionHandlingConfigurer<HttpSecurity> configurer) {
+        configurer.authenticationEntryPoint(unauthorizedHandler);
+    }
+
+    /**
+     * Apply exceptionHandling config
+     *
+     * @param configurer
+     */
+    private void configSessionManagement(SessionManagementConfigurer<HttpSecurity> configurer) {
+        configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    /**
+     * Apply authorizeHttpRequests config
+     *
+     * @param configurer
+     */
+    private void configAuthorizeHttpRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry configurer) {
+        configurer
+                .requestMatchers("/api/fallback/**").permitAll()
+                .requestMatchers("/api/v1/**", "/api/v2/**", "api/auth/logout").authenticated()
+                .anyRequest().permitAll();
     }
 }

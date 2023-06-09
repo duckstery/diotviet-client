@@ -63,7 +63,7 @@ export default {
      * On export file
      */
     onExport() {
-
+      this.$emit('request', 'export')
     },
   }
 }
