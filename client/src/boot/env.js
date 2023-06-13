@@ -22,6 +22,15 @@ const env = {
   },
 
   /**
+   * Check if is light mode
+   *
+   * @return {boolean}
+   */
+  isLight() {
+    return this.get('display') === 'light'
+  },
+
+  /**
    * Check if is optimized for visual
    *
    * @return {boolean}

@@ -8,7 +8,7 @@
     <!-- Items section -->
     <q-card-section class="tw-w-full tw-min-h-[424px] tw-py-0">
       <div class="row">
-        <SampleItem v-for="item in pageItems" :value="item" :class="isVisualizing ? 'col-3' : 'col-4'"
+        <SampleItem v-for="item in pageItems" :value="item" :class="(isVisualizing ? 'col-md-3' : 'col-md-4') + ' col-12'"
                     :visualize="isVisualizing" @click="onAddItem(item)"/>
       </div>
     </q-card-section>

@@ -99,7 +99,7 @@
     <!-- Body -->
     <template #body="props">
       <!-- Item's row -->
-      <q-tr :props="props" :class="`tw-cursor-pointer ${props.expand ? 'bg-blue-1' : ''}`"
+      <q-tr :props="props" :class="generateItemRowClass(props.expand)"
             @click="props.expand = !props.expand">
         <q-td auto-width>
           <q-checkbox size="xs" v-model="props.selected"/>
@@ -220,7 +220,7 @@ export default {
     // Get selected item's id
     getSelectedIds() {
       return this.selected.map(item => item.id)
-    }
+    },
   },
 
   watch: {
@@ -243,6 +243,19 @@ export default {
   emits: ['search', 'request'],
 
   methods: {
+    /**
+     * Generate item row class
+     *
+     * @return {object}
+     */
+    generateItemRowClass(isExpanded) {
+      return {
+        'tw-cursor-pointer': true,
+        'tw-bg-blue-100': isExpanded && this.$env.isLight(),
+        'tw-bg-blue-950': isExpanded && !this.$env.isLight(),
+      }
+    },
+
     /**
      * Collapse all expanded row
      */
