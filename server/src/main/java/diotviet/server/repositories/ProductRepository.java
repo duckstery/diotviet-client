@@ -3,6 +3,7 @@ package diotviet.server.repositories;
 import com.querydsl.core.types.Predicate;
 import diotviet.server.entities.Product;
 import diotviet.server.views.Product.ProductDetailView;
+import diotviet.server.views.Product.ProductDisplayView;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -45,6 +46,13 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
     @Override
     @EntityGraph(attributePaths = {"category", "groups"})
     List<Product> findAll();
+
+    /**
+     * Get Product that is in business to display
+     *
+     * @return
+     */
+    List<ProductDisplayView> findAllByIsInBusinessTrue();
 
     /**
      * Get first by code

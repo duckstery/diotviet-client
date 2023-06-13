@@ -52,8 +52,8 @@ export function usePriceControl (refObj, originalKey, actualKey) {
         const intValue = parseInt(value);
         if (intValue > 999999999) {
           nextTick(() => refObj[originalKey] = '999999999')
-        } else if (intValue < 1) {
-          nextTick(() => refObj[originalKey] = '1000')
+        } else if (intValue < 0) {
+          nextTick(() => refObj[originalKey] = '0')
         }
       }),
 

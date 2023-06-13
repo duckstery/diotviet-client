@@ -83,6 +83,17 @@ public class ProductController extends BaseController {
     }
 
     /**
+     * Display items for page
+     *
+     * @return
+     */
+    @GetMapping("/display")
+    public ResponseEntity<?> display() {
+        // Return data
+        return ok(productService.display());
+    }
+
+    /**
      * Search for Product that satisfy condition
      *
      * @param request

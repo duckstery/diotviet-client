@@ -8,7 +8,8 @@
     <!-- Items section -->
     <q-card-section class="tw-w-full tw-min-h-[424px] tw-py-0">
       <div class="row">
-        <SampleItem v-for="item in pageItems" :value="item" :class="isVisualizing ? 'col-3' : 'col-4'" :visualize="isVisualizing" @click="onAddItem(item)"/>
+        <SampleItem v-for="item in pageItems" :value="item" :class="isVisualizing ? 'col-3' : 'col-4'"
+                    :visualize="isVisualizing" @click="onAddItem(item)"/>
       </div>
     </q-card-section>
 
@@ -64,23 +65,29 @@ export default {
 
   components: {SamplePanelToolbar, SampleItem, Select, Button},
 
+  props: {
+    // Items
+    items: {
+      type: Object,
+      default: () => (Array(15).fill().map((v, i) => ({
+        id: i,
+        code: `00${i + 1}`,
+        title: 'Title of cdddd ddddd ddddd ddd dddddddddd ddddddddd'.toUpperCase(),
+        originalPrice: `${i + 1}0000`,
+        discount: '0',
+        discountUnit: '%',
+        actualPrice: `${i + 1}0000`,
+        measureUnit: 'Kg',
+        src: 'https://cdn.quasar.dev/img/parallax2.jpg'
+      })))
+    }
+  },
+
   data: () => ({
     // Design
     isVisualizing: false,
     // Pagination
     page: 1,
-    // Items
-    items: Array(15).fill().map((v, i) => ({
-      id: i,
-      code: `00${i + 1}`,
-      title: 'Title of cdddd ddddd ddddd ddd dddddddddd ddddddddd'.toUpperCase(),
-      originalPrice: `${i + 1}0000`,
-      discount: '0',
-      discountUnit: '%',
-      actualPrice: `${i + 1}0000`,
-      measureUnit: 'Kg',
-      src: 'https://cdn.quasar.dev/img/parallax2.jpg'
-    }))
   }),
 
   computed: {

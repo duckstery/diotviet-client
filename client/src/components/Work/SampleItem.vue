@@ -4,6 +4,8 @@
       <!-- Image (visual) section -->
       <q-img
         ratio="1"
+        spinner-color="brand"
+
         :width="size"
         :height="size"
         :src="value.src"

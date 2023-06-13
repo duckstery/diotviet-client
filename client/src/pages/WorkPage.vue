@@ -5,7 +5,7 @@
         <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
       </div>
       <div class="col-6">
-        <ItemPanel ref="itemPanel"/>
+        <ItemPanel :items="items" ref="itemPanel"/>
         <StatisticPanel :max-height="statisticPanelHeight" class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
       </div>
     </div>
@@ -27,6 +27,7 @@ export default defineComponent({
 
   data: () => ({
     isMounted: false,
+    items: [],
   }),
 
   computed: {
@@ -40,8 +41,28 @@ export default defineComponent({
     }
   },
 
+  methods: {
+    /**
+     * Initiate load
+     */
+    index() {
+      // Call API to get data for table
+      this.$axios.get('/product/display')
+        .then(this.applyItems)
+    },
+
+    /**
+     * Apply items
+     * @param res
+     */
+    applyItems(res) {
+      this.items = res.data.payload
+    }
+  },
+
   mounted() {
     this.isMounted = true
+    this.index()
   }
 })
 </script>

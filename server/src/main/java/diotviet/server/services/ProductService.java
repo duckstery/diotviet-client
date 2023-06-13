@@ -12,6 +12,7 @@ import diotviet.server.utils.OtherUtils;
 import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
+import diotviet.server.views.Product.ProductDisplayView;
 import diotviet.server.views.Product.ProductSearchView;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,15 @@ public class ProductService {
 
         // Query for Product's data // .project("title") ??????????
         return productRepository.findBy(filter, q -> q.as(ProductSearchView.class).page(pageable));
+    }
+
+    /**
+     * Get all displayable Product
+     *
+     * @return
+     */
+    public List<ProductDisplayView> display() {
+        return productRepository.findAllByIsInBusinessTrue();
     }
 
     /**
