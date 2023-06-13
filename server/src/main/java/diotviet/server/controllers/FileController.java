@@ -28,13 +28,8 @@ public class FileController {
      * @return
      * @throws IOException
      */
-    @GetMapping("/image/{name}")
-    public ResponseEntity<?> login(@PathVariable String name) throws IOException {
-        // Check if name contains extension
-        if (name.contains(".")) {
-            throw new FileServingException("extension_not_allow");
-        }
-
+    @GetMapping("/files/{name}")
+    public ResponseEntity<?> serveImage(@PathVariable String name) throws IOException {
         // Resolve filename
         Path target = StorageUtils.resolve(name);
         // Get extension

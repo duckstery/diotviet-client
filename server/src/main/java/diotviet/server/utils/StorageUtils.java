@@ -1,16 +1,19 @@
 package diotviet.server.utils;
 
 import diotviet.server.exceptions.FileServingException;
+import org.apache.commons.compress.utils.FileNameUtils;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -58,7 +61,7 @@ public class StorageUtils {
         // Output
         String output = "";
         try {
-            output = Objects.isNull(filename) ? "" : filename.split("\\.")[1];
+            output = Objects.isNull(filename) ? "" : StringUtils.strip(filename, "/").split("\\.")[1];
         } catch (Exception ignored) {
         }
 
@@ -75,17 +78,12 @@ public class StorageUtils {
         // Try to init
         init();
 
-        // Get file extension
-        String extension = getExtension(multipartFile.getOriginalFilename());
-        // Generate filename
-        String filename = OtherUtils.hash(multipartFile.getBytes()) + "_" + System.currentTimeMillis() + "." + extension;
-        // Create target path
-        Path relativePath = FILES_ROOT.resolve(filename);
-
-        // Save file to location
-        Files.copy(multipartFile.getInputStream(), PUBLIC_DIR.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
-
-        return relativePath.toString();
+        return copy(
+                multipartFile.getInputStream(),
+                OtherUtils.hash(multipartFile.getBytes()),
+                System.currentTimeMillis(),
+                getExtension(multipartFile.getOriginalFilename())
+        ).toString();
     }
 
     /**
@@ -101,7 +99,7 @@ public class StorageUtils {
         // Get matched file
         Path target = Files
                 .list(PUBLIC_DIR.resolve(FILES_ROOT))
-                .filter(path -> path.toString().contains(filename))
+                .filter(path -> path.getFileName().toString().equals(filename))
                 .findFirst()
                 .orElse(null);
         // Check if file is exists
@@ -127,15 +125,65 @@ public class StorageUtils {
     }
 
     /**
-     * Sort
+     * Pull image
      *
-     * @param list
+     * @param url
      * @return
      */
-    public static List<String> sort(List<String> list) {
-        // Sort list
-        Collections.sort(list);
+    public static String pull(String url, long timeSuffix) {
+        if (Objects.isNull(url)) {
+            return "";
+        }
 
-        return list;
+        // Open stream to URL
+        try {
+            // Try to init
+            init();
+            // Get filename in URL
+            String filepath = URI.create(url).getPath();
+
+            // Save file
+            return copy(
+                    new URL(url).openStream(),
+                    FileNameUtils.getBaseName(filepath),
+                    timeSuffix,
+                    FileNameUtils.getExtension(filepath)
+            ).toString();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return "";
+    }
+
+    // ****************************
+    // Private API
+    // ****************************
+
+    /**
+     * Copy file to destination of ([hash]_[timeSuffix].[extension]
+     *
+     * @param is
+     * @param hash
+     * @param timeSuffix
+     * @param extension
+     * @return
+     * @throws IOException
+     */
+    private static Path copy(InputStream is, String hash, long timeSuffix, String extension) throws IOException {
+        // Generate filename
+        String filename = hash + "_" + timeSuffix + "." + extension;
+        // Create target path
+        Path relativePath = FILES_ROOT.resolve(filename);
+
+        // Save file to location
+        Files.copy(is, PUBLIC_DIR.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
+        // Try to close input stream
+        try {
+            is.close();
+        } catch (Exception ignored) {
+        }
+
+        return relativePath;
     }
 }

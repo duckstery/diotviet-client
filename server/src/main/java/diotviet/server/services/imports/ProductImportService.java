@@ -6,6 +6,7 @@ import diotviet.server.entities.Product;
 import diotviet.server.repositories.CategoryRepository;
 import diotviet.server.repositories.GroupRepository;
 import diotviet.server.repositories.ProductRepository;
+import diotviet.server.utils.StorageUtils;
 import org.dhatim.fastexcel.reader.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,13 +50,17 @@ public class ProductImportService implements ImportService<Product> {
      * Cache Group
      */
     private HashMap<String, Group> groupMap;
+    /**
+     * Time of import
+     */
+    private Long timer;
 
     // ****************************
     // Public API
     // ****************************
 
     /**
-     * Prepare to imports Product
+     * Prepare to import Product
      *
      * @return
      */
@@ -71,6 +76,9 @@ public class ProductImportService implements ImportService<Product> {
         for (Group group : groupRepository.findAll()) {
             groupMap.put(group.getName(), group);
         }
+
+        // Mark time of Import
+        timer = System.currentTimeMillis();
 
         return new ArrayList<>();
     }
@@ -94,7 +102,7 @@ public class ProductImportService implements ImportService<Product> {
         product.setDiscountUnit("%");
         product.setDescription("");
         product.setMeasureUnit(Objects.isNull(row.getCell(12).getValue()) ? "" : row.getCell(12).getRawValue());
-        product.setSrc(Objects.isNull(row.getCell(15).getValue()) ? "" : row.getCell(12).getRawValue());
+        product.setSrc(StorageUtils.pull(row.getCell(15).getRawValue(), timer));
         product.setWeight("0");
         product.setCanBeAccumulated(row.getCell(17).getRawValue().equals("1"));
         product.setIsInBusiness(row.getCell(18).getRawValue().equals("1"));

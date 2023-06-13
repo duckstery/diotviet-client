@@ -66,7 +66,7 @@ export default {
     // Color
     disable: {
       type: Boolean,
-      default: 'false'
+      default: false
     }
   },
 
