@@ -1,24 +1,20 @@
 <template>
-  <Page>
-    <!-- Breadcrumbs -->
-    <Breadcrumbs :items="breadcrumbs" ref="breadcrumbs"/>
-    <div class="row tw-pt-5" :style="`min-height: ${contentHeight}px`">
-      <div class="col-3 tw-pr-3">
-        <!-- Title -->
-        <div class="tw-text-3xl tw-font-semibold">{{ $t('field.product') }}</div>
+  <Page :breadcrumbs="breadcrumbs">
+    <div class="col-3 tw-pr-3">
+      <!-- Title -->
+      <div class="tw-text-3xl tw-font-semibold">{{ $t('field.product') }}</div>
 
-        <!-- Filter -->
-        <ProductFilter v-model="filter" :categories="categories" :groups="groups" @request="onSearch"/>
-      </div>
-      <div class="col-9">
-        <!-- Data table -->
-        <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
-                   @search="onSearch" @request="onRequest">
-          <template #default="props">
-            <ProductDetail v-bind="props" @request="onRequest"/>
-          </template>
-        </DataTable>
-      </div>
+      <!-- Filter -->
+      <ProductFilter v-model="filter" :categories="categories" :groups="groups" @request="onSearch"/>
+    </div>
+    <div class="col-9">
+      <!-- Data table -->
+      <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
+                 @search="onSearch" @request="onRequest">
+        <template #default="props">
+          <ProductDetail v-bind="props" @request="onRequest"/>
+        </template>
+      </DataTable>
     </div>
   </Page>
 </template>
@@ -32,7 +28,6 @@ import ProductDetail from "components/Manage/Product/ProductDetail.vue";
 import ProductEditor from "components/Manage/Product/ProductEditor.vue";
 import {saveAs} from 'file-saver'
 import {date} from "quasar";
-
 
 export default {
   name: 'ProductPage',
@@ -79,14 +74,6 @@ export default {
         {label: this.$t('field.product'), to: '/product', icon: 'fa-box'},
         {label: this.$t('field.list'), to: '/product', icon: 'fa-grip'},
       ]
-    },
-    // Remaining space below breadcrumbs
-    contentHeight() {
-      // Calculate content height
-      const contentHeight = this.globalVars.usableHeight - this.$refs.breadcrumbs?.$el.clientHeight
-      return isNaN(contentHeight)
-        ? this.globalVars.usableHeight - 30
-        : contentHeight
     },
     // Get previous search data
     getPreviousSearchData() {

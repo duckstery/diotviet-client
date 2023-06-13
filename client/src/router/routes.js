@@ -44,14 +44,9 @@ const routes = [
     path: '/partner',
     component: () => import('layouts/ManageLayout.vue'),
     children: [
-      r('', 'Partner', () => import('pages/Partner/CustomerPage.vue')),
-    ]
-  },
-  {
-    path: '/staff',
-    component: () => import('layouts/ManageLayout.vue'),
-    children: [
-      r('', 'Staff', () => import('pages/Staff/StaffPage.vue')),
+      r('', 'Partner', () => import('pages/Partner/PartnerPage.vue')),
+      r('customer', 'Partner.Customer', () => import('pages/Partner/CustomerPage.vue')),
+      r('staff', 'Partner.Staff', () => import('pages/Partner/StaffPage.vue')),
     ]
   },
 

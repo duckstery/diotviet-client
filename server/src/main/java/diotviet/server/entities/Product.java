@@ -50,7 +50,7 @@ public class Product {
      */
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "assoc_product_groups",
+            name = "assoc_products_groups",
             joinColumns = {@JoinColumn(name = "product_id")},
             inverseJoinColumns = {@JoinColumn(name = "group_id")}
     )

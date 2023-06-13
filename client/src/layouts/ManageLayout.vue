@@ -46,13 +46,10 @@ export default {
         // {key: 'return', icon: 'fa-angles-left', to: '/transaction/return'}
       ],
       'partner': [
-        {key: 'customer', icon: 'fa-user-tag', to: '/partner'},
+        {key: 'customer', icon: 'fa-user-tag', to: '/partner/customer'},
+        {key: 'staff', icon: 'fa-user-tie', to: '/partner/staff'},
         // {key: 'supplier', icon: 'fa-box-open', to: '/partner/supplier'},
         // {key: 'shipper', icon: 'fa-truck-fast', to: '/partner/shipper'}
-      ],
-      'staff': [
-        {key: 'list', icon: 'fa-grip', to: '/staff'},
-        {key: 'timekeeping', icon: 'fa-business-time', to: '/staff/workday'},
       ],
     }
   }),
@@ -60,7 +57,7 @@ export default {
   computed: {
     // The name of route is the key of tabs
     activeTabs() {
-      return this.tabs[(this.$route.name ?? '').toLowerCase()]
+      return this.tabs[(this.$route.name ?? '').toLowerCase().split('.')[0]]
     }
   },
 }

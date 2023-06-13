@@ -122,6 +122,35 @@ const util = {
     }
 
     return formData
+  },
+
+  /**
+   * Check prop in object by dot notation
+   *
+   * @param {object} obj
+   * @param {string} dotNotation
+   * @return {*}
+   */
+  getProp(obj, dotNotation) {
+    if (this.isUnset(obj)) {
+      return obj
+    }
+
+    // Result holder
+    let result = obj
+    // Split dotNotation by dot
+    const notations = dotNotation.split(".")
+
+    while (notations.length > 0) {
+      // Get prop
+      result = result[notations.shift()];
+      // Immediately return if undefined
+      if (this.isUnset(result)) {
+        return result
+      }
+    }
+
+    return result
   }
 }
 

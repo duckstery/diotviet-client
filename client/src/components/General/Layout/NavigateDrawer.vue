@@ -67,11 +67,6 @@ export default {
         icon: 'fa-handshake',
         to: '/partner'
       },
-      {
-        key: 'staff',
-        icon: 'fa-user-tie',
-        to: '/staff'
-      },
       {},
       {
         key: 'report',
