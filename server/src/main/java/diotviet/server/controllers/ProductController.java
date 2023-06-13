@@ -1,11 +1,9 @@
 package diotviet.server.controllers;
 
-import com.opencsv.bean.*;
 import diotviet.server.constants.Type;
 import diotviet.server.entities.Category;
 import diotviet.server.entities.Group;
 import diotviet.server.entities.Product;
-import diotviet.server.exceptions.FileUploadingException;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.ProductService;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
 import java.util.List;
 
 @Controller

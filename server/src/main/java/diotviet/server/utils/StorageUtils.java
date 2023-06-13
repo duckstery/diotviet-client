@@ -2,7 +2,6 @@ package diotviet.server.utils;
 
 import diotviet.server.exceptions.FileServingException;
 import org.apache.commons.compress.utils.FileNameUtils;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 

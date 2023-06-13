@@ -1,7 +1,6 @@
 package diotviet.server.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.opencsv.bean.CsvBindByName;
 import diotviet.server.constants.Type;
 import diotviet.server.views.Nameable;
 import jakarta.persistence.*;

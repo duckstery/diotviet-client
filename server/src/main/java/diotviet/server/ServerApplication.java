@@ -1,14 +1,9 @@
 package diotviet.server;
 
-import diotviet.server.constants.Type;
-import diotviet.server.entities.Category;
-import diotviet.server.entities.Group;
 import diotviet.server.repositories.CategoryRepository;
 import diotviet.server.repositories.GroupRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

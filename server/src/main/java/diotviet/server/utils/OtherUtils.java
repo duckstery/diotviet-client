@@ -1,14 +1,7 @@
 package diotviet.server.utils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.codec.Hex;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;

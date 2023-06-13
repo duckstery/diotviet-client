@@ -2,7 +2,6 @@ package diotviet.server.repositories;
 
 import com.querydsl.core.types.Predicate;
 import diotviet.server.entities.Product;
-import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductDisplayView;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +13,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Repository

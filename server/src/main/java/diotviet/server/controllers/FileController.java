@@ -1,6 +1,5 @@
 package diotviet.server.controllers;
 
-import diotviet.server.exceptions.FileServingException;
 import diotviet.server.utils.StorageUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
