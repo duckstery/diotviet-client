@@ -1,16 +1,15 @@
 package diotviet.server.controllers;
 
 import diotviet.server.constants.Type;
-import diotviet.server.entities.Category;
+import diotviet.server.entities.Customer;
 import diotviet.server.entities.Group;
-import diotviet.server.entities.Product;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.CustomerService;
 import diotviet.server.services.GroupService;
 import diotviet.server.templates.Customer.CustomerInitResponse;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
+import diotviet.server.templates.Customer.CustomerSearchResponse;
 import diotviet.server.templates.EntityHeader;
-import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Customer.CustomerSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -30,7 +30,7 @@ public class CustomerController extends BaseController {
     // ****************************
 
     /**
-     * Product service
+     * Customer service
      */
     @Autowired
     private CustomerService customerService;
@@ -62,39 +62,28 @@ public class CustomerController extends BaseController {
     @GetMapping("/index")
     public ResponseEntity<?> index(CustomerSearchRequest request) {
         // Get headers
-        EntityHeader[] headers = entityUtils.getHeaders(Product.class);
-        // Get list of Products (get all data, no need to filter anything)
+        EntityHeader[] headers = entityUtils.getHeaders(Customer.class);
+        // Get list of Customers (get all data, no need to filter anything)
         Page<CustomerSearchView> items = customerService.paginate(request);
-
-        List<Category> categories = categoryService.getCategories(Type.PRODUCT);
+System.out.println(items);
+        // List<Category> categories = categoryService.getCategories(Type.PARTNER);
         // Get group list for FilterPanel
-        List<Group> groups = groupService.getGroups(Type.PRODUCT);
+        List<Group> groups = groupService.getGroups(Type.PARTNER);
 
-        return ok(new CustomerInitResponse(headers, items, categories, groups));
+        return ok(new CustomerInitResponse(headers, items, groups));
     }
 
-//    /**
-//     * Display items for page
-//     *
-//     * @return
-//     */
-//    @GetMapping("/display")
-//    public ResponseEntity<?> display() {
-//        // Return data
-//        return ok(productService.display());
-//    }
-//
-//    /**
-//     * Search for Product that satisfy condition
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @GetMapping("/search")
-//    public ResponseEntity<?> search(ProductSearchRequest request) {
-//        // Search for data and response
-//        return ok(new ProductSearchResponse(productService.paginate(request)));
-//    }
+    /**
+     * Search for Customer that satisfy condition
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> search(CustomerSearchRequest request) {
+        // Search for data and response
+        return ok(new CustomerSearchResponse(customerService.paginate(request)));
+    }
 //
 //    /**
 //     * Show detail

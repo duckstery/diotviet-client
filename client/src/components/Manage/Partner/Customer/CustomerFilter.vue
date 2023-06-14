@@ -1,98 +1,41 @@
 <template>
-  <!-- Category filter -->
-  <FilterPanel :title="$t('field.category')" class="tw-mt-3">
-    <q-scroll-area class="tw-h-[100px]">
-      <q-item v-for="category in categories" tag="label" dense>
-        <q-item-section avatar>
-          <q-checkbox v-model="filter.categories" :val="category.id" color="primary" dense/>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>{{ category.name }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-scroll-area>
-  </FilterPanel>
-
   <!-- Group filter -->
-  <FilterPanel :title="$t('field.group')" class="tw-mt-3">
-    <!-- Search for group -->
-    <TextField v-model="groupName" label="Search" icon="search"/>
+  <DynamicFilter v-model="filter.group" :items="groups" :title="$t('field.group')" class="tw-mt-3"/>
 
-    <q-scroll-area class="tw-h-[160px] tw-mt-3">
-      <q-item v-for="group in satisfiedGroup" tag="label" dense>
-        <q-item-section avatar>
-          <q-radio v-model="filter.group" :val="group.id" color="primary" dense/>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>{{ group.name }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-scroll-area>
+  <!-- Create at filter -->
+  <FilterPanel :title="$t('field.created_at')" class="tw-mt-3">
+    <DatePicker v-model="filter.createAtFrom" :label="$t('field.from_date')"/>
+    <DatePicker v-model="filter.createAtTo" :label="$t('field.to_date')" class="tw-mt-3"/>
   </FilterPanel>
 
-  <!-- Price range filter -->
-  <FilterPanel :title="$t('field.price_range')" class="tw-mt-3">
-    <q-scroll-area class="tw-h-[130px] tw-mt-3">
-      <q-item v-for="range in priceRanges" tag="label" dense>
-        <q-item-section avatar>
-          <q-radio :model-value="currentPriceRange" :val="`${range.min}-${range.max}`" color="primary" dense
-                   @update:model-value="onChangePriceRange"/>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>
-            <span v-if="range.max === ''">
-              {{ $t('field.all') }}
-            </span>
-            <span v-else>
-              {{ $t('message.from_to', {from: $util.formatMoney(range.min), to: $util.formatMoney(range.max)}) }}
-            </span>
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-scroll-area>
+  <!-- Birthday filter -->
+  <FilterPanel :title="$t('field.birthday')" class="tw-mt-3">
+    <DatePicker v-model="filter.birthdayFrom" :label="$t('field.from_date')"/>
+    <DatePicker v-model="filter.birthdayTo" :label="$t('field.to_date')" class="tw-mt-3"/>
   </FilterPanel>
 
-  <!-- Can be accumulated -->
-  <FilterPanel :title="$t('field.can_be_accumulated')" class="tw-mt-3">
-    <q-scroll-area class="tw-h-[100px] tw-mt-3">
-      <q-item v-for="option in booleanOptions" tag="label" dense>
-        <q-item-section avatar>
-          <q-radio v-model="filter.canBeAccumulated" :val="option" color="primary" dense/>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>
-            {{ option === null ? $t('field.all') : $t(`field.${option}`) }}
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-scroll-area>
+  <!-- Last transaction filter -->
+  <FilterPanel :title="$t('field.last_transaction')" class="tw-mt-3">
+    <DatePicker v-model="filter.lastTransactionAtFrom" :label="$t('field.from_date')"/>
+    <DatePicker v-model="filter.lastTransactionAtTo" :label="$t('field.to_date')" class="tw-mt-3"/>
   </FilterPanel>
 
-  <!-- Is in business -->
-  <FilterPanel :title="$t('field.is_in_business')" class="tw-mt-3">
-    <q-scroll-area class="tw-h-[100px] tw-mt-3">
-      <q-item v-for="option in booleanOptions" tag="label" dense>
-        <q-item-section avatar>
-          <q-radio v-model="filter.isInBusiness" :val="option" color="primary" dense/>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>
-            {{ option === null ? $t('field.all') : $t(`field.${option}`) }}
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-scroll-area>
-  </FilterPanel>
+  <!-- Gender -->
+  <RadioFilter v-model="filter.isMale" class="tw-mt-3" :title="$t('field.gender')"
+               :true-label="$t('field.male')" :false-label="$t('field.female')"/>
 </template>
 
 <script>
 import FilterPanel from "components/Manage/FilterPanel.vue";
 import TextField from "components/General/Other/TextField.vue";
+import DatePicker from "components/General/Other/DatePicker.vue";
+import DynamicFilter from "components/Manage/DynamicFilter.vue";
+import RadioFilter from "components/Manage/RadioFilter.vue";
 
 export default {
   name: "CustomerFilter",
 
-  components: {TextField, FilterPanel},
+  components: {RadioFilter, DynamicFilter, DatePicker, TextField, FilterPanel},
 
   props: {
     modelValue: Object,
@@ -100,54 +43,17 @@ export default {
     groups: Array
   },
 
-  computed: {
-    // Group: All
-    getGroupAll() {
-      return {
-        id: null,
-        name: this.$t('field.all')
-      }
-    },
-    // Get satisfied group and always add group: All to front
-    satisfiedGroup() {
-      // Get satisfiedGroup
-      const satisfiedGroup = this.groups?.filter(group => group.name.includes(this.groupName))
-      // Add group: All
-      satisfiedGroup.unshift(this.getGroupAll)
-
-      return satisfiedGroup
-    },
-    // Get price range
-    priceRanges() {
-      return [
-        {min: '', max: ''},
-        {min: '0', max: '10000'},
-        {min: '10000', max: '100000'},
-        {min: '100000', max: '1000000'}
-      ]
-    },
-    // Get current price range
-    currentPriceRange() {
-      return `${this.modelValue.minPrice}-${this.modelValue.maxPrice}`
-    },
-    // Boolean options for all boolean filter
-    booleanOptions() {
-      return [null, true, false]
-    }
-  },
-
   data: () => ({
-    // Support
-    groupName: '',
-
     // Filter
     filter: {
-      categories: [],
       group: null,
-      minPrice: '',
-      maxPrice: '',
-      canBeAccumulated: null,
-      isInBusiness: null
+      createAtFrom: null,
+      createAtTo: null,
+      birthdayFrom: null,
+      birthdayTo: null,
+      lastTransactionAtFrom: null,
+      lastTransactionAtTo: null,
+      isMale: null
     },
   }),
 
@@ -163,25 +69,5 @@ export default {
       }
     }
   },
-
-  methods: {
-    /**
-     * On change price range
-     *
-     * @param value
-     */
-    onChangePriceRange(value) {
-      // Split by -
-      const range = value.split('-');
-
-      // Set value to filter
-      this.filter.minPrice = this.$util.nullIfEmpty(range[0])
-      this.filter.maxPrice = this.$util.nullIfEmpty(range[1])
-    }
-  }
 }
 </script>
-
-<style scoped>
-
-</style>

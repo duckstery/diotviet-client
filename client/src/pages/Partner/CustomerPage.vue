@@ -5,14 +5,14 @@
       <div class="tw-text-3xl tw-font-semibold">{{ $t('field.customer') }}</div>
 
       <!-- Filter -->
-      <ProductFilter v-model="filter" :categories="categories" :groups="groups" @request="onSearch"/>
+      <CustomerFilter v-model="filter" :categories="categories" :groups="groups" @request="onSearch"/>
     </div>
     <div class="col-9">
       <!-- Data table -->
       <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
                  @search="onSearch" @request="onRequest">
         <template #default="props">
-          <ProductDetail v-bind="props" @request="onRequest"/>
+          <CustomerDetail v-bind="props" @request="onRequest"/>
         </template>
       </DataTable>
     </div>
@@ -23,16 +23,16 @@
 import Page from "components/General/Layout/Page.vue";
 import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
 import DataTable from "components/Manage/DataTable.vue";
-import ProductFilter from "components/Manage/Product/ProductFilter.vue";
-import ProductDetail from "components/Manage/Product/ProductDetail.vue";
-import ProductEditor from "components/Manage/Product/ProductEditor.vue";
+import CustomerFilter from "components/Manage/Partner/Customer/CustomerFilter.vue";
+import CustomerDetail from "components/Manage/Partner/Customer/CustomerDetail.vue";
+import CustomerEditor from "components/Manage/Partner/Customer/CustomerEditor.vue";
 import {saveAs} from 'file-saver'
 import {date} from "quasar";
 
 export default {
   name: 'CustomerPage',
 
-  components: {ProductDetail, ProductFilter, Page, DataTable, Breadcrumbs},
+  components: {CustomerDetail, CustomerFilter, Page, DataTable, Breadcrumbs},
 
   inject: ['globalVars'],
 
@@ -43,12 +43,14 @@ export default {
 
     // Filter
     filter: {
-      categories: [],
       group: null,
-      minPrice: '',
-      maxPrice: '',
-      canBeAccumulated: null,
-      isInBusiness: null
+      createAtFrom: null,
+      createAtTo: null,
+      birthdayFrom: null,
+      birthdayTo: null,
+      lastTransactionAtFrom: null,
+      lastTransactionAtTo: null,
+      isMale: null
     },
 
     // Table
@@ -132,7 +134,7 @@ export default {
      */
     index() {
       // Call API to get data for table
-      this.$axios.get('/product/index')
+      this.$axios.get('/customer/index')
         .then(res => {
           this.applyCommon(res)
           this.applyItems(res)
@@ -148,7 +150,7 @@ export default {
       // Save search content
       this.previousSearch = data ? data.search : ''
       // Call API to get data for table
-      this.$axios.get('/product/search', {
+      this.$axios.get('/customer/search', {
         params: {
           ...this.filter,
           search: this.previousSearch,
@@ -206,7 +208,7 @@ export default {
     onExportRequest() {
       // Send request
       this.$axios.get('/product/export', {responseType: "blob"})
-        .then(res => saveAs(res.data, `Products_${date.formatDate(Date.now(), 'YYMMDD')}.csv`))
+        .then(res => saveAs(res.data, `Customers_${date.formatDate(Date.now(), 'YYMMDD')}.csv`))
     },
 
     /**
@@ -257,7 +259,7 @@ export default {
 
       // Invoke dialog
       this.$q.dialog({
-        component: ProductEditor,
+        component: CustomerEditor,
         componentProps: componentProps
       }).onOk((data) => {
         this.onSearch(this.getPreviousSearchData)

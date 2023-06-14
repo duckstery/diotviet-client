@@ -8,7 +8,9 @@
     bg-color="brand"
 
     :mask="mask"
+    :rules="rules"
     :label="label"
+    :readonly="readonly"
     :outlined="!compact"
     :clearable="!required"
     :unmasked-value="!!mask"
@@ -32,6 +34,10 @@ export default {
     modelValue: String,
     // Label
     label: String,
+    // Rules
+    rules: Array,
+    // Readonly
+    readonly: Boolean,
     // Icon
     icon: {
       type: String,

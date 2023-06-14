@@ -44,16 +44,14 @@ public interface CustomerSearchView {
      *
      * @return
      */
-    @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.birthday.name, \"yyyy-MM-dd\")}")
-    String getBirthDay();
+    String getBirthday();
 
     /**
      * Gender
      *
      * @return
      */
-    @Value("#{target.isMale ? 'M' : 'F'}")
-    String getGender();
+    boolean getIsMale();
 
     /**
      * Point
@@ -61,4 +59,26 @@ public interface CustomerSearchView {
      * @return
      */
     Long getPoint();
+
+    /**
+     * Get creator
+     *
+     * @return
+     */
+    String getCreatedBy();
+
+    /**
+     * Get create date
+     *
+     * @return
+     */
+    // @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.createdAt, \"yyyy-MM-dd\")}")
+    String getCreatedAt();
+
+    /**
+     * Get create date
+     *
+     * @return
+     */
+    String getLastTransactionAt();
 }

@@ -76,10 +76,6 @@
       </DropdownButton>
     </template>
 
-    <template #top-right>
-
-    </template>
-
     <!-- Header -->
     <template #header="props">
       <q-tr>
@@ -109,11 +105,18 @@
           :key="col.name"
           :props="props"
         >
-          <q-icon
-            v-if="typeof col.value === 'boolean'"
-            :name="`fa-solid fa-${col.value ? 'check' : 'xmark'}`"
-            :color="col.value ? 'positive' : 'negative'"
-          />
+          <template v-if="typeof col.value === 'boolean'">
+            <q-icon
+              v-if="col.name === 'isMale' || col.name === 'gender'"
+              :name="`fa-solid fa-${col.value ? 'mars' : 'venus'}`"
+              :color="col.value ? 'primary' : 'negative'"
+            />
+            <q-icon
+              v-else
+              :name="`fa-solid fa-${col.value ? 'check' : 'xmark'}`"
+              :color="col.value ? 'positive' : 'negative'"
+            />
+          </template>
           <span v-else class="tw-text-sm">{{ col.value }}</span>
         </q-td>
       </q-tr>
@@ -170,7 +173,7 @@ export default {
     selection: {
       type: String,
       default: 'multiple'
-    }
+    },
   },
 
   data: () => ({

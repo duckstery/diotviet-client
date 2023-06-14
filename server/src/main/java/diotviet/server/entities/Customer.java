@@ -3,6 +3,7 @@ package diotviet.server.entities;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvCustomBindByName;
 import com.opencsv.bean.CsvIgnore;
+import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
 import diotviet.server.generators.NameableField;
@@ -12,6 +13,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.Set;
@@ -20,9 +22,10 @@ import java.util.Set;
  * User model
  */
 @Entity
-@Table(name = "customer")
+@Table(name = "customers")
 @Data
 @Accessors(chain = true)
+@QueryEntity
 public class Customer {
 
     // ****************************
@@ -45,6 +48,7 @@ public class Customer {
     @JoinColumn(name = "category_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @CsvCustomBindByName(converter = NameableField.class)
+    @InitIgnore
     private Category category;
 
     /**
@@ -79,6 +83,7 @@ public class Customer {
     @Temporal(TemporalType.DATE)
     @InitHide
     @CsvBindByName
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date birthday;
 
     @Column(nullable = false)
@@ -106,12 +111,19 @@ public class Customer {
     private Long point;
 
     @Column(length = 20)
-    @InitIgnore
+    @InitHide
     @CsvBindByName
     private String createdBy;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @InitIgnore
+    @Temporal(TemporalType.TIMESTAMP)
+    @InitHide
     @CsvBindByName
-    private Date createdAt;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date createdAt = new Date();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @InitHide
+    @CsvBindByName
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date lastTransactionAt;
 }

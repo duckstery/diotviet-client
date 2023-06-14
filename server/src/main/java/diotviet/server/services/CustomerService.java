@@ -1,7 +1,9 @@
 package diotviet.server.services;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.DateExpression;
 import diotviet.server.constants.PageConstants;
+import diotviet.server.entities.QCustomer;
 import diotviet.server.entities.QProduct;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
@@ -29,7 +31,7 @@ public class CustomerService {
      * Product repository
      */
     @Autowired
-    private CustomerRepository productRepository;
+    private CustomerRepository customerRepository;
     /**
      * Product validator
      */
@@ -54,11 +56,11 @@ public class CustomerService {
         Pageable pageable = PageRequest.of(
                 (Integer) OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
                 (Integer) OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
-                Sort.by("code")
+                Sort.by("id")
         );
 
-        // Query for Product's data // .project("title") ??????????
-        return productRepository.findBy(filter, q -> q.as(CustomerSearchView.class).page(pageable));
+        // Query for Customer's data
+        return customerRepository.findBy(filter, q -> q.as(CustomerSearchView.class).page(pageable));
     }
 
     // ****************************
@@ -72,38 +74,46 @@ public class CustomerService {
      * @return
      */
     private BooleanBuilder createFilter(CustomerSearchRequest request) {
-        // Get QProduct
-        QProduct product = QProduct.product;
+        // Get QCustomer
+        QCustomer customer = QCustomer.customer;
         // Final expressions
         BooleanBuilder query = new BooleanBuilder();
 
-        // Filter by category
-        if (Objects.nonNull(request.categories())) {
-            query.and(product.category.id.in(request.categories()));
-        }
         // Filter by groups
         if (Objects.nonNull(request.group())) {
-            query.and(product.groups.any().id.eq(request.group()));
+            query.and(customer.groups.any().id.eq(request.group()));
         }
-        // Filter by min price
-        if (Objects.nonNull(request.minPrice()) && !request.minPrice().isBlank()) {
-            query.and(product.actualPrice.castToNum(Long.class).goe(Long.parseLong(request.minPrice())));
+        // Filter by min createdAt
+        if (Objects.nonNull(request.createAtFrom())) {
+            query.and(customer.createdAt.goe(request.createAtFrom()));
         }
-        // Filter by max price
-        if (Objects.nonNull(request.maxPrice()) && !request.minPrice().isBlank()) {
-            query.and(product.actualPrice.castToNum(Long.class).loe(Long.parseLong(request.maxPrice())));
+        // Filter by max createdAt
+        if (Objects.nonNull(request.createAtTo())) {
+            query.and(customer.createdAt.loe(request.createAtTo()));
         }
-        // Filter by canBeAccumulated flag
-        if (Objects.nonNull(request.canBeAccumulated())) {
-            query.and(product.canBeAccumulated.eq(request.canBeAccumulated()));
+        // Filter by min birthday
+        if (Objects.nonNull(request.birthdayFrom())) {
+            query.and(customer.birthday.goe(request.birthdayFrom()));
         }
-        // Filter by isInBusiness flag
-        if (Objects.nonNull(request.isInBusiness())) {
-            query.and(product.isInBusiness.eq(request.isInBusiness()));
+        // Filter by max birthday
+        if (Objects.nonNull(request.birthdayTo())) {
+            query.and(customer.birthday.loe(request.birthdayTo()));
+        }
+        // Filter by min lastTransactionAt
+        if (Objects.nonNull(request.lastTransactionAtFrom())) {
+            query.and(customer.lastTransactionAt.goe(request.lastTransactionAtFrom()));
+        }
+        // Filter by max lastTransactionAt
+        if (Objects.nonNull(request.lastTransactionAtTo())) {
+            query.and(customer.lastTransactionAt.loe(request.lastTransactionAtTo()));
+        }
+        // Filter by isMale flag
+        if (Objects.nonNull(request.isMale())) {
+            query.and(customer.isMale.eq(request.isMale()));
         }
         // Filter by search string
         if (Objects.nonNull(request.search()) && !request.search().isBlank()) {
-            query.and(product.code.concat(product.title).contains(request.search()));
+            query.and(customer.name.concat(customer.phoneNumber).concat(customer.address).contains(request.search()));
         }
 
         // Connect expression
