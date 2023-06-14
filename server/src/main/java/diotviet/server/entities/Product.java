@@ -1,5 +1,6 @@
 package diotviet.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvCustomBindByName;
 import com.opencsv.bean.CsvIgnore;
@@ -8,14 +9,14 @@ import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
-import diotviet.server.generators.ProductCodeGenerator;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -148,15 +149,9 @@ public class Product {
     @CsvBindByName
     private Boolean isInBusiness;
 
-    /**
-     * Generate code before persist
-     */
-    @PrePersist
-    @PreUpdate
-    public void generateCode() {
-        if (Objects.isNull(code)) {
-            // Generate code
-            code = ProductCodeGenerator.generate("MS");
-        }
-    }
+    @Column(nullable = false)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Boolean isDeleted = Boolean.FALSE;
 }

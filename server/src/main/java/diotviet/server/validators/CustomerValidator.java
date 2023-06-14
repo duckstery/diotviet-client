@@ -70,14 +70,14 @@ public class CustomerValidator extends BaseValidator {
             if (code.startsWith("MS")) {
                 // Check if code format is reserved
                 throw new ServiceValidationException("reserved", "product", "code");
-            } else if (Objects.nonNull(this.productRepository.findFirstByCode(code))) {
+            } else if (Objects.nonNull(this.productRepository.findFirstByCodeAndIsDeletedFalse(code))) {
                 // Check if code is exist
                 throw new ServiceValidationException("exists_by", "product", "code");
             }
         } else {
             // Validate for "UPDATE"
             // Get first Product that has matched code
-            Product product = this.productRepository.findFirstByCode(code);
+            Product product = this.productRepository.findFirstByCodeAndIsDeletedFalse(code);
             if (Objects.isNull(product) && code.startsWith("MS")) {
                 // Check if Product with code is not exist and code format is reserved
                 throw new ServiceValidationException("reserved", "product", "code");

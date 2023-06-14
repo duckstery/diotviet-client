@@ -39,7 +39,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      * @return
      */
     @EntityGraph(attributePaths = {"category", "groups"})
-    <T> T findById(Long id, Class<T> classType);
+    <T> T findByIdAndIsDeletedFalse(Long id, Class<T> classType);
 
     @Override
     @EntityGraph(attributePaths = {"category", "groups"})
@@ -50,7 +50,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      *
      * @return
      */
-    List<ProductDisplayView> findAllByIsInBusinessTrue();
+    List<ProductDisplayView> findAllByIsInBusinessTrueAndIsDeletedFalse();
 
     /**
      * Get first by code
@@ -58,7 +58,15 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      * @param code
      * @return
      */
-    Product findFirstByCode(String code);
+    Product findFirstByCodeAndIsDeletedFalse(String code);
+
+    /**
+     * Find first Product where code like "?" Order by code desc
+     *
+     * @param code
+     * @return
+     */
+    Product findFirstByCodeLikeOrderByCodeDesc(String code);
 
     /**
      * Update Product isInBusiness flag
@@ -67,7 +75,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      * @param ids
      */
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Product p set p.isInBusiness = :isInBusiness WHERE p.id IN :ids")
+    @Query("UPDATE Product p set p.isInBusiness = :isInBusiness WHERE p.id IN :ids AND p.isDeleted = false")
     void updateIsInBusinessByIds(@Param("isInBusiness") boolean isInBusiness, @Param("ids") Long[] ids);
 
     /**
@@ -77,15 +85,24 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      * @param ids
      */
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Product p set p.canBeAccumulated = :canBeAccumulated WHERE p.id IN :ids")
+    @Query("UPDATE Product p set p.canBeAccumulated = :canBeAccumulated WHERE p.id IN :ids AND p.isDeleted = false")
     void updateCanBeAccumulatedByIds(@Param("canBeAccumulated") boolean canBeAccumulated, @Param("ids") Long[] ids);
 
     /**
-     * Delete Products by ID
+     * Delete assoc between Group and Product
      *
      * @param ids
      */
-    @Modifying
-    @Query("DELETE FROM Product p where p.id in :ids")
-    void deleteByIds(@Param("ids") Long[] ids);
+    @Modifying(clearAutomatically = true)
+    @Query(value = "DELETE FROM diotviet.assoc_products_groups WHERE product_id in :ids", nativeQuery = true)
+    void deleteGroupAssocById(@Param("ids") Long[] ids);
+
+    /**
+     * Delete Products by ID (this operation won't delete assoc, need to delete assoc first)
+     *
+     * @param ids
+     */
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE diotviet.products SET is_deleted = true WHERE id in :ids AND is_deleted = false RETURNING src", nativeQuery = true)
+    List<String> softDeleteByIdsReturningSrc(@Param("ids") Long[] ids);
 }

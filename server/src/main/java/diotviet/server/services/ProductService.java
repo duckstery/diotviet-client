@@ -14,6 +14,7 @@ import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductDisplayView;
 import diotviet.server.views.Product.ProductSearchView;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -75,7 +76,7 @@ public class ProductService {
      * @return
      */
     public List<ProductDisplayView> display() {
-        return productRepository.findAllByIsInBusinessTrue();
+        return productRepository.findAllByIsInBusinessTrueAndIsDeletedFalse();
     }
 
     /**
@@ -85,7 +86,7 @@ public class ProductService {
      * @return
      */
     public ProductDetailView findById(Long id) {
-        return productRepository.findById(id, ProductDetailView.class);
+        return productRepository.findByIdAndIsDeletedFalse(id, ProductDetailView.class);
     }
 
     /**
@@ -129,9 +130,20 @@ public class ProductService {
      *
      * @param ids
      */
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void delete(Long[] ids) {
-        productRepository.deleteByIds(ids);
+        // Delete assoc
+        productRepository.deleteGroupAssocById(ids);
+        // Delete and get image path (this is physical resource, not database resource)
+        List<String> paths = productRepository.softDeleteByIdsReturningSrc(ids);
+        // Iterate through each path and delete it
+        for (String path : paths) {
+            try {
+                StorageUtils.delete(FileNameUtils.getBaseName(path));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -189,6 +201,6 @@ public class ProductService {
         }
 
         // Connect expression
-        return query;
+        return query.and(product.isDeleted.isFalse());
     }
 }

@@ -7,6 +7,7 @@ import diotviet.server.repositories.CategoryRepository;
 import diotviet.server.repositories.GroupRepository;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.utils.StorageUtils;
+import diotviet.server.validators.ProductValidator;
 import org.dhatim.fastexcel.reader.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,11 @@ public class ProductImportService implements ImportService<Product> {
      */
     @Autowired
     private GroupRepository groupRepository;
+    /**
+     * Product validator
+     */
+    @Autowired
+    private ProductValidator validator;
 
     // ****************************
     // Cache
@@ -95,6 +101,7 @@ public class ProductImportService implements ImportService<Product> {
         Product product = new Product();
 
         // Set basic data
+        product.setCode(validator.generateCode());
         product.setTitle(row.getCell(3).getRawValue());
         product.setOriginalPrice(row.getCell(5).getRawValue().replaceAll(",|\\.\\d*", ""));
         product.setActualPrice(product.getOriginalPrice());

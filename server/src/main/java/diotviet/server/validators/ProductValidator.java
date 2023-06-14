@@ -62,7 +62,7 @@ public class ProductValidator extends BaseValidator {
      */
     public String isCodeValid(Long id, String code) {
         if (Objects.isNull(code)) {
-            return null;
+            return this.generateCode();
         }
 
         if (Objects.isNull(id)) {
@@ -70,14 +70,14 @@ public class ProductValidator extends BaseValidator {
             if (code.startsWith("MS")) {
                 // Check if code format is reserved
                 throw new ServiceValidationException("reserved", "product", "code");
-            } else if (Objects.nonNull(this.productRepository.findFirstByCode(code))) {
+            } else if (Objects.nonNull(this.productRepository.findFirstByCodeAndIsDeletedFalse(code))) {
                 // Check if code is exist
                 throw new ServiceValidationException("exists_by", "product", "code");
             }
         } else {
             // Validate for "UPDATE"
             // Get first Product that has matched code
-            Product product = this.productRepository.findFirstByCode(code);
+            Product product = this.productRepository.findFirstByCodeAndIsDeletedFalse(code);
             if (Objects.isNull(product) && code.startsWith("MS")) {
                 // Check if Product with code is not exist and code format is reserved
                 throw new ServiceValidationException("reserved", "product", "code");
@@ -88,5 +88,23 @@ public class ProductValidator extends BaseValidator {
         }
 
         return code;
+    }
+
+    // ****************************
+    // Private API
+    // ****************************
+
+    /**
+     * Generate code
+     *
+     * @return
+     */
+    public String generateCode() {
+        // Get Product with "largest" code
+        Product product = productRepository.findFirstByCodeLikeOrderByCodeDesc("MS%");
+        // Get number part from code
+        String alphanumeric = Objects.isNull(product) ? "0" : product.getCode().substring(2);
+
+        return String.format("MS%05d", Integer.parseInt(alphanumeric) + 1);
     }
 }

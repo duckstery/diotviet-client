@@ -79,10 +79,23 @@ public class StorageUtils {
 
         return copy(
                 multipartFile.getInputStream(),
-                OtherUtils.hash(multipartFile.getBytes()),
+                OtherUtils.hash(multipartFile.getBytes(), true),
                 System.currentTimeMillis(),
                 getExtension(multipartFile.getOriginalFilename())
         ).toString();
+    }
+
+    /**
+     * Delete file
+     *
+     * @param filename
+     * @throws IOException
+     */
+    public static void delete(String filename) throws IOException {
+        // Resolve path
+        Path absolutePath = resolve(filename);
+        // Delete path
+        Files.deleteIfExists(absolutePath);
     }
 
     /**

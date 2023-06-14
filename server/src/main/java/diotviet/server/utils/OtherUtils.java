@@ -4,6 +4,7 @@ import org.springframework.security.crypto.codec.Hex;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -47,15 +48,19 @@ public abstract class OtherUtils {
      * @param bytes
      * @return
      */
-    public static String hash(byte[] bytes) {
+    public static String hash(byte[] bytes, boolean useSalt) {
         // Output
         String hash = "";
 
         try {
+            // Get instance
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            // Add salt
+            if (useSalt) {
+                md.update(salt());
+            }
             // Digest the file at path
-            byte[] messageDigest = MessageDigest
-                    .getInstance("SHA-512")
-                    .digest(bytes);
+            byte[] messageDigest = md.digest(bytes);
 
             // Convert message digest into hex value and append 0 to make it 256bit
             hash = new String(Hex.encode(messageDigest));
@@ -65,5 +70,21 @@ public abstract class OtherUtils {
         }
 
         return hash;
+    }
+
+    /**
+     * Generate salt
+     *
+     * @return
+     */
+    public static byte[] salt() {
+        // Create a secure random
+        SecureRandom random = new SecureRandom();
+        // Output
+        byte[] salt = new byte[16];
+        // Generate salt
+        random.nextBytes(salt);
+
+        return salt;
     }
 }
