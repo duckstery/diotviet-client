@@ -145,9 +145,9 @@ export default {
     // Target item
     item: {
       type: Object,
-      default: () => (/**{
+      default: () => ({
         id: null,
-        title: null,
+        title: "",
         code: null,
         category: null,
         groups: [],
@@ -160,25 +160,8 @@ export default {
         isInBusiness: true,
         canBeAccumulated: false,
         weight: '1',
-        description: null,
-      }*/
-        {
-          id: null,
-          title: 'Ahihi',
-          code: null,
-          category: 7,
-          groups: [7, 8, 9],
-          originalPrice: '1000',
-          discount: '0',
-          discountUnit: "%",
-          actualPrice: '1000',
-          measureUnit: 'Pack',
-          src: null,
-          isInBusiness: true,
-          canBeAccumulated: false,
-          weight: '1',
-          description: 'Ahihoheha',
-        })
+        description: "",
+      })
     }
   },
 
@@ -248,7 +231,6 @@ export default {
         this.$axios.post('/product/store', formData, {headers: {"Content-Type": "multipart/form-data"}})
           .then(() => {
             this.$notify(this.$t("message.success", {attr: this.$t(`field.${this.mode}`)}))
-            // Close dialog
             this.ok()
           })
           .catch(this.$error.$422.bind(this, 'input'))

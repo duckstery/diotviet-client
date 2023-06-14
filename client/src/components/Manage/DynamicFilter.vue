@@ -28,7 +28,7 @@ export default {
 
   props: {
     // Model
-    modelValue: Array,
+    modelValue: Number,
     // Title
     title: String,
     // Items

@@ -6,7 +6,7 @@
 
     :model-value="modelValue"
     :multiple="multiple"
-    :max-file-size="size"
+    :max-file-size="maxSize"
     :label="$t('message.pick_file')"
     accept="image/png,image/jpg,image/jpeg"
 
@@ -53,7 +53,7 @@ export default {
   components: {Button},
   props: {
     // Model value
-    modelValue: Array,
+    modelValue: File,
     // Max size
     maxSize: Number,
     // Allow multiple file

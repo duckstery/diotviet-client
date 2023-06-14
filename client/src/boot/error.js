@@ -5,6 +5,12 @@ import {boot} from 'quasar/wrappers'
  * @type {object}
  */
 const error = {
+  /**
+   * Handle 422
+   *
+   * @param key
+   * @param err
+   */
   $422(key, err) {
     // Get response's data of err
     const data = err.response.data
