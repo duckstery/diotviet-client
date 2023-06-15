@@ -65,7 +65,7 @@ public class CustomerController extends BaseController {
         EntityHeader[] headers = entityUtils.getHeaders(Customer.class);
         // Get list of Customers (get all data, no need to filter anything)
         Page<CustomerSearchView> items = customerService.paginate(request);
-System.out.println(items);
+
         // List<Category> categories = categoryService.getCategories(Type.PARTNER);
         // Get group list for FilterPanel
         List<Group> groups = groupService.getGroups(Type.PARTNER);

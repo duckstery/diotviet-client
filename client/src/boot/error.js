@@ -1,4 +1,12 @@
 import {boot} from 'quasar/wrappers'
+
+// Check if error status match the handler
+const mustBe = (status, error) => {
+  if (error.response.status !== status) {
+    throw error
+  }
+}
+
 /**
  * Bunch of HTTP status error handler
  *
@@ -6,12 +14,28 @@ import {boot} from 'quasar/wrappers'
  */
 const error = {
   /**
+   * Handle 410
+   *
+   * @param key
+   * @param callback
+   * @param err
+   */
+  $410(callback, err) {
+    mustBe(410, err)
+    // Notify
+    this.$notifyWarn(this.$t('message.inconsistent_data'))
+    callback()
+  },
+
+  /**
    * Handle 422
    *
    * @param key
    * @param err
    */
   $422(key, err) {
+    mustBe(422, err)
+
     // Get response's data of err
     const data = err.response.data
     // Merge error

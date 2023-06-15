@@ -1,8 +1,11 @@
 package diotviet.server.validators;
 
+import diotviet.server.exceptions.DataInconsistencyException;
 import diotviet.server.exceptions.ServiceValidationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Objects;
 
 public abstract class BaseValidator {
 
@@ -41,5 +44,19 @@ public abstract class BaseValidator {
      */
     public void interrupt(String reason, String prefix, String attribute) {
         throw new ServiceValidationException(reason, prefix, attribute);
+    }
+
+    /**
+     * Check if obj is not null
+     *
+     * @param obj
+     * @return
+     */
+    public <T> T isExist(T obj) {
+        if (Objects.isNull(obj)) {
+            throw new DataInconsistencyException("not_exist");
+        }
+
+        return obj;
     }
 }

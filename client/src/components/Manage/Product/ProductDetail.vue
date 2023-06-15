@@ -210,6 +210,7 @@ export default {
     async fetch() {
       this.$axios.get(`/product/${this.getItemId}`, {loading: false})
         .then(res => this.detail = res.data.payload)
+        .catch(this.$error.$410.bind(this, () => this.request('fetch')))
     },
     /**
      * Request an operation

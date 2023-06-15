@@ -3,7 +3,7 @@ package diotviet.server.exceptions;
 import lombok.Getter;
 
 @Getter
-public class FileServingException extends RuntimeException {
+public class DataInconsistencyException extends RuntimeException {
 
     // ****************************
     // Properties
@@ -18,7 +18,7 @@ public class FileServingException extends RuntimeException {
     // Constructor
     // ****************************
 
-    public FileServingException(String key) {
+    public DataInconsistencyException(String key) {
         super(key);
         this.key = key;
     }

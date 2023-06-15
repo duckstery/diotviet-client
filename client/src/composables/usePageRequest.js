@@ -13,10 +13,10 @@ import {error} from "boot/error";
  * @param {string} key
  * @param {any} dialogComponent
  * @param {function} dialogCustomizer
- * @param {function} onDialogOK
+ * @param {function} onSuccess
  * @return {object}
  */
-export function usePageRequest(key, dialogComponent, dialogCustomizer, onDialogOK) {
+export function usePageRequest(key, dialogComponent, dialogCustomizer, onSuccess) {
   // i18n
   const $t = useI18n().t
 
@@ -96,7 +96,7 @@ export function usePageRequest(key, dialogComponent, dialogCustomizer, onDialogO
     Dialog.create({
       component: dialogComponent,
       componentProps: componentProps
-    }).onOk(onDialogOK)
+    }).onOk(onSuccess)
       .onCancel(() => {
 
       })
@@ -108,7 +108,7 @@ export function usePageRequest(key, dialogComponent, dialogCustomizer, onDialogO
   // On any operation success
   const onSuccessOperation = () => {
     notify($t('message.success', {attr: $t('field.operation')}))
-    onDialogOK()
+    onSuccess()
   }
 
   return {
@@ -128,9 +128,11 @@ export function usePageRequest(key, dialogComponent, dialogCustomizer, onDialogO
       } else if (['export'].includes(mode)) {
         // Need to send file to server
         util.promptConfirm().onOk(() => onExportRequest())
-      } else {
+      } else if (['delete', 'path'].includes(mode)) {
         // Directly send to server
         util.promptConfirm().onOk(() => onDirectRequest(mode, item))
+      } else {
+        onSuccess()
       }
     }
   }

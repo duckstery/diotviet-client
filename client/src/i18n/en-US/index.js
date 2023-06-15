@@ -135,7 +135,8 @@ export default {
     invalid_input: 'Invalid input',
     success: '{attr} successfully',
     fail: '{attr} failed',
-    from: 'From {attr}'
+    from: 'From {attr}',
+    inconsistent_data: 'Data has been refreshed because of the inconsistency'
   },
 
   // ****************************

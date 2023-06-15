@@ -73,7 +73,7 @@ public class ProductController extends BaseController {
         Page<ProductSearchView> items = productService.paginate(request);
 
         List<Category> categories = categoryService.getCategories(Type.PRODUCT);
-        System.out.println(categories.get(0).getProducts());
+
         // Get group list for FilterPanel
         List<Group> groups = groupService.getGroups(Type.PRODUCT);
 

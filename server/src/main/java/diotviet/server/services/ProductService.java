@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
 import diotviet.server.entities.Product;
 import diotviet.server.entities.QProduct;
+import diotviet.server.exceptions.DataInconsistencyException;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.templates.Product.ProductPatchRequest;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
@@ -86,7 +88,7 @@ public class ProductService {
      * @return
      */
     public ProductDetailView findById(Long id) {
-        return productRepository.findByIdAndIsDeletedFalse(id, ProductDetailView.class);
+        return validator.isExist(productRepository.findByIdAndIsDeletedFalse(id, ProductDetailView.class));
     }
 
     /**
@@ -139,7 +141,7 @@ public class ProductService {
         // Iterate through each path and delete it
         for (String path : paths) {
             try {
-                StorageUtils.delete(FileNameUtils.getBaseName(path));
+                StorageUtils.delete(Path.of(path).getFileName().toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
