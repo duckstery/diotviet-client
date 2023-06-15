@@ -153,5 +153,6 @@ public class Product {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @InitIgnore
     private Boolean isDeleted = Boolean.FALSE;
 }

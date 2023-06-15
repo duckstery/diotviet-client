@@ -1,9 +1,9 @@
 package diotviet.server.views.Product;
 
+import diotviet.server.views.Visualize;
 import org.springframework.beans.factory.annotation.Value;
-import java.util.ArrayList;
 
-public interface ProductDetailView extends ProductSearchView {
+public interface ProductDetailView extends ProductSearchView, Visualize {
     /**
      * Category ID
      *
@@ -54,13 +54,6 @@ public interface ProductDetailView extends ProductSearchView {
      * @return
      */
     String getDiscountUnit();
-
-    /**
-     * Weight
-     *
-     * @return
-     */
-    String getSrc();
 
     /**
      * Weight

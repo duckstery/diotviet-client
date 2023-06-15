@@ -68,7 +68,7 @@ public class StorageUtils {
     }
 
     /**
-     * Save file and generate public URL
+     * Save file and generate filename
      *
      * @param multipartFile
      * @return
@@ -82,7 +82,7 @@ public class StorageUtils {
                 OtherUtils.hash(multipartFile.getBytes(), true),
                 System.currentTimeMillis(),
                 getExtension(multipartFile.getOriginalFilename())
-        ).toString();
+        );
     }
 
     /**
@@ -160,7 +160,7 @@ public class StorageUtils {
                     FileNameUtils.getBaseName(filepath),
                     timeSuffix,
                     FileNameUtils.getExtension(filepath)
-            ).toString();
+            );
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -182,7 +182,7 @@ public class StorageUtils {
      * @return
      * @throws IOException
      */
-    private static Path copy(InputStream is, String hash, long timeSuffix, String extension) throws IOException {
+    private static String copy(InputStream is, String hash, long timeSuffix, String extension) throws IOException {
         // Generate filename
         String filename = hash + "_" + timeSuffix + "." + extension;
         // Create target path
@@ -196,6 +196,6 @@ public class StorageUtils {
         } catch (Exception ignored) {
         }
 
-        return relativePath;
+        return filename;
     }
 }

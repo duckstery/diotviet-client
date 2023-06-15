@@ -41,7 +41,7 @@
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
-                :src="`images/${key}.png`"
+                :src="`/images/${key}.png`"
                 :label="$t(`field.${key}`)"
               />
             </Skeleton>
@@ -56,7 +56,7 @@
                 :mask="key === 'measureUnit' || key === 'weight' ? '' : '###,###,###,###'"
                 :suffix="key === 'weight' ? 'Kg' : ''"
                 :modelValue="detail[key]"
-                :src="`images/${$util.camelToSnake(key)}.png`"
+                :src="`/images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
               />
             </Skeleton>
@@ -66,7 +66,7 @@
               :modelValue="discountAmount"
               space
               inner-class="tw-w-48"
-              :src="'images/discount.png'"
+              :src="'/images/discount.png'"
               :label="$t(`field.discount`)"
             />
           </Skeleton>
@@ -78,9 +78,9 @@
               :modelValue="this.detail.description"
               textarea
               horizontal
-              :src="'images/note.png'"
+              :src="'/images/note.png'"
               :label="$t(`field.description`)"
-              textarea-height="248"
+              textarea-height="244"
               textarea-length="100"
             />
           </Skeleton>
