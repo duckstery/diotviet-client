@@ -8,7 +8,7 @@
       <q-item-section>
         <q-item-label v-if="option === null">{{ $t('field.all') }}</q-item-label>
         <q-item-label v-else-if="option">{{ trueLabel ?? $t('field.true') }}</q-item-label>
-        <q-item-label v-else>{{ trueLabel ?? $t('field.false') }}</q-item-label>
+        <q-item-label v-else>{{ falseLabel ?? $t('field.false') }}</q-item-label>
       </q-item-section>
     </q-item>
   </FilterPanel>
