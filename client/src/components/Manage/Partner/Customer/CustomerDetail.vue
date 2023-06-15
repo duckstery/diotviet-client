@@ -6,20 +6,6 @@
           {{ detail.title ?? 'Title' }}
         </div>
       </Skeleton>
-      <div class="tw-mt-2 tw-flex tw-text-sm">
-        <Skeleton v-model="isReady" height="20px" width="200px">
-          <div v-for="key in ['canBeAccumulated', 'isInBusiness']">
-            <div class="tw-flex tw-mr-3">
-              <q-icon
-                :name="`fa-solid fa-${detail[key] ? 'check' : 'xmark'}`"
-                :color="detail[key] ? 'positive' : 'negative'"
-                class="tw-mt-1"
-              />
-              <div class="tw-ml-2">{{ $t(`field.${$util.camelToSnake(key)}`) }}</div>
-            </div>
-          </div>
-        </Skeleton>
-      </div>
       <div class="row">
         <!-- Image -->
         <div class="tw-mt-3 col-12 col-lg-4 col-md-6 tw-px-1.5">
@@ -31,7 +17,7 @@
               width="300"
               height="300"
               style="max-width: 300px; max-height: 300px"
-              :src="this.detail.src"
+              :src="detail.src"
             />
           </Skeleton>
         </div>
@@ -41,35 +27,37 @@
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
-                :src="`images/${key}.png`"
+                :src="`/images/${key}.png`"
                 :label="$t(`field.${key}`)"
               />
             </Skeleton>
           </template>
 
           <div class="tw-mt-5"/>
-          <template v-for="key in ['measureUnit', 'weight', 'originalPrice', 'actualPrice']">
+          <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+            <DisplayField
+              custom
+              :src="`/images/equality.png`"
+              :label="$t(`field.gender`)"
+            >
+              <q-icon :name="`fa-solid fa-${detail.isMale ? 'mars' : 'venus'}`"
+                      :color="`${detail.isMale ? 'primary' : 'negative'}`"
+                      size="xs"
+                      class="tw-my-auto tw-pt-3 tw-ml-3"/>
+            </DisplayField>
+          </Skeleton>
+
+          <template v-for="key in ['birthday', 'address', 'phoneNumber', 'email', 'facebook']">
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
-                space
-                inner-class="tw-w-48"
-                :mask="key === 'measureUnit' || key === 'weight' ? '' : '###,###,###,###'"
-                :suffix="key === 'weight' ? 'Kg' : ''"
                 :modelValue="detail[key]"
-                :src="`images/${$util.camelToSnake(key)}.png`"
+                :src="`/images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
+                :interactive="key !== 'birthday'"
+                @interact="onInteract(key, detail[key])"
               />
             </Skeleton>
           </template>
-          <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
-            <DisplayField
-              :modelValue="discountAmount"
-              space
-              inner-class="tw-w-48"
-              :src="'images/discount.png'"
-              :label="$t(`field.discount`)"
-            />
-          </Skeleton>
         </div>
         <!-- Secondary info -->
         <div class="tw-mt-3 col-12 col-lg-4 tw-px-1.5">
@@ -78,12 +66,21 @@
               :modelValue="this.detail.description"
               textarea
               horizontal
-              :src="'images/note.png'"
+              :src="'/images/note.png'"
               :label="$t(`field.description`)"
-              textarea-height="248"
+              textarea-height="244"
               textarea-length="100"
             />
           </Skeleton>
+          <template v-for="key in ['createdAt', 'lastTransactionAt']">
+            <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+              <DisplayField
+                :modelValue="detail[key]"
+                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :label="$t(`field.${$util.camelToSnake(key)}`)"
+              />
+            </Skeleton>
+          </template>
         </div>
       </div>
     </q-card-section>
@@ -98,10 +95,6 @@
         <Button :label="$t('field.copy')" icon="fa-solid fa-copy"
                 stretch color="positive" class="tw-ml-2" no-caps @click="request('copy', this.detail)"/>
         <q-separator class="tw-ml-2" inset vertical/>
-        <Button v-for="operation in statusOperations"
-                :label="$t(`field.${operation.key}`)" :icon="`fa-solid ${operation.icon}`"
-                stretch :color="operation.color" class="tw-ml-2" no-caps
-                @click="request(operation.key, [this.getItemId])"/>
         <Button :label="$t('field.delete')" icon="fa-solid fa-trash"
                 stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', [this.getItemId])"/>
       </Skeleton>
@@ -113,11 +106,14 @@
 import DisplayField from "components/General/Other/DisplayField.vue";
 import Button from "components/General/Other/Button.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
+import {usePageRowDetail} from "src/composables/usePageRowDetail";
+import {toRefs} from "vue";
+import LabelField from "components/General/Other/LabelField.vue";
 
 export default {
   name: 'CustomerDetail',
 
-  components: {Skeleton, Button, DisplayField},
+  components: {LabelField, Skeleton, Button, DisplayField},
 
   props: {
     // Customer props
@@ -139,87 +135,35 @@ export default {
 
   emits: ['request'],
 
-  data: () => ({
-    detail: {},
-  }),
-
-  computed: {
-    // Check if component is ready to display data
-    isReady() {
-      return !(this.$util.isUnset(this.detail) || Object.keys(this.detail).length === 0)
-    },
-    // Get item id
-    getItemId() {
-      return this.item.find(col => col.name === 'id').value
-    },
-    // Icon of discountUnit switch
-    discountUnitIcon() {
-      return 'fa-solid ' + (this.detail.discountUnit === 'cash' ? 'fa-money-bill-wave' : 'fa-percent')
-    },
-    // Discount amount base on discount unit
-    discountAmount() {
-      // Create output holder
-      let output = ''
-
-      try {
-        if (this.detail.discountUnit === 'cash') {
-          // Calculate estimated percentage
-          const estimatedPercentage = Math.floor(parseInt(this.detail.discount) / parseInt(this.detail.originalPrice) * 100)
-          // Set up output
-          output = `${this.$util.formatMoney(this.detail.discount)} (~${estimatedPercentage}%)`
-        } else if (this.detail.discountUnit === '%') {
-          // Calculate estimated amount
-          const estimatedAmount = Math.floor(parseInt(this.detail.originalPrice) / 100 * parseInt(this.detail.discount))
-          // Set up output
-          output = `${this.detail.discount}% (~${this.$util.formatMoney(estimatedAmount.toString())})`
-        }
-      } catch (e) {
-      }
-
-      return output
-    },
-    // Dynamic status operation
-    statusOperations() {
-      return [
-        this.detail.isInBusiness
-          ? {key: 'stop_business', icon: 'fa-ban', color: 'negative'}
-          : {key: 'start_business', icon: 'fa-check', color: 'positive'},
-        this.detail.canBeAccumulated
-          ? {key: 'stop_accumulating', icon: 'fa-stop', color: 'negative'}
-          : {key: 'start_accumulating', icon: 'fa-play', color: 'positive'}
-      ]
-    }
-  },
-
-  watch: {
-    /**
-     * Trigger each time component is active
-     */
-    active(value) {
-      // If component is active, fetch data
-      if (value) {
-        this.fetch()
-      }
+  setup(props, context) {
+    return {
+      ...usePageRowDetail("customer", toRefs(props), context)
     }
   },
 
   methods: {
     /**
-     * Fetch item detail
-     */
-    async fetch() {
-      this.$axios.get(`/product/${this.getItemId}`, {loading: false})
-        .then(res => this.detail = res.data.payload)
-    },
-    /**
-     * Request an operation
+     * On interact
      *
-     * @param {string} key
-     * @param {*} data
+     * @param mode
+     * @param data
      */
-    request(key, data) {
-      this.$emit('request', key, data)
-    }
+    onInteract(mode, data) {
+      console.warn(mode)
+      if (mode === 'phoneNumber') {
+        // Call number
+        window.open(`tel:${data}`)
+      } else if (mode === 'email') {
+        // Open Gmail interface to compose email
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${data}`)
+      } else if (mode === 'facebook') {
+        // Open facebook link
+        window.open(`https://${data}`)
+      } else if (mode === 'address') {
+        // Open Google Map link
+        window.open(`https://www.google.com/maps/place/${data}`)
+      }
+    },
   }
 }
 </script>

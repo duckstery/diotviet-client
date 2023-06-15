@@ -1,7 +1,7 @@
 <template>
   <q-avatar :square="!rounded" :rounded="rounded" :size="size">
     <img v-if="isOptimizeVisual" :src="src" alt="">
-    <q-icon :name="getParsedIcon" size="20px" :color="color"/>
+    <q-icon v-else :name="getParsedIcon" size="18px" :color="color"/>
   </q-avatar>
 </template>
 
@@ -27,7 +27,7 @@ export default {
     // Only work if it is optimizing for performance
     color: {
       type: String,
-      default: 'primary'
+      default: 'light'
     },
     // Force using visual (image)
     forceVisual: {
@@ -42,7 +42,7 @@ export default {
     },
     // Parse img source to icon
     getParsedIcon() {
-      return this.$util.getMatchedIcon(this.src.slice(7, -4))
+      return this.$util.getMatchedIcon(this.src.slice(8, -4))
     },
   }
 }

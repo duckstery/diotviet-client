@@ -104,6 +104,14 @@ const util = {
       'visual': 'fa-solid fa-chart-pie',
       'weight': 'fa-solid fa-weight-hanging',
       'woman': 'fa-solid fa-user',
+      'address': 'fa-solid fa-map-location-dot',
+      'birthday': 'fa-solid fa-cake-candles',
+      'created_at': 'fa-solid fa-pen',
+      'email': 'fa-solid fa-envelope-open-text',
+      'equality': 'fa-solid fa-venus-mars',
+      'facebook': 'fa-brands fa-facebook',
+      'last_transaction_at': 'fa-solid fa-arrows-rotate',
+      'phone_number': 'fa-solid fa-phone-volume',
     }[key]
   },
 

@@ -1,5 +1,6 @@
 package diotviet.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvCustomBindByName;
 import com.opencsv.bean.CsvIgnore;
@@ -10,6 +11,8 @@ import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -42,6 +45,13 @@ public class Customer {
     private long id;
 
     /**
+     * Code
+     */
+    @Column(length = 10)
+    @CsvBindByName
+    private String code;
+
+    /**
      * Category
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -71,59 +81,110 @@ public class Customer {
     @CsvBindByName
     private String name;
 
+    /**
+     * Phone number
+     */
     @Column(length = 13)
     @CsvBindByName
     private String phoneNumber;
 
+    /**
+     * House address
+     */
     @Column(length = 100)
     @InitHide
     @CsvBindByName
     private String address;
 
+    /**
+     * Birthday
+     */
     @Temporal(TemporalType.DATE)
     @InitHide
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date birthday;
 
+    /**
+     * Gender
+     */
     @Column(nullable = false)
     @CsvBindByName
     private boolean isMale;
 
+    /**
+     * Email
+     */
     @Column
     @InitIgnore
     @CsvBindByName
     private String email;
 
+    /**
+     * Facebook profile URL
+     */
     @Column
     @InitIgnore
     @CsvBindByName
     private String facebook;
 
+    /**
+     * Description
+     */
     @Column
     @InitIgnore
     @CsvBindByName
     private String description;
 
+    /**
+     * Point
+     */
     @Column
     @InitHide
     @CsvBindByName
     private Long point;
 
+    /**
+     * Image source
+     */
+    @Column
+    @InitIgnore
+    @CsvBindByName
+    private String src;
+
+    /**
+     * Name of creator
+     */
     @Column(length = 20)
     @InitHide
     @CsvBindByName
     private String createdBy;
 
+    /**
+     * Date of creation
+     */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createdAt = new Date();
 
+    /**
+     * Date of last transaction
+     */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date lastTransactionAt;
+
+    /**
+     * Is deleted flag
+     */
+    @Column(nullable = false)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @InitIgnore
+    private Boolean isDeleted = Boolean.FALSE;
 }

@@ -35,4 +35,15 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      */
     @EntityGraph(attributePaths = {"category", "groups"})
     <T> T findById(Long id, Class<T> classType);
+
+    /**
+     * Find by id
+     *
+     * @param id
+     * @param classType
+     * @param <T>
+     * @return
+     */
+    @EntityGraph(attributePaths = {"groups"})
+    <T> T findByIdAndIsDeletedFalse(Long id, Class<T> classType);
 }

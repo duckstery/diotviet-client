@@ -19,6 +19,13 @@ public interface CustomerSearchView {
     String getCategory();
 
     /**
+     * Code
+     *
+     * @return
+     */
+    String getCode();
+
+    /**
      * Name
      *
      * @return
@@ -44,6 +51,7 @@ public interface CustomerSearchView {
      *
      * @return
      */
+    @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.birthday, \"dd-MM-yyyy\")}")
     String getBirthday();
 
     /**
@@ -72,7 +80,7 @@ public interface CustomerSearchView {
      *
      * @return
      */
-    // @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.createdAt, \"yyyy-MM-dd\")}")
+    @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.createdAt, \"dd-MM-yyyy HH:mm:ss\")}")
     String getCreatedAt();
 
     /**
@@ -80,5 +88,6 @@ public interface CustomerSearchView {
      *
      * @return
      */
+    @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.lastTransactionAt, \"dd-MM-yyyy HH:mm:ss\")}")
     String getLastTransactionAt();
 }

@@ -1,14 +1,13 @@
 package diotviet.server.services;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.DateExpression;
 import diotviet.server.constants.PageConstants;
 import diotviet.server.entities.QCustomer;
-import diotviet.server.entities.QProduct;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.CustomerValidator;
+import diotviet.server.views.Customer.CustomerDetailView;
 import diotviet.server.views.Customer.CustomerSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,6 +60,16 @@ public class CustomerService {
 
         // Query for Customer's data
         return customerRepository.findBy(filter, q -> q.as(CustomerSearchView.class).page(pageable));
+    }
+
+    /**
+     * Get Product by id
+     *
+     * @param id
+     * @return
+     */
+    public CustomerDetailView findById(Long id) {
+        return validator.isExist(customerRepository.findByIdAndIsDeletedFalse(id, CustomerDetailView.class));
     }
 
     // ****************************

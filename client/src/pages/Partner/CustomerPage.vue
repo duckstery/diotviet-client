@@ -69,5 +69,15 @@ export default {
       ...pageRequest
     }
   },
+
+  computed: {
+    // Breadcrumbs
+    breadcrumbs() {
+      return [
+        {label: this.$t('field.partner'), to: '/partner', icon: 'fa-handshake'},
+        {label: this.$t('field.customer'), to: '/partner/customer', icon: 'fa-user-tag'},
+      ]
+    },
+  },
 }
 </script>

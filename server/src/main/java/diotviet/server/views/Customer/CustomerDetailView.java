@@ -1,8 +1,9 @@
 package diotviet.server.views.Customer;
 
+import diotviet.server.views.Visualize;
 import org.springframework.beans.factory.annotation.Value;
 
-public interface CustomerDetailView {
+public interface CustomerDetailView extends CustomerSearchView, Visualize {
     /**
      * Category ID
      *
@@ -46,4 +47,11 @@ public interface CustomerDetailView {
      * @return
      */
     String getDescription();
+
+    /**
+     * Src
+     *
+     * @return
+     */
+    String getSrc();
 }

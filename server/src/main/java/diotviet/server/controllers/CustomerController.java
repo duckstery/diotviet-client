@@ -1,6 +1,7 @@
 package diotviet.server.controllers;
 
 import diotviet.server.constants.Type;
+import diotviet.server.entities.Category;
 import diotviet.server.entities.Customer;
 import diotviet.server.entities.Group;
 import diotviet.server.services.CategoryService;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
@@ -66,11 +68,11 @@ public class CustomerController extends BaseController {
         // Get list of Customers (get all data, no need to filter anything)
         Page<CustomerSearchView> items = customerService.paginate(request);
 
-        // List<Category> categories = categoryService.getCategories(Type.PARTNER);
+         List<Category> categories = categoryService.getCategories(Type.PARTNER);
         // Get group list for FilterPanel
         List<Group> groups = groupService.getGroups(Type.PARTNER);
 
-        return ok(new CustomerInitResponse(headers, items, groups));
+        return ok(new CustomerInitResponse(headers, items, categories, groups));
     }
 
     /**
@@ -84,17 +86,17 @@ public class CustomerController extends BaseController {
         // Search for data and response
         return ok(new CustomerSearchResponse(customerService.paginate(request)));
     }
-//
-//    /**
-//     * Show detail
-//     *
-//     * @param id
-//     * @return
-//     */
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> show(@PathVariable Long id) {
-//        return ok(productService.findById(id));
-//    }
+
+    /**
+     * Show detail
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> show(@PathVariable Long id) {
+        return ok(customerService.findById(id));
+    }
 //
 //    /**
 //     * Store (Create) item
