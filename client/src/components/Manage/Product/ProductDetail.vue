@@ -101,7 +101,7 @@
         <Button v-for="operation in statusOperations"
                 :label="$t(`field.${operation.key}`)" :icon="`fa-solid ${operation.icon}`"
                 stretch :color="operation.color" class="tw-ml-2" no-caps
-                @click="request(operation.key, [this.getItemId])"/>
+                @click="request('patch', {ids: [this.getItemId], target: operation.target, option: operation.option})"/>
         <Button :label="$t('field.delete')" icon="fa-solid fa-trash"
                 stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', [this.getItemId])"/>
       </Skeleton>
@@ -113,6 +113,8 @@
 import DisplayField from "components/General/Other/DisplayField.vue";
 import Button from "components/General/Other/Button.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
+import {usePageRowDetail} from "src/composables/usePageRowDetail";
+import {toRefs} from "vue";
 
 export default {
   name: 'ProductDetail',
@@ -139,23 +141,13 @@ export default {
 
   emits: ['request'],
 
-  data: () => ({
-    detail: {},
-  }),
+  setup(props, context) {
+    return {
+      ...usePageRowDetail("product", toRefs(props), context)
+    }
+  },
 
   computed: {
-    // Check if component is ready to display data
-    isReady() {
-      return !(this.$util.isUnset(this.detail) || Object.keys(this.detail).length === 0)
-    },
-    // Get item id
-    getItemId() {
-      return this.item.find(col => col.name === 'id').value
-    },
-    // Icon of discountUnit switch
-    discountUnitIcon() {
-      return 'fa-solid ' + (this.detail.discountUnit === 'cash' ? 'fa-money-bill-wave' : 'fa-percent')
-    },
     // Discount amount base on discount unit
     discountAmount() {
       // Create output holder
@@ -182,44 +174,12 @@ export default {
     statusOperations() {
       return [
         this.detail.isInBusiness
-          ? {key: 'stop_business', icon: 'fa-ban', color: 'negative'}
-          : {key: 'start_business', icon: 'fa-check', color: 'positive'},
+          ? {key: 'stop_business', target: 'business', option: false, icon: 'fa-ban', color: 'negative'}
+          : {key: 'start_business', target: 'business', option: true, icon: 'fa-check', color: 'positive'},
         this.detail.canBeAccumulated
-          ? {key: 'stop_accumulating', icon: 'fa-stop', color: 'negative'}
-          : {key: 'start_accumulating', icon: 'fa-play', color: 'positive'}
+          ? {key: 'stop_accumulating', target: 'accumulating', option: false, icon: 'fa-stop', color: 'negative'}
+          : {key: 'start_accumulating', target: 'accumulating', option: true, icon: 'fa-play', color: 'positive'}
       ]
-    }
-  },
-
-  watch: {
-    /**
-     * Trigger each time component is active
-     */
-    active(value) {
-      // If component is active, fetch data
-      if (value) {
-        this.fetch()
-      }
-    }
-  },
-
-  methods: {
-    /**
-     * Fetch item detail
-     */
-    async fetch() {
-      this.$axios.get(`/product/${this.getItemId}`, {loading: false})
-        .then(res => this.detail = res.data.payload)
-        .catch(this.$error.$410.bind(this, () => this.request('fetch')))
-    },
-    /**
-     * Request an operation
-     *
-     * @param {string} key
-     * @param {*} data
-     */
-    request(key, data) {
-      this.$emit('request', key, data)
     }
   }
 }

@@ -52,23 +52,16 @@ export function usePageRequest(key, dialogComponent, dialogCustomizer, onSuccess
    * @param {array} item
    */
   const onDirectRequest = (mode, item) => {
-    let api, params
+    let params = item
 
     if (mode === 'delete') {
-      api = 'delete'
       params = {params: {ids: item}}
-    } else {
-      // Split mode by _
-      const [option, target] = mode.split('_')
-      // Convert option to boolean
-      api = 'patch'
-      params = {ids: item, target: target, option: option === 'start'}
     }
 
     // Send request
-    axios[api](`/${key}/${api}`, params)
+    axios[mode](`/${key}/${mode}`, params)
       .then(onSuccessOperation)
-      .catch(() => notify($t('message.fail', {attr: $t('field.operation')}), 'warning'))
+      .catch(() => notify($t('message.fail', {attr: $t('field.operation')}), 'negative'))
   }
 
   /**
@@ -128,7 +121,7 @@ export function usePageRequest(key, dialogComponent, dialogCustomizer, onSuccess
       } else if (['export'].includes(mode)) {
         // Need to send file to server
         util.promptConfirm().onOk(() => onExportRequest())
-      } else if (['delete', 'path'].includes(mode)) {
+      } else if (['delete', 'patch'].includes(mode)) {
         // Directly send to server
         util.promptConfirm().onOk(() => onDirectRequest(mode, item))
       } else {
