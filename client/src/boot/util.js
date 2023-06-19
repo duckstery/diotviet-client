@@ -110,6 +110,7 @@ const util = {
       'email': 'fa-solid fa-envelope-open-text',
       'equality': 'fa-solid fa-venus-mars',
       'facebook': 'fa-brands fa-facebook',
+      'last_order_at': 'fa-solid fa-arrows-rotate',
       'last_transaction_at': 'fa-solid fa-arrows-rotate',
       'phone_number': 'fa-solid fa-phone-volume',
     }[key]

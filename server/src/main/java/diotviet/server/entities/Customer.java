@@ -170,6 +170,15 @@ public class Customer {
     private Date createdAt = new Date();
 
     /**
+     * Date of last order
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @InitHide
+    @CsvBindByName
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date lastOrderAt;
+
+    /**
      * Date of last transaction
      */
     @Temporal(TemporalType.TIMESTAMP)

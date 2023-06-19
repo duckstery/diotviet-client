@@ -1,11 +1,13 @@
 package diotviet.server.utils;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.security.crypto.codec.Hex;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -86,5 +88,20 @@ public abstract class OtherUtils {
         random.nextBytes(salt);
 
         return salt;
+    }
+
+    /**
+     * Convert Date to DateTimeString
+     *
+     * @param date
+     * @param format
+     * @return
+     */
+    public static String formatDateTime(Date date, String format) {
+        if (Objects.isNull(date)) {
+            return "";
+        }
+
+        return DateFormatUtils.format(date, format);
     }
 }

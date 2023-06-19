@@ -51,7 +51,7 @@ public interface CustomerSearchView {
      *
      * @return
      */
-    @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.birthday, \"dd-MM-yyyy\")}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.birthday, \"dd-MM-yyyy\")}")
     String getBirthday();
 
     /**
@@ -80,14 +80,22 @@ public interface CustomerSearchView {
      *
      * @return
      */
-    @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.createdAt, \"dd-MM-yyyy HH:mm:ss\")}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.createdAt, \"dd-MM-yyyy HH:mm:ss\")}")
     String getCreatedAt();
 
     /**
-     * Get create date
+     * Get last order date time
      *
      * @return
      */
-    @Value("#{T(org.apache.commons.lang3.time.DateFormatUtils).format(target.lastTransactionAt, \"dd-MM-yyyy HH:mm:ss\")}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.lastOrderAt, \"dd-MM-yyyy HH:mm:ss\")}")
+    String getLastOrderAt();
+
+    /**
+     * Get last transaction date time
+     *
+     * @return
+     */
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.lastTransactionAt, \"dd-MM-yyyy HH:mm:ss\")}")
     String getLastTransactionAt();
 }

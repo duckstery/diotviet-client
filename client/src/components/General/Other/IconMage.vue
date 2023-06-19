@@ -27,7 +27,7 @@ export default {
     // Only work if it is optimizing for performance
     color: {
       type: String,
-      default: 'light'
+      default: 'primary'
     },
     // Force using visual (image)
     forceVisual: {

@@ -11,7 +11,7 @@
     :icon="getIcon"
   >
     <template v-if="isUsingImage">
-      <IconMage class="d-btn-img" :src="src"/>
+      <IconMage class="d-btn-img" :src="src" color="light"/>
       <span class="tw-ml-3">{{ label }}</span>
     </template>
     <q-tooltip v-if="tooltip" transition-show="scale" transition-hide="scale" class="tw-text-sm">

@@ -105,6 +105,7 @@ export default {
     search: 'Search',
     birthday: 'Birthday',
     last_transaction: 'Last transaction',
+    last_order_at: 'Last order at',
     last_transaction_at: 'Last transaction at',
     gender: 'Gender',
     male: 'Male',
