@@ -1,7 +1,5 @@
 package diotviet.server.controllers;
 
-import diotviet.server.entities.Customer;
-import diotviet.server.entities.Product;
 import diotviet.server.exceptions.FileUploadingException;
 import diotviet.server.services.imports.BaseImportService;
 import diotviet.server.services.imports.CustomerImportService;

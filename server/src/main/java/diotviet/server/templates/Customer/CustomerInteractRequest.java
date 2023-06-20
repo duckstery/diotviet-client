@@ -1,10 +1,23 @@
 package diotviet.server.templates.Customer;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-
+/**
+ * Customer interact request
+ *
+ * @param id
+ * @param groups
+ * @param code
+ * @param name
+ * @param address
+ * @param phoneNumber
+ * @param email
+ * @param facebook
+ * @param isMale
+ * @param src
+ * @param description
+ * @param file
+ */
 public record CustomerInteractRequest(
         Long id,
         Long[] groups,

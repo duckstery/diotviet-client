@@ -2,15 +2,12 @@ package diotviet.server.services.imports;
 
 import diotviet.server.constants.Type;
 import diotviet.server.entities.Category;
-import diotviet.server.entities.Group;
 import diotviet.server.entities.Customer;
-import diotviet.server.repositories.CategoryRepository;
-import diotviet.server.repositories.GroupRepository;
+import diotviet.server.entities.Group;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
 import diotviet.server.utils.OtherUtils;
-import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.CustomerValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -19,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
