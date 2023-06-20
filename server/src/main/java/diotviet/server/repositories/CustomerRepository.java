@@ -51,6 +51,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
     @EntityGraph(attributePaths = {"groups"})
     <T> T findByIdAndIsDeletedFalse(Long id, Class<T> classType);
 
+    @Override
+    @EntityGraph(attributePaths = {"category", "groups"})
+    List<Customer> findAll();
+
     /**
      * Get first by code
      *

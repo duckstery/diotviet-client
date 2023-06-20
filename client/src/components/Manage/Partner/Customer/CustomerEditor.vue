@@ -111,7 +111,7 @@
 import {useDialogPluginComponent} from 'quasar'
 import {reactive} from 'vue'
 import {useDialogEditor} from "src/composables/useDialogEditor";
-import {required, numeric, email} from '@vuelidate/validators'
+import {required, numeric, email, maxLength} from '@vuelidate/validators'
 
 import InputField from "components/General/Other/InputField.vue";
 import Button from "components/General/Other/Button.vue";
@@ -203,7 +203,7 @@ export default {
         isMale: {required},
         birthday: {},
         address: {},
-        phoneNumber: {required, numeric},
+        phoneNumber: {required, numeric, maxLength: maxLength(13)},
         email: {email},
         facebook: {},
         file: {},

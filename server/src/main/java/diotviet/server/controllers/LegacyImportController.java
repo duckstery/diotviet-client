@@ -1,7 +1,10 @@
 package diotviet.server.controllers;
 
+import diotviet.server.entities.Customer;
 import diotviet.server.entities.Product;
 import diotviet.server.exceptions.FileUploadingException;
+import diotviet.server.services.imports.BaseImportService;
+import diotviet.server.services.imports.CustomerImportService;
 import diotviet.server.services.imports.ProductImportService;
 import org.dhatim.fastexcel.reader.ReadableWorkbook;
 import org.dhatim.fastexcel.reader.Row;
@@ -31,10 +34,15 @@ public class LegacyImportController extends BaseController {
     // ****************************
 
     /**
-     * Service
+     * Product service
      */
     @Autowired
-    private ProductImportService service;
+    private ProductImportService productService;
+    /**
+     * Customer service
+     */
+    @Autowired
+    private CustomerImportService customerService;
 
     // ****************************
     // Public API
@@ -47,14 +55,22 @@ public class LegacyImportController extends BaseController {
      * @return
      */
     @PostMapping(value = "product/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
-        // Create Product list
-        List<Product> products = service.prep();
-        // Open stream to file
-        openStream(file, row -> products.add(service.convert(row)));
-        // Import data
-        service.runImport(products);
+    public ResponseEntity<?> importProduct(@RequestPart("file") MultipartFile file) {
+        // Import legacy Product
+        importCSV(productService, file);
+        return ok("");
+    }
 
+    /**
+     * Import KiotViet Customer
+     *
+     * @param file
+     * @return
+     */
+    @PostMapping(value = "customer/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> importCustomer(@RequestPart("file") MultipartFile file) {
+        // Import legacy Customer
+        importCSV(customerService, file);
         return ok("");
     }
 
@@ -68,7 +84,7 @@ public class LegacyImportController extends BaseController {
      * @param file
      * @param action
      */
-    public void openStream(MultipartFile file, Consumer<Row> action) {
+    private void openStream(MultipartFile file, Consumer<Row> action) {
         // Read xlsx file
         try (ReadableWorkbook workbook = new ReadableWorkbook(file.getInputStream())) {
             // Get first sheet
@@ -78,5 +94,22 @@ public class LegacyImportController extends BaseController {
         } catch (IOException ignored) {
             throw new FileUploadingException();
         }
+    }
+
+    /**
+     * Common import logic
+     *
+     * @param service
+     * @param file
+     * @param <T>
+     */
+    private <T> void importCSV(BaseImportService<T> service, MultipartFile file) {
+        // Create Product list
+        List<T> items = service.prep();
+        // Open stream to file
+        openStream(file, row -> items.add(service.convert(row)));
+        System.out.println(items);
+        // Import data
+        service.runImport(items);
     }
 }

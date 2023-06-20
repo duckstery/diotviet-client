@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -99,6 +100,16 @@ public class CustomerService extends BaseService {
         customerRepository.deleteGroupAssocById(ids);
         // Delete and get image path (this is physical resource, not database resource)
         removeFiles(customerRepository.softDeleteByIdsReturningSrc(ids));
+    }
+
+
+    /**
+     * Get all Customer for export
+     *
+     * @return
+     */
+    public List<Customer> export() {
+        return customerRepository.findAll();
     }
 
     // ****************************

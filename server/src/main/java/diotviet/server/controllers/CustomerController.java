@@ -7,6 +7,7 @@ import diotviet.server.entities.Group;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.CustomerService;
 import diotviet.server.services.GroupService;
+import diotviet.server.services.imports.CustomerImportService;
 import diotviet.server.templates.Customer.CustomerInitResponse;
 import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
@@ -15,13 +16,14 @@ import diotviet.server.templates.EntityHeader;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Customer.CustomerSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -46,6 +48,11 @@ public class CustomerController extends BaseController {
      */
     @Autowired
     private GroupService groupService;
+    /**
+     * Customer import service
+     */
+    @Autowired
+    private CustomerImportService importService;
     /**
      * Utilities for Entity interact
      */
@@ -125,51 +132,36 @@ public class CustomerController extends BaseController {
 
         return ok("");
     }
-//
-//    /**
-//     * Partial update item
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @PatchMapping(value = "/patch")
-//    public ResponseEntity<?> patch(@RequestBody ProductPatchRequest request) {
-//        // Store item
-//        this.productService.patch(request);
-//
-//        return ok("");
-//    }
-//
-//
-//    /**
-//     * Import CSV
-//     *
-//     * @param file
-//     * @return
-//     */
-//    @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
-//        // Parse CSV file
-//        List<Product> products = parse(file, Product.class);
-//        // Prep the importer
-//        importService.prep();
-//        // Re-attach (or pull) any relationship
-//        importService.pull(products);
-//        // Run import
-//        importService.runImport(products);
-//
-//        return ok("");
-//    }
-//
-//    @GetMapping(value = "/export")
-//    public ResponseEntity<?> exportCSV() {
-//        // Export Bean to CSV
-//        byte[] bytes = export(productService.export());
-//
-//        return ResponseEntity.ok()
-//                .header("Content-Disposition", "attachment; filename=ahihi.imports")
-//                .contentLength(bytes.length)
-//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                .body(new ByteArrayResource(bytes));
-//    }
+
+    /**
+     * Import CSV
+     *
+     * @param file
+     * @return
+     */
+    @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
+        // Parse CSV file
+        List<Customer> customers = parse(file, Customer.class);
+        // Prep the importer
+        importService.prep();
+        // Re-attach (or pull) any relationship
+        importService.pull(customers);
+        // Run import
+        importService.runImport(customers);
+
+        return ok("");
+    }
+
+    @GetMapping(value = "/export")
+    public ResponseEntity<?> exportCSV() {
+        // Export Bean to CSV
+        byte[] bytes = export(customerService.export());
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=ahihi.imports")
+                .contentLength(bytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new ByteArrayResource(bytes));
+    }
 }

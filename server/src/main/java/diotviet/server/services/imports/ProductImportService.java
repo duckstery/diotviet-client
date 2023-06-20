@@ -1,11 +1,12 @@
 package diotviet.server.services.imports;
 
+import diotviet.server.constants.Type;
 import diotviet.server.entities.Category;
 import diotviet.server.entities.Group;
 import diotviet.server.entities.Product;
-import diotviet.server.repositories.CategoryRepository;
-import diotviet.server.repositories.GroupRepository;
 import diotviet.server.repositories.ProductRepository;
+import diotviet.server.services.CategoryService;
+import diotviet.server.services.GroupService;
 import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.ProductValidator;
 import org.dhatim.fastexcel.reader.Row;
@@ -17,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductImportService implements ImportService<Product> {
+public class ProductImportService implements BaseImportService<Product> {
 
     // ****************************
     // Properties
@@ -29,15 +30,15 @@ public class ProductImportService implements ImportService<Product> {
     @Autowired
     private ProductRepository productRepository;
     /**
-     * Category repository
+     * Category service
      */
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
     /**
-     * Group repository
+     * Group service
      */
     @Autowired
-    private GroupRepository groupRepository;
+    private GroupService groupService;
     /**
      * Product validator
      */
@@ -74,12 +75,12 @@ public class ProductImportService implements ImportService<Product> {
     public List<Product> prep() {
         // Cache category
         categoryMap = new HashMap<>();
-        for (Category category : categoryRepository.findAll()) {
+        for (Category category : categoryService.getCategories(Type.PRODUCT)) {
             categoryMap.put(category.getName(), category);
         }
         // Cache group map
         groupMap = new HashMap<>();
-        for (Group group : groupRepository.findAll()) {
+        for (Group group : groupService.getGroups(Type.PRODUCT)) {
             groupMap.put(group.getName(), group);
         }
 
@@ -100,21 +101,25 @@ public class ProductImportService implements ImportService<Product> {
         // Create output
         Product product = new Product();
 
-        // Set basic data
-        product.setCode(validator.generateCode());
-        product.setTitle(row.getCell(3).getRawValue());
-        product.setOriginalPrice(row.getCell(5).getRawValue().replaceAll(",|\\.\\d*", ""));
-        product.setActualPrice(product.getOriginalPrice());
-        product.setDiscount("0");
-        product.setDiscountUnit("%");
-        product.setDescription("");
-        product.setMeasureUnit(Objects.isNull(row.getCell(12).getValue()) ? "" : row.getCell(12).getRawValue());
-        product.setSrc(StorageUtils.pull(row.getCell(15).getRawValue(), timer));
-        product.setWeight("0");
-        product.setCanBeAccumulated(row.getCell(17).getRawValue().equals("1"));
-        product.setIsInBusiness(row.getCell(18).getRawValue().equals("1"));
-        product.setCategory(categoryMap.get(row.getCell(0).getRawValue()));
-        product.setGroups(new HashSet<>(List.of(new Group[]{groupMap.get(row.getCell(1).getRawValue())})));
+        try {
+            // Set basic data
+            product.setCode(validator.generateCode());
+            product.setTitle(row.getCell(3).getRawValue());
+            product.setOriginalPrice(row.getCell(5).getRawValue().replaceAll(",|\\.\\d*", ""));
+            product.setActualPrice(product.getOriginalPrice());
+            product.setDiscount("0");
+            product.setDiscountUnit("%");
+            product.setDescription("");
+            product.setMeasureUnit(Objects.isNull(row.getCell(12).getValue()) ? "" : row.getCell(12).getRawValue());
+            product.setSrc(StorageUtils.pull(row.getCell(15).getRawValue(), timer));
+            product.setWeight("0");
+            product.setCanBeAccumulated(row.getCell(17).getRawValue().equals("1"));
+            product.setIsInBusiness(row.getCell(18).getRawValue().equals("1"));
+            product.setCategory(categoryMap.get(row.getCell(0).getRawValue()));
+            product.setGroups(new HashSet<>(List.of(new Group[]{groupMap.get(row.getCell(1).getRawValue())})));
+        } catch (Exception e) {
+            System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
+        }
 
         // Return
         return product;

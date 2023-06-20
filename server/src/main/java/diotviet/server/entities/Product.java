@@ -10,7 +10,6 @@ import diotviet.server.annotations.InitIgnore;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
-import diotviet.server.views.Nameable;
 import diotviet.server.views.Visualize;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -157,5 +156,6 @@ public class Product implements Identifiable, Visualize {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @InitIgnore
+    @CsvBindByName
     private Boolean isDeleted = Boolean.FALSE;
 }

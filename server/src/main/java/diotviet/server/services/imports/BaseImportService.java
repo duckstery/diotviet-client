@@ -4,7 +4,7 @@ import org.dhatim.fastexcel.reader.Row;
 
 import java.util.List;
 
-public interface ImportService<E> {
+public interface BaseImportService<E> {
     /**
      * Prepare cache, data, ...
      *

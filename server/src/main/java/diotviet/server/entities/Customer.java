@@ -3,6 +3,7 @@ package diotviet.server.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvCustomBindByName;
+import com.opencsv.bean.CsvDate;
 import com.opencsv.bean.CsvIgnore;
 import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.InitHide;
@@ -10,7 +11,6 @@ import diotviet.server.annotations.InitIgnore;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
-import diotviet.server.views.Nameable;
 import diotviet.server.views.Visualize;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -87,7 +87,7 @@ public class Customer implements Identifiable, Visualize {
     /**
      * Phone number
      */
-    @Column(length = 13)
+    @Column(length = 15)
     @CsvBindByName
     private String phoneNumber;
 
@@ -106,6 +106,7 @@ public class Customer implements Identifiable, Visualize {
     @InitHide
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @CsvDate("yyyy-MM-dd")
     private Date birthday;
 
     /**
@@ -168,6 +169,7 @@ public class Customer implements Identifiable, Visualize {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
+    @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createdAt = new Date();
@@ -177,6 +179,7 @@ public class Customer implements Identifiable, Visualize {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
+    @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date lastOrderAt;
@@ -186,6 +189,7 @@ public class Customer implements Identifiable, Visualize {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
+    @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date lastTransactionAt;
@@ -198,5 +202,6 @@ public class Customer implements Identifiable, Visualize {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @InitIgnore
+    @CsvBindByName
     private Boolean isDeleted = Boolean.FALSE;
 }
