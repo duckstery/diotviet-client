@@ -4,18 +4,15 @@ import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
 import diotviet.server.entities.Product;
 import diotviet.server.entities.QProduct;
-import diotviet.server.exceptions.DataInconsistencyException;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.templates.Product.ProductPatchRequest;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.utils.OtherUtils;
-import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductDisplayView;
 import diotviet.server.views.Product.ProductSearchView;
-import org.apache.commons.compress.utils.FileNameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,13 +21,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
 @Service
-public class ProductService {
+public class ProductService extends BaseService {
 
     // ****************************
     // Properties
@@ -99,16 +94,8 @@ public class ProductService {
     public void store(ProductInteractRequest request) {
         // Common validate for create and update
         Product product = validator.validateAndExtract(request);
-
         // Try to add file first and save file src
-        if (Objects.nonNull(request.file())) {
-            try {
-                product.setSrc(StorageUtils.save(request.file()));
-            } catch (IOException e) {
-                validator.interrupt("upload_fail", "", "file");
-            }
-        }
-
+        product.setSrc(saveFile(request.file(), validator));
         // Create file
         productRepository.save(product);
     }
@@ -137,15 +124,7 @@ public class ProductService {
         // Delete assoc
         productRepository.deleteGroupAssocById(ids);
         // Delete and get image path (this is physical resource, not database resource)
-        List<String> paths = productRepository.softDeleteByIdsReturningSrc(ids);
-        // Iterate through each path and delete it
-        for (String path : paths) {
-            try {
-                StorageUtils.delete(Path.of(path).getFileName().toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        removeFiles(productRepository.softDeleteByIdsReturningSrc(ids));
     }
 
     /**

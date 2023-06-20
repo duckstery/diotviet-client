@@ -3,14 +3,11 @@ package diotviet.server.services;
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
 import diotviet.server.entities.Customer;
-import diotviet.server.entities.Product;
 import diotviet.server.entities.QCustomer;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
-import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.utils.OtherUtils;
-import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.CustomerValidator;
 import diotviet.server.views.Customer.CustomerDetailView;
 import diotviet.server.views.Customer.CustomerSearchView;
@@ -22,11 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.Objects;
 
 @Service
-public class CustomerService {
+public class CustomerService extends BaseService {
 
     // ****************************
     // Properties
@@ -86,18 +82,23 @@ public class CustomerService {
     public void store(CustomerInteractRequest request) {
         // Common validate for create and update
         Customer customer = validator.validateAndExtract(request);
-
-        // Try to add file first and save file src
-        if (Objects.nonNull(request.file())) {
-            try {
-                customer.setSrc(StorageUtils.save(request.file()));
-            } catch (IOException e) {
-                validator.interrupt("upload_fail", "", "file");
-            }
-        }
-
+        // Save file and get saved file's path
+        customer.setSrc(saveFile(request.file(), validator));
         // Create file
         customerRepository.save(customer);
+    }
+
+    /**
+     * Delete multiple item with ids
+     *
+     * @param ids
+     */
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    public void delete(Long[] ids) {
+        // Delete assoc
+        customerRepository.deleteGroupAssocById(ids);
+        // Delete and get image path (this is physical resource, not database resource)
+        removeFiles(customerRepository.softDeleteByIdsReturningSrc(ids));
     }
 
     // ****************************
@@ -154,6 +155,6 @@ public class CustomerService {
         }
 
         // Connect expression
-        return query;
+        return query.and(customer.isDeleted.isFalse());
     }
 }

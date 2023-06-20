@@ -19,10 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -114,6 +111,20 @@ public class CustomerController extends BaseController {
 
         return ok("");
     }
+
+    /**
+     * Delete item
+     *
+     * @param ids
+     * @return
+     */
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
+        // Store item
+        this.customerService.delete(ids);
+
+        return ok("");
+    }
 //
 //    /**
 //     * Partial update item
@@ -129,19 +140,6 @@ public class CustomerController extends BaseController {
 //        return ok("");
 //    }
 //
-//    /**
-//     * Delete item
-//     *
-//     * @param ids
-//     * @return
-//     */
-//    @DeleteMapping(value = "/delete")
-//    public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
-//        // Store item
-//        this.productService.delete(ids);
-//
-//        return ok("");
-//    }
 //
 //    /**
 //     * Import CSV
