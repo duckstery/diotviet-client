@@ -1,12 +1,14 @@
 <template>
-  <Page>
-    <div class="row tw-h-full">
-      <div class="col-6">
-        <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
-      </div>
-      <div class="col-6">
-        <ItemPanel :items="items" ref="itemPanel"/>
-        <StatisticPanel :max-height="statisticPanelHeight" class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
+  <Page :breadcrumbs="breadcrumbs">
+    <div class="col-12">
+      <div class="row tw-h-full">
+        <div class="col-6">
+          <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
+        </div>
+        <div class="col-6">
+          <ItemPanel :items="items" ref="itemPanel"/>
+          <StatisticPanel :max-height="statisticPanelHeight" class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
+        </div>
       </div>
     </div>
   </Page>
@@ -21,7 +23,7 @@ import ItemPanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
 
 export default defineComponent({
-  name: 'IndexPage',
+  name: 'WorkPage',
 
   components: {Page, StatisticPanel, ItemPanel, OrderPanel},
 

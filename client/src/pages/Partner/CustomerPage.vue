@@ -26,12 +26,10 @@ import DataTable from "components/Manage/DataTable.vue";
 import CustomerFilter from "components/Manage/Partner/Customer/CustomerFilter.vue";
 import CustomerDetail from "components/Manage/Partner/Customer/CustomerDetail.vue";
 import CustomerEditor from "components/Manage/Partner/Customer/CustomerEditor.vue";
-import {saveAs} from 'file-saver'
-import {date} from "quasar";
+
 import {ref} from "vue";
 import {usePageSearch} from "src/composables/usePageSearch";
 import {usePageRequest} from "src/composables/usePageRequest";
-import ProductEditor from "components/Manage/Product/ProductEditor.vue";
 
 export default {
   name: 'CustomerPage',
@@ -58,7 +56,7 @@ export default {
     // Page request functionality
     const pageRequest = usePageRequest(
       'customer',
-      ProductEditor,
+      CustomerEditor,
       () => ({categories: pageSearch.categories.value, groups: pageSearch.groups.value}),
       pageSearch.searchWithPreviousData
     )

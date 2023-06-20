@@ -1,6 +1,8 @@
 package diotviet.server.views.Product;
 
-public interface ProductDisplayView {
+import diotviet.server.views.Visualize;
+
+public interface ProductDisplayView extends Visualize {
     /**
      * ID
      *
@@ -49,13 +51,6 @@ public interface ProductDisplayView {
      * @return
      */
     String getActualPrice();
-
-    /**
-     * Weight
-     *
-     * @return
-     */
-    String getSrc();
 
     /**
      * Can be accumulated

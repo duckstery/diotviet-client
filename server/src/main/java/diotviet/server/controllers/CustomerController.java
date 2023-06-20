@@ -8,6 +8,7 @@ import diotviet.server.services.CategoryService;
 import diotviet.server.services.CustomerService;
 import diotviet.server.services.GroupService;
 import diotviet.server.templates.Customer.CustomerInitResponse;
+import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
 import diotviet.server.templates.Customer.CustomerSearchResponse;
 import diotviet.server.templates.EntityHeader;
@@ -15,10 +16,12 @@ import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Customer.CustomerSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
@@ -97,20 +100,20 @@ public class CustomerController extends BaseController {
     public ResponseEntity<?> show(@PathVariable Long id) {
         return ok(customerService.findById(id));
     }
-//
-//    /**
-//     * Store (Create) item
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<?> store(ProductInteractRequest request) {
-//        // Store item
-//        this.productService.store(request);
-//
-//        return ok("");
-//    }
+
+    /**
+     * Store (Create) item
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> store(CustomerInteractRequest request) {
+        // Store item
+        this.customerService.store(request);
+
+        return ok("");
+    }
 //
 //    /**
 //     * Partial update item

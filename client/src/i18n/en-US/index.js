@@ -107,6 +107,7 @@ export default {
     last_transaction: 'Last transaction',
     last_order_at: 'Last order at',
     last_transaction_at: 'Last transaction at',
+    name: 'Name',
     gender: 'Gender',
     male: 'Male',
     female: 'Female',
@@ -142,7 +143,9 @@ export default {
     success: '{attr} successfully',
     fail: '{attr} failed',
     from: 'From {attr}',
-    inconsistent_data: 'Data has been refreshed because of the inconsistency'
+    inconsistent_data: 'Data has been refreshed because of the inconsistency',
+    numeric: 'Only allow numeric value',
+    email: 'This is not a valid email'
   },
 
   // ****************************

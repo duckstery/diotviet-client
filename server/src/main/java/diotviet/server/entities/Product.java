@@ -9,6 +9,9 @@ import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
+import diotviet.server.views.Identifiable;
+import diotviet.server.views.Nameable;
+import diotviet.server.views.Visualize;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +30,7 @@ import java.util.Set;
 @Data
 @Accessors(chain = true)
 @QueryEntity
-public class Product {
+public class Product implements Identifiable, Visualize {
     /**
      * Id
      */

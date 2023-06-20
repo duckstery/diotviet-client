@@ -10,14 +10,14 @@
         <div class="row">
           <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
             <InputField
-              v-for="key in ['code', 'title', 'category', 'groups']"
+              v-for="key in ['code', 'name', 'groups']"
               :src="`/images/${key}.png`"
               :label="$t(`field.${key}`)"
               :vuelidate="v$.input[key]"
             >
               <template #default="props">
                 <TextField
-                  v-if="['code', 'title'].includes(key)" v-bind="props" v-model="v$.input[key].$model"
+                  v-if="['code', 'name'].includes(key)" v-bind="props" v-model="v$.input[key].$model"
                   compact input-class="tw-p-0"
                   :placeholder="key === 'code' ? $t('message.blank_for_auto') : ''"
                 />
@@ -30,59 +30,49 @@
                 />
               </template>
             </InputField>
-          </div>
 
-          <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
             <InputField
-              v-for="key in ['originalPrice', 'discount']"
-              space
-              :src="`/images/${$util.camelToSnake(key)}.png`"
-              :label="$t(`field.${$util.camelToSnake(key)}`)"
-              :vuelidate="v$.input[key]"
+              src="/images/gender.png"
+              :label="$t('field.gender')"
+              :vuelidate="v$.input.isMale"
             >
-              <template #before v-if="key === 'discount'">
-                <q-toggle
-                  v-model="v$.input.discountUnit.$model"
+              <template #default>
+                <q-radio v-for="option in genderOptions"
+                         v-model="v$.input.isMale.$model"
+                         unchecked-icon="panorama_fish_eye"
 
-                  true-value="cash"
-                  false-value="%"
-                  :icon="discountUnitIcon"
-                  :label="discountUnitLabel"
-                />
-              </template>
-              <template #default="props">
-                <TextField
-                  v-model="v$.input[key].$model" v-bind="props"
-                  compact class="tw-w-48" input-class="tw-p-0 tw-text-center"
-                  :mask="key === 'discount' ? discountMask : '###,###,###,###'"
+                         :val="option.val"
+                         :label="option.label"
+                         :color="option.color"
+                         :checked-icon="option.icon"
                 />
               </template>
             </InputField>
 
-            <DisplayField
-              space
-              inner-class="tw-w-48"
-              mask="###,###,###,###"
-              :modelValue="input.actualPrice"
-              :src="`/images/actual_price.png`"
-              :label="$t(`field.actual_price`)"
-              class="tw-mb-5"
-            />
-
             <InputField
-              v-for="key in ['measureUnit', 'weight']"
+              v-for="key in ['birthday']"
+              :src="`/images/${$util.camelToSnake(key)}.png`"
+              :label="$t(`field.${$util.camelToSnake(key)}`)"
+              :vuelidate="v$.input[key]"
+            >
+              <template #default="props">
+                <DatePicker v-model="v$.input.birthday.$model" v-bind="props"/>
+              </template>
+            </InputField>
+          </div>
+
+          <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
+            <InputField
+              v-for="key in ['address', 'phoneNumber', 'email', 'facebook']"
               :src="`/images/${$util.camelToSnake(key)}.png`"
               :label="$t(`field.${$util.camelToSnake(key)}`)"
               :vuelidate="v$.input[key]"
             >
               <template #default="props">
                 <TextField
-                  v-if="key === 'measureUnit'" v-model="input.measureUnit" v-bind="props"
+                  v-bind="props" v-model="v$.input[key].$model"
                   compact input-class="tw-p-0"
                 />
-                <TextField
-                  v-else-if="key === 'weight'" v-model="input.weight" v-bind="props"
-                  compact suffix="Kg" mask="#,###"/>
               </template>
             </InputField>
           </div>
@@ -120,10 +110,8 @@
 <script>
 import {useDialogPluginComponent} from 'quasar'
 import {reactive} from 'vue'
-import {usePriceControl} from "src/composables/usePriceControl";
-import {useRangeControl} from "src/composables/useRangeControl";
-import {useVuelidate} from '@vuelidate/core'
-import {required} from '@vuelidate/validators'
+import {useDialogEditor} from "src/composables/useDialogEditor";
+import {required, numeric, email} from '@vuelidate/validators'
 
 import InputField from "components/General/Other/InputField.vue";
 import Button from "components/General/Other/Button.vue";
@@ -131,10 +119,11 @@ import DisplayField from "components/General/Other/DisplayField.vue";
 import TextField from "components/General/Other/TextField.vue";
 import UploadMage from "components/General/Other/UploadMage.vue";
 import RichTextField from "components/General/Other/RichTextField.vue";
+import DatePicker from "components/General/Other/DatePicker.vue";
 
 export default {
   name: 'CustomerEditor',
-  components: {RichTextField, UploadMage, TextField, InputField, DisplayField, Button},
+  components: {DatePicker, RichTextField, UploadMage, TextField, InputField, DisplayField, Button},
   props: {
     // Editor mode: 'create', 'update', 'copy'
     mode: String,
@@ -146,38 +135,34 @@ export default {
     item: {
       type: Object,
       default: () => (/**{
-        id: null,
-        title: null,
-        code: null,
-        category: null,
-        groups: [],
-        originalPrice: '1000',
-        discount: '0',
-        discountUnit: "%",
-        actualPrice: '1000',
-        measureUnit: null,
-        src: null,
-        isInBusiness: true,
-        canBeAccumulated: false,
-        weight: '1',
-        description: null,
-      }*/
-        {
           id: null,
-          title: 'Ahihi',
           code: null,
-          category: 7,
-          groups: [7, 8, 9],
-          originalPrice: '1000',
-          discount: '0',
-          discountUnit: "%",
-          actualPrice: '1000',
-          measureUnit: 'Pack',
+          name: null,
+          groups: [],
+          gender: true,
+          birthday: null,
+          address: null,
+          phoneNumber: null,
+          email: null,
+          facebook: null,
+          description: null,
+        }*/
+        {
+          id: 0,
+          code: null,
+          name: "Ahihi",
+          groups: [],
+          isMale: true,
+          birthday: null,
+          address: null,
+          phoneNumber: '0123456789',
+          email: null,
+          facebook: null,
           src: null,
-          isInBusiness: true,
-          canBeAccumulated: false,
-          weight: '1',
-          description: 'Ahihoheha',
+          description: null,
+          createdAt: null,
+          lastOrderAt: null,
+          lastTransactionAt: null,
         })
     }
   },
@@ -189,31 +174,23 @@ export default {
   ],
 
   setup(props) {
-    // REQUIRED; must be called inside of setup()
-    const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
-    // dialogRef      - Vue ref to be applied to QDialog
-    // onDialogHide   - Function to be used as handler for @hide on QDialog
-    // onDialogOK     - Function to call to settle dialog with "ok" outcome
-    //                    example: onDialogOK() - no payload
-    //                    example: onDialogOK({ /*.../* }) - with payload
-    // onDialogCancel - Function to call to settle dialog with "cancel" outcome
-
     // Make a reactive input
     const input = reactive({...props.item})
-    // Put range control on weight
-    useRangeControl(input, 'weight', 1000, 1)
 
     return {
-      v$: useVuelidate({$rewardEarly: true}),
-      ...usePriceControl(input, 'originalPrice', 'actualPrice'),
-      // This is REQUIRED;
-      // Need to inject these (from useDialogPluginComponent() call)
-      // into the vue scope for the vue html template
+      // Data
       input,
-      dialogRef,
-      onHide: onDialogHide,
-      onCancel: onDialogCancel,
-      ok: onDialogOK,
+      ...useDialogEditor('customer', input, props.mode),
+    }
+  },
+
+  computed: {
+    // Gender options
+    genderOptions() {
+      return [
+        {label: this.$t('field.male'), val: true, color: 'primary', icon: 'fa-solid fa-mars'},
+        {label: this.$t('field.female'), val: false, color: 'negative', icon: 'fa-solid fa-venus'}
+      ]
     }
   },
 
@@ -221,42 +198,18 @@ export default {
     return {
       input: {
         code: {},
-        title: {required},
-        category: {required},
+        name: {required},
         groups: {},
-        originalPrice: {required},
-        discount: {required},
-        discountUnit: {required},
-        measureUnit: {},
+        isMale: {required},
+        birthday: {},
+        address: {},
+        phoneNumber: {required, numeric},
+        email: {email},
+        facebook: {},
         file: {},
-        // isInBusiness: true,
-        // canBeAccumulated: false,
-        weight: {},
         description: {},
       }
     }
   },
-
-  methods: {
-    async onConfirm() {
-      // Validate file
-      if (await this.v$.$validate()) {
-
-        // Craft formData
-        const formData = this.$util.craftFormData(this.input)
-        // Send request
-        this.$axios.post('/product/store', formData, {headers: {"Content-Type": "multipart/form-data"}})
-          .then(() => {
-            this.$notify(this.$t("message.success", {attr: this.$t(`field.${this.mode}`)}))
-            // Close dialog
-            this.ok()
-          })
-          .catch(this.$error.$422.bind(this, 'input'))
-      } else {
-        // Notify about invalid
-        this.$notifyErr(this.$t("message.invalid_input"))
-      }
-    }
-  }
 }
 </script>

@@ -122,7 +122,7 @@ import {useDialogPluginComponent} from 'quasar'
 import {reactive} from 'vue'
 import {usePriceControl} from "src/composables/usePriceControl";
 import {useRangeControl} from "src/composables/useRangeControl";
-import {useVuelidate} from '@vuelidate/core'
+import {useDialogEditor} from "src/composables/useDialogEditor";
 import {required} from '@vuelidate/validators'
 
 import InputField from "components/General/Other/InputField.vue";
@@ -172,31 +172,16 @@ export default {
   ],
 
   setup(props) {
-    // REQUIRED; must be called inside of setup()
-    const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
-    // dialogRef      - Vue ref to be applied to QDialog
-    // onDialogHide   - Function to be used as handler for @hide on QDialog
-    // onDialogOK     - Function to call to settle dialog with "ok" outcome
-    //                    example: onDialogOK() - no payload
-    //                    example: onDialogOK({ /*.../* }) - with payload
-    // onDialogCancel - Function to call to settle dialog with "cancel" outcome
-
     // Make a reactive input
     const input = reactive({...props.item})
     // Put range control on weight
     useRangeControl(input, 'weight', 1000, 1)
+    useDialogEditor('product', input, props.mode).onConfirm()
 
     return {
-      v$: useVuelidate({$rewardEarly: true}),
-      ...usePriceControl(input, 'originalPrice', 'actualPrice'),
-      // This is REQUIRED;
-      // Need to inject these (from useDialogPluginComponent() call)
-      // into the vue scope for the vue html template
       input,
-      dialogRef,
-      onHide: onDialogHide,
-      onCancel: onDialogCancel,
-      ok: onDialogOK,
+      ...usePriceControl(input, 'originalPrice', 'actualPrice'),
+      ...useDialogEditor('product', input, props.mode)
     }
   },
 
@@ -219,26 +204,5 @@ export default {
       }
     }
   },
-
-  methods: {
-    async onConfirm() {
-      // Validate file
-      if (await this.v$.$validate()) {
-
-        // Craft formData
-        const formData = this.$util.craftFormData(this.input)
-        // Send request
-        this.$axios.post('/product/store', formData, {headers: {"Content-Type": "multipart/form-data"}})
-          .then(() => {
-            this.$notify(this.$t("message.success", {attr: this.$t(`field.${this.mode}`)}))
-            this.ok()
-          })
-          .catch(this.$error.$422.bind(this, 'input'))
-      } else {
-        // Notify about invalid
-        this.$notifyErr(this.$t("message.invalid_input"))
-      }
-    }
-  }
 }
 </script>

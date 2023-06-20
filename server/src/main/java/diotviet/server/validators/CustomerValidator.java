@@ -1,14 +1,16 @@
 package diotviet.server.validators;
 
-import diotviet.server.entities.Product;
-import diotviet.server.exceptions.ServiceValidationException;
-import diotviet.server.repositories.ProductRepository;
-import diotviet.server.templates.Product.ProductInteractRequest;
+import diotviet.server.constants.Type;
+import diotviet.server.entities.Customer;
+import diotviet.server.repositories.CustomerRepository;
+import diotviet.server.services.CategoryService;
+import diotviet.server.templates.Customer.CustomerInteractRequest;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class CustomerValidator extends BaseValidator {
@@ -18,20 +20,20 @@ public class CustomerValidator extends BaseValidator {
     // ****************************
 
     /**
-     * Product repository
+     * Customer repository
      */
     @Autowired
-    private ProductRepository productRepository;
-    /**
-     * Category validator
-     */
-    @Autowired
-    private CategoryValidator categoryValidator;
+    private CustomerRepository customerRepository;
     /**
      * Group validator
      */
     @Autowired
     private GroupValidator groupValidator;
+    /**
+     * Category service
+     */
+    @Autowired
+    private CategoryService categoryService;
 
     // ****************************
     // Public API
@@ -39,54 +41,63 @@ public class CustomerValidator extends BaseValidator {
 
     /**
      * Validate request and extract Entity
+     *
+     * @param request
+     * @return
      */
-    public Product validateAndExtract(ProductInteractRequest request) {
-        // Convert request to Product
-        Product product = map(request, Product.class);
+    public Customer validateAndExtract(CustomerInteractRequest request) {
+        // Convert request to Customer
+        Customer customer = map(request, Customer.class);
 
+        // Check if request's group is not empty
+        if (ArrayUtils.isNotEmpty(request.groups())) {
+            // Check and get valid Group
+            customer.setGroups(new HashSet<>(groupValidator.isExistByIds(request.groups())));
+        }
         // Check and get the valid code
-        product.setCode(this.isCodeValid(request.id(), request.code()));
-        // Check and get valid Category
-        product.setCategory(categoryValidator.isExistById(request.category()));
-        // Check and get valid Group
-        product.setGroups(new HashSet<>(groupValidator.isExistByIds(request.groups())));
+        checkCode(customer, "KH", customerRepository::findFirstByCodeAndIsDeletedFalse, customerRepository::findFirstByCodeLikeOrderByCodeDesc);
+        // Check src
+        checkImageSrc(customer);
+        // Preserve Date type data
+        checkDateData(customer);
 
-        return product;
+        // Set category
+        customer.setCategory(categoryService.getCategories(Type.PARTNER).stream().findFirst().orElseThrow());
+
+        return customer;
     }
 
     /**
-     * Validate if code is valid, then return the valid code, else, interrupt
+     * Generate code manually
      *
-     * @param code
      * @return
      */
-    public String isCodeValid(Long id, String code) {
-        if (Objects.isNull(code)) {
-            return null;
+    public String generateCode() {
+        return generateCode("KH", customerRepository::findFirstByCodeLikeOrderByCodeDesc);
+    }
+
+    // ****************************
+    // Private API
+    // ****************************
+
+    /**
+     * Check and preserve Date data
+     *
+     * @param customer
+     */
+    private void checkDateData(Customer customer) {
+        // Check if Customer is not exist, so nothing need to be preserved
+        Optional<Customer> readonly = customerRepository.findById(customer.getId());
+        if (readonly.isEmpty()) {
+            return;
         }
 
-        if (Objects.isNull(id)) {
-            // Validate for "CREATE"
-            if (code.startsWith("MS")) {
-                // Check if code format is reserved
-                throw new ServiceValidationException("reserved", "product", "code");
-            } else if (Objects.nonNull(this.productRepository.findFirstByCodeAndIsDeletedFalse(code))) {
-                // Check if code is exist
-                throw new ServiceValidationException("exists_by", "product", "code");
-            }
-        } else {
-            // Validate for "UPDATE"
-            // Get first Product that has matched code
-            Product product = this.productRepository.findFirstByCodeAndIsDeletedFalse(code);
-            if (Objects.isNull(product) && code.startsWith("MS")) {
-                // Check if Product with code is not exist and code format is reserved
-                throw new ServiceValidationException("reserved", "product", "code");
-            } else if (product.getId() != id) {
-                // Else, check if Product exist and that Product is not self
-                throw new ServiceValidationException("exists_by", "product", "code");
-            }
-        }
+        // Get original customer to preserve Date data
+        Customer original = readonly.get();
 
-        return code;
+        // Set data for modified customer
+        customer.setCreatedAt(original.getCreatedAt());
+        customer.setLastOrderAt(original.getLastOrderAt());
+        customer.setLastTransactionAt(original.getLastTransactionAt());
     }
 }

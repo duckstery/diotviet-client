@@ -2,10 +2,15 @@ package diotviet.server.services;
 
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
+import diotviet.server.entities.Customer;
+import diotviet.server.entities.Product;
 import diotviet.server.entities.QCustomer;
 import diotviet.server.repositories.CustomerRepository;
+import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
+import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.utils.OtherUtils;
+import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.CustomerValidator;
 import diotviet.server.views.Customer.CustomerDetailView;
 import diotviet.server.views.Customer.CustomerSearchView;
@@ -17,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @Service
@@ -47,7 +53,6 @@ public class CustomerService {
      * @param request
      * @return
      */
-    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public Page<CustomerSearchView> paginate(CustomerSearchRequest request) {
         // Create filter
         BooleanBuilder filter = createFilter(request);
@@ -70,6 +75,29 @@ public class CustomerService {
      */
     public CustomerDetailView findById(Long id) {
         return validator.isExist(customerRepository.findByIdAndIsDeletedFalse(id, CustomerDetailView.class));
+    }
+
+    /**
+     * Store item
+     *
+     * @param request
+     */
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    public void store(CustomerInteractRequest request) {
+        // Common validate for create and update
+        Customer customer = validator.validateAndExtract(request);
+
+        // Try to add file first and save file src
+        if (Objects.nonNull(request.file())) {
+            try {
+                customer.setSrc(StorageUtils.save(request.file()));
+            } catch (IOException e) {
+                validator.interrupt("upload_fail", "", "file");
+            }
+        }
+
+        // Create file
+        customerRepository.save(customer);
     }
 
     // ****************************

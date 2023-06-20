@@ -57,7 +57,6 @@ public class ProductService {
      * @param request
      * @return
      */
-    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public Page<ProductSearchView> paginate(ProductSearchRequest request) {
         // Create filter
         BooleanBuilder filter = createFilter(request);
@@ -96,6 +95,7 @@ public class ProductService {
      *
      * @param param
      */
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void store(ProductInteractRequest request) {
         // Common validate for create and update
         Product product = validator.validateAndExtract(request);

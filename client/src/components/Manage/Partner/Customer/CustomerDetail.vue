@@ -20,18 +20,6 @@
               :src="detail.src"
             />
           </Skeleton>
-
-          <div class="tw-mt-[40px]">
-            <template v-for="key in ['createdAt']">
-              <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
-                <DisplayField
-                  :modelValue="detail[key]"
-                  :src="`/images/${$util.camelToSnake(key)}.png`"
-                  :label="$t(`field.${$util.camelToSnake(key)}`)"
-                />
-              </Skeleton>
-            </template>
-          </div>
         </div>
         <!-- Primary info -->
         <div class="tw-mt-3 col-12 col-lg-4 col-md-6 tw-px-1.5">
@@ -46,10 +34,20 @@
           </template>
 
           <div class="tw-mt-5"/>
+          <template v-for="key in ['name']">
+            <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+              <DisplayField
+                :modelValue="detail[key]"
+                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :label="$t(`field.${$util.camelToSnake(key)}`)"
+              />
+            </Skeleton>
+          </template>
+
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
             <DisplayField
               custom
-              :src="`/images/equality.png`"
+              :src="`/images/gender.png`"
               :label="$t(`field.gender`)"
             >
               <q-icon :name="`fa-solid fa-${detail.isMale ? 'mars' : 'venus'}`"
@@ -85,7 +83,7 @@
             />
           </Skeleton>
 
-          <template v-for="key in ['lastOrderAt', 'lastTransactionAt']">
+          <template v-for="key in ['createdAt', 'lastOrderAt', 'lastTransactionAt']">
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"

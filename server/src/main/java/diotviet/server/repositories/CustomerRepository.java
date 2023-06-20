@@ -46,4 +46,20 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      */
     @EntityGraph(attributePaths = {"groups"})
     <T> T findByIdAndIsDeletedFalse(Long id, Class<T> classType);
+
+    /**
+     * Get first by code
+     *
+     * @param code
+     * @return
+     */
+    Customer findFirstByCodeAndIsDeletedFalse(String code);
+
+    /**
+     * Find first Product where code like "?" Order by code desc
+     *
+     * @param code
+     * @return
+     */
+    Customer findFirstByCodeLikeOrderByCodeDesc(String code);
 }

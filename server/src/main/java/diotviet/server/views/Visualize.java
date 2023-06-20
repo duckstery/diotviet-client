@@ -10,4 +10,11 @@ public interface Visualize {
      */
     @Value("#{T(java.util.Objects).isNull(target.src) ? \"/files/default.jpeg\" : \"/files/\" + target.src}")
     String getSrc();
+
+    /**
+     * Set name
+     *
+     * @param name
+     */
+    Visualize setSrc(String src);
 }

@@ -26,9 +26,7 @@ export default {
     // Breadcrumbs items
     items: {
       type: Array,
-      default: () => ([
-        {label: 'Home', to: '/work', icon: 'fa-store'}
-      ])
+      default: () => ([])
     }
   }
 }
