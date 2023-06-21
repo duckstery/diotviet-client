@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import diotviet.server.templates.GeneralResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -71,7 +73,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public void handleServiceValidation(HttpServletRequest request, HttpServletResponse response, ServiceValidationException ex) throws IOException {
         // Get validation error message
-        String message = __(ex.getKey(), ex.getPrefix(), ex.getAttribute());
+        String message = __(ex.getKey(), String.format("%s_%s", ex.getPrefix(), ex.getAttribute()), ex.getArgs());
         // Create body
         GeneralResponse responseBody = new GeneralResponse(false, message, ex.getAttribute());
         // Common handle logic
@@ -151,8 +153,8 @@ public class GlobalExceptionHandler {
      *
      * @param key
      */
-    private String __(String key, String prefix, String attribute) {
-        String[] args = new String[]{__(prefix + "_" + attribute)};
+    private String __(String key, String attribute, String ...arguments) {
+        String[] args = ArrayUtils.addAll(new String[]{__(attribute)}, arguments);
         // Pre-translate all attributes before translate key
         return messageSource.getMessage(key, args, key, LocaleContextHolder.getLocale());
     }

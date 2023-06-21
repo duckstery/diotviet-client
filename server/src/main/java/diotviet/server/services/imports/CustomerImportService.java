@@ -8,11 +8,11 @@ import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
 import diotviet.server.utils.OtherUtils;
-import diotviet.server.validators.CustomerValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.dhatim.fastexcel.reader.Row;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerImportService implements BaseImportService<Customer> {
+public class CustomerImportService extends BaseImportService<Customer> {
 
     // ****************************
     // Properties
@@ -41,11 +41,6 @@ public class CustomerImportService implements BaseImportService<Customer> {
      */
     @Autowired
     private GroupService groupService;
-    /**
-     * Customer validator
-     */
-    @Autowired
-    private CustomerValidator validator;
 
     // ****************************
     // Cache
@@ -59,10 +54,6 @@ public class CustomerImportService implements BaseImportService<Customer> {
      * Cache Group
      */
     private HashMap<String, Group> groupMap;
-    /**
-     * Time of import
-     */
-    private Long timer;
 
     // ****************************
     // Public API
@@ -75,6 +66,8 @@ public class CustomerImportService implements BaseImportService<Customer> {
      */
     @Override
     public List<Customer> prep() {
+        // Init code
+        initializeCode("KS", customerRepository::findFirstByCodeLikeOrderByCodeDesc);
         // Cache category
         category = categoryService.getCategories(Type.PARTNER).stream().findFirst().orElseThrow();
         // Cache group map
@@ -82,9 +75,6 @@ public class CustomerImportService implements BaseImportService<Customer> {
         for (Group group : groupService.getGroups(Type.PARTNER)) {
             groupMap.put(group.getName(), group);
         }
-
-        // Mark time of Import
-        timer = System.currentTimeMillis();
 
         return new ArrayList<>();
     }
@@ -102,7 +92,7 @@ public class CustomerImportService implements BaseImportService<Customer> {
 
         try {
             // Set basic data
-            customer.setCode(validator.generateCode());
+            customer.setCode(generateCode());
             customer.setCategory(category);
             customer.setName(row.getCell(3).getRawValue());
             customer.setPhoneNumber(resolvePhoneNumber(row.getCell(4).getRawValue()));
@@ -114,6 +104,7 @@ public class CustomerImportService implements BaseImportService<Customer> {
             customer.setDescription(row.getCell(15).getRawValue());
             customer.setPoint(resolvePoint(row.getCell(17).getRawValue()));
             customer.setCreatedAt(DateUtils.parseDate(row.getCell(19).getRawValue(), "dd/MM/yyyy"));
+            customer.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
             customer.setGroups(new HashSet<>(List.of(new Group[]{groupMap.get(row.getCell(14).getRawValue())})));
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
@@ -126,7 +117,7 @@ public class CustomerImportService implements BaseImportService<Customer> {
     /**
      * Re-attach any relationship
      *
-     * @param e
+     * @param customers
      * @return
      */
     @Override

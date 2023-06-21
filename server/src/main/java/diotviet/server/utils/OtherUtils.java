@@ -3,13 +3,13 @@ package diotviet.server.utils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.security.crypto.codec.Hex;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Other utility
@@ -103,5 +103,48 @@ public abstract class OtherUtils {
         }
 
         return DateFormatUtils.format(date, format);
+    }
+
+    /**
+     * Get type arguments of clazz
+     *
+     * @param clazz
+     * @return
+     */
+    public static Class<?>[] getTypeArguments(Class<?> clazz) {
+        // Output holder
+        List<Class<?>> arguments = new ArrayList<>();
+
+        try {
+            // Get GenericSuperclass (It's the class that after the "extends". Ex: Abstract<T>)
+            ParameterizedType superclass = (ParameterizedType) clazz.getGenericSuperclass();
+            // Iterate through each actual type argument of superclass (It's T or multiple T)
+            for (Type type : superclass.getActualTypeArguments()) {
+                arguments.add(Class.forName(type.getTypeName()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return arguments.toArray(new Class<?>[0]);
+    }
+
+    /**
+     * Use reflection to invoke getter of object
+     *
+     * @param object
+     * @param method
+     * @return
+     */
+    public static Object invokeGetter(Object object, String method) throws NoSuchMethodException {
+        // Holder
+        Object output = "";
+        try {
+            output = object.getClass().getMethod(method).invoke(object);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return output;
     }
 }

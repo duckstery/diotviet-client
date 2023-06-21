@@ -8,7 +8,6 @@ import diotviet.server.repositories.ProductRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
 import diotviet.server.utils.StorageUtils;
-import diotviet.server.validators.ProductValidator;
 import org.dhatim.fastexcel.reader.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductImportService implements BaseImportService<Product> {
+public class ProductImportService extends BaseImportService<Product> {
 
     // ****************************
     // Properties
@@ -39,11 +38,6 @@ public class ProductImportService implements BaseImportService<Product> {
      */
     @Autowired
     private GroupService groupService;
-    /**
-     * Product validator
-     */
-    @Autowired
-    private ProductValidator validator;
 
     // ****************************
     // Cache
@@ -73,6 +67,8 @@ public class ProductImportService implements BaseImportService<Product> {
      */
     @Override
     public List<Product> prep() {
+        // Init code
+        initializeCode("MS", productRepository::findFirstByCodeLikeOrderByCodeDesc);
         // Cache category
         categoryMap = new HashMap<>();
         for (Category category : categoryService.getCategories(Type.PRODUCT)) {
@@ -103,7 +99,7 @@ public class ProductImportService implements BaseImportService<Product> {
 
         try {
             // Set basic data
-            product.setCode(validator.generateCode());
+            product.setCode(generateCode());
             product.setTitle(row.getCell(3).getRawValue());
             product.setOriginalPrice(row.getCell(5).getRawValue().replaceAll(",|\\.\\d*", ""));
             product.setActualPrice(product.getOriginalPrice());

@@ -21,14 +21,19 @@ public class ServiceValidationException extends RuntimeException {
      * Invalid attributes
      */
     private String attribute;
+    /**
+     * Interpolate args
+     */
+    private String[] args;
 
     // ****************************
     // Constructor
     // ****************************
 
-    public ServiceValidationException(String key, String prefix, String attribute) {
+    public ServiceValidationException(String key, String prefix, String attribute, String ...args) {
         this.key = key;
         this.prefix = prefix;
         this.attribute = attribute;
+        this.args = args;
     }
 }

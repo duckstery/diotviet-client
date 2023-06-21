@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Component
-public class CustomerValidator extends BaseValidator {
+public class CustomerValidator extends BaseValidator<Customer> {
 
     // ****************************
     // Properties
@@ -46,6 +46,8 @@ public class CustomerValidator extends BaseValidator {
      * @return
      */
     public Customer validateAndExtract(CustomerInteractRequest request) {
+        // Primary validation
+        validate(request);
         // Convert request to Customer
         Customer customer = map(request, Customer.class);
 
@@ -67,18 +69,21 @@ public class CustomerValidator extends BaseValidator {
         return customer;
     }
 
-    /**
-     * Generate code manually
-     *
-     * @return
-     */
-    public String generateCode() {
-        return generateCode("KH", customerRepository::findFirstByCodeLikeOrderByCodeDesc);
-    }
-
     // ****************************
     // Private API
     // ****************************
+
+    /**
+     * Primary validation
+     *
+     * @param request
+     */
+    private void validate(CustomerInteractRequest request) {
+        assertStringRequired(request, "name", 50);
+        assertStringNonRequired(request, "code", 0, 10);
+        assertStringNonRequired(request, "phoneNumber", 0, 15);
+        assertStringNonRequired(request, "address", 0, 11);
+    }
 
     /**
      * Check and preserve Date data

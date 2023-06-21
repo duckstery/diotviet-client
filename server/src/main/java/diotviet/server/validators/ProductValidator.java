@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Objects;
 
 @Component
-public class ProductValidator extends BaseValidator {
+public class ProductValidator extends BaseValidator<Product> {
 
     // ****************************
     // Properties
@@ -41,6 +41,8 @@ public class ProductValidator extends BaseValidator {
      * Validate request and extract Entity
      */
     public Product validateAndExtract(ProductInteractRequest request) {
+        // Primary validate
+        validate(request);
         // Convert request to Product
         Product product = map(request, Product.class);
 
@@ -62,12 +64,22 @@ public class ProductValidator extends BaseValidator {
         return product;
     }
 
+    // ****************************
+    // Private API
+    // ****************************
+
     /**
-     * Generate code manually
+     * Primary validation
      *
-     * @return
+     * @param request
      */
-    public String generateCode() {
-        return generateCode("MS", productRepository::findFirstByCodeLikeOrderByCodeDesc);
+    private void validate(ProductInteractRequest request) {
+        assertStringRequired(request, "title", 50);
+        assertStringNonRequired(request, "code", 0, 10);
+        assertStringRequired(request, "originalPrice", 11);
+        assertStringRequired(request, "actualPrice", 11);
+        assertStringRequired(request, "discount", 11);
+        assertStringNonRequired(request, "measureUnit", 0, 10);
+        assertStringNonRequired(request, "weight", 0, 8);
     }
 }
