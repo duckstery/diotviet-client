@@ -21,4 +21,41 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
      * @return
      */
     List<Group> findAllByType(Type type, Sort sort);
+
+    /**
+     * Delete by ID
+     *
+     * @param id
+     */
+    @Override
+    @Modifying(clearAutomatically = true)
+    @Query(value = "DELETE FROM diotviet.groups WHERE id = :id", nativeQuery = true)
+    void deleteById(@Param("id") Long id);
+
+    /**
+     * Find by id and type
+     *
+     * @param id
+     * @param type
+     * @return
+     */
+    Group findByIdAndType(Long id, Type type);
+
+    /**
+     * Delete assoc between Group and Product
+     *
+     * @param id
+     */
+    @Modifying(clearAutomatically = true)
+    @Query(value = "DELETE FROM diotviet.assoc_groups_products WHERE group_id = :id", nativeQuery = true)
+    void deleteAssocProductById(@Param("id") Long id);
+
+    /**
+     * Delete assoc between Group and Customer
+     *
+     * @param id
+     */
+    @Modifying(clearAutomatically = true)
+    @Query(value = "DELETE FROM diotviet.assoc_groups_customers WHERE group_id = :id", nativeQuery = true)
+    void deleteAssocCustomerById(@Param("id") Long id);
 }

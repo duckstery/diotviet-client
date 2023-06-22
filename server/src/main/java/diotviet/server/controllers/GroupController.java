@@ -58,9 +58,9 @@ public class GroupController extends BaseController {
      * @return
      */
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
+    public ResponseEntity<?> delete(@RequestParam("id") Long id, @RequestParam("type") Integer type) {
         // Store item
-        groupService.delete(ids);
+        groupService.delete(id, Type.fromCode(type));
 
         return ok("");
     }

@@ -30,7 +30,7 @@ export function useGroupControl(groupRef) {
    */
   const onDirectRequest = (mode, item) => {
     // Send request
-    axios.delete(`/group/delete`, {params: {ids: item}})
+    axios.delete(`/group/delete`, {params: {id: item, type: util.getPredefinedTypesByKey(key)['id']}})
       .then(res => {
         notify($t('message.success', {attr: $t('field.operation')}))
         onSuccessOperation()

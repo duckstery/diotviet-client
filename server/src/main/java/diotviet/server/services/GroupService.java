@@ -61,8 +61,16 @@ public class GroupService {
      * @param ids
      */
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
-    public void delete(Long[] ids) {
-        // By adjusting Many-to-Many side, this statement will delete all record in assoc
-        repository.deleteAllById(List.of(ids));
+    public void delete(Long id, Type type) {
+        // Select the target Group
+        Group group = validator.isExist(repository.findByIdAndType(id, type));
+        // Delete association depend on Type
+        switch (group.getType()) {
+            case PRODUCT -> repository.deleteAssocProductById(group.getId());
+            case TRANSACTION -> repository.deleteAssocProductById(group.getId());
+            case PARTNER -> repository.deleteAssocCustomerById(group.getId());
+        }
+        // Delete Group, this operation won't cause any side effect, only the in the "groups" table
+        repository.deleteById(id);
     }
 }

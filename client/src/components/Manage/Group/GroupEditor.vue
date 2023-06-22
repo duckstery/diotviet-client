@@ -20,11 +20,8 @@
               src="/images/category.png" :label="$t('field.type')" :vuelidate="v$.input.type"
             >
               <template #default="props">
-                <q-select
-                  v-model="v$.input.type.$model" v-bind="props"
-                  dense map-options emit-value
-                  :options="$util.getPredefinedTypes()" option-label="name" option-value="id"
-                />
+                <TextField :model-value="$util.getPredefinedTypes()[item.type]['name']"
+                           v-bind="props" compact input-class="tw-p-0" readonly/>
               </template>
             </InputField>
           </div>
