@@ -2,6 +2,20 @@
 
 A Quasar Project
 
+## Environment
+
+### Client
+&#9989; <strong>Quasar CLI</strong> &#8658; `1.4.3`
+
+&#9989; <strong>Node</strong> &#8658; `18.15.0`
+
+### Server
+&#9989; <strong>Java</strong> &#8658; `19`
+
+&#9989; <strong>Maven</strong> &#8658; `3.8.6`
+
+&#9989; <strong>PostgreSQL</strong> &#8658; `12.12`
+
 ## Install the dependencies
 ```bash
 yarn
