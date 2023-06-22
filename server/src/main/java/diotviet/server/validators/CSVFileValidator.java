@@ -27,10 +27,9 @@ public class CSVFileValidator implements ConstraintValidator<ValidImage, Multipa
 
             long fileSize = multipartFile.getSize();
             // Check file size
-            if (fileSize > 5242880L) {
-                throw new Exception("Maximum file size is 5MB.");
-            } else if (fileSize == 0) {
-                throw new Exception("Empty file is not allowed.");
+            switch ((int) fileSize) {
+                case 5242880 -> throw new Exception("Maximum file size is 5MB.");
+                case 0 -> throw new Exception("Empty file is not allowed.");
             }
         } catch (Exception e) {
             context.disableDefaultConstraintViolation();

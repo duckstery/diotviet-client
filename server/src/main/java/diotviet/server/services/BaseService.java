@@ -2,6 +2,7 @@ package diotviet.server.services;
 
 import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.BaseValidator;
+import diotviet.server.views.Visualize;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,19 +20,18 @@ public abstract class BaseService {
      *
      * @param file
      * @param validator
+     * @param defaultSrc
      * @return
      */
-    protected String saveFile(MultipartFile file, BaseValidator validator) {
+    protected <T> void saveFileFor(Visualize entity, MultipartFile file, BaseValidator<T> validator) {
         // Try to add file first and save file src
         if (Objects.nonNull(file)) {
             try {
-                return StorageUtils.save(file);
+                entity.setSrc(StorageUtils.save(file));
             } catch (IOException e) {
                 validator.interrupt("upload_fail", "", "file");
             }
         }
-
-        return "";
     }
 
     /**

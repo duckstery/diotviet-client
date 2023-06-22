@@ -1,6 +1,6 @@
 <template>
   <q-editor
-    :model-value="modelValue"
+    :model-value="value"
     v-bind="$attrs"
 
     dense
@@ -19,6 +19,10 @@ export default {
   },
 
   computed: {
+    // QEditor does not accept null value ??? :D ???
+    value() {
+      return this.modelValue ?? ''
+    },
     toolbar() {
       return [
         ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
@@ -47,7 +51,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

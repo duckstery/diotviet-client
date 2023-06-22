@@ -2,6 +2,7 @@ package diotviet.server.generators;
 
 import com.opencsv.bean.AbstractBeanField;
 import diotviet.server.views.Nameable;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class NameableSetField<T, I> extends AbstractBeanField<T, I> {
     @Override
     protected Object convert(String s) {
-        if (Objects.isNull(s) || s.isBlank()) {
+        if (StringUtils.isBlank(s)) {
             return null;
         }
 

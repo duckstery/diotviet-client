@@ -6,6 +6,7 @@ import diotviet.server.utils.OtherUtils;
 import diotviet.server.views.EntityProvider;
 import diotviet.server.views.Identifiable;
 import diotviet.server.views.Visualize;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -83,7 +84,7 @@ public abstract class BaseValidator<T> {
         long id = target.getId();
         String code = target.getCode();
 
-        if (Objects.isNull(code) || code.isBlank()) {
+        if (StringUtils.isBlank(code)) {
             // If code is null, no need for validation
             code = generateCode(format, defaultProvider);
         } else if (id == 0) {
@@ -118,10 +119,11 @@ public abstract class BaseValidator<T> {
      */
     public void checkImageSrc(Visualize object) {
         try {
-            if (object.getSrc().equals("/files/default.jpeg")) {
-                object.setSrc(null);
-            } else if (object.getSrc().contains("/files/")) {
-                object.setSrc(object.getSrc().substring(7));
+            // Source holder
+            String src = object.getSrc();
+
+            if (StringUtils.isBlank(src) || src.equals("/files/default.jpeg")) {
+                object.setSrc("default.jpeg");
             }
         } catch (Exception ignored) {
         }
@@ -182,7 +184,7 @@ public abstract class BaseValidator<T> {
                 interrupt("required", getKey(), attribute);
             }
 
-            if (Objects.isNull(value) || value.isEmpty()) {
+            if (StringUtils.isEmpty(value)) {
                 return;
             }
 

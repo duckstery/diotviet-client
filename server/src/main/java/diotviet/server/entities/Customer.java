@@ -59,7 +59,6 @@ public class Customer implements Identifiable, Visualize {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @CsvCustomBindByName(converter = NameableField.class)
     @InitIgnore
     private Category category;
@@ -67,9 +66,9 @@ public class Customer implements Identifiable, Visualize {
     /**
      * Group
      */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(
-            name = "assoc_customers_groups",
+            name = "assoc_groups_customers",
             joinColumns = {@JoinColumn(name = "customer_id")},
             inverseJoinColumns = {@JoinColumn(name = "group_id")}
     )

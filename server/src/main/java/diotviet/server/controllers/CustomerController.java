@@ -114,7 +114,7 @@ public class CustomerController extends BaseController {
     @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> store(CustomerInteractRequest request) {
         // Store item
-        this.customerService.store(request);
+        customerService.store(request);
 
         return ok("");
     }
@@ -128,7 +128,7 @@ public class CustomerController extends BaseController {
     @DeleteMapping(value = "/delete")
     public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
         // Store item
-        this.customerService.delete(ids);
+        customerService.delete(ids);
 
         return ok("");
     }

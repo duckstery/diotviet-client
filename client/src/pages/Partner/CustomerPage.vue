@@ -5,7 +5,8 @@
       <div class="tw-text-3xl tw-font-semibold">{{ $t('field.customer') }}</div>
 
       <!-- Filter -->
-      <CustomerFilter v-model="filter" :categories="categories" :groups="groups" @request="onSearch"/>
+      <CustomerFilter v-model="filter" :categories="categories" :groups="groups"
+                      @request="onSearch" @control="onGroupControl"/>
     </div>
     <div class="col-9">
       <!-- Data table -->
@@ -30,6 +31,7 @@ import CustomerEditor from "components/Manage/Partner/Customer/CustomerEditor.vu
 import {ref} from "vue";
 import {usePageSearch} from "src/composables/usePageSearch";
 import {usePageRequest} from "src/composables/usePageRequest";
+import {useGroupControl} from "src/composables/useGroupControl";
 
 export default {
   name: 'CustomerPage',
@@ -40,31 +42,30 @@ export default {
     // Loading flag
     const loading = ref(false)
     // Page search functionality
-    const pageSearch = usePageSearch(
-      'customer',
-      {
-        group: null,
-        createAtFrom: null,
-        createAtTo: null,
-        birthdayFrom: null,
-        birthdayTo: null,
-        lastTransactionAtFrom: null,
-        lastTransactionAtTo: null,
-        isMale: null
-      }
-    )
+    const pageSearch = usePageSearch({
+      group: null,
+      createAtFrom: null,
+      createAtTo: null,
+      birthdayFrom: null,
+      birthdayTo: null,
+      lastTransactionAtFrom: null,
+      lastTransactionAtTo: null,
+      isMale: null
+    })
     // Page request functionality
     const pageRequest = usePageRequest(
-      'customer',
       CustomerEditor,
       () => ({categories: pageSearch.categories.value, groups: pageSearch.groups.value}),
       pageSearch.searchWithPreviousData
     )
+    // Group control
+    const groupControl = useGroupControl(pageSearch.groups)
 
     return {
       loading,
       ...pageSearch,
-      ...pageRequest
+      ...pageRequest,
+      ...groupControl
     }
   },
 

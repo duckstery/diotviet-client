@@ -148,7 +148,7 @@ export default {
 
   setup(props, context) {
     return {
-      ...usePageRowDetail("customer", toRefs(props), context)
+      ...usePageRowDetail(toRefs(props), context)
     }
   },
 
@@ -160,7 +160,6 @@ export default {
      * @param data
      */
     onInteract(mode, data) {
-      console.warn(mode)
       if (mode === 'phoneNumber') {
         // Call number
         window.open(`tel:${data}`)

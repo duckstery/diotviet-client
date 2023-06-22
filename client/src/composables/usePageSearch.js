@@ -1,15 +1,16 @@
-import {computed, watch, nextTick, reactive, ref, onMounted} from 'vue'
-import {axios} from "boot/axios";
-import {util} from "boot/util";
+import {ref, onMounted} from 'vue'
+import {axios, util} from "src/boot";
+import {useRouteKey} from "src/composables/useRouteKey";
 
 /**
  * Setup page search
  *
- * @param {string} key
  * @param {object} initFilter
  * @returns {object}
  */
-export function usePageSearch(key, initFilter) {
+export function usePageSearch(initFilter) {
+  // Get key
+  const key = useRouteKey()
   // General
   const categories = ref([])
   const groups = ref([])

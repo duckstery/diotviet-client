@@ -95,7 +95,7 @@ public class ProductService extends BaseService {
         // Common validate for create and update
         Product product = validator.validateAndExtract(request);
         // Try to add file first and save file src
-        product.setSrc(saveFile(request.file(), validator));
+        saveFileFor(product, request.file(), validator);
         // Create file
         productRepository.save(product);
     }

@@ -5,7 +5,8 @@
       <div class="tw-text-3xl tw-font-semibold">{{ $t('field.product') }}</div>
 
       <!-- Filter -->
-      <ProductFilter v-model="filter" :categories="categories" :groups="groups" @request="onSearch"/>
+      <ProductFilter v-model="filter" :categories="categories" :groups="groups"
+                     @request="onSearch" @control="onGroupControl"/>
     </div>
     <div class="col-9">
       <!-- Data table -->
@@ -30,39 +31,40 @@ import ProductEditor from "components/Manage/Product/ProductEditor.vue";
 import {usePageSearch} from "src/composables/usePageSearch"
 import {usePageRequest} from "src/composables/usePageRequest"
 import {ref} from "vue";
+import CustomerFilter from "components/Manage/Partner/Customer/CustomerFilter.vue";
+import {useGroupControl} from "src/composables/useGroupControl";
 
 export default {
   name: 'ProductPage',
 
-  components: {ProductDetail, ProductFilter, Page, DataTable, Breadcrumbs},
+  components: {CustomerFilter, ProductDetail, ProductFilter, Page, DataTable, Breadcrumbs},
 
   setup() {
     // Loading flag
     const loading = ref(false)
     // Page search functionality
-    const pageSearch = usePageSearch(
-      'product',
-      {
-        categories: [],
-        group: null,
-        minPrice: '',
-        maxPrice: '',
-        canBeAccumulated: null,
-        isInBusiness: null
-      }
-    )
+    const pageSearch = usePageSearch({
+      categories: [],
+      group: null,
+      minPrice: '',
+      maxPrice: '',
+      canBeAccumulated: null,
+      isInBusiness: null
+    })
     // Page request functionality
     const pageRequest = usePageRequest(
-      'product',
       ProductEditor,
       () => ({categories: pageSearch.categories.value, groups: pageSearch.groups.value}),
       pageSearch.searchWithPreviousData
     )
+    // Group control
+    const groupControl = useGroupControl(pageSearch.groups)
 
     return {
       loading,
       ...pageSearch,
-      ...pageRequest
+      ...pageRequest,
+      ...groupControl
     }
   },
 

@@ -87,7 +87,7 @@ public class CustomerService extends BaseService {
         // Set createdBy
         customer.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
         // Save file and get saved file's path
-        customer.setSrc(saveFile(request.file(), validator));
+        saveFileFor(customer, request.file(), validator);
         // Create file
         customerRepository.save(customer);
     }

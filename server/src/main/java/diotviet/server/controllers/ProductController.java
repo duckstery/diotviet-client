@@ -123,7 +123,7 @@ public class ProductController extends BaseController {
     @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> store(ProductInteractRequest request) {
         // Store item
-        this.productService.store(request);
+        productService.store(request);
 
         return ok("");
     }
@@ -137,7 +137,7 @@ public class ProductController extends BaseController {
     @PatchMapping(value = "/patch")
     public ResponseEntity<?> patch(@RequestBody ProductPatchRequest request) {
         // Store item
-        this.productService.patch(request);
+        productService.patch(request);
 
         return ok("");
     }
@@ -151,7 +151,7 @@ public class ProductController extends BaseController {
     @DeleteMapping(value = "/delete")
     public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
         // Store item
-        this.productService.delete(ids);
+        productService.delete(ids);
 
         return ok("");
     }

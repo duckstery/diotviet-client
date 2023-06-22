@@ -1,22 +1,20 @@
-import {axios} from "boot/axios";
-import {util} from "boot/util";
-import {Dialog} from "quasar";
+import {date, Dialog} from "quasar";
+import {axios, util, notify, error} from "src/boot";
 import {useI18n} from 'vue-i18n';
 import {saveAs} from 'file-saver';
-import {date} from "quasar";
-import {notify} from "boot/notify";
-import {error} from "boot/error";
+import {useRouteKey} from "src/composables/useRouteKey";
 
 /**
  * Setup page request
  *
- * @param {string} key
  * @param {any} dialogComponent
  * @param {function} dialogCustomizer
  * @param {function} onSuccess
  * @return {object}
  */
-export function usePageRequest(key, dialogComponent, dialogCustomizer, onSuccess) {
+export function usePageRequest(dialogComponent, dialogCustomizer, onSuccess) {
+  // Get key
+  const key = useRouteKey()
   // i18n
   const $t = useI18n().t
 
@@ -27,11 +25,12 @@ export function usePageRequest(key, dialogComponent, dialogCustomizer, onSuccess
    * @param {File} item
    */
   const onImportRequest = (mode, item) => {
-    // Craft formData
-    const formData = util.craftFormData({file: item})
-
     // Send request
-    axios.post((mode === 'legacy' ? 'legacy' : '') + `/${key}/import`, formData, {headers: {"Content-Type": "multipart/form-data"}})
+    axios.post(
+      (mode === 'legacy' ? 'legacy' : '') + `/${key}/import`,
+      util.craftFormData({file: item}),
+      {headers: {"Content-Type": "multipart/form-data"}}
+    )
       .then(onSuccessOperation)
       .catch(error.$422.bind(this, 'input'))
   }
@@ -67,8 +66,9 @@ export function usePageRequest(key, dialogComponent, dialogCustomizer, onSuccess
   /**
    * On interactive request like add, edit, copy
    *
-   * @param {string} mode
-   * @param {*} item
+   * @param mode
+   * @param item
+   * @param customizer
    */
   const onInteractiveRequest = (mode, item) => {
     // Create props so item("null") won't override Editor default value

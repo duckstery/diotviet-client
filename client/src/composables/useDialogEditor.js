@@ -1,20 +1,20 @@
 import {useDialogPluginComponent} from 'quasar'
 import {useVuelidate} from "@vuelidate/core";
-import {util} from "boot/util"
-import {error} from "boot/error"
+import {axios, util, notify, error} from "src/boot"
 import {useI18n} from "vue-i18n";
-import {axios} from "boot/axios";
-import {notify} from "boot/notify";
+import {useRouteKey} from "src/composables/useRouteKey";
 
 /**
  * Setup dialog editor
  *
- * @param {string} key
  * @param {object} inputRef
  * @param {string} mode
  * @return {*}
  */
-export function useDialogEditor(key, inputRef, mode = 'create') {
+export function useDialogEditor(inputRef, mode = 'create') {
+  // Get key
+  const key = useRouteKey()
+
   // REQUIRED; must be called inside of setup()
   const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
   // dialogRef      - Vue ref to be applied to QDialog
@@ -32,6 +32,7 @@ export function useDialogEditor(key, inputRef, mode = 'create') {
   /**
    * On confirm
    *
+   * @param forcedKey
    * @return {Promise<void>}
    */
   const onConfirm = async () => {

@@ -8,7 +8,7 @@ public interface Visualize {
      *
      * @return
      */
-    @Value("#{T(java.util.Objects).isNull(target.src) ? \"/files/default.jpeg\" : \"/files/\" + target.src}")
+    @Value("#{T(org.apache.commons.lang3.StringUtils).isBlank(target.src) ? \"/files/default.jpeg\" : \"/files/\" + target.src}")
     String getSrc();
 
     /**

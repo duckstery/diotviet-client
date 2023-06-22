@@ -162,6 +162,42 @@ const util = {
     }
 
     return result
+  },
+
+  /**
+   * Get predefined types
+   *
+   * @return {object}
+   */
+  getPredefinedTypes() {
+    return [
+      {id: 0, name: $t('field.product')},
+      {id: 1, name: $t('field.transaction')},
+      {id: 2, name: $t('field.customer')},
+    ]
+  },
+
+  /**
+   * Get predefined types by key
+   *
+   * @param {string} key
+   * @return {object}
+   */
+  getPredefinedTypesByKey(key) {
+    // Generate map
+    const map = {product: 0, transaction: 1, customer: 2}
+
+    return this.getPredefinedTypes()[map[key]]
+  },
+
+  /**
+   * Compare alphabetically
+   *
+   * @param {string} a
+   * @param {string} b
+   */
+  alphabetically(a, b) {
+    return a.localeCompare(b)
   }
 }
 

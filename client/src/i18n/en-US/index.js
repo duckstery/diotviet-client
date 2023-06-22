@@ -115,6 +115,7 @@ export default {
     phone_number: 'Phone',
     email: 'Email',
     facebook: 'Facebook',
+    type: 'Type',
 
     role_1: 'Admin',
     role_2: 'Supervisor',

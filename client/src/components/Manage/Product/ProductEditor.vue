@@ -176,12 +176,11 @@ export default {
     const input = reactive({...props.item})
     // Put range control on weight
     useRangeControl(input, 'weight', 1000, 1)
-    useDialogEditor('product', input, props.mode).onConfirm()
 
     return {
       input,
       ...usePriceControl(input, 'originalPrice', 'actualPrice'),
-      ...useDialogEditor('product', input, props.mode)
+      ...useDialogEditor(input, props.mode)
     }
   },
 

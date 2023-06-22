@@ -77,7 +77,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      * @param ids
      */
     @Modifying(clearAutomatically = true)
-    @Query(value = "DELETE FROM diotviet.assoc_customers_groups WHERE customer_id in :ids", nativeQuery = true)
+    @Query(value = "DELETE FROM diotviet.assoc_groups_customers WHERE customer_id in :ids", nativeQuery = true)
     void deleteGroupAssocById(@Param("ids") Long[] ids);
 
     /**

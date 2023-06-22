@@ -1,9 +1,10 @@
 <template>
   <!-- Category filter -->
-  <CheckboxFilter v-model="filter.categories" :items="categories" :title="$t('field.category')" class="tw-mt-3" />
+  <CheckboxFilter v-model="filter.categories" :items="categories" :title="$t('field.category')" class="tw-mt-3"/>
 
   <!-- Group filter -->
-  <DynamicFilter v-model="filter.group" :title="$t('field.group')" :items="groups" class="tw-mt-3"/>
+  <DynamicFilter v-model="filter.group" :items="groups" :title="$t('field.group')" class="tw-mt-3"
+                 @control="$emit('control', ...$event)"/>
 
   <!-- Price range filter -->
   <FilterPanel :title="$t('field.price_range')" class="tw-mt-3">
@@ -80,7 +81,7 @@ export default {
     },
   }),
 
-  emits: ['request', 'update:modelValue'],
+  emits: ['request', 'update:modelValue', 'control'],
 
   watch: {
     // Watch to emit filter event

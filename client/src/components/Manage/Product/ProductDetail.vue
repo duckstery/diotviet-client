@@ -143,7 +143,7 @@ export default {
 
   setup(props, context) {
     return {
-      ...usePageRowDetail("product", toRefs(props), context)
+      ...usePageRowDetail(toRefs(props), context)
     }
   },
 

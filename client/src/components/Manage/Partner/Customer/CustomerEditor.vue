@@ -180,7 +180,7 @@ export default {
     return {
       // Data
       input,
-      ...useDialogEditor('customer', input, props.mode),
+      ...useDialogEditor(input, props.mode),
     }
   },
 

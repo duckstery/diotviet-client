@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class CategoryValidator extends BaseValidator {
+public class CategoryValidator extends BaseValidator<Category> {
 
     // ****************************
     // Properties

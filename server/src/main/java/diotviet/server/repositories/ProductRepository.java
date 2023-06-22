@@ -94,7 +94,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      * @param ids
      */
     @Modifying(clearAutomatically = true)
-    @Query(value = "DELETE FROM diotviet.assoc_products_groups WHERE product_id in :ids", nativeQuery = true)
+    @Query(value = "DELETE FROM diotviet.assoc_groups_products WHERE product_id in :ids", nativeQuery = true)
     void deleteGroupAssocById(@Param("ids") Long[] ids);
 
     /**

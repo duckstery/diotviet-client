@@ -1,6 +1,7 @@
 <template>
   <!-- Group filter -->
-  <DynamicFilter v-model="filter.group" :items="groups" :title="$t('field.group')" class="tw-mt-3"/>
+  <DynamicFilter v-model="filter.group" :items="groups" :title="$t('field.group')" class="tw-mt-3"
+                 @control="$emit('control', ...$event)"/>
 
   <!-- Create at filter -->
   <FilterPanel :title="$t('field.created_at')" class="tw-mt-3">
@@ -57,7 +58,7 @@ export default {
     },
   }),
 
-  emits: ['request', 'update:modelValue'],
+  emits: ['request', 'update:modelValue', 'control'],
 
   watch: {
     // Watch to emit filter event

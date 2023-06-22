@@ -1,15 +1,16 @@
-import {ref, computed, watch, } from "vue";
-import {util} from "boot/util"
-import {axios} from "boot/axios"
+import {ref, computed, watch} from "vue";
+import {axios, util} from "src/boot"
+import {useRouteKey} from "src/composables/useRouteKey";
 
 /**
  * Setup page row detail
  *
- * @param {string} key
  * @param {object} props
  * @param {object} context
  */
-export function usePageRowDetail(key, props, context) {
+export function usePageRowDetail(props, context) {
+  // Get key
+  const key = useRouteKey()
   // Detail data
   const detail = ref({})
 

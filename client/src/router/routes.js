@@ -8,7 +8,7 @@
  * @returns {{path, component, meta: {privilege}, name}}
  */
 const r = (path, name, component, privilege= 4) => {
-  return {path, name, component, meta: {privilege}}
+  return {path, name, component, meta: {privilege, key: path === '' ? name.toLowerCase() : path}}
 }
 
 const routes = [
