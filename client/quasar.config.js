@@ -31,6 +31,7 @@ module.exports = configure(function (/* ctx */) {
     boot: [
       'env',
       'i18n',
+      'constant',
       'axios',
       'loader',
       'notify',

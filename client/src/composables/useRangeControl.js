@@ -1,27 +1,31 @@
-import {watch, nextTick, ref} from 'vue'
+import {watch, nextTick, ref} from "vue"
 
 /**
  * Setup control range system
  *
- * @param {object} refObj
- * @param {string} on
+ * @param {Ref<UnwrapRef<...>>} refObj
  * @param {Number} upperBound
  * @param {Number} lowerBound
  * @return {{rangeControlCommit: String}}
  */
-export function useRangeControl (refObj, on, upperBound, lowerBound) {
+export function useRangeControl(refObj, upperBound= 999999999999, lowerBound= null) {
   // Create commit flag
   const rangeControlCommit = ref(null)
 
-  watch(() => refObj[on], (newValue, oldValue) => {
+  watch(refObj, (newValue, oldValue) => {
+    // Allow null value
+    if (lowerBound === null && (newValue === null || newValue === '')) {
+      return;
+    }
     // Get value as integer
     const intValue = parseInt(newValue);
+
     if (intValue > upperBound) {
-      nextTick(() => refObj[on] = upperBound.toString())
-    } else if (intValue < lowerBound || isNaN(intValue)) {
-      nextTick(() => refObj[on] = lowerBound.toString())
+      nextTick(() => refObj.value = upperBound.toString())
+    } else if (intValue < (lowerBound ?? 0) || isNaN(intValue)) {
+      nextTick(() => refObj.value = (lowerBound ?? 0).toString())
     } else if (oldValue === '0') {
-      nextTick(() => refObj[on] = intValue.toString())
+      nextTick(() => refObj.value = intValue.toString())
     } else {
       nextTick(() => rangeControlCommit.value = intValue.toString())
     }

@@ -86,7 +86,7 @@ export default {
      */
     getIcon() {
       return this.isUsingImage
-        ? this.$env.isOptimizeVisual() ? undefined : this.$util.getMatchedIcon(this.src.slice(7, -4))
+        ? this.$env.isOptimizeVisual() ? undefined : this.$constant.matchedIcon(this.src.slice(7, -4))
         : this.icon
     }
   }

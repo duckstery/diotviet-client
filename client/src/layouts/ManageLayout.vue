@@ -41,7 +41,7 @@ export default {
         {key: 'list', icon: 'fa-grip', to: '/product'}
       ],
       'transaction': [
-        {key: 'order', icon: 'fa-inbox', to: '/transaction'},
+        {key: 'order', icon: 'fa-inbox', to: '/transaction/order'},
         {key: 'receipt', icon: 'fa-receipt', to: '/transaction/receipt'},
         // {key: 'return', icon: 'fa-angles-left', to: '/transaction/return'}
       ],

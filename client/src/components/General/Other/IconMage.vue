@@ -42,7 +42,7 @@ export default {
     },
     // Parse img source to icon
     getParsedIcon() {
-      return this.$util.getMatchedIcon(this.src.slice(8, -4))
+      return this.$constant.matchedIcon(this.src.slice(8, -4))
     },
   }
 }

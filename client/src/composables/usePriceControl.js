@@ -9,7 +9,7 @@ import {useI18n} from 'vue-i18n'
  * @param {string} actualKey
  * @returns {object}
  */
-export function usePriceControl (refObj, originalKey, actualKey) {
+export function usePriceControl(refObj, originalKey, actualKey) {
   // Make a computed fragments to modify computed key dynamically
   const computedFragments = {}
   computedFragments[actualKey] = computed(() => {

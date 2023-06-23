@@ -20,7 +20,7 @@
               src="/images/category.png" :label="$t('field.type')" :vuelidate="v$.input.type"
             >
               <template #default="props">
-                <TextField :model-value="$util.getPredefinedTypes()[item.type]['name']"
+                <TextField :model-value="$constant.types()[item.type]['name']"
                            v-bind="props" compact input-class="tw-p-0" readonly/>
               </template>
             </InputField>

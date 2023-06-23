@@ -37,7 +37,9 @@ const routes = [
     path: '/transaction',
     component: () => import('layouts/ManageLayout.vue'),
     children: [
-      r('', 'Transaction', () => import('pages/Transaction/OrderPage.vue')),
+      r('', 'Transaction', () => import('pages/Transaction/TransactionPage.vue')),
+      r('order', 'Transaction.Order', () => import('pages/Transaction/OrderPage.vue')),
+      r('receipt', 'Transaction.Receipt', () => import('pages/Transaction/ReceiptPage.vue')),
     ]
   },
   {

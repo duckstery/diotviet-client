@@ -147,7 +147,7 @@
 <script>
 import {mapActions} from "pinia";
 import {useOrderStore} from "stores/order";
-import {reactive} from "vue";
+import {reactive, toRef} from "vue";
 import {usePriceControl} from "src/composables/usePriceControl";
 import {useRangeControl} from "src/composables/useRangeControl";
 
@@ -193,7 +193,7 @@ export default {
     return {
       bill,
       note: '',
-      ...useRangeControl(bill, 'quantity', 99, 1),
+      ...useRangeControl(toRef(bill, 'quantity'), 99, 1),
       ...usePriceControl(bill, 'originalPrice', 'actualPrice')
     }
   },

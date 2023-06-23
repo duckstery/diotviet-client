@@ -119,7 +119,7 @@
 
 <script>
 import {useDialogPluginComponent} from 'quasar'
-import {reactive} from 'vue'
+import {reactive, toRef} from 'vue'
 import {usePriceControl} from "src/composables/usePriceControl";
 import {useRangeControl} from "src/composables/useRangeControl";
 import {useDialogEditor} from "src/composables/useDialogEditor";
@@ -175,7 +175,7 @@ export default {
     // Make a reactive input
     const input = reactive({...props.item})
     // Put range control on weight
-    useRangeControl(input, 'weight', 1000, 1)
+    useRangeControl(toRef(input, 'weight'), 1000, 1)
 
     return {
       input,

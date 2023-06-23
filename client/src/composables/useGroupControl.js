@@ -1,6 +1,6 @@
 import {Dialog} from "quasar";
 import {useI18n} from 'vue-i18n';
-import {axios, util, notify} from "src/boot";
+import {axios, util, constant, notify} from "src/boot";
 import GroupEditor from "components/Manage/Group/GroupEditor.vue";
 import {useRouteKey} from "src/composables/useRouteKey";
 
@@ -18,7 +18,7 @@ export function useGroupControl(groupRef) {
 
   // On any operation success
   const onSuccessOperation = () => {
-    axios.get(`/group/index/${util.getPredefinedTypesByKey(key)['id']}`)
+    axios.get(`/group/index/${constant.typeByKey(key)['id']}`)
       .then(res => groupRef.value = res.data.payload)
   }
 
@@ -30,7 +30,7 @@ export function useGroupControl(groupRef) {
    */
   const onDirectRequest = (mode, item) => {
     // Send request
-    axios.delete(`/group/delete`, {params: {id: item, type: util.getPredefinedTypesByKey(key)['id']}})
+    axios.delete(`/group/delete`, {params: {id: item, type: constant.typeByKey(key)['id']}})
       .then(res => {
         notify($t('message.success', {attr: $t('field.operation')}))
         onSuccessOperation()
@@ -46,7 +46,7 @@ export function useGroupControl(groupRef) {
    */
   const onInteractiveRequest = (mode, item) => {
     // Preprocess item
-    const newItem = {...item, type: util.getPredefinedTypesByKey(key)['id']}
+    const newItem = {...item, type: constant.typeByKey(key)['id']}
     // Invoke dialog
     Dialog.create({
       component: GroupEditor,

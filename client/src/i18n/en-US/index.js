@@ -116,6 +116,13 @@ export default {
     email: 'Email',
     facebook: 'Facebook',
     type: 'Type',
+    resolved_at: 'Resolved at',
+    pending: 'Pending',
+    resolved: 'Resolved',
+    aborted: 'Aborted',
+    status: 'Status',
+    from: 'From',
+    to: 'To',
 
     role_1: 'Admin',
     role_2: 'Supervisor',

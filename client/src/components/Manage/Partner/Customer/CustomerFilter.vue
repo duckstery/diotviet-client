@@ -32,6 +32,8 @@ import TextField from "components/General/Other/TextField.vue";
 import DatePicker from "components/General/Other/DatePicker.vue";
 import DynamicFilter from "components/Manage/DynamicFilter.vue";
 import RadioFilter from "components/Manage/RadioFilter.vue";
+import {useFilterRequest} from "src/composables/useFilterRequest";
+import {reactive} from "vue";
 
 export default {
   name: "CustomerFilter",
@@ -44,9 +46,11 @@ export default {
     groups: Array
   },
 
-  data: () => ({
+  emits: ['request', 'update:modelValue', 'control'],
+
+  setup (props, context) {
     // Filter
-    filter: {
+    const filter = reactive({
       group: null,
       createAtFrom: null,
       createAtTo: null,
@@ -55,20 +59,11 @@ export default {
       lastTransactionAtFrom: null,
       lastTransactionAtTo: null,
       isMale: null
-    },
-  }),
+    })
+    // Setup filter request
+    useFilterRequest(filter, context)
 
-  emits: ['request', 'update:modelValue', 'control'],
-
-  watch: {
-    // Watch to emit filter event
-    filter: {
-      deep: true,
-      handler(value) {
-        this.$emit('update:modelValue', value)
-        this.$emit('request')
-      }
-    }
-  },
+    return {filter}
+  }
 }
 </script>

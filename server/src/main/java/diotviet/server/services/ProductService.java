@@ -13,6 +13,7 @@ import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductDisplayView;
 import diotviet.server.views.Product.ProductSearchView;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -161,11 +162,11 @@ public class ProductService extends BaseService {
             query.and(product.groups.any().id.eq(request.group()));
         }
         // Filter by min price
-        if (Objects.nonNull(request.minPrice()) && !request.minPrice().isBlank()) {
+        if (StringUtils.isNotBlank(request.minPrice())) {
             query.and(product.actualPrice.castToNum(Long.class).goe(Long.parseLong(request.minPrice())));
         }
         // Filter by max price
-        if (Objects.nonNull(request.maxPrice()) && !request.minPrice().isBlank()) {
+        if (StringUtils.isNotBlank(request.maxPrice())) {
             query.and(product.actualPrice.castToNum(Long.class).loe(Long.parseLong(request.maxPrice())));
         }
         // Filter by canBeAccumulated flag
@@ -177,7 +178,7 @@ public class ProductService extends BaseService {
             query.and(product.isInBusiness.eq(request.isInBusiness()));
         }
         // Filter by search string
-        if (Objects.nonNull(request.search()) && !request.search().isBlank()) {
+        if (StringUtils.isNotBlank(request.search())) {
             query.and(product.code.concat(product.title).contains(request.search()));
         }
 
