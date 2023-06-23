@@ -2,8 +2,8 @@
   <q-page class="bg-grey-3">
     <div class="bg-grey-3 tw-p-5 tw-pr-20" :style="style">
       <!-- Breadcrumbs -->
-      <Breadcrumbs :items="breadcrumbs" ref="breadcrumbs"/>
-      <div class="row tw-pt-5" :style="`min-height: ${contentHeight}px`">
+      <Breadcrumbs v-if="breadcrumbs" :items="breadcrumbs" ref="breadcrumbs" class="tw-mb-5"/>
+      <div class="row" :style="`min-height: ${contentHeight}px`">
         <slot/>
       </div>
     </div>

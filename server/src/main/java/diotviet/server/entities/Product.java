@@ -16,9 +16,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,6 +58,17 @@ public class Product implements Identifiable, Visualize {
     @InitIgnore
     @CsvCustomBindByName(converter = NameableSetField.class)
     private Set<Group> groups;
+
+    /**
+     * Access tokens
+     */
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @InitIgnore
+    @CsvIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private List<Version> versions;
 
     /**
      * Code

@@ -33,21 +33,21 @@ public interface CustomerSearchView {
     String getName();
 
     /**
-     * Actual price
+     * Phone number
      *
      * @return
      */
     String getPhoneNumber();
 
     /**
-     * Measure unit
+     * Address
      *
      * @return
      */
     String getAddress();
 
     /**
-     * Weight
+     * Birthday
      *
      * @return
      */

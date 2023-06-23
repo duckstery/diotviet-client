@@ -17,7 +17,7 @@
     :columns="headers"
     :selection="selection"
     :visible-columns="visibleCols"
-    :rows-per-page-options="[10, 25, 50]"
+    :rows-per-page-options="[10, 25, 50, 100]"
     :rows-per-page-label="$t('field.records_per_page')"
     :no-data-label="$t('message.table_empty_data')"
     :selected-rows-label="numberOfRows => $t('message.rows_selected', {attr: numberOfRows})"
@@ -33,7 +33,7 @@
       <DropdownButton :label="$t('field.operation')" icon="fa-solid fa-ellipsis-vertical"
                       stretch color="positive" class="tw-ml-2" no-caps :disable="!isSelecting">
         <q-list>
-          <template v-for="operation in operations">
+          <template v-for="operation in dropdownOperations">
             <q-item v-if="operation.key" clickable v-close-popup
                     @click="$emit('request', `${operation.key}`, getSelectedIds)">
               <q-item-section avatar>
@@ -78,48 +78,13 @@
 
     <!-- Header -->
     <template #header="props">
-      <q-tr>
-        <q-th auto-width>
-          <q-checkbox size="xs" v-model="props.selected"/>
-        </q-th>
-        <q-th
-          v-for="col in props.cols"
-          :key="col.name"
-          :props="props"
-        >
-          <span class="tw-text-sm">{{ col.label }}</span>
-        </q-th>
-      </q-tr>
+      <DataTableHeader :props="props"/>
     </template>
 
     <!-- Body -->
     <template #body="props">
       <!-- Item's row -->
-      <q-tr :props="props" :class="generateItemRowClass(props.expand)"
-            @click="props.expand = !props.expand">
-        <q-td auto-width>
-          <q-checkbox size="xs" v-model="props.selected"/>
-        </q-td>
-        <q-td
-          v-for="col in props.cols"
-          :key="col.name"
-          :props="props"
-        >
-          <template v-if="typeof col.value === 'boolean'">
-            <q-icon
-              v-if="col.name === 'isMale' || col.name === 'gender'"
-              :name="`fa-solid fa-${col.value ? 'mars' : 'venus'}`"
-              :color="col.value ? 'primary' : 'negative'"
-            />
-            <q-icon
-              v-else
-              :name="`fa-solid fa-${col.value ? 'check' : 'xmark'}`"
-              :color="col.value ? 'positive' : 'negative'"
-            />
-          </template>
-          <span v-else class="tw-text-sm">{{ col.value }}</span>
-        </q-td>
-      </q-tr>
+      <DataTableItem :props="props" @click="props.expand = !props.expand"/>
 
       <!-- Item's details -->
       <ExpandableTr :props="props" :expand="props.expand" :height="detailRowHeight" :width="detailRowWidth">
@@ -146,11 +111,13 @@ import Button from "components/General/Other/Button.vue";
 import DropdownButton from "components/General/Other/DropdownButton.vue";
 import ExpandableTr from "components/Manage/ExpandableTr.vue";
 import ImEx from "components/Manage/ImEx.vue";
+import DataTableItem from "components/Manage/DataTableItem.vue";
+import DataTableHeader from "components/Manage/DataTableHeader.vue";
 
 export default {
   name: 'DataTable',
 
-  components: {ImEx, ExpandableTr, DropdownButton, Button, TextField},
+  components: {DataTableHeader, DataTableItem, ImEx, ExpandableTr, DropdownButton, Button, TextField},
 
   props: {
     // Table header
@@ -174,6 +141,11 @@ export default {
       type: String,
       default: 'multiple'
     },
+    // Operations
+    operations: {
+      type: Array,
+      default: () => ([])
+    }
   },
 
   data: () => ({
@@ -209,15 +181,10 @@ export default {
       return this.selected.length !== 0
     },
     // Business operations
-    operations() {
+    dropdownOperations() {
       return [
-        {icon: 'fa-check', key: 'start_business', color: 'positive', event: 'start_business'},
-        {icon: 'fa-play', key: 'start_accumulating', color: 'positive', event: 'start_accumulating'},
-        {},
-        {icon: 'fa-ban', key: 'stop_business', color: 'negative', event: 'stop_business'},
-        {icon: 'fa-stop', key: 'stop_accumulating', color: 'negative', event: 'stop_accumulating'},
-        {},
         {icon: 'fa-trash', key: 'delete', color: 'negative', event: 'delete'},
+        ...this.operations
       ]
     },
     // Get selected item's id
@@ -246,19 +213,6 @@ export default {
   emits: ['search', 'request'],
 
   methods: {
-    /**
-     * Generate item row class
-     *
-     * @return {object}
-     */
-    generateItemRowClass(isExpanded) {
-      return {
-        'tw-cursor-pointer': true,
-        'tw-bg-blue-100': isExpanded && this.$env.isLight(),
-        'tw-bg-blue-950': isExpanded && !this.$env.isLight(),
-      }
-    },
-
     /**
      * Collapse all expanded row
      */

@@ -72,7 +72,6 @@ public class Order implements Identifiable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     @CsvCustomBindByName(converter = NameableField.class)
-    @InitIgnore
     private Customer customer;
 
     /**
@@ -150,7 +149,6 @@ public class Order implements Identifiable {
      */
     @Enumerated
     @Column(columnDefinition = "smallint")
-    @InitHide
     private Status status;
 
     /**

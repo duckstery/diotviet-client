@@ -10,7 +10,8 @@
     </div>
     <div class="col-10">
       <!-- Data table -->
-      <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
+      <DataTable v-model:pagination="pagination"
+                 :headers="headers" :items="items" :loading="loading" :operations="operations"
                  @search="onSearch" @request="onRequest">
         <template #default="props">
           <ProductDetail v-bind="props" @request="onRequest"/>
@@ -77,6 +78,16 @@ export default {
         {label: this.$t('field.list'), to: '/product', icon: 'fa-grip'},
       ]
     },
+    // Operations
+    operations() {
+      return [
+        {icon: 'fa-check', key: 'start_business', color: 'positive', event: 'start_business'},
+        {icon: 'fa-play', key: 'start_accumulating', color: 'positive', event: 'start_accumulating'},
+        {},
+        {icon: 'fa-ban', key: 'stop_business', color: 'negative', event: 'stop_business'},
+        {icon: 'fa-stop', key: 'stop_accumulating', color: 'negative', event: 'stop_accumulating'},
+      ]
+    }
   },
 }
 </script>

@@ -36,7 +36,7 @@ public class ProductService extends BaseService {
      * Product repository
      */
     @Autowired
-    private ProductRepository productRepository;
+    private ProductRepository repository;
     /**
      * Product validator
      */
@@ -64,7 +64,7 @@ public class ProductService extends BaseService {
         );
 
         // Query for Product's data // .project("title") ??????????
-        return productRepository.findBy(filter, q -> q.as(ProductSearchView.class).page(pageable));
+        return repository.findBy(filter, q -> q.as(ProductSearchView.class).page(pageable));
     }
 
     /**
@@ -73,7 +73,7 @@ public class ProductService extends BaseService {
      * @return
      */
     public List<ProductDisplayView> display() {
-        return productRepository.findAllByIsInBusinessTrueAndIsDeletedFalse();
+        return repository.findAllByIsInBusinessTrueAndIsDeletedFalse();
     }
 
     /**
@@ -83,7 +83,7 @@ public class ProductService extends BaseService {
      * @return
      */
     public ProductDetailView findById(Long id) {
-        return validator.isExist(productRepository.findByIdAndIsDeletedFalse(id, ProductDetailView.class));
+        return validator.isExist(repository.findByIdAndIsDeletedFalse(id, ProductDetailView.class));
     }
 
     /**
@@ -98,7 +98,7 @@ public class ProductService extends BaseService {
         // Try to add file first and save file src
         saveFileFor(product, request.file(), validator);
         // Create file
-        productRepository.save(product);
+        repository.save(product);
     }
 
     /**
@@ -109,9 +109,9 @@ public class ProductService extends BaseService {
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void patch(ProductPatchRequest request) {
         if (request.target().equals("business")) {
-            productRepository.updateIsInBusinessByIds(request.option(), request.ids());
+            repository.updateIsInBusinessByIds(request.option(), request.ids());
         } else if (request.target().equals("accumulating")) {
-            productRepository.updateCanBeAccumulatedByIds(request.option(), request.ids());
+            repository.updateCanBeAccumulatedByIds(request.option(), request.ids());
         }
     }
 
@@ -123,9 +123,9 @@ public class ProductService extends BaseService {
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void delete(Long[] ids) {
         // Delete assoc
-        productRepository.deleteGroupAssocById(ids);
+        repository.deleteGroupAssocById(ids);
         // Delete and get image path (this is physical resource, not database resource)
-        removeFiles(productRepository.softDeleteByIdsReturningSrc(ids));
+        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
     }
 
     /**
@@ -134,7 +134,7 @@ public class ProductService extends BaseService {
      * @return
      */
     public List<Product> export() {
-        return productRepository.findAll();
+        return repository.findAll();
     }
 
     // ****************************

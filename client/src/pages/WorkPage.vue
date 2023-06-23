@@ -1,5 +1,5 @@
 <template>
-  <Page :breadcrumbs="breadcrumbs">
+  <Page>
     <div class="col-12">
       <div class="row tw-h-full">
         <div class="col-6">

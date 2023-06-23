@@ -5,7 +5,7 @@
       <div class="tw-text-3xl tw-font-semibold">{{ $t('field.order') }}</div>
 
       <!-- Filter -->
-      <OrderFilter v-model="filter" :categories="categories" :groups="groups"
+      <OrderFilter v-model="filter" :groups="groups"
                       @request="onSearch" @control="onGroupControl"/>
     </div>
     <div class="col-10">
@@ -13,7 +13,7 @@
       <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
                  @search="onSearch" @request="onRequest">
         <template #default="props">
-          <CustomerDetail v-bind="props" @request="onRequest"/>
+          <OrderDetail v-bind="props" @request="onRequest"/>
         </template>
       </DataTable>
     </div>
@@ -26,18 +26,21 @@ import DataTable from "components/Manage/DataTable.vue";
 import OrderFilter from "components/Manage/Transaction/Order/OrderFilter.vue";
 import Page from "components/General/Layout/Page.vue";
 import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
+import OrderDetail from "components/Manage/Transaction/Order/OrderDetail.vue";
 import {ref} from "vue";
 import {usePageSearch} from "src/composables/usePageSearch";
 import {usePageRequest} from "src/composables/usePageRequest";
-import CustomerEditor from "components/Manage/Partner/Customer/CustomerEditor.vue";
 import {useGroupControl} from "src/composables/useGroupControl";
+import {useRouter} from "vue-router";
 
 export default {
   name: 'OrderPage',
 
-  components: {OrderFilter, CustomerDetail, Page, DataTable, Breadcrumbs},
+  components: {OrderDetail, OrderFilter, CustomerDetail, Page, DataTable, Breadcrumbs},
 
   setup() {
+    // Use router
+    const router = useRouter()
     // Loading flag
     const loading = ref(false)
     // Page search functionality
@@ -50,14 +53,11 @@ export default {
       resolvedAtTo: null,
       priceFrom: null,
       priceTo: null,
-      lastTransactionAtFrom: null,
-      lastTransactionAtTo: null,
-      isMale: null
     })
     // Page request functionality
     const pageRequest = usePageRequest(
-      CustomerEditor,
-      () => ({categories: pageSearch.categories.value, groups: pageSearch.groups.value}),
+      () => router.push('/work'),
+      null,
       pageSearch.searchWithPreviousData
     )
     // Group control

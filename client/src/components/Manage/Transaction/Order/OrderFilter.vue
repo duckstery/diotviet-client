@@ -61,9 +61,6 @@ export default {
       resolvedAtTo: null,
       priceFrom: null,
       priceTo: null,
-      lastTransactionAtFrom: null,
-      lastTransactionAtTo: null,
-      isMale: null
     })
     // Setup filter request
     useFilterRequest(filter, context)

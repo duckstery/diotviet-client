@@ -92,6 +92,10 @@ public class StorageUtils {
      * @throws IOException
      */
     public static void delete(String filename) throws IOException {
+        // Prevent deleting default image
+        if (filename.contains("default.jpeg")) {
+            return;
+        }
         // Resolve path
         Path absolutePath = resolve(filename);
         // Delete path

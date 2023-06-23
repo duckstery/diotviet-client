@@ -25,7 +25,11 @@ const constant = {
    */
   typeByKey(key) {
     // Generate map
-    const map = {product: 0, transaction: 1, customer: 2}
+    const map = {
+      product: 0,
+      order: 1,
+      customer: 2
+    }
 
     return this.types()[map[key]]
   },

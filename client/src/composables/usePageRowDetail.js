@@ -16,7 +16,7 @@ export function usePageRowDetail(props, context) {
 
   // Check if component is ready to display data
   const isReady = computed(() => {
-    return !(util.isUnset(detail.value) || Object.keys(detail.value).length === 0) || true
+    return !(util.isUnset(detail.value) || Object.keys(detail.value).length === 0)
   })
   // Get item id
   const getItemId = computed(() => {

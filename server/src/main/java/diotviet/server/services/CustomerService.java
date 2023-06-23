@@ -35,7 +35,7 @@ public class CustomerService extends BaseService {
      * Product repository
      */
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerRepository repository;
     /**
      * Product validator
      */
@@ -63,7 +63,7 @@ public class CustomerService extends BaseService {
         );
 
         // Query for Customer's data
-        return customerRepository.findBy(filter, q -> q.as(CustomerSearchView.class).page(pageable));
+        return repository.findBy(filter, q -> q.as(CustomerSearchView.class).page(pageable));
     }
 
     /**
@@ -73,7 +73,7 @@ public class CustomerService extends BaseService {
      * @return
      */
     public CustomerDetailView findById(Long id) {
-        return validator.isExist(customerRepository.findByIdAndIsDeletedFalse(id, CustomerDetailView.class));
+        return validator.isExist(repository.findByIdAndIsDeletedFalse(id, CustomerDetailView.class));
     }
 
     /**
@@ -90,7 +90,7 @@ public class CustomerService extends BaseService {
         // Save file and get saved file's path
         saveFileFor(customer, request.file(), validator);
         // Create file
-        customerRepository.save(customer);
+        repository.save(customer);
     }
 
     /**
@@ -101,9 +101,9 @@ public class CustomerService extends BaseService {
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void delete(Long[] ids) {
         // Delete assoc
-        customerRepository.deleteGroupAssocById(ids);
+        repository.deleteGroupAssocById(ids);
         // Delete and get image path (this is physical resource, not database resource)
-        removeFiles(customerRepository.softDeleteByIdsReturningSrc(ids));
+        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
     }
 
 
@@ -113,7 +113,7 @@ public class CustomerService extends BaseService {
      * @return
      */
     public List<Customer> export() {
-        return customerRepository.findAll();
+        return repository.findAll();
     }
 
     // ****************************

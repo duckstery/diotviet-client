@@ -7,12 +7,12 @@ import {useRouteKey} from "src/composables/useRouteKey";
 /**
  * Setup page request
  *
- * @param {any} dialogComponent
- * @param {function} dialogCustomizer
+ * @param {any} invoker
+ * @param {function} customizer
  * @param {function} onSuccess
  * @return {object}
  */
-export function usePageRequest(dialogComponent, dialogCustomizer, onSuccess) {
+export function usePageRequest(invoker, customizer, onSuccess) {
   // Get key
   const key = useRouteKey()
   // i18n
@@ -72,7 +72,7 @@ export function usePageRequest(dialogComponent, dialogCustomizer, onSuccess) {
    */
   const onInteractiveRequest = (mode, item) => {
     // Create props so item("null") won't override Editor default value
-    const componentProps = {mode, ...dialogCustomizer()}
+    const componentProps = {mode, ...(util.isUnset(customizer) ? [] : customizer())}
 
     // Add item
     if (item !== null) {
@@ -86,16 +86,18 @@ export function usePageRequest(dialogComponent, dialogCustomizer, onSuccess) {
     }
 
     // Invoke dialog
-    Dialog.create({
-      component: dialogComponent,
-      componentProps: componentProps
-    }).onOk(onSuccess)
-      .onCancel(() => {
+    return typeof invoker === 'function'
+      ? invoker()
+      : Dialog.create({
+        component: invoker,
+        componentProps: componentProps
+      }).onOk(onSuccess)
+        .onCancel(() => {
 
-      })
-      .onDismiss(() => {
+        })
+        .onDismiss(() => {
 
-      })
+        })
   }
 
   // On any operation success
