@@ -1,5 +1,7 @@
 package diotviet.server.templates.Group;
 
+import diotviet.server.constants.Type;
+
 /**
  * Group interact request
  *
@@ -10,6 +12,6 @@ package diotviet.server.templates.Group;
 public record GroupInteractRequest(
         Long id,
         String name,
-        Integer type
+        Type type
 ) {
 }

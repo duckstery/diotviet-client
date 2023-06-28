@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -51,6 +52,22 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      * @return
      */
     List<ProductDisplayView> findAllByIsInBusinessTrueAndIsDeletedFalse();
+
+    /**
+     * Get Product that is in business and is not deleted by ID
+     *
+     * @param ids
+     * @return
+     */
+    List<Product> findByIdInAndIsInBusinessTrueAndIsDeletedFalse(List<Long> ids);
+
+    /**
+     * Count accumulatable Product
+     *
+     * @param ids
+     * @return
+     */
+    long countByIdInAndCanBeAccumulatedTrueAndIsDeletedFalse(List<Long> ids);
 
     /**
      * Get first by code

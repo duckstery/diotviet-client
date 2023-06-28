@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -65,6 +66,23 @@ public class CustomerValidator extends BaseValidator<Customer> {
 
         // Set category
         customer.setCategory(categoryService.getCategories(Type.PARTNER).stream().findFirst().orElseThrow());
+
+        return customer;
+    }
+
+    /**
+     * Check if customer is valid by id
+     *
+     * @param id
+     * @return
+     */
+    public Customer isValid(Long id) {
+        // Get Customer that is not deleted by id
+        Customer customer = customerRepository.findByIdAndIsDeletedFalse(id, Customer.class);
+        // Check if customer is not exist
+        if (Objects.isNull(customer)) {
+            interrupt("inconsistent_data", "customer");
+        }
 
         return customer;
     }

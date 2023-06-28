@@ -1,5 +1,6 @@
 package diotviet.server.controllers;
 
+import diotviet.server.constants.Status;
 import diotviet.server.constants.Type;
 import diotviet.server.entities.Group;
 import diotviet.server.entities.Order;
@@ -7,6 +8,7 @@ import diotviet.server.services.GroupService;
 import diotviet.server.services.OrderService;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Order.OrderInitResponse;
+import diotviet.server.templates.Order.OrderInteractRequest;
 import diotviet.server.templates.Order.OrderSearchRequest;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Order.OrderSearchView;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -92,19 +96,19 @@ public class OrderController extends BaseController {
 //        return ok(orderService.findById(id));
 //    }
 //
-//    /**
-//     * Store (Create) item
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<?> store(OrderInteractRequest request) {
-//        // Store item
-//        orderService.store(request);
-//
-//        return ok("");
-//    }
+    /**
+     * Store (Create) item
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/order")
+    public ResponseEntity<?> store(@RequestBody OrderInteractRequest request) {
+        // Store item
+        orderService.store(request, Status.PENDING);
+
+        return ok("");
+    }
 //
 //    /**
 //     * Delete item

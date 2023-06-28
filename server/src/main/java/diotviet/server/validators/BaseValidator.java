@@ -40,7 +40,7 @@ public abstract class BaseValidator<T> {
      * @param <S>
      * @return
      */
-    public <S> S map(Object object, Class<S> destinationType) {
+    public T map(Object object, Class<T> destinationType) {
         return modelMapper.map(object, destinationType);
     }
 
@@ -54,6 +54,16 @@ public abstract class BaseValidator<T> {
      */
     public void interrupt(String reason, String prefix, String attribute, String... args) {
         throw new ServiceValidationException(reason, prefix, attribute, args);
+    }
+
+    /**
+     * Interrupt validator with an Exception
+     *
+     * @param reason
+     * @param payload
+     */
+    public void interrupt(String reason, String payload) {
+        interrupt(reason, "", payload);
     }
 
     /**

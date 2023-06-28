@@ -9,17 +9,18 @@ import lombok.experimental.Accessors;
  * Product
  */
 @Entity
-@Table(name = "versions")
+@Table(name = "items")
 @Data
 @Accessors(chain = true)
 @QueryEntity
-public class Version {
+public class Item {
     /**
      * Id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "versions_seq")
-    @SequenceGenerator(name = "versions_seq", sequenceName = "versions_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "items_seq")
+    @SequenceGenerator(name = "items_seq", sequenceName = "items_seq", allocationSize = 10)
+//    @Column(columnDefinition = "bigint default nextval('diotviet.items_seq'::regclass)")
     private long id;
 
     /**
@@ -28,6 +29,13 @@ public class Version {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    /**
+     * Order
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
     /**
      * Price before discount
@@ -52,4 +60,16 @@ public class Version {
      */
     @Column(length = 11)
     private String actualPrice;
+
+    /**
+     * Note
+     */
+    @Column
+    private String note;
+
+    /**
+     * Quantity
+     */
+    @Column
+    private int quantity;
 }

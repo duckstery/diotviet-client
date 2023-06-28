@@ -66,7 +66,7 @@ public class GroupValidator extends BaseValidator<Group> {
             group.setId(request.id());
         }
         group.setName(request.name());
-        group.setType(Type.fromCode(request.type()));
+//        group.setType(Type.fromCode(request.type()));
 
         return group;
     }

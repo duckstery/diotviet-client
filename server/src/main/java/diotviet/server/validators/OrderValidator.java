@@ -1,39 +1,43 @@
 package diotviet.server.validators;
 
-import diotviet.server.constants.Type;
 import diotviet.server.entities.Customer;
+import diotviet.server.entities.Order;
+import diotviet.server.entities.Product;
 import diotviet.server.repositories.CustomerRepository;
-import diotviet.server.services.CategoryService;
-import diotviet.server.templates.Customer.CustomerInteractRequest;
-import org.apache.commons.lang3.ArrayUtils;
+import diotviet.server.repositories.OrderRepository;
+import diotviet.server.repositories.ProductRepository;
+import diotviet.server.services.ProductService;
+import diotviet.server.templates.Order.Interact.OrderItem;
+import diotviet.server.templates.Order.OrderInteractRequest;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.List;
+import java.util.Objects;
 
 @Component
-public class OrderValidator extends BaseValidator<Customer> {
+public class OrderValidator extends BaseValidator<Order> {
 
     // ****************************
     // Properties
     // ****************************
 
     /**
-     * Customer repository
+     * Order repository
      */
     @Autowired
-    private CustomerRepository customerRepository;
+    private OrderRepository repository;
     /**
-     * Group validator
+     * Customer validator
      */
     @Autowired
-    private GroupValidator groupValidator;
+    private CustomerValidator customerValidator;
     /**
-     * Category service
+     * Product service
      */
     @Autowired
-    private CategoryService categoryService;
+    private ProductService productService;
 
     // ****************************
     // Public API
@@ -45,64 +49,33 @@ public class OrderValidator extends BaseValidator<Customer> {
      * @param request
      * @return
      */
-    public Customer validateAndExtract(CustomerInteractRequest request) {
-        // Primary validation
-        validate(request);
+    public Order validateAndExtract(OrderInteractRequest request) {
         // Convert request to Customer
-        Customer customer = map(request, Customer.class);
+        Order order = map(request, Order.class);
 
-        // Check if request's group is not empty
-        if (ArrayUtils.isNotEmpty(request.groups())) {
-            // Check and get valid Group
-            customer.setGroups(new HashSet<>(groupValidator.isExistByIds(request.groups())));
+        // Check if no customer is specified
+        if (Objects.isNull(request.customer()) || Objects.isNull(request.customer().id())) {
+            interrupt("specify_customer", "customer");
         }
-        // Check and get the valid code
-        checkCode(customer, "KH", customerRepository::findFirstByCodeAndIsDeletedFalse, customerRepository::findFirstByCodeLikeOrderByCodeDesc);
-        // Check src
-        checkImageSrc(customer);
-        // Preserve Date type data
-        checkDateData(customer);
+        // Check if customer is not exist
+        order.setCustomer(customerValidator.isValid(request.customer().id()));
 
-        // Set category
-        customer.setCategory(categoryService.getCategories(Type.PARTNER).stream().findFirst().orElseThrow());
-
-        return customer;
-    }
-
-    // ****************************
-    // Private API
-    // ****************************
-
-    /**
-     * Primary validation
-     *
-     * @param request
-     */
-    private void validate(CustomerInteractRequest request) {
-        assertStringRequired(request, "name", 50);
-        assertStringNonRequired(request, "code", 0, 10);
-        assertStringNonRequired(request, "phoneNumber", 0, 15);
-        assertStringNonRequired(request, "address", 0, 11);
-    }
-
-    /**
-     * Check and preserve Date data
-     *
-     * @param customer
-     */
-    private void checkDateData(Customer customer) {
-        // Check if Customer is not exist, so nothing need to be preserved
-        Optional<Customer> readonly = customerRepository.findById(customer.getId());
-        if (readonly.isEmpty()) {
-            return;
+        // Check if no item is specified
+        if (CollectionUtils.isEmpty(request.items())) {
+            interrupt("specify_least_item", "product");
+        }
+        // Produce Product's Item
+        order.setItems(productService.produce(order.getItems(), order));
+        // If items is null, it means some Product is not valid
+        if (Objects.isNull(order.getItems())) {
+            interrupt("inconsistent_data", "product");
         }
 
-        // Get original customer to preserve Date data
-        Customer original = readonly.get();
+        // Make sure code will always be null, so it'll only be set in the next statement
+        order.setCode(null);
+        // Generate code
+        checkCode(order, "DH", null, repository::findFirstByCodeLikeOrderByCodeDesc);
 
-        // Set data for modified customer
-        customer.setCreatedAt(original.getCreatedAt());
-        customer.setLastOrderAt(original.getLastOrderAt());
-        customer.setLastTransactionAt(original.getLastTransactionAt());
+        return order;
     }
 }

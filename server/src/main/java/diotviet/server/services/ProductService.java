@@ -2,9 +2,12 @@ package diotviet.server.services;
 
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
+import diotviet.server.entities.Item;
+import diotviet.server.entities.Order;
 import diotviet.server.entities.Product;
 import diotviet.server.entities.QProduct;
 import diotviet.server.repositories.ProductRepository;
+import diotviet.server.templates.Order.Interact.OrderItem;
 import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.templates.Product.ProductPatchRequest;
 import diotviet.server.templates.Product.ProductSearchRequest;
@@ -13,6 +16,7 @@ import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductDisplayView;
 import diotviet.server.views.Product.ProductSearchView;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,8 +26,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 public class ProductService extends BaseService {
@@ -137,6 +143,33 @@ public class ProductService extends BaseService {
         return repository.findAll();
     }
 
+    /**
+     * Produce a Product Item
+     *
+     * @param items
+     * @return
+     */
+    public List<Item> produce(List<Item> items, Order order) {
+        // Get Product base on requested Item
+        List<Product> products = repository.findByIdInAndIsInBusinessTrueAndIsDeletedFalse(items.stream().map(Item::getId).toList());
+        // If any Product is not valid, no need to produce anything
+        if (products.size() != items.size()) {
+            return null;
+        }
+
+        // Iterate through each Item in items
+        for (Item item : items) {
+            // Set original Product for Item
+            item.setProduct(IterableUtils.find(products, product -> product.getId() == item.getId()));
+            // Clear item's id since it was Product's id
+            item.setId(0);
+            // Set order
+            item.setOrder(order);
+        }
+
+        return items;
+    }
+
     // ****************************
     // Private
     // ****************************
@@ -179,7 +212,7 @@ public class ProductService extends BaseService {
         }
         // Filter by search string
         if (StringUtils.isNotBlank(request.search())) {
-            query.and(product.code.concat(product.title).contains(request.search()));
+            query.and(product.code.concat(product.title).toLowerCase().contains(request.search()));
         }
 
         // Connect expression

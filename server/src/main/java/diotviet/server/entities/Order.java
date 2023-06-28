@@ -42,7 +42,7 @@ public class Order implements Identifiable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_seq")
-    @SequenceGenerator(name = "orders_seq", sequenceName = "orders_seq", allocationSize = 1)
+    @SequenceGenerator(name = "orders_seq", sequenceName = "orders_seq", allocationSize = 10)
     @CsvIgnore
     private long id;
 
@@ -75,22 +75,17 @@ public class Order implements Identifiable {
     private Customer customer;
 
     /**
-     * Products
+     * Items
      */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(
-            name = "assoc_orders_products",
-            joinColumns = {@JoinColumn(name = "order_id")},
-            inverseJoinColumns = {@JoinColumn(name = "product_id")}
-    )
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "order")
     @CsvCustomBindByName(converter = NameableSetField.class)
     @InitIgnore
-    private List<Product> products;
+    private List<Item> items;
 
     /**
      * Transactions
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "order")
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -119,7 +114,7 @@ public class Order implements Identifiable {
     @Column(length = 11)
     @InitIgnore
     @CsvBindByName
-    private String originalPrice;
+    private String provisionalAmount;
 
     /**
      * Discount's amount
@@ -142,7 +137,7 @@ public class Order implements Identifiable {
      */
     @Column(length = 11)
     @CsvBindByName
-    private String actualPrice;
+    private String paymentAmount;
 
     /**
      * Status
@@ -165,7 +160,7 @@ public class Order implements Identifiable {
     @Column
     @InitIgnore
     @CsvBindByName
-    private String description;
+    private String note;
 
     /**
      * Name of creator
@@ -193,16 +188,5 @@ public class Order implements Identifiable {
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date resolvedAt = new Date();
-
-    /**
-     * Is deleted flag
-     */
-    @Column(nullable = false)
-    @JsonIgnore
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @InitIgnore
-    @CsvBindByName
-    private Boolean isDeleted = Boolean.FALSE;
+    private Date resolvedAt;
 }

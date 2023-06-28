@@ -70,7 +70,7 @@ public class GroupService {
             case TRANSACTION -> repository.deleteAssocProductById(group.getId());
             case PARTNER -> repository.deleteAssocCustomerById(group.getId());
         }
-        // Delete Group, this operation won't cause any side effect, only the in the "groups" table
+        // Delete Group, this operation won't cause any side effect, only the "groups" table
         repository.deleteById(id);
     }
 }

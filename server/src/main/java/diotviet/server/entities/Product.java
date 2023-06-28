@@ -62,13 +62,13 @@ public class Product implements Identifiable, Visualize {
     /**
      * Access tokens
      */
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "product")
     @JsonIgnore
     @InitIgnore
     @CsvIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<Version> versions;
+    private List<Item> items;
 
     /**
      * Code
