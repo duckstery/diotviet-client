@@ -2,26 +2,12 @@ package diotviet.server.services;
 
 import diotviet.server.entities.Order;
 import diotviet.server.entities.Transaction;
-import diotviet.server.repositories.TransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TransactionService extends BaseService {
-
-    // ****************************
-    // Properties
-    // ****************************
-
-    /**
-     * Transaction repository
-     */
-    @Autowired
-    private TransactionRepository repository;
 
     // ****************************
     // Public API

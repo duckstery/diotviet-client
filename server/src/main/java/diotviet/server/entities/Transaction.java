@@ -1,13 +1,6 @@
 package diotviet.server.entities;
 
-import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvCustomBindByName;
-import com.opencsv.bean.CsvDate;
-import com.opencsv.bean.CsvIgnore;
 import com.querydsl.core.annotations.QueryEntity;
-import diotviet.server.annotations.InitHide;
-import diotviet.server.annotations.InitIgnore;
-import diotviet.server.generators.NameableField;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;

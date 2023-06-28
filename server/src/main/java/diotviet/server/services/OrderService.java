@@ -5,7 +5,6 @@ import diotviet.server.constants.PageConstants;
 import diotviet.server.constants.Status;
 import diotviet.server.entities.Item;
 import diotviet.server.entities.Order;
-import diotviet.server.entities.Product;
 import diotviet.server.entities.QOrder;
 import diotviet.server.repositories.ItemRepository;
 import diotviet.server.repositories.OrderRepository;
@@ -26,11 +25,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService extends BaseService {
