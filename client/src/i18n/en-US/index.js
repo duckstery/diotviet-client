@@ -153,7 +153,9 @@ export default {
     from: 'From {attr}',
     inconsistent_data: 'Data has been refreshed because of the inconsistency',
     numeric: 'Only allow numeric value',
-    email: 'This is not a valid email'
+    email: 'This is not a valid email',
+    specify_customer: 'Please specify a customer',
+    specify_least_item: 'Please specify at least 1 item'
   },
 
   // ****************************

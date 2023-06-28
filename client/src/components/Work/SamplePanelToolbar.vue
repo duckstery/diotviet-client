@@ -1,7 +1,5 @@
 <template>
-  <TextField v-model="search" class="tw-w-5/12 tw-max-w-lg" :label="$t('field.search_customer')"/>
-  <Button icon="add" :tooltip="$t('field.add')" color="positive" no-flat class="tw-w-[41px] tw-ml-1"
-          @click="onAddCustomer"/>
+  <CustomerQuery/>
 
   <q-space/>
 
@@ -16,11 +14,12 @@
 <script>
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
+import CustomerQuery from "components/Work/CustomerQuery.vue";
 
 export default {
   name: 'SamplePanelToolbar',
 
-  components: {TextField, Button},
+  components: {CustomerQuery, TextField, Button},
 
   props: {
     modelValue: Object,
@@ -42,25 +41,8 @@ export default {
     },
   },
 
-  data: () => ({
-    // Other
-    search: '',
-  }),
-
   methods: {
-    /**
-     * On search customer
-     */
-    onSearchCustomer() {
 
-    },
-
-    /**
-     * On add new customer
-     */
-    onAddCustomer() {
-
-    },
 
     /**
      * On categorize sample item event handler

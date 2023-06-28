@@ -1,4 +1,5 @@
 import {boot} from 'quasar/wrappers'
+import {notify} from "boot/notify";
 
 // Check if error status match the handler
 const mustBe = (status, error) => {
@@ -48,6 +49,15 @@ const error = {
     }
     // Notify
     this.$notifyErr(this.$t('message.invalid_input'))
+  },
+
+  /**
+   * Any code
+   *
+   * @param err
+   */
+  any(err) {
+    notify(err.response.data.message, 'negative')
   }
 }
 

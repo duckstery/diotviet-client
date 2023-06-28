@@ -25,8 +25,8 @@
                   v-else v-bind="props" v-model="input[key]"
                   dense
                   map-options emit-value use-chips
-                  :options="key === 'category' ? categories : groups" option-label="name" option-value="id"
-                  :multiple="key === 'groups'"
+                  :options="groups" option-label="name" option-value="id"
+                  multiple
                 />
               </template>
             </InputField>
@@ -127,14 +127,12 @@ export default {
   props: {
     // Editor mode: 'create', 'update', 'copy'
     mode: String,
-    // Categories
-    categories: Array,
     // Groups
     groups: Array,
     // Target item
     item: {
       type: Object,
-      default: () => (/**{
+      default: () => ({
           id: null,
           code: null,
           name: null,
@@ -146,8 +144,8 @@ export default {
           email: null,
           facebook: null,
           description: null,
-        }*/
-        {
+        }
+        /*{
           id: 0,
           code: null,
           name: "Ahihi",
@@ -163,7 +161,7 @@ export default {
           createdAt: null,
           lastOrderAt: null,
           lastTransactionAt: null,
-        })
+        }*/)
     }
   },
 

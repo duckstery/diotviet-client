@@ -6,7 +6,7 @@
           <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
         </div>
         <div class="col-6">
-          <ItemPanel :items="items" ref="itemPanel"/>
+          <ItemPanel :items="items" ref="itemPanel" @order="onOrder" @purchase="onPurchase"/>
           <StatisticPanel :max-height="statisticPanelHeight" class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
         </div>
       </div>
@@ -15,12 +15,13 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue'
+import {defineComponent, unref} from 'vue'
 
 import Page from "components/General/Layout/Page.vue";
 import OrderPanel from "components/Work/OrderPanel.vue";
 import ItemPanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
+import {useOrderStore} from "stores/order";
 
 export default defineComponent({
   name: 'WorkPage',
@@ -50,15 +51,36 @@ export default defineComponent({
     index() {
       // Call API to get data for table
       this.$axios.get('/product/display')
-        .then(this.applyItems)
+        .then(res => this.items = res.data.payload)
+    },
+
+    onOrder() {
+      if (this.validate()) {
+        this.$axios.post('/order/order', unref(useOrderStore().getActiveOrder))
+          .then(console.warn)
+          .catch(this.$error.any)
+      }
+    },
+
+    onPurchase() {
+
     },
 
     /**
-     * Apply items
-     * @param res
+     * Validate before create Order
+     *
+     * @return {boolean}
      */
-    applyItems(res) {
-      this.items = res.data.payload
+    validate() {
+      if (this.$util.isUnset(useOrderStore().getActiveCustomer)) {
+        this.$notifyErr(this.$t("message.specify_customer"))
+      } else if (this.$_.isEmpty(useOrderStore().getActiveOrder.items)) {
+        this.$notifyErr(this.$t("message.specify_least_item"))
+      } else {
+        return true
+      }
+
+      return false
     }
   },
 

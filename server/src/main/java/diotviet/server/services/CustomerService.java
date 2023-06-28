@@ -32,7 +32,7 @@ public class CustomerService extends BaseService {
     // ****************************
 
     /**
-     * Product repository
+     * Customer repository
      */
     @Autowired
     private CustomerRepository repository;
@@ -116,6 +116,16 @@ public class CustomerService extends BaseService {
         return repository.findAll();
     }
 
+    /**
+     * Search with a string
+     *
+     * @param string
+     * @return
+     */
+    public List<CustomerSearchView> query(CustomerSearchRequest request) {
+        return repository.findBy(createFilter(request), q -> q.as(CustomerSearchView.class).all());
+    }
+
     // ****************************
     // Private
     // ****************************
@@ -166,7 +176,7 @@ public class CustomerService extends BaseService {
         }
         // Filter by search string
         if (StringUtils.isNotBlank(request.search())) {
-            query.and(customer.name.concat(customer.phoneNumber).concat(customer.address).contains(request.search()));
+            query.and(customer.name.concat(customer.phoneNumber).concat(customer.address).toLowerCase().contains(request.search()));
         }
 
         // Connect expression

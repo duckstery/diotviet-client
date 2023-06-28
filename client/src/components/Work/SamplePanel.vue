@@ -35,7 +35,7 @@
         color="warning"
         class="tw-w-1/5"
         icon="fa-solid fa-cart-plus"
-        @click="onOrder"
+        @click="$emit('order')"
         :label="$t('field.order_item')"
       />
       <Button
@@ -44,7 +44,7 @@
         align="around"
         color="positive"
         class="tw-w-1/5"
-        @click="onPurchase"
+        @click="$emit('purchase')"
         :label="$t('field.purchase')"
       />
     </q-card-actions>
@@ -83,6 +83,8 @@ export default {
     }
   },
 
+  emits: ['order', 'purchase'],
+
   data: () => ({
     // Design
     isVisualizing: false,
@@ -110,20 +112,6 @@ export default {
   },
 
   methods: {
-    /**
-     * On place order event handler
-     */
-    onOrder() {
-
-    },
-
-    /**
-     * On purchase order event handler
-     */
-    onPurchase() {
-
-    },
-
     /**
      * On add item to order
      */

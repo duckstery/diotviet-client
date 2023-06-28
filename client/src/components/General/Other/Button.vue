@@ -14,19 +14,18 @@
       <IconMage class="d-btn-img" :src="src" color="light"/>
       <span class="tw-ml-3">{{ label }}</span>
     </template>
-    <q-tooltip v-if="tooltip" transition-show="scale" transition-hide="scale" class="tw-text-sm">
-      {{ tooltip }}
-    </q-tooltip>
+    <Tooltip v-if="tooltip" :content="tooltip"/>
     <slot/>
   </q-btn>
 </template>
 
 <script>
 import IconMage from "components/General/Other/IconMage.vue";
+import Tooltip from "components/General/Other/Tooltip.vue";
 
 export default {
   name: "Button",
-  components: {IconMage},
+  components: {Tooltip, IconMage},
 
   props: {
     // Image src

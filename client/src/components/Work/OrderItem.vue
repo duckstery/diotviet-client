@@ -4,7 +4,7 @@
       <!-- Title section -->
       <div class="row tw-text-[16px]">
         <div class="tw-font-semibold">{{ this.index + 1 }}.&nbsp;</div>
-        <div class="tw-overflow-hidden tw-text-ellipsis tw-h-6 tw-max-w-sm tw-line-clamp-1">
+        <div class="tw-text-ellipsis tw-h-6 tw-max-w-sm tw-line-clamp-1">
           {{ value.title }}
           <q-tooltip class="tw-text-[14px]">{{ value.title }}</q-tooltip>
         </div>
@@ -147,7 +147,7 @@
 <script>
 import {mapActions} from "pinia";
 import {useOrderStore} from "stores/order";
-import {reactive, toRef} from "vue";
+import {reactive, ref, toRef} from "vue";
 import {usePriceControl} from "src/composables/usePriceControl";
 import {useRangeControl} from "src/composables/useRangeControl";
 
@@ -192,7 +192,7 @@ export default {
 
     return {
       bill,
-      note: '',
+      note: ref(''),
       ...useRangeControl(toRef(bill, 'quantity'), 99, 1),
       ...usePriceControl(bill, 'originalPrice', 'actualPrice')
     }
@@ -211,7 +211,7 @@ export default {
       this.onEdit()
     },
     // Update item when add note
-    note() {
+    note(value) {
       this.onEdit()
     },
     value: {

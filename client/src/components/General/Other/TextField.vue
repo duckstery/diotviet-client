@@ -10,6 +10,7 @@
     :mask="mask"
     :rules="rules"
     :label="label"
+    :debounce="debounce"
     :readonly="readonly"
     :outlined="!compact"
     :clearable="!required"
@@ -38,6 +39,8 @@ export default {
     rules: Array,
     // Readonly
     readonly: Boolean,
+    // Debounce
+    debounce: String,
     // Icon
     icon: {
       type: String,

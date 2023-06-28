@@ -153,6 +153,11 @@ public class CustomerController extends BaseController {
         return ok("");
     }
 
+    /**
+     * Export CSV
+     *
+     * @return
+     */
     @GetMapping(value = "/export")
     public ResponseEntity<?> exportCSV() {
         // Export Bean to CSV
@@ -163,5 +168,16 @@ public class CustomerController extends BaseController {
                 .contentLength(bytes.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new ByteArrayResource(bytes));
+    }
+
+    /**
+     * Simple search
+     *
+     * @param query
+     * @return
+     */
+    @GetMapping(value = "/query")
+    public ResponseEntity<?> simpleSearch(CustomerSearchRequest request) {
+        return ok(customerService.query(request));
     }
 }

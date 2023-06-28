@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia'
+import {util} from 'src/boot'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
@@ -7,12 +8,13 @@ export const useOrderStore = defineStore('order', {
     activeIndex: 0,
     orders: [{
       id: 0,
+      customer: null,
       items: [],
       provisionalAmount: '0',
       discount: '0',
       discountUnit: '%',
       paymentAmount: '0',
-      note: ''
+      note: '',
     }]
   }),
 
@@ -55,10 +57,28 @@ export const useOrderStore = defineStore('order', {
      * @param state
      * @returns {number}
      */
-    getActiveIndex: (state) => state.activeIndex
+    getActiveIndex: (state) => state.activeIndex,
+
+    /**
+     * Get active customer
+     *
+     * @param state
+     * @return {object}
+     */
+    getActiveCustomer: (state) => state.orders.at(state.activeIndex).customer
   },
 
   actions: {
+    /**
+     * Set customer for active order
+     *
+     * @param customer
+     */
+    setCustomer(customer) {
+      // Get activeOrder reference
+      this.orders.at(this.getActiveIndex).customer = util.isUnset(customer) ? null : {...customer}
+    },
+
     /**
      * Add item to active order
      *
