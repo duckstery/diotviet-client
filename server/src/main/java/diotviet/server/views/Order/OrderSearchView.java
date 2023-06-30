@@ -17,7 +17,20 @@ public interface OrderSearchView {
      */
     String getCode();
 
-    @Value("#{target.customer.name}")
+    /**
+     * Customer name
+     *
+     * @return
+     */
+    @Value("#{target.customer.id}")
+    String getCustomerId();
+
+    /**
+     * Customer name
+     *
+     * @return
+     */
+    @Value("#{target.customer.code + \" - \" + target.customer.name}")
     String getCustomer();
 
     /**
@@ -39,22 +52,22 @@ public interface OrderSearchView {
      *
      * @return
      */
-    String getActualPrice();
+    String getPaymentAmount();
 
     /**
      * Status
      *
      * @return
      */
-    @Value("#{target.status.name().toLowerCase()}")
-    String getStatus();
+    @Value("#{target.status.getCode()}")
+    int getStatus();
 
     /**
      * Point
      *
      * @return
      */
-    Long getPoint();
+    String getPoint();
 
     /**
      * Get creator
@@ -77,5 +90,5 @@ public interface OrderSearchView {
      * @return
      */
     @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.resolvedAt, \"dd-MM-yyyy HH:mm:ss\")}")
-    String resolvedAt();
+    String getResolvedAt();
 }

@@ -9,7 +9,6 @@
     bordered
     ref="table"
     virtual-scroll
-    class="sticky-header"
     table-class="virtual-scrollbar"
     no-results-label="The filter didn't uncover any results"
 

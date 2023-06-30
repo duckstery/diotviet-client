@@ -1,5 +1,8 @@
 package diotviet.server.constants;
 
+import lombok.Getter;
+
+@Getter
 public enum Status {
     PENDING(0),
     RESOLVED(1),

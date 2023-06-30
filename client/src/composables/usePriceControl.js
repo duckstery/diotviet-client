@@ -1,5 +1,6 @@
 import {computed, watch, nextTick} from 'vue'
 import {useI18n} from 'vue-i18n'
+import {useDiscountCalculator} from "src/composables/useDiscountCalculator";
 
 /**
  * Setup control price system
@@ -10,16 +11,14 @@ import {useI18n} from 'vue-i18n'
  * @returns {object}
  */
 export function usePriceControl(refObj, originalKey, actualKey) {
+  // Resources
+  const discountCalculator = useDiscountCalculator()
   // Make a computed fragments to modify computed key dynamically
   const computedFragments = {}
   computedFragments[actualKey] = computed(() => {
-    const discountAmount = refObj.discountUnit === '%'
-      // Discount by percentage
-      ? parseInt(refObj[originalKey]) / 100 * parseInt(refObj.discount)
-      // Discount by plain value
-      : parseInt(refObj.discount)
+    const discountAmount = discountCalculator(refObj[originalKey], refObj.discountUnit, refObj.discount)
 
-    return `${parseInt(refObj[originalKey]) - Math.round(discountAmount)}`
+    return `${parseInt(refObj[originalKey]) - Math.round(parseInt(discountAmount))}`
   })
 
   const options = {

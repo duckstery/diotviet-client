@@ -123,6 +123,10 @@ export default {
     status: 'Status',
     from: 'From',
     to: 'To',
+    created_by: 'Created by',
+    point: 'Point',
+    total_price: 'Total price',
+    total_quantity: 'Total quantity',
 
     role_1: 'Admin',
     role_2: 'Supervisor',

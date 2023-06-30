@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -84,18 +81,18 @@ public class OrderController extends BaseController {
 //        // Search for data and response
 //        return ok(new OrderSearchResponse(orderService.paginate(request)));
 //    }
-//
-//    /**
-//     * Show detail
-//     *
-//     * @param id
-//     * @return
-//     */
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> show(@PathVariable Long id) {
-//        return ok(orderService.findById(id));
-//    }
-//
+
+    /**
+     * Show detail
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> show(@PathVariable Long id) {
+        return ok(orderService.findById(id));
+    }
+
     /**
      * Store (Create) item
      *

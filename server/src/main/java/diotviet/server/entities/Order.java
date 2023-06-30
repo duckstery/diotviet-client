@@ -26,6 +26,15 @@ import java.util.Set;
 /**
  * User model
  */
+@NamedEntityGraph(
+        name = "order_detail",
+        attributeNodes = {
+                @NamedAttributeNode("groups"),
+                @NamedAttributeNode("customer"),
+                @NamedAttributeNode(value = "items", subgraph = "item_product")
+        },
+        subgraphs = {@NamedSubgraph(name = "item_product", attributeNodes = {@NamedAttributeNode("product")})}
+)
 @Entity
 @Table(name = "orders")
 @Data

@@ -6,38 +6,10 @@
           {{ detail.title ?? 'Title' }}
         </div>
       </Skeleton>
-      <div class="tw-mt-2 tw-flex tw-text-sm">
-        <Skeleton v-model="isReady" height="20px" width="200px">
-          <div v-for="key in ['canBeAccumulated', 'isInBusiness']">
-            <div class="tw-flex tw-mr-3">
-              <q-icon
-                :name="`fa-solid fa-${detail[key] ? 'check' : 'xmark'}`"
-                :color="detail[key] ? 'positive' : 'negative'"
-                class="tw-mt-1"
-              />
-              <div class="tw-ml-2">{{ $t(`field.${$util.camelToSnake(key)}`) }}</div>
-            </div>
-          </div>
-        </Skeleton>
-      </div>
       <div class="row">
-        <!-- Image -->
-        <div class="tw-mt-3 col-12 col-lg-4 col-md-6 tw-px-1.5">
-          <Skeleton v-model="isReady" height="300px">
-            <q-img
-              no-native-menu
-              no-spinner
-              no-transition
-              width="300"
-              height="300"
-              style="max-width: 300px; max-height: 300px"
-              :src="this.detail.src"
-            />
-          </Skeleton>
-        </div>
         <!-- Primary info -->
         <div class="tw-mt-3 col-12 col-lg-4 col-md-6 tw-px-1.5">
-          <template v-for="key in ['code', 'category', 'groups']">
+          <template v-for="key in ['code', 'groups', 'customer']">
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
@@ -46,44 +18,74 @@
               />
             </Skeleton>
           </template>
-
-          <div class="tw-mt-5"/>
-          <template v-for="key in ['measureUnit', 'weight', 'originalPrice', 'actualPrice']">
+          <template v-for="key in ['address', 'phoneNumber', 'email']">
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
-                space
-                inner-class="tw-w-48"
-                :mask="key === 'measureUnit' || key === 'weight' ? '' : '###,###,###,###'"
-                :suffix="key === 'weight' ? 'Kg' : ''"
+                interactive
+                :modelValue="detail[key]"
+                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :label="$t(`field.${$util.camelToSnake(key)}`)"
+                @interact="onInteract(key, detail[key])"
+              />
+            </Skeleton>
+          </template>
+        </div>
+        <!-- Secondary info -->
+        <div class="tw-mt-3 col-12 col-lg-4 col-md-6 tw-px-1.5">
+          <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+            <DisplayField
+              custom
+              src="/images/info.png"
+              :label="$t('field.status')"
+            >
+              <OrderStatus :value="detail.status" class="tw-my-auto tw-pt-3 tw-ml-3"/>
+            </DisplayField>
+          </Skeleton>
+          <template v-for="key in ['point', 'createdBy', 'createdAt', 'resolvedAt']">
+            <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+              <DisplayField
                 :modelValue="detail[key]"
                 :src="`/images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
               />
             </Skeleton>
           </template>
-          <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
-            <DisplayField
-              :modelValue="discountAmount"
-              space
-              inner-class="tw-w-48"
-              :src="'/images/discount.png'"
-              :label="$t(`field.discount`)"
-            />
-          </Skeleton>
         </div>
-        <!-- Secondary info -->
+        <!-- Note -->
         <div class="tw-mt-3 col-12 col-lg-4 tw-px-1.5">
           <Skeleton v-model="isReady" height="300px">
             <DisplayField
-              :modelValue="this.detail.description"
+              :modelValue="this.detail.note"
               textarea
               horizontal
               :src="'/images/note.png'"
-              :label="$t(`field.description`)"
-              textarea-height="244"
+              :label="$t(`field.note`)"
+              textarea-height="185"
               textarea-length="100"
             />
           </Skeleton>
+        </div>
+      </div>
+      <div class="row">
+        <div class="tw-mt-6 col-12 tw-px-1.5">
+          <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+            <MarkupTable :headers="itemHeaders" :items="items"/>
+          </Skeleton>
+        </div>
+      </div>
+      <div class="row">
+        <q-space v-if="$q.screen.gt.md"/>
+        <div class="tw-mt-6 col-12-md col-4 tw-px-1.5">
+          <template v-for="key in ['totalQuantity', 'provisionalAmount', 'discount', 'paymentAmount']">
+            <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+              <DisplayField
+                space
+                :modelValue="detail[key]"
+                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :label="$t(`field.${$util.camelToSnake(key)}`)"
+              />
+            </Skeleton>
+          </template>
         </div>
       </div>
     </q-card-section>
@@ -98,10 +100,6 @@
         <Button :label="$t('field.copy')" icon="fa-solid fa-copy"
                 stretch color="positive" class="tw-ml-2" no-caps @click="request('copy', this.detail)"/>
         <q-separator class="tw-ml-2" inset vertical/>
-        <Button v-for="operation in statusOperations"
-                :label="$t(`field.${operation.key}`)" :icon="`fa-solid ${operation.icon}`"
-                stretch :color="operation.color" class="tw-ml-2" no-caps
-                @click="request('patch', {ids: [this.getItemId], target: operation.target, option: operation.option})"/>
         <Button :label="$t('field.delete')" icon="fa-solid fa-trash"
                 stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', [this.getItemId])"/>
       </Skeleton>
@@ -113,19 +111,26 @@
 import DisplayField from "components/General/Other/DisplayField.vue";
 import Button from "components/General/Other/Button.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
-import {usePageRowDetail} from "src/composables/usePageRowDetail";
+import OrderStatus from "components/Manage/Constant/OrderStatus.vue";
+import MarkupTable from "components/Manage/MarkupTable.vue";
+
 import {toRefs} from "vue";
+import {usePageRowDetail} from "src/composables/usePageRowDetail";
+import {useInteractiveField} from "src/composables/useInteractiveField";
+import {useDiscountCalculator} from "src/composables/useDiscountCalculator";
 
 export default {
   name: 'OrderDetail',
 
-  components: {Skeleton, Button, DisplayField},
+  components: {MarkupTable, OrderStatus, Skeleton, Button, DisplayField},
 
   props: {
     // Product props
     item: {
       type: Object,
-      default: () => ({})
+      default: () => ({
+        items: []
+      })
     },
     // Width
     width: {
@@ -143,12 +148,42 @@ export default {
 
   setup(props, context) {
     return {
-      ...usePageRowDetail(toRefs(props), context)
+      ...usePageRowDetail(toRefs(props), context),
+      ...useInteractiveField(),
+      getDiscountAmount: useDiscountCalculator()
     }
   },
 
   computed: {
+    // Headers of item
+    itemHeaders() {
+      return [
+        {name: 'code', field: 'code', align: 'left', sortable: false},
+        {name: 'title', field: 'title', align: 'left', sortable: false},
+        {name: 'quantity', field: 'quantity', align: 'right', sortable: false},
+        {name: 'originalPrice', field: 'originalPrice', align: 'right', format: this.$util.formatMoney, sortable: false},
+        {name: 'discount', field: 'discount', align: 'right', format: this.$util.formatMoney, sortable: false},
+        {name: 'actualPrice', field: 'actualPrice', align: 'right', format: this.$util.formatMoney, sortable: false},
+        {name: 'totalPrice', field: 'totalPrice', align: 'right', format: this.$util.formatMoney, sortable: false},
+      ]
+    },
+    // Preprocessed item
+    items() {
+      // Return blank Array if detail or detail's items is unset
+      if (this.$util.isUnset(this.detail) || this.$util.isUnset(this.detail.items)) {
+        return []
+      }
+console.warn(item)
+      // Preprocess
+      let preprocessedItem = this.detail.items.map(item => ({
+        ...item,
+        discount: this.getDiscountAmount(item.originalPrice, item.discountUnit, item.discount),
+        totalPrice: `${parseInt(item.actualPrice) * item.quantity}`,
+        totalQuantity: item.items.reduce((total, item) => total + item.quantity, 0)
+      }))
 
+      return this.$_.sortBy(preprocessedItem, o => o.code)
+    }
   }
 }
 </script>

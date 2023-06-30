@@ -50,10 +50,7 @@
               :src="`/images/gender.png`"
               :label="$t(`field.gender`)"
             >
-              <q-icon :name="`fa-solid fa-${detail.isMale ? 'mars' : 'venus'}`"
-                      :color="`${detail.isMale ? 'primary' : 'negative'}`"
-                      size="xs"
-                      class="tw-my-auto tw-pt-3 tw-ml-3"/>
+              <CustomerGender :value="detail.isMale" class="tw-my-auto tw-pt-3 tw-ml-3"/>
             </DisplayField>
           </Skeleton>
 
@@ -117,14 +114,16 @@
 import DisplayField from "components/General/Other/DisplayField.vue";
 import Button from "components/General/Other/Button.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
-import {usePageRowDetail} from "src/composables/usePageRowDetail";
-import {toRefs} from "vue";
 import LabelField from "components/General/Other/LabelField.vue";
+import {toRefs} from "vue";
+import {usePageRowDetail} from "src/composables/usePageRowDetail";
+import {useInteractiveField} from "src/composables/useInteractiveField";
+import CustomerGender from "components/Manage/Constant/CustomerGender.vue";
 
 export default {
   name: 'CustomerDetail',
 
-  components: {LabelField, Skeleton, Button, DisplayField},
+  components: {CustomerGender, LabelField, Skeleton, Button, DisplayField},
 
   props: {
     // Customer props
@@ -148,32 +147,9 @@ export default {
 
   setup(props, context) {
     return {
-      ...usePageRowDetail(toRefs(props), context)
+      ...usePageRowDetail(toRefs(props), context),
+      ...useInteractiveField()
     }
   },
-
-  methods: {
-    /**
-     * On interact
-     *
-     * @param mode
-     * @param data
-     */
-    onInteract(mode, data) {
-      if (mode === 'phoneNumber') {
-        // Call number
-        window.open(`tel:${data}`)
-      } else if (mode === 'email') {
-        // Open Gmail interface to compose email
-        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${data}`)
-      } else if (mode === 'facebook') {
-        // Open facebook link
-        window.open(`https://${data}`)
-      } else if (mode === 'address') {
-        // Open Google Map link
-        window.open(`https://www.google.com/maps/place/${data}`)
-      }
-    },
-  }
 }
 </script>

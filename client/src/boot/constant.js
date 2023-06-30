@@ -41,9 +41,33 @@ const constant = {
    */
   statuses() {
     return [
-      {id: 0, name: $t('field.pending')},
-      {id: 1, name: $t('field.resolved')},
-      {id: 2, name: $t('field.aborted')},
+      {id: 0, name: $t('field.pending'), icon: 'fa-solid fa-circle-dot', color: 'info'},
+      {id: 1, name: $t('field.resolved'), icon: 'fa-solid fa-circle-check', color: 'positive'},
+      {id: 2, name: $t('field.aborted'), icon: 'fa-solid fa-circle-stop', color: 'negative'},
+    ]
+  },
+
+  /**
+   * Predefined genders
+   *
+   * @return {Array}
+   */
+  genders() {
+    return [
+      {id: 0, name: $t('field.female'), icon: 'fa-solid fa-venus', color: 'negative'},
+      {id: 1, name: $t('field.male'), icon: 'fa-solid fa-mars', color: 'primary'}
+    ]
+  },
+
+  /**
+   * Predefined booleans
+   *
+   * @return {Array}
+   */
+  booleans() {
+    return [
+      {id: 0, name: $t('field.false'), icon: 'fa-solid fa-xmark', color: 'negative'},
+      {id: 1, name: $t('field.true'), icon: 'fa-solid fa-check', color: 'positive'}
     ]
   },
 
@@ -92,6 +116,11 @@ const constant = {
       'last_order_at': 'fa-solid fa-arrows-rotate',
       'last_transaction_at': 'fa-solid fa-arrows-rotate',
       'phone_number': 'fa-solid fa-phone-volume',
+      'point': 'fa-solid fa-star',
+      'created_by': 'fa-solid fa-feather',
+      'resolved_at': 'fa-solid fa-circle-check',
+      'info': 'fa-solid fa-circle-info',
+      'customer': 'fa-solid fa-credit-card'
     }[key]
   },
 }

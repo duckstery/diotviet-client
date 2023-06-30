@@ -33,7 +33,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
      * @param <T>
      * @return
      */
-    @EntityGraph(attributePaths = {"category", "groups"})
+    @EntityGraph("order_detail")
     <T> T findById(Long id, Class<T> classType);
 
     /**
@@ -44,16 +44,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
      */
     Order findFirstByCodeLikeOrderByCodeDesc(String code);
 
-//    /**
-//     * Find by id
-//     *
-//     * @param id
-//     * @param classType
-//     * @param <T>
-//     * @return
-//     */
-//    @EntityGraph(attributePaths = {"groups"})
-//    <T> T findByIdAndIsDeletedFalse(Long id, Class<T> classType);
 //
 //    @Override
 //    @EntityGraph(attributePaths = {"category", "groups"})
