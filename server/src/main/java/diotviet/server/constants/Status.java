@@ -28,4 +28,14 @@ public enum Status {
             default -> null;
         };
     }
+
+    /**
+     * Generate Type from code
+     *
+     * @param code
+     * @return
+     */
+    public static Status fromCode(long code) {
+        return fromCode((int) code);
+    }
 }

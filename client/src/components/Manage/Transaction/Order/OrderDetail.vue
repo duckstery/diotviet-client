@@ -3,7 +3,7 @@
     <q-card-section>
       <Skeleton v-model="isReady" height="28px" width="100px">
         <div class="tw-text-lg tw-font-semibold text-primary">
-          {{ detail.title ?? 'Title' }}
+          {{ $t('field.information') }}
         </div>
       </Skeleton>
       <div class="row">
@@ -68,18 +68,19 @@
       </div>
       <div class="row">
         <div class="tw-mt-6 col-12 tw-px-1.5">
-          <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+          <Skeleton v-model="isReady" height="220px" skeleton-class="tw-mt-2.5">
             <MarkupTable :headers="itemHeaders" :items="items"/>
           </Skeleton>
         </div>
       </div>
       <div class="row">
-        <q-space v-if="$q.screen.gt.md"/>
-        <div class="tw-mt-6 col-12-md col-4 tw-px-1.5">
+        <q-space v-if="$q.screen.gt.sm"/>
+        <div class="tw-mt-6 col-lg-4 col-12 tw-px-1">
           <template v-for="key in ['totalQuantity', 'provisionalAmount', 'discount', 'paymentAmount']">
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 space
+                mask="###,###,###,###"
                 :modelValue="detail[key]"
                 :src="`/images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
@@ -173,16 +174,23 @@ export default {
       if (this.$util.isUnset(this.detail) || this.$util.isUnset(this.detail.items)) {
         return []
       }
-console.warn(item)
+
       // Preprocess
       let preprocessedItem = this.detail.items.map(item => ({
         ...item,
         discount: this.getDiscountAmount(item.originalPrice, item.discountUnit, item.discount),
         totalPrice: `${parseInt(item.actualPrice) * item.quantity}`,
-        totalQuantity: item.items.reduce((total, item) => total + item.quantity, 0)
       }))
 
       return this.$_.sortBy(preprocessedItem, o => o.code)
+    },
+  },
+
+  watch: {
+    items() {
+      // Setup some data
+      this.detail.totalQuantity = `${this.items.reduce((total, item) => total + item.quantity, 0)}`
+      this.detail.discount = `${this.getDiscountAmount(this.detail.provisionalAmount, this.detail.discountUnit, this.detail.discount)}`
     }
   }
 }

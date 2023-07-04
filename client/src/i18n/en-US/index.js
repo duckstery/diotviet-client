@@ -127,6 +127,7 @@ export default {
     point: 'Point',
     total_price: 'Total price',
     total_quantity: 'Total quantity',
+    information: 'Information',
 
     role_1: 'Admin',
     role_2: 'Supervisor',

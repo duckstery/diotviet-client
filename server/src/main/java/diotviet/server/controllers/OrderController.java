@@ -10,6 +10,7 @@ import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Order.OrderInitResponse;
 import diotviet.server.templates.Order.OrderInteractRequest;
 import diotviet.server.templates.Order.OrderSearchRequest;
+import diotviet.server.templates.Order.OrderSearchResponse;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Order.OrderSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,17 +71,17 @@ public class OrderController extends BaseController {
         return ok(new OrderInitResponse(headers, items, groups));
     }
 
-//    /**
-//     * Search for Order that satisfy condition
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @GetMapping("/search")
-//    public ResponseEntity<?> search(OrderSearchRequest request) {
-//        // Search for data and response
-//        return ok(new OrderSearchResponse(orderService.paginate(request)));
-//    }
+    /**
+     * Search for Order that satisfy condition
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> search(OrderSearchRequest request) {
+        // Search for data and response
+        return ok(new OrderSearchResponse(orderService.paginate(request)));
+    }
 
     /**
      * Show detail
@@ -100,9 +101,23 @@ public class OrderController extends BaseController {
      * @return
      */
     @PostMapping(value = "/order")
-    public ResponseEntity<?> store(@RequestBody OrderInteractRequest request) {
+    public ResponseEntity<?> order(@RequestBody OrderInteractRequest request) {
         // Store item
         orderService.store(request, Status.PENDING);
+
+        return ok("");
+    }
+
+    /**
+     * Store (Create) item
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/purchase")
+    public ResponseEntity<?> purchase(@RequestBody OrderInteractRequest request) {
+        // Store item
+        orderService.store(request, Status.RESOLVED);
 
         return ok("");
     }

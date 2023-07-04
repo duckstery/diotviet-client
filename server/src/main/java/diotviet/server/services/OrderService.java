@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -161,6 +162,10 @@ public class OrderService extends BaseService {
         // Filter by groups
         if (Objects.nonNull(request.group())) {
             query.and(order.groups.any().id.eq(request.group()));
+        }
+        // Filter by type
+        if (Objects.nonNull(request.status())) {
+            query.and(order.status.in(Arrays.stream(request.status()).map(Status::fromCode).toArray(Status[]::new)));
         }
         // Filter by min createdAt
         if (Objects.nonNull(request.createAtFrom())) {

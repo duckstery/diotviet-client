@@ -3,7 +3,7 @@
     <q-card-section>
       <Skeleton v-model="isReady" height="28px" width="100px">
         <div class="tw-text-lg tw-font-semibold text-primary">
-          {{ detail.title ?? 'Title' }}
+          {{ detail.name ?? 'Title' }}
         </div>
       </Skeleton>
       <div class="row">
@@ -34,16 +34,6 @@
           </template>
 
           <div class="tw-mt-5"/>
-          <template v-for="key in ['name']">
-            <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
-              <DisplayField
-                :modelValue="detail[key]"
-                :src="`/images/${$util.camelToSnake(key)}.png`"
-                :label="$t(`field.${$util.camelToSnake(key)}`)"
-              />
-            </Skeleton>
-          </template>
-
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
             <DisplayField
               custom

@@ -6,7 +6,7 @@
           <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
         </div>
         <div class="col-6">
-          <ItemPanel :items="items" ref="itemPanel" @order="onOrder" @purchase="onPurchase"/>
+          <ItemPanel :items="items" ref="itemPanel" @order="onOpe('order')" @purchase="onOpe('purchase')"/>
           <StatisticPanel :max-height="statisticPanelHeight" class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
         </div>
       </div>
@@ -54,16 +54,17 @@ export default defineComponent({
         .then(res => this.items = res.data.payload)
     },
 
-    onOrder() {
+    /**
+     * On operation
+     *
+     * @param type
+     */
+    onOpe(type) {
       if (this.validate()) {
-        this.$axios.post('/order/order', unref(useOrderStore().getActiveOrder))
+        this.$axios.post(`/order/${type}`, unref(useOrderStore().getActiveOrder))
           .then(console.warn)
           .catch(this.$error.any)
       }
-    },
-
-    onPurchase() {
-
     },
 
     /**
