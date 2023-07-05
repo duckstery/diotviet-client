@@ -41,10 +41,28 @@ const constant = {
    */
   statuses() {
     return [
-      {id: 0, name: $t('field.pending'), icon: 'fa-solid fa-circle-dot', color: 'info'},
-      {id: 1, name: $t('field.resolved'), icon: 'fa-solid fa-circle-check', color: 'positive'},
-      {id: 2, name: $t('field.aborted'), icon: 'fa-solid fa-circle-stop', color: 'negative'},
+      {id: 0, name: $t('field.pending'), icon: 'fa-solid fa-circle-notch', color: 'warning'},
+      {id: 1, name: $t('field.processing'), icon: 'fa-solid fa-circle-dot', color: 'info'},
+      {id: 2, name: $t('field.resolved'), icon: 'fa-solid fa-circle-check', color: 'positive'},
+      {id: 3, name: $t('field.aborted'), icon: 'fa-solid fa-circle-stop', color: 'negative'},
     ]
+  },
+
+  /**
+   * Check if status is resolved
+   */
+  isStatusResolved(code) {
+    return code === 2
+  },
+
+  /**
+   * Check if status is aborted
+   *
+   * @param {number} code
+   * @return {boolean}
+   */
+  isStatusAborted(code) {
+    return code === 3
   },
 
   /**

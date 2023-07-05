@@ -24,7 +24,7 @@ const error = {
   $410(callback, err) {
     mustBe(410, err)
     // Notify
-    this.$notifyWarn(this.$t('message.inconsistent_data'))
+    notify(this.$t(`message.${err.response.data.payload}`), 'warning')
     callback()
   },
 
@@ -48,7 +48,7 @@ const error = {
       }]
     }
     // Notify
-    this.$notifyErr(this.$t('message.invalid_input'))
+    notify(this.$t('message.invalid_input'), 'negative')
   },
 
   /**
@@ -58,6 +58,18 @@ const error = {
    */
   any(err) {
     notify(err.response.data.message, 'negative')
+  },
+
+  switch(cases) {
+    return (error) => {
+      // Get code of error
+      const httpCode = error.response.status
+
+      // Get handler of httpCode
+      if (typeof this[`$${httpCode}`] === 'function') {
+        this[`$${httpCode}`].bind(...cases[httpCode])(error)
+      }
+    }
   }
 }
 

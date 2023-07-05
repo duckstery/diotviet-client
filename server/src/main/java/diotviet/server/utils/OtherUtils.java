@@ -27,7 +27,7 @@ public abstract class OtherUtils {
      * @param o2
      * @return
      */
-    public static Object get(Object o1, Object o2) {
+    public static <T> T get(T o1, T o2) {
         return Objects.nonNull(o1) ? o1 : o2;
     }
 

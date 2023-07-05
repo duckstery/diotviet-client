@@ -32,7 +32,6 @@ export function useDialogEditor(inputRef, mode = 'create') {
   /**
    * On confirm
    *
-   * @param forcedKey
    * @return {Promise<void>}
    */
   const onConfirm = async () => {
@@ -47,12 +46,15 @@ export function useDialogEditor(inputRef, mode = 'create') {
       const formData = util.craftFormData(inputRef)
       // Send request
       axios.post(`/${key}/store`, formData, {headers: {"Content-Type": "multipart/form-data"}})
-        .then(() => {
+        .then(res => {
           notify($t("message.success", {attr: $t(`field.${mode}`)}))
           // Close dialog
-          onDialogOK()
+          onDialogOK(res.data.payload)
         })
-        .catch(error.$422.bind({v$: v$.value, $t, $notifyWarn: (content) => notify(content, 'negative')}, 'input'))
+        .catch(error.switch({
+          410: [{$t}, onDialogOK],
+          422: [{$t, v$: v$.value}, 'input']
+        }))
     } else {
       // Notify about invalid
       notify($t("message.invalid_input"), 'negative')

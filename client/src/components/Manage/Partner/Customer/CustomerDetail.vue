@@ -105,10 +105,10 @@ import DisplayField from "components/General/Other/DisplayField.vue";
 import Button from "components/General/Other/Button.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
 import LabelField from "components/General/Other/LabelField.vue";
+import CustomerGender from "components/Manage/Constant/CustomerGender.vue";
 import {toRefs} from "vue";
 import {usePageRowDetail} from "src/composables/usePageRowDetail";
 import {useInteractiveField} from "src/composables/useInteractiveField";
-import CustomerGender from "components/Manage/Constant/CustomerGender.vue";
 
 export default {
   name: 'CustomerDetail',

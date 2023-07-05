@@ -13,6 +13,7 @@ import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
 import diotviet.server.templates.Customer.CustomerSearchResponse;
 import diotviet.server.templates.EntityHeader;
+import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Customer.CustomerSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,9 +115,7 @@ public class CustomerController extends BaseController {
     @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> store(CustomerInteractRequest request) {
         // Store item
-        customerService.store(request);
-
-        return ok("");
+        return ok(customerService.store(request));
     }
 
     /**

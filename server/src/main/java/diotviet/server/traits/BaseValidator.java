@@ -1,10 +1,11 @@
-package diotviet.server.validators;
+package diotviet.server.traits;
 
 import diotviet.server.exceptions.DataInconsistencyException;
 import diotviet.server.exceptions.ServiceValidationException;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.views.EntityProvider;
 import diotviet.server.views.Identifiable;
+import diotviet.server.views.Lockable;
 import diotviet.server.views.Visualize;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -74,7 +75,7 @@ public abstract class BaseValidator<T> {
      */
     public <S> S isExist(S obj) {
         if (Objects.isNull(obj)) {
-            throw new DataInconsistencyException("not_exist");
+            throw new DataInconsistencyException("inconsistent_data");
         }
 
         return obj;
@@ -89,7 +90,7 @@ public abstract class BaseValidator<T> {
      * @param defaultProvider: Provider to provide default entity
      * @return
      */
-    public void checkCode(Identifiable target, String format, EntityProvider provider, EntityProvider defaultProvider) {
+    public void checkCode(Identifiable target, String format, EntityProvider<Identifiable, String> provider, EntityProvider<Identifiable, String> defaultProvider) {
         // Init holder
         long id = target.getId();
         String code = target.getCode();
@@ -110,10 +111,12 @@ public abstract class BaseValidator<T> {
             // Validate for "UPDATE"
             // Get first Customer that has matched code
             Identifiable identifiable = provider.provide(code);
-            if (Objects.isNull(identifiable) && code.startsWith(format)) {
+            // Check if identifiable is null
+            boolean identifiableIsNull = Objects.isNull(identifiable);
+            if (identifiableIsNull && code.startsWith(format)) {
                 // Check if Customer with code is not exist and code format is reserved
                 interrupt("reserved", getKey(), "code");
-            } else if (identifiable.getId() != id) {
+            } else if (!identifiableIsNull && identifiable.getId() != id) {
                 // Else, check if Customer exist and that Customer is not self
                 interrupt("exists_by", getKey(), "code");
             }
@@ -139,6 +142,21 @@ public abstract class BaseValidator<T> {
         }
     }
 
+    /**
+     * Optimistic lock check
+     *
+     * @param lockable
+     * @param provider
+     */
+    protected void checkOptimisticLock(Lockable lockable, OptimisticLockRepository<Long> olRepo) {
+        // Check if lockable is a valid version of Entity
+        if (!olRepo.existsByIdAndVersion(lockable.getId(), lockable.getVersion())) {
+            throw new DataInconsistencyException("invalid_lock");
+        }
+
+        // Increase lock
+        lockable.setVersion(lockable.getVersion() + 1);
+    }
 
     // ****************************
     // Protected API
@@ -151,7 +169,7 @@ public abstract class BaseValidator<T> {
      * @param provider
      * @return
      */
-    protected String generateCode(String format, EntityProvider provider) {
+    protected String generateCode(String format, EntityProvider<Identifiable, String> provider) {
         // Get Product with "largest" code
         Identifiable identifiable = provider.provide(format + "%");
         // Get number part from code

@@ -1,6 +1,7 @@
 import {ref, computed, watch} from "vue";
-import {axios, util} from "src/boot"
+import {axios, util, error, notify} from "src/boot"
 import {useRouteKey} from "src/composables/useRouteKey";
+import {useI18n} from "vue-i18n";
 
 /**
  * Setup page row detail
@@ -13,6 +14,8 @@ export function usePageRowDetail(props, context) {
   const key = useRouteKey()
   // Detail data
   const detail = ref({})
+  // i18n
+  const $t = useI18n().t
 
   // Check if component is ready to display data
   const isReady = computed(() => {
@@ -30,6 +33,7 @@ export function usePageRowDetail(props, context) {
   const fetch = () => {
     axios.get(`/${key}/${getItemId.value}`, {loading: false})
       .then(res => detail.value = res.data.payload)
+      .catch(error.$410.bind({$t}, () => request('fetch')))
   }
   const request = (key, data) => {
     context.emit('request', key, data)

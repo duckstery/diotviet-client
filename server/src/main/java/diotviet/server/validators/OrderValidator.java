@@ -1,19 +1,14 @@
 package diotviet.server.validators;
 
-import diotviet.server.entities.Customer;
 import diotviet.server.entities.Order;
-import diotviet.server.entities.Product;
-import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.repositories.OrderRepository;
-import diotviet.server.repositories.ProductRepository;
 import diotviet.server.services.ProductService;
-import diotviet.server.templates.Order.Interact.OrderItem;
 import diotviet.server.templates.Order.OrderInteractRequest;
+import diotviet.server.traits.BaseValidator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Objects;
 
 @Component

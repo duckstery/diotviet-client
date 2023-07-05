@@ -3,6 +3,7 @@ package diotviet.server.controllers;
 import diotviet.server.constants.Type;
 import diotviet.server.services.GroupService;
 import diotviet.server.templates.Group.GroupInteractRequest;
+import diotviet.server.traits.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

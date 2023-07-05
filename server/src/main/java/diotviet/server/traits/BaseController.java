@@ -1,4 +1,4 @@
-package diotviet.server.controllers;
+package diotviet.server.traits;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;

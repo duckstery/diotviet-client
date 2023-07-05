@@ -1,11 +1,13 @@
 package diotviet.server.repositories;
 
 import com.querydsl.core.types.Predicate;
+import diotviet.server.constants.Status;
 import diotviet.server.entities.Order;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.function.Function;
@@ -44,7 +46,17 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
      */
     Order findFirstByCodeLikeOrderByCodeDesc(String code);
 
-//
+    /**
+     * Update Order's status
+     *
+     * @param status
+     * @param ids
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Order o set o.status = :status WHERE o.id IN :ids")
+    void updateStatusByIds(@Param("status") Status status, @Param("ids") Long[] ids);
+
+    //
 //    @Override
 //    @EntityGraph(attributePaths = {"category", "groups"})
 //    List<Order> findAll();

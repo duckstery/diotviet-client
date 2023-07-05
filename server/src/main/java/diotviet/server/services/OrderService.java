@@ -11,7 +11,9 @@ import diotviet.server.repositories.OrderRepository;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Order.Interact.OrderItem;
 import diotviet.server.templates.Order.OrderInteractRequest;
+import diotviet.server.templates.Order.OrderPatchRequest;
 import diotviet.server.templates.Order.OrderSearchRequest;
+import diotviet.server.traits.BaseService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.OrderValidator;
 import diotviet.server.views.Order.OrderDetailView;
@@ -26,10 +28,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService extends BaseService {
@@ -79,8 +79,8 @@ public class OrderService extends BaseService {
         BooleanBuilder filter = createFilter(request);
         // Create pageable
         Pageable pageable = PageRequest.of(
-                (Integer) OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
-                (Integer) OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
+                OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
+                OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
                 Sort.by("id")
         );
 
@@ -118,6 +118,35 @@ public class OrderService extends BaseService {
         // Store and flush (immediate save to database), then proceed to store Product's Item
         repository.saveAndFlush(order);
         itemRepository.saveAll(items);
+    }
+
+    /**
+     * Patch item
+     *
+     * @param request
+     */
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    public void patch(OrderPatchRequest request) {
+        // Get status
+        Status status = Status.fromCode(request.code());
+        // Change Order status
+        repository.updateStatusByIds(Status.fromCode(request.code()), request.ids());
+
+        // If status is resolved, add a resolve transaction for each Orders
+        if (Status.RESOLVED.equals(status)) {
+            // Save all Transactions
+            transactionService.saveAll(
+                    repository
+                            // Retrieve related Orders
+                            .findAllById(List.of(request.ids()))
+                            // Convert to Stream
+                            .stream()
+                            // Resolve all Orders
+                            .map(transactionService::resolve)
+                            // Save Transactions that resolve Orders
+                            .collect(Collectors.toCollection(ArrayList::new))
+            );
+        }
     }
 //
 //    /**
@@ -244,7 +273,7 @@ public class OrderService extends BaseService {
             // Set order resolved at
             order.setResolvedAt(new Date());
             // Use transaction service to resolve order (create Transaction instance)
-            order.setTransactions(transactionService.resolve(order));
+            order.setTransactions(List.of(transactionService.resolve(order)));
         }
     }
 }

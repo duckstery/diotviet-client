@@ -111,7 +111,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.GONE)
     public void handleDataInconsistency(HttpServletRequest request, HttpServletResponse response, DataInconsistencyException ex) throws IOException {
         // Create body
-        GeneralResponse responseBody = new GeneralResponse(false, ex.getKey(), "");
+        GeneralResponse responseBody = new GeneralResponse(false, ex.getClass().getSimpleName(), ex.getKey());
         // Common handle logic
         commonLog(ex, response, HttpStatus.GONE.value(), responseBody);
     }

@@ -3,6 +3,7 @@ package diotviet.server.validators;
 import diotviet.server.entities.Category;
 import diotviet.server.exceptions.ServiceValidationException;
 import diotviet.server.repositories.CategoryRepository;
+import diotviet.server.traits.BaseValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,11 +1,10 @@
 package diotviet.server.validators;
 
-import diotviet.server.constants.Type;
 import diotviet.server.entities.Group;
 import diotviet.server.exceptions.ServiceValidationException;
 import diotviet.server.repositories.GroupRepository;
 import diotviet.server.templates.Group.GroupInteractRequest;
-import diotviet.server.utils.OtherUtils;
+import diotviet.server.traits.BaseValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

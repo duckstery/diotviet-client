@@ -128,6 +128,11 @@ export default {
     total_price: 'Total price',
     total_quantity: 'Total quantity',
     information: 'Information',
+    processing: 'Processing',
+    process: 'Process',
+    print: 'Print',
+    abort: 'Abort',
+    resolve: 'Resolve',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -160,7 +165,8 @@ export default {
     numeric: 'Only allow numeric value',
     email: 'This is not a valid email',
     specify_customer: 'Please specify a customer',
-    specify_least_item: 'Please specify at least 1 item'
+    specify_least_item: 'Please specify at least 1 item',
+    invalid_lock: 'This record is staled because it has been changed or deleted. Please reload the page for new content'
   },
 
   // ****************************

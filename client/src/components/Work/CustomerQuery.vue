@@ -81,7 +81,7 @@ export default {
           mode: 'create',
           groups: res.data.payload
         }
-      })
+      }).onOk(this.setCustomer)
     },
 
     // "Order" store

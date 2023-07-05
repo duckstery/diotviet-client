@@ -5,6 +5,7 @@ import diotviet.server.entities.Customer;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.templates.Customer.CustomerInteractRequest;
+import diotviet.server.traits.BaseValidator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class CustomerValidator extends BaseValidator<Customer> {
      * Customer repository
      */
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerRepository repository;
     /**
      * Group validator
      */
@@ -58,7 +59,7 @@ public class CustomerValidator extends BaseValidator<Customer> {
             customer.setGroups(new HashSet<>(groupValidator.isExistByIds(request.groups())));
         }
         // Check and get the valid code
-        checkCode(customer, "KH", customerRepository::findFirstByCodeAndIsDeletedFalse, customerRepository::findFirstByCodeLikeOrderByCodeDesc);
+        checkCode(customer, "KH", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
         // Check src
         checkImageSrc(customer);
         // Preserve Date type data
@@ -66,6 +67,8 @@ public class CustomerValidator extends BaseValidator<Customer> {
 
         // Set category
         customer.setCategory(categoryService.getCategories(Type.PARTNER).stream().findFirst().orElseThrow());
+        // Optimistic lock check
+        checkOptimisticLock(customer, repository);
 
         return customer;
     }
@@ -78,7 +81,7 @@ public class CustomerValidator extends BaseValidator<Customer> {
      */
     public Customer isValid(Long id) {
         // Get Customer that is not deleted by id
-        Customer customer = customerRepository.findByIdAndIsDeletedFalse(id, Customer.class);
+        Customer customer = repository.findByIdAndIsDeletedFalse(id, Customer.class);
         // Check if customer is not exist
         if (Objects.isNull(customer)) {
             interrupt("inconsistent_data", "customer");
@@ -110,7 +113,7 @@ public class CustomerValidator extends BaseValidator<Customer> {
      */
     private void checkDateData(Customer customer) {
         // Check if Customer is not exist, so nothing need to be preserved
-        Optional<Customer> readonly = customerRepository.findById(customer.getId());
+        Optional<Customer> readonly = repository.findById(customer.getId());
         if (readonly.isEmpty()) {
             return;
         }

@@ -30,6 +30,7 @@ public record CustomerInteractRequest(
         Boolean isMale,
         String src,
         String description,
-        MultipartFile file
+        MultipartFile file,
+        Long version
 ) {
 }

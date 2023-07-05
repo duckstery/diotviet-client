@@ -1,7 +1,6 @@
-package diotviet.server.services;
+package diotviet.server.traits;
 
 import diotviet.server.utils.StorageUtils;
-import diotviet.server.validators.BaseValidator;
 import diotviet.server.views.Visualize;
 import org.springframework.web.multipart.MultipartFile;
 

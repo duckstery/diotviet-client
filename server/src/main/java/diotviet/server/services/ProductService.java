@@ -7,10 +7,10 @@ import diotviet.server.entities.Order;
 import diotviet.server.entities.Product;
 import diotviet.server.entities.QProduct;
 import diotviet.server.repositories.ProductRepository;
-import diotviet.server.templates.Order.Interact.OrderItem;
 import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.templates.Product.ProductPatchRequest;
 import diotviet.server.templates.Product.ProductSearchRequest;
+import diotviet.server.traits.BaseService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
@@ -26,10 +26,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 @Service
 public class ProductService extends BaseService {
@@ -64,8 +62,8 @@ public class ProductService extends BaseService {
         BooleanBuilder filter = createFilter(request);
         // Create pageable
         Pageable pageable = PageRequest.of(
-                (Integer) OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
-                (Integer) OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
+                OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
+                OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
                 Sort.by("code")
         );
 

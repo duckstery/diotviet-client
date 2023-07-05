@@ -7,10 +7,8 @@ import diotviet.server.entities.Order;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.OrderService;
 import diotviet.server.templates.EntityHeader;
-import diotviet.server.templates.Order.OrderInitResponse;
-import diotviet.server.templates.Order.OrderInteractRequest;
-import diotviet.server.templates.Order.OrderSearchRequest;
-import diotviet.server.templates.Order.OrderSearchResponse;
+import diotviet.server.templates.Order.*;
+import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Order.OrderSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +119,21 @@ public class OrderController extends BaseController {
 
         return ok("");
     }
+
+    /**
+     * Partial update item
+     *
+     * @param request
+     * @return
+     */
+    @PatchMapping(value = "/patch")
+    public ResponseEntity<?> patch(@RequestBody OrderPatchRequest request) {
+        // Store item
+        orderService.patch(request);
+
+        return ok("");
+    }
+
 //
 //    /**
 //     * Delete item

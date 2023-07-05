@@ -192,6 +192,6 @@ public class CustomerImportService extends BaseImportService<Customer> {
      * @return
      */
     private Long resolvePoint(String value) {
-        return Long.parseLong((String) OtherUtils.get(value, "0"));
+        return Long.parseLong(OtherUtils.get(value, "0"));
     }
 }

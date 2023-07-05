@@ -7,6 +7,7 @@ import diotviet.server.entities.QCustomer;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
+import diotviet.server.traits.BaseService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.CustomerValidator;
 import diotviet.server.views.Customer.CustomerDetailView;
@@ -57,8 +58,8 @@ public class CustomerService extends BaseService {
         BooleanBuilder filter = createFilter(request);
         // Create pageable
         Pageable pageable = PageRequest.of(
-                (Integer) OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
-                (Integer) OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
+                OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
+                OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
                 Sort.by("id")
         );
 
@@ -82,7 +83,7 @@ public class CustomerService extends BaseService {
      * @param request
      */
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
-    public void store(CustomerInteractRequest request) {
+    public Customer store(CustomerInteractRequest request) {
         // Common validate for create and update
         Customer customer = validator.validateAndExtract(request);
         // Set createdBy
@@ -90,7 +91,7 @@ public class CustomerService extends BaseService {
         // Save file and get saved file's path
         saveFileFor(customer, request.file(), validator);
         // Create file
-        repository.save(customer);
+        return repository.saveAndFlush(customer);
     }
 
     /**

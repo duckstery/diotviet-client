@@ -3,6 +3,7 @@ package diotviet.server.validators;
 import diotviet.server.entities.Product;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductInteractRequest;
+import diotviet.server.traits.BaseValidator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

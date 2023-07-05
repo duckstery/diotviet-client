@@ -5,6 +5,7 @@ import diotviet.server.entities.User;
 import diotviet.server.templates.User.LoginRequest;
 import diotviet.server.templates.User.SignupRequest;
 import diotviet.server.services.UserService;
+import diotviet.server.traits.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -10,6 +10,7 @@ import diotviet.server.services.ProductService;
 import diotviet.server.services.imports.ProductImportService;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Product.*;
+import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Product.ProductSearchView;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -90,19 +90,25 @@
         </div>
       </div>
     </q-card-section>
-    <q-card-section class="tw-flex tw-pt-0">
+    <q-card-section v-if="!$constant.isStatusAborted(detail.status)" class="tw-flex tw-pt-0">
       <q-space/>
       <Skeleton v-model="isReady" height="40px" width="300px" skeleton-class="tw-w-full">
         <Button :label="$t('field.history')" icon="fa-solid fa-clock-rotate-left"
                 stretch color="info" class="tw-ml-2" no-caps @click="request('history')"/>
+        <Button :label="$t('field.copy')" icon="fa-solid fa-print"
+                stretch color="info" class="tw-ml-2" no-caps @click="onPrint"/>
+        <template v-if="!$constant.isStatusAborted(detail.status)">
+          <q-separator class="tw-ml-2" inset vertical/>
+          <Button :label="$t('field.process')" icon="fa-solid fa-circle-dot"
+                  stretch color="info" class="tw-ml-2" no-caps @click="onProcess"/>
+          <Button :label="$t('field.resolve')" icon="fa-solid fa-circle-check"
+                  stretch color="positive" class="tw-ml-2" no-caps
+                  @click="request('patch', {ids: [this.getItemId], target: 'status', code: 2})"/>
+        </template>
         <q-separator class="tw-ml-2" inset vertical/>
-        <Button :label="$t('field.edit')" icon="fa-solid fa-pen-to-square"
-                stretch color="primary" class="tw-ml-2" no-caps @click="request('update', this.detail)"/>
-        <Button :label="$t('field.copy')" icon="fa-solid fa-copy"
-                stretch color="positive" class="tw-ml-2" no-caps @click="request('copy', this.detail)"/>
-        <q-separator class="tw-ml-2" inset vertical/>
-        <Button :label="$t('field.delete')" icon="fa-solid fa-trash"
-                stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', [this.getItemId])"/>
+        <Button :label="$t('field.abort')" icon="fa-solid fa-circle-stop"
+                stretch color="negative" class="tw-ml-2" no-caps
+                @click="request('patch', {ids: [this.getItemId], target: 'status', code: 3})"/>
       </Skeleton>
     </q-card-section>
   </q-card>
@@ -191,6 +197,15 @@ export default {
       // Setup some data
       this.detail.totalQuantity = `${this.items.reduce((total, item) => total + item.quantity, 0)}`
       this.detail.discount = `${this.getDiscountAmount(this.detail.provisionalAmount, this.detail.discountUnit, this.detail.discount)}`
+    }
+  },
+
+  methods: {
+    onPrint() {
+
+    },
+    onProcess() {
+
     }
   }
 }

@@ -11,6 +11,7 @@ import diotviet.server.annotations.InitIgnore;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
+import diotviet.server.views.Lockable;
 import diotviet.server.views.Visualize;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,7 +31,7 @@ import java.util.Set;
 @Data
 @Accessors(chain = true)
 @QueryEntity
-public class Customer implements Identifiable, Visualize {
+public class Customer implements Identifiable, Visualize, Lockable {
 
     // ****************************
     // Properties
@@ -201,4 +202,12 @@ public class Customer implements Identifiable, Visualize {
     @InitIgnore
     @CsvBindByName
     private Boolean isDeleted = Boolean.FALSE;
+
+    @Column(nullable = false)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @InitIgnore
+    @CsvIgnore
+    private Long version = 0L;
 }

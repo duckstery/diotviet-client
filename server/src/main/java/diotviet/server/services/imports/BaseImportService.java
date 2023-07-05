@@ -71,7 +71,7 @@ public abstract class BaseImportService<E> {
      * @param prefix
      * @param provider
      */
-    public void initializeCode(String prefix, EntityProvider provider) {
+    public void initializeCode(String prefix, EntityProvider<Identifiable, String> provider) {
         // Get Identifiable to retrieve code
         Identifiable identifiable = provider.provide(prefix + "%");
         // Save code prefix

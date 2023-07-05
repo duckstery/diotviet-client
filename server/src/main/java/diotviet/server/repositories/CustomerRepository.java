@@ -2,6 +2,7 @@ package diotviet.server.repositories;
 
 import com.querydsl.core.types.Predicate;
 import diotviet.server.entities.Customer;
+import diotviet.server.traits.OptimisticLockRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long>, QuerydslPredicateExecutor<Customer> {
+public interface CustomerRepository extends JpaRepository<Customer, Long>, QuerydslPredicateExecutor<Customer>, OptimisticLockRepository<Long> {
     /**
      * Find by multiple condition
      *
