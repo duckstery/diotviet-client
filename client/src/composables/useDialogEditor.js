@@ -52,8 +52,8 @@ export function useDialogEditor(inputRef, mode = 'create') {
           onDialogOK(res.data.payload)
         })
         .catch(error.switch({
-          410: [{$t}, onDialogOK],
-          422: [{$t, v$: v$.value}, 'input']
+          410: onDialogOK,
+          422: [{v$: v$.value}, 'input']
         }))
     } else {
       // Notify about invalid

@@ -1,19 +1,23 @@
 import {boot} from 'quasar/wrappers'
 import {Notify} from 'quasar'
+import {util} from 'boot/util'
 
 /**
  * Create a snackbar to notify user
  *
  * @param {string} content
  * @param {string} type
+ * @param {Error} err
  */
-const notify = (content, type = 'positive') => {
+const notify = (content, type = 'positive', err = null) => {
   if (process.env.DEV) {
     if (type === 'warning') {
       console.warn(content)
     } else if (type === 'negative') {
       console.error(content)
     }
+
+    if (!util.isUnset(err)) console.error(err)
   }
 
   return Notify.create({

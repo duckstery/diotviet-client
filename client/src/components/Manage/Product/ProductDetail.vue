@@ -101,9 +101,9 @@
         <Button v-for="operation in statusOperations"
                 :label="$t(`field.${operation.key}`)" :icon="`fa-solid ${operation.icon}`"
                 stretch :color="operation.color" class="tw-ml-2" no-caps
-                @click="request('patch', {ids: [this.getItemId], target: operation.target, option: operation.option})"/>
+                @click="patch(operation.target, operation.option)"/>
         <Button :label="$t('field.delete')" icon="fa-solid fa-trash"
-                stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', [this.getItemId])"/>
+                stretch color="negative" class="tw-ml-2" no-caps @click="remove"/>
       </Skeleton>
     </q-card-section>
   </q-card>

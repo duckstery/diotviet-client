@@ -28,8 +28,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderService extends BaseService {
@@ -109,7 +110,11 @@ public class OrderService extends BaseService {
         Order order = validator.validateAndExtract(request);
         // Setup
         basicSetup(request, order);
-        statusSetup(order, status);
+        // Check if order should be resolved
+        if (Status.RESOLVED.equals(status)) {
+            // Use transaction service to resolve Order
+            transactionService.resolve(order);
+        }
         // For some reason, including this when saving Order cause multiple Selection point to Category and Group
         // For performance, Items will be saved separately by it repository
         List<Item> items = order.getItems();
@@ -128,25 +133,20 @@ public class OrderService extends BaseService {
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void patch(OrderPatchRequest request) {
         // Get status
-        Status status = Status.fromCode(request.code());
-        // Change Order status
-        repository.updateStatusByIds(Status.fromCode(request.code()), request.ids());
+        Status status = Status.fromCode(request.option());
+        // Optimistic check
+        validator.massCheckOptimisticLock(request.ids(), request.versions(), repository);
+        // Get all Orders
+        List<Order> orders = repository.findAllById(List.of(request.ids()));
 
-        // If status is resolved, add a resolve transaction for each Orders
-        if (Status.RESOLVED.equals(status)) {
-            // Save all Transactions
-            transactionService.saveAll(
-                    repository
-                            // Retrieve related Orders
-                            .findAllById(List.of(request.ids()))
-                            // Convert to Stream
-                            .stream()
-                            // Resolve all Orders
-                            .map(transactionService::resolve)
-                            // Save Transactions that resolve Orders
-                            .collect(Collectors.toCollection(ArrayList::new))
-            );
+        // Patch Orders
+        switch (status) {
+            case RESOLVED -> resolveOrders(orders);
+            case ABORTED -> abortOrders(orders, request.reason());
         }
+
+        // Save
+        repository.saveAll(orders);
     }
 //
 //    /**
@@ -260,20 +260,41 @@ public class OrderService extends BaseService {
     }
 
     /**
-     * Setup Order base on status
+     * Resolve all Orders <br>
+     * For PENDING, create a Transaction with amount of Order <br>
+     * For PROCESSING, create a Transaction with amount of leftover after previous Transaction <br>
+     * For RESOLVED and ABORTED, throw Exception
      *
-     * @param order
-     * @param status
+     * @param orders
      */
-    private void statusSetup(Order order, Status status) {
-        // Set status
-        order.setStatus(status);
-        // Check if order is resolved
-        if (Status.RESOLVED.equals(status)) {
-            // Set order resolved at
-            order.setResolvedAt(new Date());
-            // Use transaction service to resolve order (create Transaction instance)
-            order.setTransactions(List.of(transactionService.resolve(order)));
+    private void resolveOrders(List<Order> orders) {
+        // Resolve Orders and save resolve Transaction
+        for (Order order : orders) {
+            switch (order.getStatus()) {
+                case PENDING, PROCESSING -> transactionService.resolve(order);
+                // Do not allow to resolve RESOLVED and ABORTED
+                case RESOLVED -> validator.abort("resolved_order");
+                case ABORTED -> validator.abort("aborted_order");
+            }
+        }
+    }
+
+    /**
+     * Abort all Orders
+     * For PENDING, add a Transaction to save reason <br>
+     * For PROCESSING and RESOLVED, their Transactions will be soft delete and have reason <br>
+     * For ABORTED, throw Exception
+     *
+     * @param orders
+     */
+    private void abortOrders(List<Order> orders, String reason) {
+        // Abort Orders
+        for (Order order : orders) {
+            switch (order.getStatus()) {
+                case PENDING, PROCESSING, RESOLVED -> transactionService.abort(order, reason);
+                // Do not allow to abort ABORTED
+                case ABORTED -> validator.abort("aborted_order");
+            }
         }
     }
 }

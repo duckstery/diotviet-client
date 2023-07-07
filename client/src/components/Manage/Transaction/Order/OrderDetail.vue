@@ -97,18 +97,18 @@
                 stretch color="info" class="tw-ml-2" no-caps @click="request('history')"/>
         <Button :label="$t('field.copy')" icon="fa-solid fa-print"
                 stretch color="info" class="tw-ml-2" no-caps @click="onPrint"/>
-        <template v-if="!$constant.isStatusAborted(detail.status)">
+        <template v-if="!$constant.isStatusResolved(detail.status)">
           <q-separator class="tw-ml-2" inset vertical/>
           <Button :label="$t('field.process')" icon="fa-solid fa-circle-dot"
                   stretch color="info" class="tw-ml-2" no-caps @click="onProcess"/>
           <Button :label="$t('field.resolve')" icon="fa-solid fa-circle-check"
                   stretch color="positive" class="tw-ml-2" no-caps
-                  @click="request('patch', {ids: [this.getItemId], target: 'status', code: 2})"/>
+                  @click="patch({target: 'status', option: 2})"/>
         </template>
         <q-separator class="tw-ml-2" inset vertical/>
         <Button :label="$t('field.abort')" icon="fa-solid fa-circle-stop"
                 stretch color="negative" class="tw-ml-2" no-caps
-                @click="request('patch', {ids: [this.getItemId], target: 'status', code: 3})"/>
+                @click="onPatch({target: 'status', option: 3})"/>
       </Skeleton>
     </q-card-section>
   </q-card>
@@ -155,7 +155,7 @@ export default {
 
   setup(props, context) {
     return {
-      ...usePageRowDetail(toRefs(props), context),
+      ...usePageRowDetail(toRefs(props), context, true),
       ...useInteractiveField(),
       getDiscountAmount: useDiscountCalculator()
     }
@@ -206,6 +206,15 @@ export default {
     },
     onProcess() {
 
+    },
+
+    /**
+     * On patch
+     *
+     * @param payload
+     */
+    onPatch(payload) {
+      this.$util.promptReason().onOk(reason => this.patch({...payload, reason}))
     }
   }
 }

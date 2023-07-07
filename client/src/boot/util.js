@@ -40,6 +40,19 @@ const util = {
   },
 
   /**
+   * Prompt for reason input and confirm
+   */
+  promptReason() {
+    return Dialog.create({
+      title: $t('field.reason'),
+      message: $t('message.reason_confirm'),
+      prompt: {model: '', isValid: val => !!val},
+      cancel: {icon: 'fa-solid fa-xmark', color: 'negative', label: $t('field.confirm_cancel')},
+      ok: {icon: 'fa-solid fa-check', color: 'positive', label: $t('field.confirm')},
+    })
+  },
+
+  /**
    * Return null if value is an empty string
    *
    * @param value

@@ -81,11 +81,11 @@ export default {
     // Operations
     operations() {
       return [
-        {icon: 'fa-check', key: 'start_business', color: 'positive', event: 'start_business'},
-        {icon: 'fa-play', key: 'start_accumulating', color: 'positive', event: 'start_accumulating'},
+        {key: 'start_business', event: 'patch', target: 'business', option: true, icon: 'fa-check', color: 'positive'},
+        {key: 'start_accumulating', event: 'patch', target: 'accumulating', option: true, icon: 'fa-play', color: 'positive'},
         {},
-        {icon: 'fa-ban', key: 'stop_business', color: 'negative', event: 'stop_business'},
-        {icon: 'fa-stop', key: 'stop_accumulating', color: 'negative', event: 'stop_accumulating'},
+        {key: 'stop_business', event: 'patch', target: 'business', option: false, icon: 'fa-ban', color: 'negative'},
+        {key: 'stop_accumulating', event: 'patch', target: 'accumulating', option: false, icon: 'fa-stop', color: 'negative'}
       ]
     }
   },

@@ -5,14 +5,14 @@ import {saveAs} from 'file-saver';
 import {useRouteKey} from "src/composables/useRouteKey";
 
 /**
- * Setup page request
+ * Setup request mechanism for pages of type Manage
  *
  * @param {any} invoker
  * @param {function} customizer
- * @param {function} onSuccess
+ * @param {function} fetchCb
  * @return {object}
  */
-export function usePageRequest(invoker, customizer, onSuccess) {
+export function usePageRequest(invoker, customizer, fetchCb) {
   // Get key
   const key = useRouteKey()
   // i18n
@@ -54,13 +54,16 @@ export function usePageRequest(invoker, customizer, onSuccess) {
     let params = item
 
     if (mode === 'delete') {
-      params = {params: {ids: item}}
+      params = {params: {ids: item.ids}}
     }
 
     // Send request
     axios[mode](`/${key}/${mode}`, params)
       .then(onSuccessOperation)
-      .catch(() => notify($t('message.fail', {attr: $t('field.operation')}), 'negative'))
+      .catch(error.switch({
+        410: fetchCb,
+        default: (err) => notify($t('message.fail', {attr: $t('field.operation')}), 'negative', err)
+      }))
   }
 
   /**
@@ -91,7 +94,7 @@ export function usePageRequest(invoker, customizer, onSuccess) {
       : Dialog.create({
         component: invoker,
         componentProps: componentProps
-      }).onOk(onSuccess)
+      }).onOk(fetchCb)
         .onCancel(() => {
 
         })
@@ -103,7 +106,7 @@ export function usePageRequest(invoker, customizer, onSuccess) {
   // On any operation success
   const onSuccessOperation = () => {
     notify($t('message.success', {attr: $t('field.operation')}))
-    onSuccess()
+    fetchCb()
   }
 
   return {
@@ -127,7 +130,7 @@ export function usePageRequest(invoker, customizer, onSuccess) {
         // Directly send to server
         util.promptConfirm().onOk(() => onDirectRequest(mode, item))
       } else {
-        onSuccess()
+        fetchCb()
       }
     }
   }

@@ -172,7 +172,7 @@ public class CustomerController extends BaseController {
     /**
      * Simple search
      *
-     * @param query
+     * @param request
      * @return
      */
     @GetMapping(value = "/query")

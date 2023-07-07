@@ -94,7 +94,7 @@
                 stretch color="positive" class="tw-ml-2" no-caps @click="request('copy', this.detail)"/>
         <q-separator class="tw-ml-2" inset vertical/>
         <Button :label="$t('field.delete')" icon="fa-solid fa-trash"
-                stretch color="negative" class="tw-ml-2" no-caps @click="request('delete', [this.getItemId])"/>
+                stretch color="negative" class="tw-ml-2" no-caps @click="remove"/>
       </Skeleton>
     </q-card-section>
   </q-card>

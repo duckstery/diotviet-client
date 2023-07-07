@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void handleExportCSV(HttpServletRequest request, HttpServletResponse response, ExportCSVException ex) throws IOException {
         // Create body
-        GeneralResponse responseBody = new GeneralResponse(false, ex.getKey(), "");
+        GeneralResponse responseBody = commonExceptionTranslate(ex, ex.getKey());
         // Common handle logic
         commonLog(ex, response, HttpStatus.INTERNAL_SERVER_ERROR.value(), responseBody);
     }
@@ -111,9 +111,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.GONE)
     public void handleDataInconsistency(HttpServletRequest request, HttpServletResponse response, DataInconsistencyException ex) throws IOException {
         // Create body
-        GeneralResponse responseBody = new GeneralResponse(false, ex.getClass().getSimpleName(), ex.getKey());
+        GeneralResponse responseBody = commonExceptionTranslate(ex, ex.getKey());
         // Common handle logic
         commonLog(ex, response, HttpStatus.GONE.value(), responseBody);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void handleBadRequest(HttpServletRequest request, HttpServletResponse response, BadRequestException ex) throws IOException {
+        // Create body
+        GeneralResponse responseBody = commonExceptionTranslate(ex, ex.getKey());
+        // Common handle logic
+        commonLog(ex, response, HttpStatus.BAD_REQUEST.value(), responseBody);
     }
 
     // ****************************
@@ -157,5 +166,15 @@ public class GlobalExceptionHandler {
         String[] args = ArrayUtils.addAll(new String[]{__(attribute)}, arguments);
         // Pre-translate all attributes before translate key
         return messageSource.getMessage(key, args, key, LocaleContextHolder.getLocale());
+    }
+
+    /**
+     * Common translate logic for Exception
+     *
+     * @param e
+     * @return
+     */
+    private GeneralResponse commonExceptionTranslate(Exception e, String payload) {
+        return new GeneralResponse(false, e.getMessage(), payload);
     }
 }

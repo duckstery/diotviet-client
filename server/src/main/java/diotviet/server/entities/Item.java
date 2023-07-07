@@ -3,6 +3,7 @@ package diotviet.server.entities;
 import com.querydsl.core.annotations.QueryEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
@@ -26,15 +27,17 @@ public class Item {
     /**
      * Customer
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "product_id", nullable = false)
+    @ToString.Exclude
     private Product product;
 
     /**
      * Order
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "order_id", nullable = false)
+    @ToString.Exclude
     private Order order;
 
     /**

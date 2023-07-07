@@ -30,8 +30,8 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli/boot-files
     boot: [
       'lodash',
-      'env',
       'i18n',
+      'env',
       'constant',
       'axios',
       'loader',

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long>, QuerydslPredicateExecutor<Customer>, OptimisticLockRepository<Long> {
+public interface CustomerRepository extends JpaRepository<Customer, Long>, QuerydslPredicateExecutor<Customer>, OptimisticLockRepository {
     /**
      * Find by multiple condition
      *
@@ -87,6 +87,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      * @param ids
      */
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE diotviet.customers SET is_deleted = true WHERE id in :ids AND is_deleted = false RETURNING src", nativeQuery = true)
+    @Query(value = "UPDATE diotviet.customers SET is_deleted = true, version = version + 1 WHERE id in :ids AND is_deleted = false RETURNING src", nativeQuery = true)
     List<String> softDeleteByIdsReturningSrc(@Param("ids") Long[] ids);
 }

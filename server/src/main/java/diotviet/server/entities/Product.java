@@ -44,6 +44,7 @@ public class Product implements Identifiable, Visualize {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     @CsvCustomBindByName(converter = NameableField.class)
+    @ToString.Exclude
     private Category category;
 
     /**
@@ -57,6 +58,7 @@ public class Product implements Identifiable, Visualize {
     )
     @InitIgnore
     @CsvCustomBindByName(converter = NameableSetField.class)
+    @ToString.Exclude
     private Set<Group> groups;
 
     /**

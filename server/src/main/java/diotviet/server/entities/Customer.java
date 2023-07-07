@@ -60,6 +60,7 @@ public class Customer implements Identifiable, Visualize, Lockable {
     @JoinColumn(name = "category_id", nullable = false)
     @CsvCustomBindByName(converter = NameableField.class)
     @InitIgnore
+    @ToString.Exclude
     private Category category;
 
     /**
@@ -73,6 +74,7 @@ public class Customer implements Identifiable, Visualize, Lockable {
     )
     @InitIgnore
     @CsvCustomBindByName(converter = NameableSetField.class)
+    @ToString.Exclude
     private Set<Group> groups;
 
     /**

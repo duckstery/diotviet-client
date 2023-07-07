@@ -1,10 +1,28 @@
 import {boot} from 'quasar/wrappers'
-import {notify} from "boot/notify";
+import {notify} from "boot/notify"
+import {util} from "boot/util"
+
+let $t;
 
 // Check if error status match the handler
 const mustBe = (status, error) => {
   if (error.response.status !== status) {
     throw error
+  }
+}
+
+/**
+ * Common notify logic
+ *
+ * @param {function} callback
+ * @param {Axios.Error} err
+ * @param {string} type
+ */
+const commonNotify = (callback, err, type) => {
+  // Notify
+  notify($t(`message.${err.response.data.payload}`), type)
+  if (typeof callback === 'function') {
+    callback(err)
   }
 }
 
@@ -15,17 +33,27 @@ const mustBe = (status, error) => {
  */
 const error = {
   /**
+   * Handle 400
+   *
+   * @param {function} callback
+   * @param {Axios.Error} err
+   */
+  $400(callback, err) {
+    mustBe(400, err)
+    // Notify
+    commonNotify(callback, err, 'negative')
+  },
+
+  /**
    * Handle 410
    *
-   * @param key
-   * @param callback
-   * @param err
+   * @param {function} callback
+   * @param {Axios.Error} err
    */
   $410(callback, err) {
     mustBe(410, err)
     // Notify
-    notify(this.$t(`message.${err.response.data.payload}`), 'warning')
-    callback()
+    commonNotify(callback, err, 'warning')
   },
 
   /**
@@ -48,7 +76,7 @@ const error = {
       }]
     }
     // Notify
-    notify(this.$t('message.invalid_input'), 'negative')
+    notify($t('message.invalid_input'), 'negative')
   },
 
   /**
@@ -60,6 +88,12 @@ const error = {
     notify(err.response.data.message, 'negative')
   },
 
+  /**
+   * Switch and execute corresponding handler
+   *
+   * @param cases
+   * @return {(function(*): void)|*}
+   */
   switch(cases) {
     return (error) => {
       // Get code of error
@@ -67,13 +101,20 @@ const error = {
 
       // Get handler of httpCode
       if (typeof this[`$${httpCode}`] === 'function') {
-        this[`$${httpCode}`].bind(...cases[httpCode])(error)
+        // Check if case of httpCode is an array, if not, convert to array
+        const bindArgs = Array.isArray(cases[httpCode]) ? cases[httpCode] : [null, cases[httpCode]]
+        // Execute the corresponding http status handler
+        this[`$${httpCode}`].bind(...bindArgs)(error)
+      } else if (typeof cases.default === 'function') {
+        // Else if default case is present, execute it
+        cases.default(error)
       }
     }
   }
 }
 
 export default boot(({app}) => {
+  $t = app.config.globalProperties.$t
   app.config.globalProperties.$error = error
 })
 

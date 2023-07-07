@@ -3,7 +3,7 @@ import {axios, util} from "src/boot";
 import {useRouteKey} from "src/composables/useRouteKey";
 
 /**
- * Setup page search
+ * Setup page search for pages of type Manage
  *
  * @param {object} initFilter
  * @returns {object}

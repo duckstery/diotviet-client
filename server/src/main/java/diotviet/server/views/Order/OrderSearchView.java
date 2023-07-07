@@ -1,8 +1,9 @@
 package diotviet.server.views.Order;
 
+import diotviet.server.views.Lockable;
 import org.springframework.beans.factory.annotation.Value;
 
-public interface OrderSearchView {
+public interface OrderSearchView extends Lockable {
     /**
      * ID
      *

@@ -12,6 +12,7 @@ import diotviet.server.constants.Status;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
+import diotviet.server.views.Lockable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,7 +41,7 @@ import java.util.Set;
 @Data
 @Accessors(chain = true)
 @QueryEntity
-public class Order implements Identifiable {
+public class Order implements Identifiable, Lockable {
 
     // ****************************
     // Properties
@@ -73,6 +74,7 @@ public class Order implements Identifiable {
     )
     @CsvCustomBindByName(converter = NameableSetField.class)
     @InitIgnore
+    @ToString.Exclude
     private Set<Group> groups;
 
     /**
@@ -81,6 +83,7 @@ public class Order implements Identifiable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     @CsvCustomBindByName(converter = NameableField.class)
+    @ToString.Exclude
     private Customer customer;
 
     /**
@@ -89,6 +92,7 @@ public class Order implements Identifiable {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "order")
     @CsvCustomBindByName(converter = NameableSetField.class)
     @InitIgnore
+    @ToString.Exclude
     private List<Item> items;
 
     /**
@@ -153,7 +157,7 @@ public class Order implements Identifiable {
      */
     @Enumerated
     @Column(columnDefinition = "smallint")
-    private Status status;
+    private Status status = Status.PENDING;
 
     /**
      * Point
@@ -198,4 +202,15 @@ public class Order implements Identifiable {
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date resolvedAt;
+
+    /**
+     * Version
+     */
+    @Column(nullable = false)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @InitIgnore
+    @CsvIgnore
+    private Long version = 0L;
 }

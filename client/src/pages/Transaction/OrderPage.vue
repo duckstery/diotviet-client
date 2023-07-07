@@ -10,7 +10,7 @@
     </div>
     <div class="col-10">
       <!-- Data table -->
-      <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
+      <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading" :operations="operations"
                  @search="onSearch" @request="onRequest">
         <template #default="props">
           <OrderDetail v-bind="props" @request="onRequest"/>
@@ -79,6 +79,13 @@ export default {
         {label: this.$t('field.order'), to: '/transaction/order', icon: 'fa-inbox'},
       ]
     },
+    // Operations
+    operations() {
+      return [
+        {key: 'resolve', event: 'patch', target: 'status', option: 2, icon: 'fa-circle-check', color: 'positive'},
+        {key: 'abort', event: 'patch', target: 'status', option: 3, icon: 'fa-circle-stop', color: 'negative', reasonable: true}
+      ]
+    }
   },
 }
 </script>

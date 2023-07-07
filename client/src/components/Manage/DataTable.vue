@@ -21,10 +21,10 @@
     :no-data-label="$t('message.table_empty_data')"
     :selected-rows-label="numberOfRows => $t('message.rows_selected', {attr: numberOfRows})"
 
-    @request="onRequest"
+    @request="onSearchRequest"
   >
     <template #top>
-      <TextField v-model="search" label="Search" icon="search" @keydown.enter="onRequest(null)"/>
+      <TextField v-model="search" label="Search" icon="search" @keydown.enter="onSearchRequest(null)"/>
 
       <q-space/>
 
@@ -34,7 +34,7 @@
         <q-list>
           <template v-for="operation in dropdownOperations">
             <q-item v-if="operation.key" clickable v-close-popup
-                    @click="$emit('request', `${operation.key}`, getSelectedIds)">
+                    @click="onExecuteOperation(operation)">
               <q-item-section avatar>
                 <q-icon :name="`fa-solid ${operation.icon}`" :color="operation.color"/>
               </q-item-section>
@@ -50,13 +50,13 @@
 
       <!-- Row controls -->
       <Button :label="$t('field.add')" icon="fa-solid fa-plus"
-              stretch color="positive" class="tw-ml-2" no-caps @click="$emit('request', 'create')"/>
+              stretch color="positive" class="tw-ml-2" no-caps @click="request('create')"/>
       <Button :label="$t('field.collapse')" icon="fa-solid fa-down-left-and-up-right-to-center" @click="onCollapse"
               stretch color="positive" class="tw-ml-2" no-caps/>
 
       <q-space/>
 
-      <ImEx @request="onImExRequest"/>
+      <ImEx @request="request"/>
       <!-- Columns visibility controls -->
       <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
                       stretch color="positive" class="tw-ml-2" no-caps
@@ -183,12 +183,22 @@ export default {
     dropdownOperations() {
       return [
         {icon: 'fa-trash', key: 'delete', color: 'negative', event: 'delete'},
+        {},
         ...this.operations
       ]
     },
     // Get selected item's id
-    getSelectedIds() {
-      return this.selected.map(item => item.id)
+    getSelectedItems() {
+      // Create output
+      const ids = []
+      const versions = []
+
+      this.selected.forEach(item => {
+        ids.push(item.id)
+        versions.push(item.version)
+      })
+
+      return {ids, versions}
     },
   },
 
@@ -213,6 +223,13 @@ export default {
 
   methods: {
     /**
+     * Request
+     */
+    request(mode, data) {
+      this.$emit('request', mode, data)
+    },
+
+    /**
      * Collapse all expanded row
      */
     onCollapse() {
@@ -220,21 +237,11 @@ export default {
     },
 
     /**
-     * On import and export request
-     *
-     * @param {string} mode
-     * @param {File} item
-     */
-    onImExRequest(mode, item) {
-      this.$emit('request', mode, item)
-    },
-
-    /**
      * On request
      *
      * @param data
      */
-    onRequest(data) {
+    onSearchRequest(data) {
       // Get default pagination
       if (this.$util.isUnset(data)) {
         data = {
@@ -249,6 +256,24 @@ export default {
         search: this.search,
         ...data
       })
+    },
+
+    /**
+     * On execute operations
+     */
+    onExecuteOperation(operation) {
+      // Craft request payload
+      const payload = {...this.getSelectedItems, target: operation.target, option: operation.option, reason: ""}
+      // Check if this operation execution need reason
+      if (operation.reasonable) {
+        this.$util.promptReason().onOk(reason => {
+          // Set reason
+          payload.reason = reason
+          this.request(operation.event, payload)
+        })
+      } else {
+        this.request(operation.event, payload)
+      }
     }
   }
 }

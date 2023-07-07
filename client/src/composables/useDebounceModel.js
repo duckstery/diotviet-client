@@ -1,7 +1,9 @@
 import {watch, ref} from "vue";
 
 /**
- * Setup debounce model
+ * Setup debounce model <br>
+ * This model will be attached to v-model <br>
+ * When v-model emit @update, it'll will save data of @update and save to original ref after [millisecond]
  *
  * @param {Ref<UnwrapRef<...>>} refObj
  * @param {number} millisecond

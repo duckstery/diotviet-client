@@ -133,6 +133,7 @@ export default {
     print: 'Print',
     abort: 'Abort',
     resolve: 'Resolve',
+    reason: 'Reason',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -150,6 +151,7 @@ export default {
   message: {
     please_wait: 'Please kindly wait...',
     confirm: 'Are you sure?',
+    reason_confirm: 'Please input reason',
     table_empty_data: 'Well this is sad... I didn\'t find anything for you',
     rows_selected: '{attr} record(s) selected.',
     from_to: 'From {from} to {to}',
@@ -166,7 +168,10 @@ export default {
     email: 'This is not a valid email',
     specify_customer: 'Please specify a customer',
     specify_least_item: 'Please specify at least 1 item',
-    invalid_lock: 'This record is staled because it has been changed or deleted. Please reload the page for new content'
+    invalid_lock: 'This record is staled because it has been changed or deleted. Please reload the page for new content',
+    invalid_locks: 'Some records are staled because it has been changed or deleted. Please reload the page for new content',
+    aborted_order: 'Can not change aborted order\'s status',
+    resolved_order: 'Can not resolve resolved order'
   },
 
   // ****************************

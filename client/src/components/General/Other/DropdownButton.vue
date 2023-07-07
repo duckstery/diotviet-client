@@ -16,7 +16,7 @@
       <img class="d-btn-img" :src="src">
       <span class="tw-ml-3">{{ label }}</span>
     </template>
-    <Tooltip :content="tooltip"/>
+    <Tooltip v-if="tooltip" :content="tooltip"/>
     <slot/>
   </q-btn-dropdown>
 </template>

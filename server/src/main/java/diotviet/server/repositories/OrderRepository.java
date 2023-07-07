@@ -3,17 +3,21 @@ package diotviet.server.repositories;
 import com.querydsl.core.types.Predicate;
 import diotviet.server.constants.Status;
 import diotviet.server.entities.Order;
-import jakarta.persistence.LockModeType;
-import org.springframework.data.jpa.repository.*;
+import diotviet.server.traits.OptimisticLockRepository;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPredicateExecutor<Order> {
+public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPredicateExecutor<Order>, OptimisticLockRepository {
     /**
      * Find by multiple condition
      *
@@ -46,6 +50,17 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
      */
     Order findFirstByCodeLikeOrderByCodeDesc(String code);
 
+
+    /**
+     * Find by ids and exclude that equal status
+     *
+     * @param ids
+     * @param status
+     * @return
+     */
+    @EntityGraph(attributePaths = {"transactions"})
+    List<Order> findByIdInAndStatusNot(List<Long> ids, Status status);
+
     /**
      * Update Order's status
      *
@@ -53,7 +68,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
      * @param ids
      */
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Order o set o.status = :status WHERE o.id IN :ids")
+    @Query("UPDATE Order o set o.status = :status, o.version = o.version + 1 WHERE o.id IN :ids")
     void updateStatusByIds(@Param("status") Status status, @Param("ids") Long[] ids);
 
     //

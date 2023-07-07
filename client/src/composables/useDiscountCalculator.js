@@ -1,5 +1,5 @@
 /**
- * Setup discount calculator
+ * Setup discount calculator to calculate discount amount from original amount, discount unit and discount
  *
  * @return {function(original: string, discountUnit: string, discount: string): string}
  */

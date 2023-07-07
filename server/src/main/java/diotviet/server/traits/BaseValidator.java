@@ -1,5 +1,6 @@
 package diotviet.server.traits;
 
+import diotviet.server.exceptions.BadRequestException;
 import diotviet.server.exceptions.DataInconsistencyException;
 import diotviet.server.exceptions.ServiceValidationException;
 import diotviet.server.utils.OtherUtils;
@@ -12,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 public abstract class BaseValidator<T> {
 
@@ -68,6 +70,24 @@ public abstract class BaseValidator<T> {
     }
 
     /**
+     * Interrupt validator with a DataInconsistencyException
+     *
+     * @param key
+     */
+    public void inconsistent(String key) {
+        throw new DataInconsistencyException(key);
+    }
+
+    /**
+     * Interrupt validator with a BadRequestException
+     *
+     * @param key
+     */
+    public void abort(String key) {
+        throw new BadRequestException(key);
+    }
+
+    /**
      * Check if obj is not null
      *
      * @param obj
@@ -75,7 +95,7 @@ public abstract class BaseValidator<T> {
      */
     public <S> S isExist(S obj) {
         if (Objects.isNull(obj)) {
-            throw new DataInconsistencyException("inconsistent_data");
+            inconsistent("inconsistent_data");
         }
 
         return obj;
@@ -148,14 +168,33 @@ public abstract class BaseValidator<T> {
      * @param lockable
      * @param provider
      */
-    protected void checkOptimisticLock(Lockable lockable, OptimisticLockRepository<Long> olRepo) {
+    public void checkOptimisticLock(Lockable lockable, OptimisticLockRepository olRepo) {
         // Check if lockable is a valid version of Entity
         if (!olRepo.existsByIdAndVersion(lockable.getId(), lockable.getVersion())) {
-            throw new DataInconsistencyException("invalid_lock");
+            inconsistent("invalid_lock");
         }
 
         // Increase lock
         lockable.setVersion(lockable.getVersion() + 1);
+    }
+
+    /**
+     * Mass optimistic lock check for multiple id
+     *
+     * @param ids
+     * @param versions
+     * @param olRepo
+     */
+    public void massCheckOptimisticLock(Long[] ids, Long[] versions, OptimisticLockRepository olRepo) {
+        // Merge list of ids and list of versions to a list of tuple of (id-version)
+        String[] tuples = IntStream.range(0, ids.length)
+                .mapToObj(index -> String.format("%d-%d", ids[index], versions[index]))
+                .toArray(String[]::new);
+
+        // Check if all tuples are exists
+        if (!olRepo.existsAllByTuplesOfIdAndVersion(tuples)) {
+            inconsistent("invalid_locks");
+        }
     }
 
     // ****************************
