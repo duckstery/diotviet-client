@@ -1,5 +1,6 @@
 package diotviet.server.validators;
 
+import diotviet.server.constants.Type;
 import diotviet.server.entities.Group;
 import diotviet.server.exceptions.ServiceValidationException;
 import diotviet.server.repositories.GroupRepository;
@@ -65,7 +66,7 @@ public class GroupValidator extends BaseValidator<Group> {
             group.setId(request.id());
         }
         group.setName(request.name());
-//        group.setType(Type.fromCode(request.type()));
+        group.setType(Type.fromCode(request.type()));
 
         return group;
     }

@@ -53,7 +53,8 @@ export function useDialogEditor(inputRef, mode = 'create') {
         })
         .catch(error.switch({
           410: onDialogOK,
-          422: [{v$: v$.value}, 'input']
+          422: [{v$: v$.value}, 'input'],
+          default: error.any
         }))
     } else {
       // Notify about invalid
