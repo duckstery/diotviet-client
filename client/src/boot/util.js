@@ -1,10 +1,21 @@
 import {boot} from 'quasar/wrappers';
-import {Dialog} from "quasar";
+import {Dialog, date} from "quasar";
 
 // I18n
 let $t;
+// Tree shaking
+const {isValid} = date
 
 const util = {
+  /**
+   * Get date only
+   *
+   * @param {string} value
+   */
+  dateOnly(value) {
+    return value.substring(0, 10)
+  },
+
   /**
    * Format money (add comma to separate unit)
    *
@@ -130,14 +141,24 @@ const util = {
   },
 
   /**
-   * Compare alphabetically
+   * Complex compare cases
    *
    * @param {string} a
    * @param {string} b
+   * @return {number}
    */
-  alphabetically(a, b) {
+  compare(a, b) {
+    // Check if this is a Date string
+    try {
+      return Date.parse(a) - Date.parse(b)
+    } catch (e) {
+      if (process.env.DEV) {
+        console.warn(e)
+      }
+    }
+
     return a.localeCompare(b)
-  },
+  }
 }
 
 export default boot(({app}) => {

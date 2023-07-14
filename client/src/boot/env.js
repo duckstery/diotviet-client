@@ -1,7 +1,22 @@
 import {boot} from 'quasar/wrappers'
 import {LocalStorage} from 'quasar'
+import {util} from './util'
 
 const env = {
+  /**
+   * Init env variable
+   *
+   * @param key
+   * @param value
+   * @return {*}
+   */
+  init(key, value) {
+    if (util.isUnset(this.get(key))) {
+      this.set(key, value)
+    }
+
+    return this.get(key)
+  },
   /**
    * Get item in LocalStorage
    *
@@ -19,15 +34,6 @@ const env = {
    */
   set(key, value) {
     return LocalStorage.set(key, value)
-  },
-
-  /**
-   * Check if is light mode
-   *
-   * @return {boolean}
-   */
-  isLight() {
-    return this.get('display') === 'light'
   },
 
   /**

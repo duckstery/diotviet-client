@@ -148,6 +148,20 @@ public class OrderService extends BaseService {
         // Save
         repository.saveAll(orders);
     }
+
+    /**
+     * Search with a string
+     *
+     * @param request
+     * @return
+     */
+    public List<OrderSearchView> query(OrderSearchRequest request) {
+        return repository.findBy(createFilter(request), q -> q
+                .sortBy(Sort.by(Sort.Direction.DESC, "createdAt", "code"))
+                .limit(100)
+                .as(OrderSearchView.class)
+                .all());
+    }
 //
 //    /**
 //     * Delete multiple item with ids

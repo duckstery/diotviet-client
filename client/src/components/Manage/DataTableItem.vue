@@ -48,8 +48,8 @@ export default {
     generateItemRowClass(isExpanded) {
       return {
         'tw-cursor-pointer': true,
-        'tw-bg-blue-100': isExpanded && this.$env.isLight(),
-        'tw-bg-blue-950': isExpanded && !this.$env.isLight(),
+        'tw-bg-blue-100': isExpanded && !this.$q.dark.isActive,
+        'tw-bg-blue-950': isExpanded && this.$q.dark.isActive,
       }
     }
   }

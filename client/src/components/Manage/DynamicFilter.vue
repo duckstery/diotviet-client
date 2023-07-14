@@ -91,7 +91,7 @@ export default {
      * @param {{name: string}} b
      */
     alphabetically(a, b) {
-      this.$util.alphabetically(a.name, b.name)
+      this.$util.compare(a.name, b.name)
     }
   }
 }

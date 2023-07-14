@@ -13,7 +13,7 @@
     :no-data-label="$t('message.table_empty_data')"
   >
     <template #header="props">
-      <q-tr :props="props" :class="generateItemRowClass()">
+      <q-tr :props="props" :class="itemRowClass">
         <q-th
           v-for="col in props.cols"
           :key="col.name"
@@ -61,16 +61,16 @@ export default {
     },
   },
 
-  methods: {
+  computed: {
     /**
      * Generate item row class
      *
      * @return {object}
      */
-    generateItemRowClass() {
+    itemRowClass() {
       return {
-        'tw-bg-blue-100': this.$env.isLight(),
-        'tw-bg-blue-950': !this.$env.isLight(),
+        'tw-bg-blue-100': !this.$q.dark.isActive,
+        'tw-bg-blue-950': this.$q.dark.isActive,
       }
     }
   }

@@ -120,7 +120,7 @@ public class CustomerService extends BaseService {
     /**
      * Search with a string
      *
-     * @param string
+     * @param request
      * @return
      */
     public List<CustomerSearchView> query(CustomerSearchRequest request) {

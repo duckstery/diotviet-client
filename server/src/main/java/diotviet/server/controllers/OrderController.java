@@ -6,6 +6,7 @@ import diotviet.server.entities.Group;
 import diotviet.server.entities.Order;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.OrderService;
+import diotviet.server.templates.Customer.CustomerSearchRequest;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Order.*;
 import diotviet.server.traits.BaseController;
@@ -132,6 +133,17 @@ public class OrderController extends BaseController {
         orderService.patch(request);
 
         return ok("");
+    }
+
+    /**
+     * Simple search
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/query")
+    public ResponseEntity<?> simpleSearch(OrderSearchRequest request) {
+        return ok(orderService.query(request));
     }
 
 //

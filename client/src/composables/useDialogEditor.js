@@ -12,9 +12,6 @@ import {useRouteKey} from "src/composables/useRouteKey";
  * @return {*}
  */
 export function useDialogEditor(inputRef, mode = 'create') {
-  // Get key
-  const key = useRouteKey()
-
   // REQUIRED; must be called inside of setup()
   const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
   // dialogRef      - Vue ref to be applied to QDialog
@@ -26,39 +23,47 @@ export function useDialogEditor(inputRef, mode = 'create') {
 
   // Get $t
   const $t = useI18n().t
-  // Validator (Vuelidator)
-  const v$ = useVuelidate({$rewardEarly: true})
+  // Extension
+  const extension = {}
+  // Default dialog behavior
+  if (!util.isUnset(inputRef)) {
+    // Get key
+    const key = useRouteKey()
 
-  /**
-   * On confirm
-   *
-   * @return {Promise<void>}
-   */
-  const onConfirm = async () => {
-    if (util.isUnset(v$.value.$validate)) {
-      return
-    }
+    // Validator (Vuelidator)
+    extension.v$ = useVuelidate({$rewardEarly: true})
 
-    // Validate file
-    if (await v$.value.$validate()) {
+    /**
+     * On confirm
+     *
+     * @return {Promise<void>}
+     */
+    extension.onConfirm = async () => {
+      if (util.isUnset(extension.v$.value.$validate)) {
+        return
+      }
 
-      // Craft formData
-      const formData = util.craftFormData(inputRef)
-      // Send request
-      axios.post(`/${key}/store`, formData, {headers: {"Content-Type": "multipart/form-data"}})
-        .then(res => {
-          notify($t("message.success", {attr: $t(`field.${mode}`)}))
-          // Close dialog
-          onDialogOK(res.data.payload)
-        })
-        .catch(error.switch({
-          410: onDialogOK,
-          422: [{v$: v$.value}, 'input'],
-          default: error.any
-        }))
-    } else {
-      // Notify about invalid
-      notify($t("message.invalid_input"), 'negative')
+      // Validate file
+      if (await extension.v$.value.$validate()) {
+
+        // Craft formData
+        const formData = util.craftFormData(inputRef)
+        // Send request
+        axios.post(`/${key}/store`, formData, {headers: {"Content-Type": "multipart/form-data"}})
+          .then(res => {
+            notify($t("message.success", {attr: $t(`field.${mode}`)}))
+            // Close dialog
+            onDialogOK(res.data.payload)
+          })
+          .catch(error.switch({
+            410: onDialogOK,
+            422: [{v$: extension.v$.value}, 'input'],
+            default: error.any
+          }))
+      } else {
+        // Notify about invalid
+        notify($t("message.invalid_input"), 'negative')
+      }
     }
   }
 
@@ -71,10 +76,7 @@ export function useDialogEditor(inputRef, mode = 'create') {
     onCancel: onDialogCancel,
     ok: onDialogOK,
 
-    // Validator
-    v$,
-
-    // Methods
-    onConfirm
+    // Extension
+    ...extension
   }
 }

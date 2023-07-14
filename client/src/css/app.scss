@@ -20,6 +20,7 @@
   &::-webkit-scrollbar {
     width: 6px;
     height: 6px;
+    border-radius: 10px;
     background-color: #F5F5F5;
   }
 
@@ -39,6 +40,9 @@
   .text-brand {
     color: #000 !important;
   }
+  .bg-brand-soft {
+    background: #fff;
+  }
   .bg-brand {
     background: #fff !important;
   }
@@ -51,6 +55,9 @@
   // Brand -- dark
   .text-brand {
     color: #FFFFFFDE !important;
+  }
+  .bg-brand-soft {
+    background: $dark;
   }
   .bg-brand {
     background: $dark !important;

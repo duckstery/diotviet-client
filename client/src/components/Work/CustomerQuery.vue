@@ -1,8 +1,9 @@
 <template>
   <q-select
     dense outlined use-input input-debounce="500" behavior="menu" class="tw-w-1/2 tw-max-w-lg" ref="select"
+    color="brand" bg-color="brand"
     popup-content-class="virtual-scrollbar" clearable
-    :model-value="getActiveCustomer" :label="$t('field.search_customer')" :options="customer.options"
+    :model-value="getActiveCustomer" :label="$t('field.search_customer')" :options="customer.data"
     @update:model-value="setCustomer($event)" @filter="customer.onFilter"
   >
     <template #selected>

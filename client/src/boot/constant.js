@@ -49,6 +49,16 @@ const constant = {
   },
 
   /**
+   * Convert status code to string
+   *
+   * @param {number|string} code
+   * @return {string}
+   */
+  statusCodeToString(code) {
+    return constant.statuses()[typeof code === "string" ? parseInt(code) : code].name
+  },
+
+  /**
    * Check if status is resolved
    */
   isStatusResolved(code) {

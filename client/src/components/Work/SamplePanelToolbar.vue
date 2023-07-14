@@ -1,6 +1,7 @@
 <template>
   <CustomerQuery/>
-
+  <q-space/>
+  <OrderProcessor/>
   <q-space/>
 
   <Button icon="list" class="tw-w-[41px]" flat :tooltip="$t('field.categorize')"
@@ -15,11 +16,12 @@
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import CustomerQuery from "components/Work/CustomerQuery.vue";
+import OrderProcessor from "components/Manage/Transaction/Order/OrderProcessor.vue";
 
 export default {
   name: 'SamplePanelToolbar',
 
-  components: {CustomerQuery, TextField, Button},
+  components: {OrderProcessor, CustomerQuery, TextField, Button},
 
   props: {
     modelValue: Object,

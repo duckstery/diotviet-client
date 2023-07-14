@@ -134,6 +134,7 @@ export default {
     abort: 'Abort',
     resolve: 'Resolve',
     reason: 'Reason',
+    date: 'Date',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -171,7 +172,10 @@ export default {
     invalid_lock: 'This record is staled because it has been changed or deleted. Please reload the page for new content',
     invalid_locks: 'Some records are staled because it has been changed or deleted. Please reload the page for new content',
     aborted_order: 'Can not change aborted order\'s status',
-    resolved_order: 'Can not resolve resolved order'
+    resolved_order: 'Can not resolve resolved order',
+    no_recent_searches: 'No recent searches',
+    search_orders: 'Search orders',
+    group_by: 'Group by {attr}',
   },
 
   // ****************************
