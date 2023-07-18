@@ -1,7 +1,6 @@
-import {date, Dialog} from "quasar";
+import {date, Dialog, exportFile} from "quasar";
 import {axios, util, notify, error} from "src/boot";
 import {useI18n} from 'vue-i18n';
-import {saveAs} from 'file-saver';
 import {useRouteKey} from "src/composables/useRouteKey";
 
 /**
@@ -41,7 +40,7 @@ export function usePageRequest(invoker, customizer, fetchCb) {
   const onExportRequest = () => {
     // Send request
     axios.get(`/${key}/export`, {responseType: "blob"})
-      .then(res => saveAs(res.data, `${key}_${date.formatDate(Date.now(), 'YYMMDD')}.csv`))
+      .then(res => exportFile(`${key}_${date.formatDate(Date.now(), 'YYMMDD')}.csv`, res.data))
   }
 
   /**
