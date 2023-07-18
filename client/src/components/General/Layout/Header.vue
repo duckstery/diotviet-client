@@ -58,7 +58,7 @@ export default {
      * On logout event handler
      */
     onLogout() {
-      this.$util.promptConfirm()
+      this.$util.promptConfirm(this.$t('field.logout'))
         .onOk(this.logout)
     },
 

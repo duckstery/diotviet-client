@@ -85,6 +85,7 @@ export default {
     start_accumulating: 'Start accumulating',
     stop_accumulating: 'Stop accumulating',
     delete: 'Delete',
+    patch: 'Edit',
     history: 'History',
     description: 'Description',
     create: 'Create',
@@ -151,7 +152,7 @@ export default {
   // ****************************
   message: {
     please_wait: 'Please kindly wait...',
-    confirm: 'Are you sure?',
+    confirm: 'Are you sure you want to {attr}?',
     reason_confirm: 'Please input reason',
     table_empty_data: 'Well this is sad... I didn\'t find anything for you',
     rows_selected: '{attr} record(s) selected.',
@@ -176,6 +177,11 @@ export default {
     no_recent_searches: 'No recent searches',
     search_orders: 'Search orders',
     group_by: 'Group by {attr}',
+    delete_item: 'Delete this item',
+    action_on_item: '{attr} this item',
+    import_file: 'Import this file',
+    export_data: 'Export this data',
+    action_on_order: '{attr} this order'
   },
 
   // ****************************

@@ -40,11 +40,15 @@ const util = {
 
   /**
    * Prompt for confirm
+   *
+   * @param {string} message
+   * @return {DialogChainObject}
    */
-  promptConfirm() {
+  promptConfirm(message) {
+    console.warn(message)
     return Dialog.create({
       title: $t('field.confirm'),
-      message: $t('message.confirm'),
+      message: $t('message.confirm', {attr: message.toLowerCase()}),
       cancel: {icon: 'fa-solid fa-xmark', color: 'negative', label: $t('field.confirm_cancel')},
       ok: {icon: 'fa-solid fa-check', color: 'positive', label: $t('field.confirm')},
     })
@@ -52,6 +56,8 @@ const util = {
 
   /**
    * Prompt for reason input and confirm
+   *
+   * @return {DialogChainObject}
    */
   promptReason() {
     return Dialog.create({

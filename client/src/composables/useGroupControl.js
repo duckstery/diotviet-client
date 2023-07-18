@@ -73,7 +73,7 @@ export function useGroupControl(groupRef) {
         onInteractiveRequest(mode, item)
       } else if (['delete'].includes(mode)) {
         // Directly send to server
-        util.promptConfirm().onOk(() => onDirectRequest(mode, item))
+        util.promptConfirm($t('message.delete_item')).onOk(() => onDirectRequest(mode, item))
       }
     }
   }

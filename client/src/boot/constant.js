@@ -42,9 +42,9 @@ const constant = {
   statuses() {
     return [
       {id: 0, name: $t('field.pending'), icon: 'fa-solid fa-circle-notch', color: 'warning'},
-      {id: 1, name: $t('field.processing'), icon: 'fa-solid fa-circle-dot', color: 'info'},
-      {id: 2, name: $t('field.resolved'), icon: 'fa-solid fa-circle-check', color: 'positive'},
-      {id: 3, name: $t('field.aborted'), icon: 'fa-solid fa-circle-stop', color: 'negative'},
+      {id: 1, name: $t('field.processing'), verb: $t('field.process'), icon: 'fa-solid fa-circle-dot', color: 'info'},
+      {id: 2, name: $t('field.resolved'), verb: $t('field.resolve'), icon: 'fa-solid fa-circle-check', color: 'positive'},
+      {id: 3, name: $t('field.aborted'), verb: $t('field.abort'), icon: 'fa-solid fa-circle-stop', color: 'negative'},
     ]
   },
 

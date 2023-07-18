@@ -17,7 +17,7 @@
           #default="{ item, index }"
           class="tw-max-h-[492px] virtual-scrollbar"
         >
-          <div v-if="item.isLabel" class="text-primary tw-text-lg tw-font-bold tw-mt-3 tw-h-[32px]">{{ item.label }}</div>
+          <div v-if="item.isLabel" class="text-primary tw-text-lg tw-font-bold tw-mt-3 tw-h-[32px]">{{item.label }}</div>
           <q-item
             v-else
             :key="index"
@@ -25,7 +25,7 @@
             :active-class="`text-brand ` + ($q.dark.isActive ? '!tw-bg-emerald-700' : '!tw-bg-emerald-300')"
             clickable
             class="bg-brand-soft tw-group tw-my-2 tw-shadow tw-rounded tw-cursor-pointer hover:!tw-bg-blue-600 hover:!tw-text-white hover:!tw-border-none"
-            @click="active = item"
+            @click="setActiveOrder(item)"
           >
             <q-item-section class="col-2 tw-font-bold">
               <q-item-label>{{ item.code }}</q-item-label>
@@ -49,26 +49,24 @@
           </q-item>
         </q-virtual-scroll>
       </q-card-section>
-      <template v-if="active">
+      <template v-if="showToolbar">
         <q-card-section class="tw-p-0">
-          <div class="bg-brand tw-p-1.5 tw-h-[44px] tw-flex"
+          <div class="bg-brand tw-p-1.5 tw-h-[50px] tw-flex"
                style="box-shadow: inset 0 1px 0 0 rgba(73,76,106,.5),0 -4px 8px 0 rgba(0,0,0,.2)">
-            <div class="tw-my-auto tw-font-bold">
-              <span>{{ active.code }}</span>:
-              <span class="tw-text-blue-500">{{ $util.formatMoney(active.paymentAmount) }} &nbsp;</span>
-              <q-icon name="fa-solid fa-tags" color="warning" size="small"/>
-            </div>
-            <q-space/>
-            <template v-if="!$constant.isStatusAborted(active.status)">
-              <template v-if="!$constant.isStatusResolved(active.status)">
-                <Button flat color="info" icon="fa-solid fa-circle-dot"
-                        :label="$t('field.process')"/>
-                <Button flat color="positive" icon="fa-solid fa-circle-check" class="tw-ml-3"
-                        :label="$t('field.resolve')"/>
-              </template>
-              <Button flat color="negative" icon="fa-solid fa-circle-stop" class="tw-ml-3"
-                      :label="$t('field.abort')"/>
-            </template>
+            <Skeleton v-model="isActiveReady" width="80px">
+              <div v-if="active" class="tw-my-auto tw-font-bold">
+                <span>{{ active.code }}</span>:
+                <span class="tw-text-blue-500">{{ $util.formatMoney(active.paymentAmount) }} &nbsp;</span>
+                <q-icon name="fa-solid fa-tags" color="warning" size="small"/>
+              </div>
+            </Skeleton>
+
+            <q-separator vertical spaced/>
+
+            <q-space v-if="!isActiveReady"/>
+            <Skeleton v-model="isActiveReady" width="270px">
+              <OrderEditorAction v-if="active" :active="active"/>
+            </Skeleton>
           </div>
         </q-card-section>
       </template>
@@ -80,18 +78,22 @@
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import OrderStatus from "components/Manage/Constant/OrderStatus.vue";
+import InputField from "components/General/Other/InputField.vue";
+import OrderEditorAction from "components/Manage/Transaction/Order/OrderEditorAction.vue";
+import Skeleton from "components/General/Other/Skeleton.vue";
 
 import {useDialogPluginComponent} from 'quasar'
-import {computed, ref, toRef, watch} from "vue";
+import {computed, nextTick, ref, toRef, watch} from "vue";
 import {useDialogEditor} from "src/composables/useDialogEditor";
 import {useDebounceModel} from "src/composables/useDebounceModel";
 import {useSimpleSearch} from "src/composables/useSimpleSearch";
 import {useSimpleGrouper} from "src/composables/useSimpleGrouper";
 import {env, util, constant} from "src/boot"
+import {useI18n} from "vue-i18n";
 
 export default {
   name: 'OrderEditor',
-  components: {OrderStatus, Button, TextField},
+  components: {Skeleton, OrderEditorAction, InputField, OrderStatus, Button, TextField},
 
   props: {
     // Selected id
@@ -105,22 +107,19 @@ export default {
   ],
 
   setup(props) {
-    // Is filter by status flag
+    // Get $t
+    const $t = useI18n().t
+
+    // Group method flag
     const isGroupByStatus = ref(env.init("isGroupByStatus", false))
-    // Filter for criteria
+    // Initial group for simple search
     const grouper = computed(() => isGroupByStatus.value
       ? useSimpleGrouper('status', true, constant.statusCodeToString)
       : useSimpleGrouper('createdAt', false, util.dateOnly, util.dateOnly))
-
-    // Use simple search
-    const search = useSimpleSearch('/order/query', true, grouper)
-    // Setup debounce model
-    const debounce = {search: useDebounceModel(toRef(search, 'query'))}
-    // Active id
-    const active = ref(false)
-
-    // Reset active state if query is changed
-    watch(() => search.query, () => active.value = false)
+    // Filter icon
+    const getFilterIcon = computed(() => isGroupByStatus.value ? 'fa-solid fa-circle' : 'fa-solid fa-calendar-days')
+    // Filter tooltip
+    const getFilterTooltip = computed(() => $t('message.group_by', {attr: $t(isGroupByStatus.value ? 'field.status' : 'field.date').toLowerCase()}))
     // Re-filter data when filter method is changed
     watch(isGroupByStatus, (value) => {
       // Trigger filter
@@ -129,25 +128,43 @@ export default {
       env.set("isGroupByStatus", value)
     })
 
+    // Show toolbar flag
+    const showToolbar = ref(false)
+    // Loading active order flag
+    const isActiveReady = ref(false)
+    // Active order
+    const active = ref(false)
+    // Set active order
+    const setActiveOrder = (item = null) => {
+      // Show toolbar
+      showToolbar.value = !util.isUnset(item)
+      // Set active flag to false
+      isActiveReady.value = false
+      // Clear active order
+      active.value = false
+
+      // Set active order at the next of the next tick
+      if (!util.isUnset(item)) {
+        nextTick(async () => nextTick(() => {
+          active.value = item
+          isActiveReady.value = true
+        }))
+      }
+    }
+
+    // Use simple search
+    const search = useSimpleSearch('/order/query', true, grouper)
+    // Setup debounce model
+    const debounce = {search: useDebounceModel(toRef(search, 'query'))}
+    // Reset active state if query is changed
+    watch(() => search.query, () => setActiveOrder())
+
     return {
       ...useDialogEditor(null, props.mode),
-      active,
-      search,
-      debounce,
-      isGroupByStatus
+      isGroupByStatus, getFilterIcon, getFilterTooltip,
+      active, isActiveReady, showToolbar, setActiveOrder,
+      search, debounce,
     }
-  },
-
-  computed: {
-    // Filter icon
-    getFilterIcon() {
-      return this.isGroupByStatus ? 'fa-solid fa-circle' : 'fa-solid fa-calendar-days'
-    },
-    // Filter tooltip
-    getFilterTooltip() {
-      const key = this.isGroupByStatus ? 'field.status' : 'field.date'
-      return this.$t('message.group_by', {attr: this.$t(key).toLowerCase()})
-    },
   },
 }
 </script>

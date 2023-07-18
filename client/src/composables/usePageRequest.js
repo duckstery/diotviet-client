@@ -121,13 +121,13 @@ export function usePageRequest(invoker, customizer, fetchCb) {
         onInteractiveRequest(mode, item)
       } else if (['legacy', 'import'].includes(mode)) {
         // Need to send file to server
-        util.promptConfirm().onOk(() => onImportRequest(mode, item))
+        util.promptConfirm($t('message.import_file')).onOk(() => onImportRequest(mode, item))
       } else if (['export'].includes(mode)) {
         // Need to send file to server
-        util.promptConfirm().onOk(() => onExportRequest())
+        util.promptConfirm($t('message.export_data')).onOk(() => onExportRequest())
       } else if (['delete', 'patch'].includes(mode)) {
         // Directly send to server
-        util.promptConfirm().onOk(() => onDirectRequest(mode, item))
+        util.promptConfirm($t('message.action_on_item', {attr: $t(`field.${mode}`).toLowerCase()})).onOk(() => onDirectRequest(mode, item))
       } else {
         fetchCb()
       }
