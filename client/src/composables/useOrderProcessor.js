@@ -1,13 +1,16 @@
 import {Dialog} from "quasar";
-import OrderEditor from "components/Manage/Transaction/Order/OrderEditor.vue";
+import OrderProcessor from "components/Manage/Transaction/Order/OrderProcessor.vue";
 
 /**
  * Setup Order processor
+ *
+ * @param {ComputedRef} detailRef
+ * @return {function(): DialogChainObject}
  */
-export function useOrderProcessor(orderId) {
+export function useOrderProcessor(detailRef) {
   // Invoke dialog
   return () => Dialog.create({
-    component: OrderEditor,
-    componentProps: {selectedId: orderId}
+    component: OrderProcessor,
+    componentProps: {selectedCode: detailRef.value.code}
   })
 }

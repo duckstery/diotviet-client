@@ -42,8 +42,10 @@ export function useSimpleSearch(api, useWatch = true, filter = null) {
 
   // Filter data
   const triggerFilter = () => {
-    // Reset data
-    resource.data = []
+    // Reset data only if data is not empty
+    if (!_.isEmpty(resource.data)) {
+      resource.data = []
+    }
 
     nextTick(() => {
       // Deep clone original

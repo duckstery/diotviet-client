@@ -241,14 +241,12 @@ public class OrderService extends BaseService {
         }
         // Filter by search string
         if (StringUtils.isNotBlank(request.search())) {
-            query.and(order
-                    .code
+            query.and(order.code
                     .concat(order.phoneNumber)
                     .concat(order.address)
                     .concat(order.customer.name)
                     .toLowerCase()
-                    .contains(request.search())
-            );
+                    .contains(request.search().toLowerCase()));
         }
 
         // Connect expression

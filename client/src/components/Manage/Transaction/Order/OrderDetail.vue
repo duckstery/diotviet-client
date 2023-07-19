@@ -100,15 +100,15 @@
         <template v-if="!$constant.isStatusResolved(detail.status)">
           <q-separator class="tw-ml-2" inset vertical/>
           <Button :label="$t('field.process')" icon="fa-solid fa-circle-dot"
-                  stretch color="info" class="tw-ml-2" no-caps @click="onProcess"/>
+                  stretch color="info" class="tw-ml-2" no-caps @click="onHandleOrder"/>
           <Button :label="$t('field.resolve')" icon="fa-solid fa-circle-check"
                   stretch color="positive" class="tw-ml-2" no-caps
-                  @click="patch({target: 'status', option: 2})"/>
+                  @click="onHandleOrder"/>
         </template>
         <q-separator class="tw-ml-2" inset vertical/>
         <Button :label="$t('field.abort')" icon="fa-solid fa-circle-stop"
                 stretch color="negative" class="tw-ml-2" no-caps
-                @click="onPatch({target: 'status', option: 3})"/>
+                @click="onHandleOrder"/>
       </Skeleton>
     </q-card-section>
   </q-card>
@@ -125,6 +125,7 @@ import {toRefs} from "vue";
 import {usePageRowDetail} from "src/composables/usePageRowDetail";
 import {useInteractiveField} from "src/composables/useInteractiveField";
 import {useDiscountCalculator} from "src/composables/useDiscountCalculator";
+import {useOrderProcessor} from "src/composables/useOrderProcessor";
 
 export default {
   name: 'OrderDetail',
@@ -154,10 +155,14 @@ export default {
   emits: ['request'],
 
   setup(props, context) {
+    // Use page row detail
+    const pageRowDetail = usePageRowDetail(toRefs(props), context)
+
     return {
-      ...usePageRowDetail(toRefs(props), context, true),
+      ...pageRowDetail,
       ...useInteractiveField(),
-      getDiscountAmount: useDiscountCalculator()
+      getDiscountAmount: useDiscountCalculator(),
+      onHandleOrder: useOrderProcessor(pageRowDetail.detail),
     }
   },
 
@@ -204,18 +209,6 @@ export default {
     onPrint() {
 
     },
-    onProcess() {
-
-    },
-
-    /**
-     * On patch
-     *
-     * @param payload
-     */
-    onPatch(payload) {
-      this.$util.promptReason().onOk(reason => this.patch({...payload, reason}))
-    }
   }
 }
 </script>

@@ -210,7 +210,7 @@ public class ProductService extends BaseService {
         }
         // Filter by search string
         if (StringUtils.isNotBlank(request.search())) {
-            query.and(product.code.concat(product.title).toLowerCase().contains(request.search()));
+            query.and(product.code.concat(product.title).toLowerCase().contains(request.search().toLowerCase()));
         }
 
         // Connect expression

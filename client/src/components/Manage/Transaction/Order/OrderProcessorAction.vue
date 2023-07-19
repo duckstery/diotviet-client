@@ -94,19 +94,26 @@ export default {
     }
     // Handle action
     const handle = () => {
+      // Pick confirm dialog to use
+      let dialog = util.promptConfirm
       // Check if action is null
       if (util.isUnset(action.value)) {
+        // Set action as ABORT
         action.value = constant.statuses()[3]
+        // Use reason dialog instead
+        dialog = util.promptReason
       }
 
-      util.promptConfirm($t('message.action_on_order', {attr: action.value.verb}))
-        .onOk(() => {
+      // Invoke
+      dialog($t('message.action_on_order', {attr: action.value.verb}))
+        .onOk((reason) => {
           // Send a request to patch order
           axios.patch('/order/patch', {
             ids: [props.active.id],
             versions: [props.active.version],
             option: action.value.id,
             amount: paymentAmount.value,
+            reason: reason
           })
             .then(() => {
               notify($t('message.success', {attr: action.value.verb}), 'positive')

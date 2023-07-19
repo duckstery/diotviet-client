@@ -1,7 +1,14 @@
 <template>
   <CustomerQuery/>
   <q-space/>
-  <OrderProcessor/>
+  <Button
+    color="info"
+    class="tw-p-2"
+    icon="receipt"
+    :label="$t('field.order')"
+    :tooltip="$t('field.order')"
+    @click="onProcess"
+  />
   <q-space/>
 
   <Button icon="list" class="tw-w-[41px]" flat :tooltip="$t('field.categorize')"
@@ -16,16 +23,22 @@
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import CustomerQuery from "components/Work/CustomerQuery.vue";
-import OrderProcessor from "components/Manage/Transaction/Order/OrderProcessor.vue";
+import {useOrderProcessor} from "src/composables/useOrderProcessor";
 
 export default {
   name: 'SamplePanelToolbar',
 
-  components: {OrderProcessor, CustomerQuery, TextField, Button},
+  components: {CustomerQuery, TextField, Button},
 
   props: {
     modelValue: Object,
     isVisualizing: Boolean,
+  },
+
+  setup() {
+    return {
+      onProcess: useOrderProcessor()
+    }
   },
 
   computed: {
@@ -44,8 +57,6 @@ export default {
   },
 
   methods: {
-
-
     /**
      * On categorize sample item event handler
      */

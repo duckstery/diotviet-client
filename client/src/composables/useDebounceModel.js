@@ -25,6 +25,8 @@ export function useDebounceModel(refObj, millisecond= 500) {
       timeout = null
     }
 
+    // There is no point of wasting resources if middle is equal target
+    if (middle.value === refObj.value) return
     // When middle.value is changed, create a timeout to set refObj.value
     timeout = setTimeout(() => {
       // Set data
@@ -33,6 +35,8 @@ export function useDebounceModel(refObj, millisecond= 500) {
       timeout = null
     }, millisecond)
   })
+  // Watch when target is changed, middle must be change
+  watch(refObj, (value) => middle.value = value)
 
   return middle
 }
