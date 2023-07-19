@@ -158,11 +158,11 @@ public class ProductService extends BaseService {
         // Iterate through each Item in items
         for (Item item : items) {
             // Set original Product for Item
-            item.setProduct(IterableUtils.find(products, product -> product.getId() == item.getId()));
-            // Clear item's id since it was Product's id
-            item.setId(0);
-            // Set order
-            item.setOrder(order);
+            item.setProduct(IterableUtils.find(products, product -> product.getId() == item.getId()))
+                    // Clear item's id since it was Product's id
+                    .setId(0)
+                    // Set order
+                    .setOrder(order);
         }
 
         return items;

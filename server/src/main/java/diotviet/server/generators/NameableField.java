@@ -29,10 +29,9 @@ public class NameableField<T, I> extends AbstractBeanField<T, I> {
 
             // Create instance of field's type and cast to Nameable
             Nameable identifiable = (Nameable) getField().getType().getDeclaredConstructor().newInstance();
-            // Set ID
-            identifiable.setName(s);
 
-            return identifiable;
+            // Set ID and return identifiable
+            return identifiable.setName(s);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

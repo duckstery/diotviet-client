@@ -65,7 +65,7 @@
 
             <q-space v-if="!isActiveReady"/>
             <Skeleton v-model="isActiveReady" width="270px">
-              <OrderEditorAction v-if="active" :active="active"/>
+              <OrderEditorAction v-if="active" :active="active" @reload="reload"/>
             </Skeleton>
           </div>
         </q-card-section>
@@ -156,6 +156,13 @@ export default {
     const search = useSimpleSearch('/order/query', true, grouper)
     // Setup debounce model
     const debounce = {search: useDebounceModel(toRef(search, 'query'))}
+    // Reload search data
+    const reload = () => {
+      // Re-search data
+      search.search()
+      // Clear active
+      setActiveOrder()
+    }
     // Reset active state if query is changed
     watch(() => search.query, () => setActiveOrder())
 
@@ -163,7 +170,7 @@ export default {
       ...useDialogEditor(null, props.mode),
       isGroupByStatus, getFilterIcon, getFilterTooltip,
       active, isActiveReady, showToolbar, setActiveOrder,
-      search, debounce,
+      search, debounce, reload
     }
   },
 }

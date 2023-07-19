@@ -45,7 +45,6 @@ const util = {
    * @return {DialogChainObject}
    */
   promptConfirm(message) {
-    console.warn(message)
     return Dialog.create({
       title: $t('field.confirm'),
       message: $t('message.confirm', {attr: message.toLowerCase()}),

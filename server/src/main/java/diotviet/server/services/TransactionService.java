@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TransactionService extends BaseService {
@@ -32,30 +33,57 @@ public class TransactionService extends BaseService {
     // ****************************
 
     /**
+     * Process order <br>
+     * For both PENDING and PROCESSING, create a Transaction with provided amount <br>
+     * If the amount is equal or surpass Order current payment amount, resolve Order
+     *
+     * @param order
+     */
+    public void process(Order order, String amount) {
+        // Get Order payment amount and convert to Long
+        long paymentAmount = Long.parseLong(order.getPaymentAmount());
+        // Parse provided amount
+        long processAmount = Long.parseLong(amount);
+        // Get paid amount
+        long paidAmount = getPaidAmountOf(order);
+
+        // Check if the amount is equal or surpass Order current payment amount
+        if (processAmount >= (paymentAmount - paidAmount)) {
+            // Resolve Order
+            resolve(order, amount);
+        } else {
+            // Process Order and create a process transaction
+            order.setStatus(Status.PROCESSING).getTransactions().add(createTransactionFor(order, amount));
+        }
+    }
+
+    /**
      * Resolve order <br>
      * For PENDING, create a Transaction with amount of Order <br>
      * For PROCESSING, create a Transaction with amount of leftover after previous Transaction
      *
      * @param order
      */
-    public void resolve(Order order) {
-        // First, get Order amount out
-        Long paymentAmount = Long.valueOf(order.getPaymentAmount());
-        Long paidAmount = 0L;
+    public void resolve(Order order, String amount) {
+        // Create a resolve Transaction
+        Transaction resolveTransaction;
 
-        // Check if Order has any Transaction
-        if (CollectionUtils.isNotEmpty(order.getTransactions())) {
-            // If Order has some Transactions, iterate through those Transaction to see how much money is paid
-            paidAmount = order.getTransactions().stream()
-                    .map(Transaction::getAmount)
-                    .map(Long::valueOf)
-                    .reduce(0L, Long::sum);
+        if (Objects.nonNull(amount)) {
+            // If amount is null, resolve by subtract paid amount from payment amount
+            Long paymentAmount = Long.valueOf(order.getPaymentAmount());
+            Long paidAmount = getPaidAmountOf(order);
+
+            // Create Transaction
+            resolveTransaction = createTransactionFor(order, String.valueOf(paymentAmount - paidAmount));
+        } else {
+            // Else, apply requested amount as resolve amount
+            resolveTransaction = createTransactionFor(order, amount);
         }
 
         // Setup Order
-        order.setStatus(Status.RESOLVED);
-        order.setResolvedAt(new Date());
-        order.setTransactions(new ArrayList<>(List.of(createTransactionFor(order, String.valueOf(paymentAmount - paidAmount)))));
+        order.setStatus(Status.RESOLVED)
+                .setResolvedAt(new Date())
+                .setTransactions(new ArrayList<>(List.of(resolveTransaction)));
     }
 
     /**
@@ -74,23 +102,35 @@ public class TransactionService extends BaseService {
         if (CollectionUtils.isNotEmpty(order.getTransactions())) {
             // Add all modified Transaction to new list
             transactions.addAll(order.getTransactions().stream()
-                    .peek(transaction -> {
-                        // Peak through each transaction, soft delete and update reason for them
-                        transaction.setIsDeleted(true);
-                        transaction.setReason(reason);
-                    }).toList());
+                    // Peak through each transaction, soft delete and update reason for them
+                    .peek(transaction -> transaction.setIsDeleted(true).setReason(reason))
+                    .toList());
         } else {
             // Create a Transaction to set reason for Order
-            Transaction transaction = createTransactionFor(order, "0");
-            // Set reason
-            transaction.setReason(reason);
-
-            transactions.add(transaction);
+            transactions.add(createTransactionFor(order, "0").setReason(reason));
         }
 
         // Setup Order
-        order.setStatus(Status.ABORTED);
-        order.setTransactions(transactions);
+        order.setStatus(Status.ABORTED).setTransactions(transactions);
+    }
+
+    /**
+     * Get Order paid amount
+     *
+     * @param order
+     * @return
+     */
+    public Long getPaidAmountOf(Order order) {
+        // Check if Order has any Transaction
+        if (CollectionUtils.isEmpty(order.getTransactions())) {
+            return 0L;
+        }
+
+        // If Order has some Transactions, iterate through those Transaction to see how much money is paid
+        return order.getTransactions().stream()
+                .map(Transaction::getAmount)
+                .map(Long::valueOf)
+                .reduce(0L, Long::sum);
     }
 
     /**
@@ -114,14 +154,10 @@ public class TransactionService extends BaseService {
      * @return
      */
     private Transaction createTransactionFor(Order order, String amount) {
-        // Create Transaction
-        Transaction transaction = new Transaction();
-
-        // Setup Transaction
-        transaction.setAmount(amount);
-        transaction.setCreatedAt(OtherUtils.get(order.getResolvedAt(), new Date()));
-        transaction.setOrder(order);
-
-        return transaction;
+        // Create Transaction and setup
+        return new Transaction()
+                .setAmount(amount)
+                .setCreatedAt(OtherUtils.get(order.getResolvedAt(), new Date()))
+                .setOrder(order);
     }
 }

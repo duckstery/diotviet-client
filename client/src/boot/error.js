@@ -4,8 +4,16 @@ import {util} from "boot/util"
 
 let $t;
 
+// Log to console
+const log = (err) => {
+  if (process.env.DEV) {
+    console.error(err)
+  }
+}
+
 // Check if error status match the handler
 const mustBe = (status, error) => {
+  log(error)
   if (error.response.status !== status) {
     throw error
   }
@@ -86,6 +94,7 @@ const error = {
    */
   any(err) {
     notify(err.response.data.message, 'negative')
+    log(err)
   },
 
   /**

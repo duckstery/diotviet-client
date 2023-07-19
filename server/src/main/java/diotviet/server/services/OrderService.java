@@ -113,7 +113,7 @@ public class OrderService extends BaseService {
         // Check if order should be resolved
         if (Status.RESOLVED.equals(status)) {
             // Use transaction service to resolve Order
-            transactionService.resolve(order);
+            transactionService.resolve(order, null);
         }
         // For some reason, including this when saving Order cause multiple Selection point to Category and Group
         // For performance, Items will be saved separately by it repository
@@ -141,7 +141,8 @@ public class OrderService extends BaseService {
 
         // Patch Orders
         switch (status) {
-            case RESOLVED -> resolveOrders(orders);
+            case PROCESSING -> processOrders(orders, request.amount());
+            case RESOLVED -> resolveOrders(orders, request.amount());
             case ABORTED -> abortOrders(orders, request.reason());
         }
 
@@ -258,19 +259,19 @@ public class OrderService extends BaseService {
      */
     private void basicSetup(OrderInteractRequest request, Order order) {
         // Set created by
-        order.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-        // Count Product that can be accumulated and set point
-        order.setPoint(productRepository.countByIdInAndCanBeAccumulatedTrueAndIsDeletedFalse(request
-                .items()
-                .stream()
-                .map(OrderItem::id)
-                .toList()));
-        // Set address
-        order.setAddress(order.getCustomer().getAddress());
-        // Set phone number
-        order.setPhoneNumber(order.getCustomer().getPhoneNumber());
-        // Set customer last order at
-        order.getCustomer().setLastOrderAt(order.getCreatedAt());
+        order.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName())
+                // Count Product that can be accumulated and set point
+                .setPoint(productRepository.countByIdInAndCanBeAccumulatedTrueAndIsDeletedFalse(request
+                        .items()
+                        .stream()
+                        .map(OrderItem::id)
+                        .toList()))
+                // Set address
+                .setAddress(order.getCustomer().getAddress())
+                // Set phone number
+                .setPhoneNumber(order.getCustomer().getPhoneNumber())
+                // Set customer last order at
+                .getCustomer().setLastOrderAt(order.getCreatedAt());
     }
 
     /**
@@ -281,13 +282,33 @@ public class OrderService extends BaseService {
      *
      * @param orders
      */
-    private void resolveOrders(List<Order> orders) {
+    private void processOrders(List<Order> orders, String amount) {
         // Resolve Orders and save resolve Transaction
         for (Order order : orders) {
             switch (order.getStatus()) {
-                case PENDING, PROCESSING -> transactionService.resolve(order);
+                case PENDING, PROCESSING -> transactionService.process(order, amount);
                 // Do not allow to resolve RESOLVED and ABORTED
-                case RESOLVED -> validator.abort("resolved_order");
+                case RESOLVED -> validator.abort("process_resolved_order");
+                case ABORTED -> validator.abort("aborted_order");
+            }
+        }
+    }
+
+    /**
+     * Resolve all Orders <br>
+     * For PENDING, create a Transaction with amount of Order <br>
+     * For PROCESSING, create a Transaction with amount of leftover after previous Transaction <br>
+     * For RESOLVED and ABORTED, throw Exception
+     *
+     * @param orders
+     */
+    private void resolveOrders(List<Order> orders, String amount) {
+        // Resolve Orders and save resolve Transaction
+        for (Order order : orders) {
+            switch (order.getStatus()) {
+                case PENDING, PROCESSING -> transactionService.resolve(order, amount);
+                // Do not allow to resolve RESOLVED and ABORTED
+                case RESOLVED -> validator.abort("resolve_resolved_order");
                 case ABORTED -> validator.abort("aborted_order");
             }
         }

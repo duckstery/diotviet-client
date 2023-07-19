@@ -17,6 +17,7 @@ export function useSimpleSearch(api, useWatch = true, filter = null) {
     data: [],
     original: [],
     filter: () => triggerFilter(),
+    search: () => search(resource.query),
     // Event for Quasar's component
     onFilter: null
   })

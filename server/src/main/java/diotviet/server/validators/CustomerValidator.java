@@ -122,8 +122,8 @@ public class CustomerValidator extends BaseValidator<Customer> {
         Customer original = readonly.get();
 
         // Set data for modified customer
-        customer.setCreatedAt(original.getCreatedAt());
-        customer.setLastOrderAt(original.getLastOrderAt());
-        customer.setLastTransactionAt(original.getLastTransactionAt());
+        customer.setCreatedAt(original.getCreatedAt())
+                .setLastOrderAt(original.getLastOrderAt())
+                .setLastTransactionAt(original.getLastTransactionAt());
     }
 }

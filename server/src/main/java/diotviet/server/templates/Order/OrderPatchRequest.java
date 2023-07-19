@@ -11,8 +11,8 @@ package diotviet.server.templates.Order;
 public record OrderPatchRequest(
         Long[] ids,
         Long[] versions,
-        String target,
         Long option,
+        String amount,
         String reason
 ) {
 }

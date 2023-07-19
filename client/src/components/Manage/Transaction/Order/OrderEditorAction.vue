@@ -18,7 +18,7 @@
                 :label="$t('field.resolve')" @click="set(2)"/>
       </template>
       <Button key="aborted" flat color="negative" icon="fa-solid fa-circle-stop" class="tw-ml-3"
-              :label="$t('field.abort')"/>
+              :label="$t('field.abort')" @click="handle"/>
     </div>
   </q-slide-transition>
   <q-slide-transition :duration="150" @hide="state = 0">
@@ -38,9 +38,10 @@
 import Button from "components/General/Other/Button.vue";
 import TextField from "components/General/Other/TextField.vue";
 import IconMage from "components/General/Other/IconMage.vue";
+
 import {useRangeControl} from "src/composables/useRangeControl";
 import {ref, computed, nextTick} from "vue";
-import {constant, util} from "src/boot";
+import {axios, constant, util, error, notify} from "src/boot";
 import {Dark} from "quasar";
 import {useI18n} from "vue-i18n";
 
@@ -54,9 +55,24 @@ export default {
     active: Object,
   },
 
-  setup(props) {
+  emits: ['reload'],
+
+  setup(props, context) {
     // Get $t
     const $t = useI18n().t
+
+    // Payment amount
+    const paymentAmount = ref(props.active.paymentAmount)
+    // Use range control on payment amount
+    useRangeControl(paymentAmount)
+
+    // Active status
+    const isResolved = computed(() => constant.isStatusResolved(props.active.status))
+    const isAborted = computed(() => constant.isStatusAborted(props.active.status))
+
+    // Transition state
+    const state = ref(0)
+    const hanging = () => nextTick(() => state.value = 1)
 
     // Active action
     const action = ref(null)
@@ -78,22 +94,28 @@ export default {
     }
     // Handle action
     const handle = () => {
+      // Check if action is null
+      if (util.isUnset(action.value)) {
+        action.value = constant.statuses()[3]
+      }
+
       util.promptConfirm($t('message.action_on_order', {attr: action.value.verb}))
-        .onOk(() => {})
+        .onOk(() => {
+          // Send a request to patch order
+          axios.patch('/order/patch', {
+            ids: [props.active.id],
+            versions: [props.active.version],
+            option: action.value.id,
+            amount: paymentAmount.value,
+          })
+            .then(() => {
+              notify($t('message.success', {attr: action.value.verb}), 'positive')
+              // Reload Editor
+              context.emit('reload')
+            })
+            .catch(error.any)
+        })
     }
-
-    // Payment amount
-    const paymentAmount = ref(props.active.paymentAmount)
-    // Use range control on payment amount
-    useRangeControl(paymentAmount)
-
-    // Active status
-    const isResolved = computed(() => constant.isStatusResolved(props.active.status))
-    const isAborted = computed(() => constant.isStatusAborted(props.active.status))
-
-    // Transition state
-    const state = ref(0)
-    const hanging = () => nextTick(() => state.value = 1)
 
     return {
       /** Data **/
