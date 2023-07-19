@@ -24,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -158,10 +160,12 @@ public class OrderService extends BaseService {
      */
     public List<OrderSearchView> query(OrderSearchRequest request) {
         return repository.findBy(createFilter(request), q -> q
-                .sortBy(Sort.by(Sort.Direction.DESC, "createdAt", "code"))
-                .limit(100)
-                .as(OrderSearchView.class)
-                .all());
+                        .sortBy(Sort.by(Sort.Direction.DESC, "createdAt", "code"))
+                        .limit(100)
+                        .all())
+                .stream()
+                .map(this::calculateCurrentPaymentAmount)
+                .toList();
     }
 //
 //    /**
@@ -249,6 +253,27 @@ public class OrderService extends BaseService {
 
         // Connect expression
         return query;
+    }
+
+    /**
+     * Calculate current payment amount for Order
+     *
+     * @param order
+     * @return
+     */
+    private OrderSearchView calculateCurrentPaymentAmount(Order order) {
+        // Create Projector
+        ProjectionFactory projectionFactory = new SpelAwareProxyProjectionFactory();
+
+        // Calculate Order current payment amount only for PROCESSING Order
+        if (Status.PROCESSING.equals(order.getStatus())) {
+            Long paymentAmount = Long.parseLong(order.getPaymentAmount());
+            Long paidAmount = transactionService.getPaidAmountOf(order);
+            order.setPaymentAmount(String.valueOf(paymentAmount - paidAmount));
+        }
+
+        // Project OrderSearchView to Order
+        return projectionFactory.createProjection(OrderSearchView.class, order);
     }
 
     /**

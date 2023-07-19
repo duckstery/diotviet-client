@@ -28,7 +28,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
      * @return
      */
     @Override
-    @EntityGraph(attributePaths = {"groups", "customer"})
+    @EntityGraph(attributePaths = {"groups", "customer", "transactions"})
     <S extends Order, R> R findBy(Predicate predicate, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction);
 
     /**
