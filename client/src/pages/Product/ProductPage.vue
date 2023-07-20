@@ -23,7 +23,6 @@
 
 <script>
 import Page from "components/General/Layout/Page.vue";
-import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
 import DataTable from "components/Manage/DataTable.vue";
 import ProductFilter from "components/Manage/Product/ProductFilter.vue";
 import ProductDetail from "components/Manage/Product/ProductDetail.vue";
@@ -38,7 +37,7 @@ import {useGroupControl} from "src/composables/useGroupControl";
 export default {
   name: 'ProductPage',
 
-  components: {CustomerFilter, ProductDetail, ProductFilter, Page, DataTable, Breadcrumbs},
+  components: {CustomerFilter, ProductDetail, ProductFilter, Page, DataTable},
 
   setup() {
     // Loading flag

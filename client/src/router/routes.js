@@ -51,6 +51,14 @@ const routes = [
       r('staff', 'Partner.Staff', () => import('pages/Partner/StaffPage.vue')),
     ]
   },
+  {
+    path: '/setting',
+    component: () => import('layouts/ManageLayout.vue'),
+    children: [
+      r('', 'Setting', () => import('pages/Setting/SettingPage.vue')),
+      r('print', 'Setting.Print', () => import('pages/Setting/PrintPage.vue')),
+    ]
+  },
 
   // Error page
   {

@@ -41,6 +41,7 @@ export default {
     remember_password: 'Remember password',
     forget_password: 'Forget password',
     settings: 'Settings',
+    setting: 'Setting',
     language: 'Language',
     en: 'English',
     vi: 'Vietnamese',

@@ -25,7 +25,6 @@ import CustomerDetail from "components/Manage/Partner/Customer/CustomerDetail.vu
 import DataTable from "components/Manage/DataTable.vue";
 import OrderFilter from "components/Manage/Transaction/Order/OrderFilter.vue";
 import Page from "components/General/Layout/Page.vue";
-import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
 import OrderDetail from "components/Manage/Transaction/Order/OrderDetail.vue";
 import {ref} from "vue";
 import {usePageSearch} from "src/composables/usePageSearch";
@@ -36,7 +35,7 @@ import {useRouter} from "vue-router";
 export default {
   name: 'OrderPage',
 
-  components: {OrderDetail, OrderFilter, CustomerDetail, Page, DataTable, Breadcrumbs},
+  components: {OrderDetail, OrderFilter, CustomerDetail, Page, DataTable},
 
   setup() {
     // Use router

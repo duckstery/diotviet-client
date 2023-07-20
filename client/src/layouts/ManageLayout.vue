@@ -51,6 +51,9 @@ export default {
         // {key: 'supplier', icon: 'fa-box-open', to: '/partner/supplier'},
         // {key: 'shipper', icon: 'fa-truck-fast', to: '/partner/shipper'}
       ],
+      'setting': [
+        {key: 'print', icon: 'fa-print', to: '/setting/print'},
+      ]
     }
   }),
 

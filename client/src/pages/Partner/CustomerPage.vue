@@ -22,7 +22,6 @@
 
 <script>
 import Page from "components/General/Layout/Page.vue";
-import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
 import DataTable from "components/Manage/DataTable.vue";
 import CustomerFilter from "components/Manage/Partner/Customer/CustomerFilter.vue";
 import CustomerDetail from "components/Manage/Partner/Customer/CustomerDetail.vue";
@@ -36,7 +35,7 @@ import {useGroupControl} from "src/composables/useGroupControl";
 export default {
   name: 'CustomerPage',
 
-  components: {CustomerDetail, CustomerFilter, Page, DataTable, Breadcrumbs},
+  components: {CustomerDetail, CustomerFilter, Page, DataTable},
 
   setup() {
     // Loading flag
