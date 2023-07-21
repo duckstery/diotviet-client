@@ -1,5 +1,6 @@
 import {boot} from 'quasar/wrappers';
 import {Dialog, date} from "quasar";
+import {env} from "boot/env";
 
 // I18n
 let $t;
@@ -163,6 +164,22 @@ const util = {
     }
 
     return a.localeCompare(b)
+  },
+
+  /**
+   * Print element
+   *
+   * @param {string<HTMLElement>} element
+   */
+  print(element) {
+    // Create a print window
+    const printWindow = window.open('', '', 'height=500, width=500');
+    printWindow.document.write(`<html lang="${env.get('language')}"><body>${element}</body></html>`);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      // Print
+      printWindow.print()
+    }
   }
 }
 
