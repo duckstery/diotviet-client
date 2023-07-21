@@ -1,7 +1,7 @@
 <template>
   <Page :breadcrumbs="breadcrumbs">
     <div class="col-12 col-md-6 tw-px-2">
-      <RichTextEditor v-model="content" height="600px"/>
+      <RichTextEditor v-model="content" height="600px" :loading="loading" :tags="tags"/>
     </div>
     <div class="col-12 col-md-6 tw-px-2 tw-pt-[88px]">
       <div class="print-preview tw-min-h-[512px] tw-p-1" v-html="content"></div>
@@ -14,7 +14,8 @@ import Page from "components/General/Layout/Page.vue";
 import RichTextEditor from "components/General/Other/RichTextEditor.vue";
 import Button from "components/General/Other/Button.vue";
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {axios, error} from "src/boot"
 
 export default {
   name: 'PrintPage',
@@ -22,7 +23,19 @@ export default {
   components: {Button, RichTextEditor, Page},
 
   setup() {
+    // Ready state
+    const loading = ref(true)
+    // Editor's print tags
+    const tags = ref([])
+    // Fetch print tags
+    onMounted(() => axios.get('print/index')
+      .then(res => tags.value = res.data.payload.tags)
+      .catch(error.any)
+      .finally(() => loading.value = false))
+
     return {
+      loading: loading,
+      tags: tags,
       content: ref('<div id="kv-cke-temp">\n' +
         '<div class="printBox">\n' +
         '<table style="width:100%">\n' +

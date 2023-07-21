@@ -1,6 +1,7 @@
 package diotviet.server.entities;
 
 import com.querydsl.core.annotations.QueryEntity;
+import diotviet.server.annotations.PrintTag;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -30,6 +31,7 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "product_id", nullable = false)
     @ToString.Exclude
+    @PrintTag(component = Product.class, forceMerge = true)
     private Product product;
 
     /**
@@ -44,35 +46,41 @@ public class Item {
      * Price before discount
      */
     @Column(length = 11)
+    @PrintTag
     private String originalPrice;
 
     /**
      * Discount's amount
      */
     @Column(length = 11)
+    @PrintTag
     private String discount;
 
     /**
      * Discount's unit
      */
     @Column(length = 4)
+    @PrintTag
     private String discountUnit;
 
     /**
      * Price after discount
      */
     @Column(length = 11)
+    @PrintTag
     private String actualPrice;
 
     /**
      * Note
      */
     @Column
+    @PrintTag
     private String note;
 
     /**
      * Quantity
      */
     @Column
+    @PrintTag
     private int quantity;
 }

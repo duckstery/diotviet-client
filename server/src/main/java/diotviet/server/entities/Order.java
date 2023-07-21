@@ -8,6 +8,7 @@ import com.opencsv.bean.CsvIgnore;
 import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
+import diotviet.server.annotations.PrintTag;
 import diotviet.server.constants.Status;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
@@ -61,6 +62,7 @@ public class Order implements Identifiable, Lockable {
      */
     @Column(length = 10)
     @CsvBindByName
+    @PrintTag
     private String code;
 
     /**
@@ -84,6 +86,7 @@ public class Order implements Identifiable, Lockable {
     @JoinColumn(name = "customer_id", nullable = false)
     @CsvCustomBindByName(converter = NameableField.class)
     @ToString.Exclude
+    @PrintTag(component = Customer.class)
     private Customer customer;
 
     /**
@@ -93,6 +96,7 @@ public class Order implements Identifiable, Lockable {
     @CsvCustomBindByName(converter = NameableSetField.class)
     @InitIgnore
     @ToString.Exclude
+    @PrintTag(component = Item.class)
     private List<Item> items;
 
     /**
@@ -111,6 +115,7 @@ public class Order implements Identifiable, Lockable {
      */
     @Column(length = 15)
     @CsvBindByName
+    @PrintTag
     private String phoneNumber;
 
     /**
@@ -119,6 +124,7 @@ public class Order implements Identifiable, Lockable {
     @Column(length = 100)
     @InitHide
     @CsvBindByName
+    @PrintTag
     private String address;
 
     /**
@@ -127,6 +133,7 @@ public class Order implements Identifiable, Lockable {
     @Column(length = 11)
     @InitIgnore
     @CsvBindByName
+    @PrintTag
     private String provisionalAmount;
 
     /**
@@ -135,6 +142,7 @@ public class Order implements Identifiable, Lockable {
     @Column(length = 11)
     @InitIgnore
     @CsvBindByName
+    @PrintTag
     private String discount;
 
     /**
@@ -143,6 +151,7 @@ public class Order implements Identifiable, Lockable {
     @Column(length = 4)
     @InitIgnore
     @CsvBindByName
+    @PrintTag
     private String discountUnit;
 
     /**
@@ -150,6 +159,7 @@ public class Order implements Identifiable, Lockable {
      */
     @Column(length = 11)
     @CsvBindByName
+    @PrintTag
     private String paymentAmount;
 
     /**
@@ -173,6 +183,7 @@ public class Order implements Identifiable, Lockable {
     @Column
     @InitIgnore
     @CsvBindByName
+    @PrintTag
     private String note;
 
     /**
@@ -191,6 +202,7 @@ public class Order implements Identifiable, Lockable {
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @PrintTag
     private Date createdAt = new Date();
 
     /**

@@ -1,6 +1,8 @@
 <template>
-  <div v-if="isReady" class="rich-text-editor">
-    <Editor v-model="model" tinymce-script-src="/tinymce/tinymce.min.js" :init="init"/>
+  <div class="rich-text-editor">
+    <Skeleton :model-value="!loading && isReady" :height="height">
+      <Editor v-model="model" tinymce-script-src="/tinymce/tinymce.min.js" :init="init"/>
+    </Skeleton>
   </div>
 </template>
 
@@ -8,11 +10,13 @@
 import Editor from "@tinymce/tinymce-vue"
 import {mapState} from "pinia";
 import {useEnvStore} from "stores/env";
+import Skeleton from "components/General/Other/Skeleton.vue";
 
 export default {
   name: "RichTextEditor",
 
   components: {
+    Skeleton,
     Editor
   },
 
@@ -25,6 +29,10 @@ export default {
     padding: Boolean,
     // Sticky toolbar
     stickyToolbar: Boolean,
+    // Tags
+    tags: Array,
+    // Loading state
+    loading: Boolean,
     // Editor height
     height: {
       type: String,
@@ -55,7 +63,7 @@ export default {
         plugins: 'preview importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
         editimage_cors_hosts: ['picsum.photos'],
         menubar: 'file edit view insert format tools table help',
-        toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview print | insertfile image media template link anchor code codesample | ltr rtl',
+        toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview print | insertfile image media template link anchor code codesample | ltr rtl | componenttags',
         toolbar_sticky: this.stickyToolbar,
         image_advtab: true,
         importcss_append: true,
@@ -69,7 +77,8 @@ export default {
         content_css: [this.$q.dark.isActive ? 'dark' : 'default', '/src/css/tinymce_iframe.scss'],
         promotion: false,
         elementpath: false,
-        language: this.language
+        language: this.language,
+        setup: this.setup
       }
     },
 
@@ -79,12 +88,53 @@ export default {
 
   watch: {
     init() {
-      // Change isReady flag to "false" to destroy component
-      this.isReady = false
-      this.$nextTick(() => this.isReady = true)
+      this.forceReload()
+    },
+    tags() {
+      this.forceReload()
     }
   },
 
-  methods: {}
+  methods: {
+    /**
+     * Setup Editor
+     *
+     * @param editor
+     */
+    setup(editor) {
+      /* example, adding a toolbar menu button */
+      editor.ui.registry.addMenuButton('componenttags', {
+        text: this.$t('field.component_tags'),
+        fetch: (callback) => {
+          console.warn(this.getPreprocessedTags(this.tags, editor))
+          callback(this.getPreprocessedTags(this.tags, editor))
+        }
+      });
+    },
+    /**
+     * Force reload component
+     */
+    forceReload() {
+      // Change isReady flag to "false" to destroy component
+      this.isReady = false
+      this.$nextTick(() => this.isReady = true)
+    },
+    /**
+     *
+     * @param tags
+     * @param editor
+     * @return {unknown[]}
+     */
+    getPreprocessedTags(tags, editor) {
+      return tags.map(tag => {
+        tag.text = tag.key
+        tag.onAction = () => editor.insertContent(tag.key)
+        if (!this.$_.isEmpty(tag.sub)) {
+          tag.getSubmenuItems = () => this.getPreprocessedTags(tag.sub, editor)
+        }
+        return tag
+      })
+    }
+  }
 }
 </script>

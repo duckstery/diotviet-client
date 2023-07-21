@@ -138,6 +138,7 @@ export default {
     reason: 'Reason',
     date: 'Date',
     setup: 'Setup',
+    component_tags: 'Component tags',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
