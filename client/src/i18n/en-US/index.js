@@ -137,6 +137,7 @@ export default {
     resolve: 'Resolve',
     reason: 'Reason',
     date: 'Date',
+    setup: 'Setup',
 
     role_1: 'Admin',
     role_2: 'Supervisor',

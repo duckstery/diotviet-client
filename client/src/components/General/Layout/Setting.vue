@@ -40,6 +40,16 @@
         <Button src="/images/speed.png" color="primary" :flat="isOptimizeVisual" stretch :label="$t('field.speed')"
                 class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('optimize', 'speed')"/>
       </div>
+      <q-banner class="tw-mt-1">
+        <template v-slot:avatar>
+          <IconMage src="/images/print.png"/>
+        </template>
+        <div class="tw-font-medium">{{ $t('field.print') }}</div>
+      </q-banner>
+      <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
+        <Button src="/images/setup.png" color="primary" stretch flat :label="$t('field.setup')"
+                class="tw-w-full" @click="onSetup('print')"/>
+      </div>
     </q-popup-proxy>
   </Button>
 </template>
@@ -88,6 +98,15 @@ export default {
       this[key] = value
       // Set to LocalStorage
       this.$env.set(key, value)
+    },
+
+    /**
+     * To setting page
+     *
+     * @param key
+     */
+    onSetup(key) {
+      this.$router.push({name: `Setting.${this.$_.capitalize(key)}`})
     }
   },
 

@@ -148,7 +148,9 @@ const constant = {
       'created_by': 'fa-solid fa-feather',
       'resolved_at': 'fa-solid fa-circle-check',
       'info': 'fa-solid fa-circle-info',
-      'customer': 'fa-solid fa-credit-card'
+      'customer': 'fa-solid fa-credit-card',
+      'print': 'fa-solid fa-print',
+      'setup': 'fa-solid fa-gear'
     }[key]
   },
 }

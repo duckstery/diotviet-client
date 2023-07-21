@@ -6,9 +6,6 @@
       <slot/>
 
       <q-space/>
-      <!-- Print -->
-      <Button flat icon="fa-solid fa-print" color="white" :tooltip="$t('field.logout')"
-              class="tw-ml-3" @click="onLogout"/>
       <!-- Setting -->
       <Setting flat class="tw-ml-3"/>
       <!-- Logout -->
