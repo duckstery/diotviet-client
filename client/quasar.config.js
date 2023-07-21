@@ -96,10 +96,6 @@ module.exports = configure(function (/* ctx */) {
 
           // you need to set i18n resource including paths !
           include: path.resolve(__dirname, './src/i18n/**')
-        }],
-        ['@ckeditor/vite-plugin-ckeditor5', {
-          // https://ckeditor.com/docs/ckeditor5/latest/installation/integrations/vuejs-v3.html#vite
-          theme: require.resolve('@ckeditor/ckeditor5-theme-lark')
         }]
       ]
     },

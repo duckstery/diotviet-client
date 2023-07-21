@@ -1,10 +1,10 @@
 <template>
   <Page :breadcrumbs="breadcrumbs">
     <div class="col-12 col-md-6 tw-px-2">
-      <RichTextEditor v-model="content"/>
+      <RichTextEditor v-model="content" height="600px"/>
     </div>
-    <div class="col-12 col-md-6 tw-px-2">
-      <div v-html="content"></div>
+    <div class="col-12 col-md-6 tw-px-2 tw-pt-[88px]">
+      <div class="print-preview tw-min-h-[512px] tw-p-1" v-html="content"></div>
     </div>
   </Page>
 </template>
@@ -12,9 +12,9 @@
 <script>
 import Page from "components/General/Layout/Page.vue";
 import RichTextEditor from "components/General/Other/RichTextEditor.vue";
+import Button from "components/General/Other/Button.vue";
 
 import {ref} from "vue";
-import Button from "components/General/Other/Button.vue";
 
 export default {
   name: 'PrintPage',
