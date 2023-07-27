@@ -18,3 +18,21 @@ html {
     background-color: #555;
   }
 }
+
+.printable_tag {
+  border: solid 2px #FFA700;
+  padding: 1px 5px 1px 5px;
+  border-radius: 5px;
+}
+
+.body--light {
+  table.wrapping_table {
+    background-color: #dcfce7;
+  }
+}
+
+.body--dark {
+  table.wrapping_table {
+    background-color: #052e16;
+  }
+}

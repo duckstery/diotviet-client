@@ -176,10 +176,20 @@ const util = {
     const printWindow = window.open('', '', 'height=500, width=500');
     printWindow.document.write(`<html lang="${env.get('language')}"><body>${element}</body></html>`);
     printWindow.document.close();
-    printWindow.onload = () => {
-      // Print
-      printWindow.print()
-    }
+    printWindow.onload = () => printWindow.print()
+  },
+
+  /**
+   * Create a div element to wrap htmlString
+   *
+   * @param {string} htmlString
+   * @return {HTMLDivElement}
+   */
+  div(htmlString) {
+    // Create div element
+    const div = document.createElement('div')
+    div.innerHTML = htmlString
+    return div
   }
 }
 

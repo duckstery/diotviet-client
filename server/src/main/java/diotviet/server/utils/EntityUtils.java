@@ -17,6 +17,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Utility to support and interact with Entity
@@ -58,12 +59,7 @@ public class EntityUtils {
             // Get translation basename
             String basename = base + "_" + fieldBase;
             // Create EntityHeader
-            entityHeaders.add(new EntityHeader(
-                    fieldBase,
-                    messageSource.getMessage(basename, null, fieldBase, LocaleContextHolder.getLocale()),
-                    fieldBase,
-                    !field.isAnnotationPresent(InitHide.class)
-            ));
+            entityHeaders.add(new EntityHeader(fieldBase, OtherUtils.get(basename, fieldBase), fieldBase, !field.isAnnotationPresent(InitHide.class)));
         }
 
         return entityHeaders.toArray(new EntityHeader[0]);
@@ -77,7 +73,7 @@ public class EntityUtils {
      */
     public PrintableTag[] getPrintableTag(Class<?> entityClass) {
         // Trace and harvest
-        return traceAndHarvestPrintTag(entityClass, "", new ArrayList<>()).toArray(new PrintableTag[0]);
+        return traceAndHarvestPrintTag(entityClass, new ArrayList<>(), "", null).toArray(new PrintableTag[0]);
     }
 
     // ****************************
@@ -85,37 +81,36 @@ public class EntityUtils {
     // ****************************
 
     /**
-     * Trace and harvest PrintTag
+     * Trace and harvest Entity @PrintTag
      *
      * @param entityClass
-     * @param prefix
      * @param harvested
+     * @param parentKey
+     * @param parentTag
      * @return
      */
-    private ArrayList<PrintableTag> traceAndHarvestPrintTag(Class<?> entityClass, String prefix, ArrayList<String> harvested) {
+    private ArrayList<PrintableTag> traceAndHarvestPrintTag(Class<?> entityClass, ArrayList<String> harvested, String parentKey, PrintTag parentTag) {
         // Create output
         ArrayList<PrintableTag> printableFields = new ArrayList<>();
         // Get uncapitalize basename for identification
-        String base = (StringUtils.isEmpty(prefix) ? "" : prefix + "_") + StringUtils.uncapitalize(entityClass.getSimpleName());
+        String base = StringUtils.uncapitalize(entityClass.getSimpleName());
 
         // Cache the field's class, so it won't be harvested next time
         harvested.add(entityClass.getName());
 
         // Iterate through each field
         for (Field field : entityClass.getDeclaredFields()) {
-            // Continue to next field
+            // Continue to next field if it does not have @PrintTag
             if (!field.isAnnotationPresent(PrintTag.class)) {
                 continue;
             }
 
-            // Get Annotation
+            // Get PrintTag Annotation
             PrintTag printTag = field.getAnnotation(PrintTag.class);
             // Get PrintTag type
             String type = (ArrayUtils.isNotEmpty(printTag.component()) ? "NestedMenuItem" : "MenuItem").toLowerCase();
-            // Uncapitalize field name
-            String fieldBase = field.getName();
-            // Get translation basename
-            String key = base + "_" + (StringUtils.isEmpty(printTag.value()) ? fieldBase : printTag.value().isEmpty());
+            // Get translation key
+            String key = base + "_" + (StringUtils.isEmpty(printTag.value()) ? field.getName() : printTag.value().isEmpty());
 
             // Create subfield
             ArrayList<PrintableTag> subfields = new ArrayList<>();
@@ -124,18 +119,35 @@ public class EntityUtils {
                 // Make sure does not re-harvest harvested field to avoid infinite references
                 if (!harvested.contains(printTag.component()[0].getName())) {
                     // Harvest subfields
-                    subfields = traceAndHarvestPrintTag(printTag.component()[0], base, harvested);
+                    subfields = traceAndHarvestPrintTag(
+                            printTag.component()[0],                        // Component (An Entity)
+                            harvested,                                      // Harvested Entity
+                            printTag.isIterable() ? key : parentKey,        // If self is iterable, it'll become a new parent for it child
+                            printTag.isIterable() ? printTag : parentTag    // Same reason as above
+                    );
                 }
             }
 
             // Check if subfields is force merged into upper class
-            if (printTag.forceMerge()) {
+            if (printTag.merge()) {
                 // Add all
                 printableFields.addAll(subfields);
                 // Clear subfields
                 subfields.clear();
             } else {
-                printableFields.add(new PrintableTag(type, key, subfields.toArray(new PrintableTag[0])));
+                // Retrieve parent's isIterable flag
+                boolean isParentIterable = Objects.nonNull(parentTag) && parentTag.isIterable();
+                // Add new PrintableTag
+                printableFields.add(
+                        new PrintableTag(
+                                type,                                       // Tag type
+                                key,                                        // Translation key
+                                subfields.toArray(new PrintableTag[0]),     // Subfields
+                                printTag.isIterable(),                      // Tag iterable flag
+                                isParentIterable,                           // Tag's parent iterable flag
+                                parentKey                                   // Tag's parent key
+                        )
+                );
             }
         }
 

@@ -31,7 +31,7 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "product_id", nullable = false)
     @ToString.Exclude
-    @PrintTag(component = Product.class, forceMerge = true)
+    @PrintTag(component = Product.class, merge = true)
     private Product product;
 
     /**

@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Hide column on initiation when display on screen
+ * Print Tag for Tinymce
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -26,5 +26,7 @@ public @interface PrintTag {
 
     Class<?>[] component() default {};
 
-    boolean forceMerge() default false;
+    boolean merge() default false;
+
+    boolean isIterable() default false;
 }

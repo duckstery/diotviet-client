@@ -96,7 +96,7 @@ public class Order implements Identifiable, Lockable {
     @CsvCustomBindByName(converter = NameableSetField.class)
     @InitIgnore
     @ToString.Exclude
-    @PrintTag(component = Item.class)
+    @PrintTag(component = Item.class, isIterable = true)
     private List<Item> items;
 
     /**

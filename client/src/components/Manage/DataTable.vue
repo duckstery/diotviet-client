@@ -13,7 +13,7 @@
     no-results-label="The filter didn't uncover any results"
 
     :rows="items"
-    :columns="headers"
+    :columns="localizedHeaders"
     :selection="selection"
     :visible-columns="visibleCols"
     :rows-per-page-options="[10, 25, 50, 100]"
@@ -62,7 +62,7 @@
                       stretch color="positive" class="tw-ml-2" no-caps
       >
         <div class="row">
-          <div v-for="header in headers" class="col-6">
+          <div v-for="header in localizedHeaders" class="col-6">
             <q-checkbox
               v-model="visibleCols"
               size="xs"
@@ -159,6 +159,15 @@ export default {
   }),
 
   computed: {
+    // Localized header
+    localizedHeaders() {
+      return this.headers.map(header => {
+        return {
+          ...header,
+          label: this.$t(`entity.${header.label}`)
+        }
+      })
+    },
     // Header background color
     headerBgColor() {
       return this.$q.dark.isActive

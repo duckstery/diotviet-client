@@ -151,6 +151,71 @@ export default {
   },
 
   // ****************************
+  // Entity
+  // ****************************
+  entity: {
+    // ****************************
+    // Entity: Product
+    // ****************************
+    product_id: 'ID',
+    product_category: 'Product category',
+    product_code: 'Product code',
+    product_title: 'Product name',
+    product_actualPrice: 'Actual price',
+    product_measureUnit: 'Measure unit',
+    product_weight: 'Weight',
+    product_canBeAccumulated: 'Can be accumulated',
+    product_isInBusiness: 'Is in business',
+
+    // ****************************
+    // Entity: Customer
+    // ****************************
+    customer_id: 'ID',
+    customer_code: 'Customer code',
+    customer_name: 'Customer name',
+    customer_phoneNumber: 'Phone number',
+    customer_email: 'Email',
+    customer_address: 'Address',
+    customer_birthday: 'Birthday',
+    customer_isMale: 'Gender',
+    customer_point: 'Point',
+    customer_paymentAmount: 'Payment amount',
+    customer_createdBy: 'Created by',
+    customer_createdAt: 'Created at',
+    customer_lastTransactionAt: 'Last transaction',
+
+    // ****************************
+    // Entity: Order
+    // ****************************
+    order_id: 'ID',
+    order_code: 'Order code',
+    order_customer: 'Customer name',
+    order_phoneNumber: 'Phone number',
+    order_address: 'Address',
+    order_paymentAmount: 'Payment amount',
+    order_status: 'Status',
+    order_point: 'Point',
+    order_createdBy: 'Created by',
+    order_createdAt: 'Created at',
+    order_resolvedAt: 'Resolved at',
+    order_items: 'Order items',
+    order_provisionalAmount: 'Provisional amount',
+    order_discount: 'Discount',
+    order_discountUnit: 'Discount unit',
+    order_note: 'Note',
+
+    // ****************************
+    // Entity: Item
+    // ****************************
+    item_originalPrice: 'Original price',
+    item_discount: 'Discount',
+    item_discountUnit: 'Discount unit',
+    item_actualPrice: 'Actual price',
+    item_note: 'Note',
+    item_quantity: 'Quantity',
+  },
+
+  // ****************************
   // Message
   // ****************************
   message: {
@@ -185,7 +250,10 @@ export default {
     action_on_item: '{attr} this item',
     import_file: 'Import this file',
     export_data: 'Export this data',
-    action_on_order: '{attr} this order'
+    action_on_order: '{attr} this order',
+    invalid_iterable_tag: 'This tag must be placed in a table',
+    invalid_iterable_area: 'Child tags of [{attr}] must be placed in the same table',
+    existed_tag: 'This tag is already exists'
   },
 
   // ****************************

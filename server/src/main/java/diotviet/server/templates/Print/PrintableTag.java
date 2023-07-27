@@ -6,5 +6,5 @@ package diotviet.server.templates.Print;
  * @param type
  * @param key
  */
-public record PrintableTag(String type, String key, PrintableTag[] sub) {
+public record PrintableTag(String type, String key, PrintableTag[] sub, Boolean isIterable, Boolean isParentIterable, String parentKey) {
 }

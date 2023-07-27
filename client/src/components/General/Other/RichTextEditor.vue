@@ -8,9 +8,10 @@
 
 <script>
 import Editor from "@tinymce/tinymce-vue"
+import Skeleton from "components/General/Other/Skeleton.vue";
+
 import {mapState} from "pinia";
 import {useEnvStore} from "stores/env";
-import Skeleton from "components/General/Other/Skeleton.vue";
 
 export default {
   name: "RichTextEditor",
@@ -61,7 +62,6 @@ export default {
     init() {
       return {
         plugins: 'preview importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
-        editimage_cors_hosts: ['picsum.photos'],
         menubar: 'file edit view insert format tools table help',
         toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview print | insertfile image media template link anchor code codesample | ltr rtl | componenttags',
         toolbar_sticky: this.stickyToolbar,
@@ -69,12 +69,13 @@ export default {
         importcss_append: true,
         height: this.height,
         image_caption: true,
-        quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
-        noneditable_class: 'mceNonEditable',
+        quickbars_selection_toolbar: 'bold italic underline strikethrough | quicklink blockquote quicktable',
+        noneditable_class: 'printable_tag',
         toolbar_mode: 'sliding',
         contextmenu: 'link image table',
         skin: this.$q.dark.isActive ? 'oxide-dark' : 'oxide',
-        content_css: [this.$q.dark.isActive ? 'dark' : 'default', '/src/css/tinymce_iframe.scss'],
+        content_css: [this.$q.dark.isActive ? 'dark' : 'default', '/src/css/tinymce_components.scss'],
+        body_class: this.$q.dark.isActive ? 'body--dark' : 'body--light',
         promotion: false,
         elementpath: false,
         language: this.language,
@@ -99,18 +100,104 @@ export default {
     /**
      * Setup Editor
      *
-     * @param editor
+     * @param {Editor} editor
      */
     setup(editor) {
+      // Save editor reference
+      this.editor = editor
+
       /* example, adding a toolbar menu button */
-      editor.ui.registry.addMenuButton('componenttags', {
+      this.editor.ui.registry.addMenuButton('componenttags', {
         text: this.$t('field.component_tags'),
-        fetch: (callback) => {
-          console.warn(this.getPreprocessedTags(this.tags, editor))
-          callback(this.getPreprocessedTags(this.tags, editor))
-        }
+        fetch: this.fetchMenuButton
       });
+
+      // To intercept and handle printable tag copy or move
+      this.editor.on('BeforeExecCommand', this.onBeforeInsertComponentTag)
+      // Create MutationObserver to monitor deleted node
+      const observer = new MutationObserver(mutations => {
+        // Iterate through each mutation
+        mutations.forEach(mutation => {
+          // Iterate through each removed node
+          mutation.removedNodes.forEach((node) => {
+            // Check if tag name is span
+            if (node.tagName === 'SPAN' && node.classList.contains('iterable_tag')) {
+              this.onAfterDeleteIterableTag(node)
+            }
+          })
+        })
+      })
+
+      // Observe on Init
+      this.editor.on('init', () => {
+        observer.observe(this.editor.getBody(), {subtree: true, childList: true})
+      })
+      // Disconnect observer on Remove
+      this.editor.on('remove', () => observer.disconnect())
     },
+
+    /**
+     * On Menu Button fetch event
+     *
+     * @param callback
+     */
+    fetchMenuButton(callback) {
+      callback(this.getPreprocessedTags(this.tags))
+    },
+
+    /**
+     * On before insert Component (or Printable) Tag
+     *
+     * @param {ExecCommandEvent} command
+     */
+    onBeforeInsertComponentTag(command) {
+      // Retrieve value
+      const value = command.value
+
+      // Only care about non-manual mceInsertContent command
+      if (command.command === 'mceInsertContent' && !value.manual) {
+        // Try to get printable tag
+        const printableTag = this.getPrintableTag(value.content ?? value)
+        // Only care if mceInsertContent is inserting printable tag
+        if (!this.$util.isUnset(printableTag)) {
+          // Stop event from running
+          command.preventDefault()
+          command.stopImmediatePropagation()
+          command.stopPropagation()
+
+          // Check
+          if (value.paste) {
+            // This means that tag is copied and pasted
+            this.tryToInsertTag(this.searchTag(this.tags, printableTag.id) ?? {})
+          } else {
+            // This means that tag is dragged and dropped
+            // This action must occur after id removal from onAfterDeleteIterableTag
+            this.$nextTick(() => this.$nextTick(() => this.tryToInsertTag(this.searchTag(this.tags, printableTag.id) ?? {})))
+          }
+        }
+      }
+    },
+
+    /**
+     * On after delete Iterable Tag
+     *
+     * @param {Node} node
+     */
+    onAfterDeleteIterableTag(node) {
+      // Get parent key
+      const parentKey = node.className.slice(27).trim()
+      // Find table with id of ${parentKey}
+      const table = this.editor.dom.select(`table[id='${parentKey}']`)[0]
+      // Check if table is set and there is no child with 'iterable_tag' class
+      if (!this.$util.isUnset(table) && this.$util.isUnset(table.querySelector('.iterable_tag'))) {
+        this.$nextTick(() => {
+          // Clear table metadata
+          table.id = ''
+          table.classList.remove('wrapping_table')
+        })
+      }
+    },
+
     /**
      * Force reload component
      */
@@ -119,21 +206,185 @@ export default {
       this.isReady = false
       this.$nextTick(() => this.isReady = true)
     },
+
     /**
+     * Preprocess tag before giving to Tinymce
      *
-     * @param tags
-     * @param editor
-     * @return {unknown[]}
+     * @param {[{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}]} tags
+     * @return {array}
      */
-    getPreprocessedTags(tags, editor) {
+    getPreprocessedTags(tags) {
+      // Iterate and map each tag
       return tags.map(tag => {
-        tag.text = tag.key
-        tag.onAction = () => editor.insertContent(tag.key)
+        // Translate Tag's text (or label)
+        tag.text = this.$t(`entity.${tag.key}`)
+        // Add icon
+        tag.icon = tag.isIterable || tag.isParentIterable ? 'unordered-list' : 'non-breaking'
+
+        // Create Tag click's handler
+        tag.onAction = () => this.tryToInsertTag(tag)
+        // Check if Tag has sub Tags
         if (!this.$_.isEmpty(tag.sub)) {
-          tag.getSubmenuItems = () => this.getPreprocessedTags(tag.sub, editor)
+          // Preprocess sub tag recursively
+          tag.getSubmenuItems = () => this.getPreprocessedTags(tag.sub)
         }
+
         return tag
       })
+    },
+
+    /**
+     * Try to insert tag
+     *
+     * @param {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}} tag
+     * @return {boolean}
+     */
+    tryToInsertTag(tag) {
+      try {
+        // Open an undo transaction
+        this.editor.undoManager.transact(() => {
+          // Backup content
+          const content = this.editor.getContent()
+          // Insert tag
+          this.editor.insertContent(this.craftTagContent(tag), {manual: true})
+
+          // Validate
+          const message = this.validateTag(tag)
+          if (!this.$util.isUnset(message)) {
+            // Rollback content
+            this.editor.setContent(content)
+            // Throw error to prevent creating new Undo level
+            throw new Error(message)
+          }
+        })
+      } catch (e) {
+        // Notify
+        this.notify(e.message)
+      }
+    },
+
+    /**
+     * Craft tag content
+     *
+     * @param {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}} tag
+     * @return {string}
+     */
+    craftTagContent(tag) {
+      // Create extra class name
+      let extraClassName = ''
+      // Check if tag is iterable
+      if (tag.isParentIterable) {
+        extraClassName = ` iterable_tag ${tag.parentKey}`
+      }
+
+      return `<span class="printable_tag${extraClassName}" id="${tag.key}">{{${tag.key}}}</span>`
+    },
+
+    /**
+     * Validate tag
+     *
+     * @param {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}} tag
+     * @return {null|string}
+     */
+    validateTag(tag) {
+      // Select tag
+      const tags = this.editor.dom.select(`#${tag.key}`)
+
+      if (tags.length > 1) {
+        // Check if tag is occur more than twice
+        return this.$t('message.existed_tag')
+      } else if (tag.isParentIterable) {
+        // Check if this tag's parent is iterable, then get the nearest captured table
+        const table = tags[0].closest('table')
+        // Get the wrapping table for tag is exists
+        const wrappingTable = this.editor.dom.select(`table[id='${tag.parentKey}']`)
+
+        // Check
+        if (this.$util.isUnset(table)) {
+          // This means that tag is outside of table
+          return this.$t('message.invalid_iterable_tag')
+        } else if (wrappingTable.length === 0) {
+          // This means that tag is inside of table but the table is not captured
+          this.captureTag(tag, table)
+        } else if (table.id !== wrappingTable[0].id) {
+          // This means that tag is outside of it correct wrapping table
+          return this.$t('message.invalid_iterable_area', {attr: this.$t(`entity.${tag.parentKey}`)})
+        }
+      }
+
+      return null
+    },
+
+    /**
+     * Capture wrapping table
+     * 1. Adding tag.parentKey as wrapping table id
+     * 2. Adding 'iterable_row' as wrapping <tr/>
+     *
+     * @param {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}} tag
+     * @param {HTMLElement} closestTable
+     * @param {HTMLElement} el
+     */
+    captureTag(tag, closestTable) {
+      // Add id and class to closest (or wrapping) table
+      closestTable.id = tag.parentKey
+      if (!closestTable.classList.contains('wrapping_table')) {
+        closestTable.classList.add('wrapping_table')
+      }
+    },
+
+    // ****************************
+    // Utility
+    // ****************************
+
+    /**
+     * Search tag by html string
+     *
+     * @param {[{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}]} tags
+     * @param {string} key
+     * @return {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}|null} tag
+     */
+    searchTag(tags, key) {
+      // Iterate through each tag
+      for (const tag of tags) {
+        // Check if tag.key matches key
+        if (tag.key === key) {
+          return tag
+        }
+        // If tag contains sub tags, search in sub tags
+        if (Array.isArray(tag.sub) && tag.sub.length > 0) {
+          const output = this.searchTag(tag.sub, key)
+          // If output is not null, return it
+          if (!this.$util.isUnset(output)) {
+            return output
+          }
+        }
+      }
+
+      return null
+    },
+
+    /**
+     * Notify with Tinymce Notifier
+     *
+     * @param {string} message
+     * @param {string} type
+     */
+    notify(message, type = 'error') {
+      this.editor.notificationManager.open({
+        text: message,
+        timeout: 3000,
+        type: type
+      });
+    },
+
+    /**
+     * Get printable tag from html string
+     *
+     * @param htmlString
+     * @return {Element}
+     */
+    getPrintableTag(htmlString) {
+      return this.$util.div(htmlString).querySelector('.printable_tag')
     }
   }
 }
