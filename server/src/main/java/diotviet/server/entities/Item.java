@@ -2,6 +2,7 @@ package diotviet.server.entities;
 
 import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.PrintTag;
+import diotviet.server.annotations.PrintTags;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -31,7 +32,7 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "product_id", nullable = false)
     @ToString.Exclude
-    @PrintTag(component = Product.class, merge = true)
+    @PrintTags({@PrintTag(group = "print_invoice", component = Product.class, merge = true)})
     private Product product;
 
     /**
@@ -46,41 +47,41 @@ public class Item {
      * Price before discount
      */
     @Column(length = 11)
-    @PrintTag
+    @PrintTags({@PrintTag(group = "print_invoice")})
     private String originalPrice;
 
     /**
      * Discount's amount
      */
     @Column(length = 11)
-    @PrintTag
+    @PrintTags({@PrintTag(group = "print_invoice")})
     private String discount;
 
     /**
      * Discount's unit
      */
     @Column(length = 4)
-    @PrintTag
+    @PrintTags({@PrintTag(group = "print_invoice")})
     private String discountUnit;
 
     /**
      * Price after discount
      */
     @Column(length = 11)
-    @PrintTag
+    @PrintTags({@PrintTag(group = "print_invoice")})
     private String actualPrice;
 
     /**
      * Note
      */
     @Column
-    @PrintTag
+    @PrintTags({@PrintTag(group = "print_invoice")})
     private String note;
 
     /**
      * Quantity
      */
     @Column
-    @PrintTag
+    @PrintTags({@PrintTag(group = "print_invoice")})
     private int quantity;
 }

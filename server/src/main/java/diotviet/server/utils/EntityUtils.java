@@ -3,20 +3,17 @@ package diotviet.server.utils;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
 import diotviet.server.annotations.PrintTag;
+import diotviet.server.annotations.PrintTags;
 import diotviet.server.templates.EntityHeader;
-import diotviet.server.templates.Print.PrintableTag;
+import diotviet.server.templates.Document.PrintableTag;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -69,11 +66,12 @@ public class EntityUtils {
      * Get printable field of Entity
      *
      * @param entityClass
+     * @param group
      * @return
      */
-    public PrintableTag[] getPrintableTag(Class<?> entityClass) {
+    public PrintableTag[] getPrintableTag(String group, Class<?> entityClass) {
         // Trace and harvest
-        return traceAndHarvestPrintTag(entityClass, new ArrayList<>(), "", null).toArray(new PrintableTag[0]);
+        return traceAndHarvestPrintTag(group, entityClass, new ArrayList<>(), "", null).toArray(new PrintableTag[0]);
     }
 
     // ****************************
@@ -83,13 +81,14 @@ public class EntityUtils {
     /**
      * Trace and harvest Entity @PrintTag
      *
+     * @param group
      * @param entityClass
      * @param harvested
      * @param parentKey
      * @param parentTag
      * @return
      */
-    private ArrayList<PrintableTag> traceAndHarvestPrintTag(Class<?> entityClass, ArrayList<String> harvested, String parentKey, PrintTag parentTag) {
+    private ArrayList<PrintableTag> traceAndHarvestPrintTag(String group, Class<?> entityClass, ArrayList<String> harvested, String parentKey, PrintTag parentTag) {
         // Create output
         ArrayList<PrintableTag> printableFields = new ArrayList<>();
         // Get uncapitalize basename for identification
@@ -100,13 +99,14 @@ public class EntityUtils {
 
         // Iterate through each field
         for (Field field : entityClass.getDeclaredFields()) {
+            // Get PrintTag Annotation
+            PrintTag printTag = retrievePrintTag(field, group);
+
             // Continue to next field if it does not have @PrintTag
-            if (!field.isAnnotationPresent(PrintTag.class)) {
+            if (Objects.isNull(printTag)) {
                 continue;
             }
 
-            // Get PrintTag Annotation
-            PrintTag printTag = field.getAnnotation(PrintTag.class);
             // Get PrintTag type
             String type = (ArrayUtils.isNotEmpty(printTag.component()) ? "NestedMenuItem" : "MenuItem").toLowerCase();
             // Get translation key
@@ -120,6 +120,7 @@ public class EntityUtils {
                 if (!harvested.contains(printTag.component()[0].getName())) {
                     // Harvest subfields
                     subfields = traceAndHarvestPrintTag(
+                            group,
                             printTag.component()[0],                        // Component (An Entity)
                             harvested,                                      // Harvested Entity
                             printTag.isIterable() ? key : parentKey,        // If self is iterable, it'll become a new parent for it child
@@ -152,5 +153,39 @@ public class EntityUtils {
         }
 
         return printableFields;
+    }
+
+    /**
+     * Retrieve Print Tag
+     *
+     * @param field
+     * @param group
+     * @return
+     */
+    private PrintTag retrievePrintTag(Field field, String group) {
+        // Check if @PrintTag is present
+        if (field.isAnnotationPresent(PrintTag.class)) {
+            // Return that @PrintTag
+            return field.getAnnotation(PrintTag.class);
+        }
+
+        // Check if @PrintTags is present
+        if (field.isAnnotationPresent(PrintTags.class)) {
+            // Get @PrintTags
+            PrintTags printTags = field.getAnnotation(PrintTags.class);
+            // Then, get the @PrintTag with group
+            for (PrintTag printTag : printTags.value()) {
+                // Check if group is matched
+                if (StringUtils.equals(group, printTag.group())) {
+                    return printTag;
+                }
+            }
+
+            // Return null if no @PrintTag has matched group
+            return null;
+        }
+
+        // Else, return null
+        return null;
     }
 }

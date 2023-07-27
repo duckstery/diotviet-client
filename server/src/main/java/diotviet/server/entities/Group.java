@@ -36,6 +36,12 @@ public class Group implements Nameable {
     private String name;
 
     /**
+     * Key
+     */
+    @Column(length = 20)
+    private String key;
+
+    /**
      * Type
      */
     @Enumerated

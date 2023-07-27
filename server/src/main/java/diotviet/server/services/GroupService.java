@@ -35,6 +35,16 @@ public class GroupService {
     // ****************************
 
     /**
+     * Find first Group of Type
+     *
+     * @param type
+     * @return
+     */
+    public Group init(Type type) {
+        return repository.findFirstByTypeOrderById(type);
+    }
+
+    /**
      * Get all groups and order by name (ASC) and id (DESC)
      *
      * @return

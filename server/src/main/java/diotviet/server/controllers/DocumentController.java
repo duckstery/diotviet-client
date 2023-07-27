@@ -1,10 +1,12 @@
 package diotviet.server.controllers;
 
 import diotviet.server.entities.Order;
-import diotviet.server.templates.Print.PrintInitResponse;
-import diotviet.server.templates.Print.PrintableTag;
+import diotviet.server.services.DocumentService;
+import diotviet.server.templates.Document.DocumentInitResponse;
+import diotviet.server.templates.Document.PrintableTag;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
+import diotviet.server.views.Document.DocumentDisplayView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,13 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = "/api/v1/print", produces = "application/json")
-public class PrintController extends BaseController {
+public class DocumentController extends BaseController {
     // ****************************
     // Properties
     // ****************************
 
-
-
+    /**
+     * Document service
+     */
+    @Autowired
+    private DocumentService service;
     /**
      * Utilities for Entity interact
      */
@@ -37,9 +42,11 @@ public class PrintController extends BaseController {
      */
     @GetMapping("/index")
     public ResponseEntity<?> index() {
-        // Get headers
-        PrintableTag[] printableFields = entityUtils.getPrintableTag(Order.class);
+        // First, get the Document content (or template)
+        DocumentDisplayView document = service.init();
+        // Second, get PrintableTag
+        PrintableTag[] printableFields = entityUtils.getPrintableTag(document.getKey(), Order.class);
 
-        return ok(new PrintInitResponse(printableFields));
+        return ok(new DocumentInitResponse(document, printableFields));
     }
 }

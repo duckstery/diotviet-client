@@ -1,4 +1,4 @@
-package diotviet.server.templates.Print;
+package diotviet.server.templates.Document;
 
 /**
  * Printable field

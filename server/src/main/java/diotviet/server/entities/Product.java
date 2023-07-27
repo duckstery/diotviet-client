@@ -8,6 +8,7 @@ import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
 import diotviet.server.annotations.PrintTag;
+import diotviet.server.annotations.PrintTags;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
@@ -85,7 +86,7 @@ public class Product implements Identifiable, Visualize {
      */
     @Column(length = 50)
     @CsvBindByName
-    @PrintTag
+    @PrintTags({@PrintTag(group = "print_invoice")})
     private String title;
 
     /**

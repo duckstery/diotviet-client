@@ -23,6 +23,14 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     List<Group> findAllByType(Type type, Sort sort);
 
     /**
+     * Find first by Type and orderBy id
+     *
+     * @param type
+     * @return
+     */
+    Group findFirstByTypeOrderById(Type type);
+
+    /**
      * Delete by ID
      *
      * @param id

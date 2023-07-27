@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface PrintTag {
+public @interface PrintTags {
     /**
      * Optional argument that defines whether this annotation is active
      * or not. The only use for value 'false' if for overriding purposes
@@ -22,13 +22,5 @@ public @interface PrintTag {
      * @return True if annotation is enabled (normal case); false if it is to
      *   be ignored (only useful for mix-in annotations to "mask" annotation)
      */
-    String group();
-
-    String value() default "";
-
-    Class<?>[] component() default {};
-
-    boolean merge() default false;
-
-    boolean isIterable() default false;
+    PrintTag[] value();
 }
