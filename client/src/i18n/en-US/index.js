@@ -145,6 +145,9 @@ export default {
     print_receipt: 'Receipt',
     print_import: 'Import',
     print_export: 'Export',
+    help: 'Help',
+    reset: 'Reset',
+    new: 'New',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -259,7 +262,8 @@ export default {
     action_on_order: '{attr} this order',
     invalid_iterable_tag: 'This tag must be placed in a table',
     invalid_iterable_area: 'Child tags of [{attr}] must be placed in the same table',
-    existed_tag: 'This tag is already exists'
+    existed_tag: 'This tag is already exists',
+    max_length: 'Maximum character is {max}',
   },
 
   // ****************************

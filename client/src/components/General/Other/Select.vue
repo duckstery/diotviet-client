@@ -10,6 +10,8 @@
     :emit-value="emitValue"
     :map-options="emitValue"
     :model-value="modelValue"
+    :option-label="optionLabel"
+    :option-value="optionValue"
 
     dense
     outlined
@@ -49,7 +51,17 @@ export default {
     // Color
     color: String,
     // Background color
-    bgColor: String
+    bgColor: String,
+    // Option label field
+    optionLabel: {
+      type: String,
+      default: 'name'
+    },
+    // Option value field
+    optionValue: {
+      type: String,
+      default: 'id',
+    },
   },
 
   emits: ['update:model-value']
