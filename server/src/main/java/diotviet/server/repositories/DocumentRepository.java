@@ -1,21 +1,28 @@
 package diotviet.server.repositories;
 
-import diotviet.server.entities.Category;
 import diotviet.server.entities.Document;
-import diotviet.server.entities.Group;
 import diotviet.server.traits.OptimisticLockRepository;
-import diotviet.server.views.Document.DocumentDisplayView;
+import diotviet.server.views.Document.DocumentInitView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long>, OptimisticLockRepository {
     /**
-     * Find by multiple condition
+     * Find all Document by GroupId and orderBy id
      *
-     * @param category
-     * @param group
+     * @param groupId
      * @return
      */
-    DocumentDisplayView findFirstByCategoryAndGroupOrderById(Category category, Group group);
+    List<DocumentInitView> findAllByGroupIdOrderById(Long groupId);
+
+    /**
+     * Find by id
+     *
+     * @param id
+     * @return
+     */
+    <T> T findById(Long id, Class<T> type);
 }

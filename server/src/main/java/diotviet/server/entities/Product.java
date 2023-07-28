@@ -86,7 +86,7 @@ public class Product implements Identifiable, Visualize {
      */
     @Column(length = 50)
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String title;
 
     /**

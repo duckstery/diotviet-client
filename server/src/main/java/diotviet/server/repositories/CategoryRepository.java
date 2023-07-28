@@ -18,12 +18,4 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
      * @return
      */
     List<Category> findAllByType(Type type, Sort sort);
-
-    /**
-     * Find first by Type and orderBy id
-     *
-     * @param type
-     * @return
-     */
-    Category findFirstByTypeOrderById(Type type);
 }

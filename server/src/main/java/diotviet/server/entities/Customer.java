@@ -84,7 +84,7 @@ public class Customer implements Identifiable, Visualize, Lockable {
      */
     @Column(length = 50)
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String name;
 
     /**
@@ -110,7 +110,7 @@ public class Customer implements Identifiable, Visualize, Lockable {
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @CsvDate("yyyy-MM-dd")
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private Date birthday;
 
     /**
@@ -126,7 +126,7 @@ public class Customer implements Identifiable, Visualize, Lockable {
     @Column
     @InitIgnore
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String email;
 
     /**

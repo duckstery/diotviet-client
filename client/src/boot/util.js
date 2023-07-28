@@ -190,6 +190,23 @@ const util = {
     const div = document.createElement('div')
     div.innerHTML = htmlString
     return div
+  },
+
+  /**
+   * Skip executing callback if new or old value is null or undefined
+   *
+   * @param callback
+   */
+  skipNull(callback) {
+    return (value, oldValue, onCleanup) => {
+      if (this.isUnset(value) || this.isUnset(oldValue)) {
+        return;
+      }
+
+      if (typeof callback === 'function') {
+        callback(value, oldValue, onCleanup)
+      }
+    }
   }
 }
 

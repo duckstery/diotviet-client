@@ -14,6 +14,7 @@ const constant = {
       {id: 0, name: $t('field.product')},
       {id: 1, name: $t('field.transaction')},
       {id: 2, name: $t('field.customer')},
+      {id: 3, name: $t('field.print')},
     ]
   },
 

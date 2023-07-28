@@ -27,16 +27,6 @@ public class CategoryService {
     // ****************************
 
     /**
-     * Find first Category of Type
-     *
-     * @param type
-     * @return
-     */
-    public Category init(Type type) {
-        return repository.findFirstByTypeOrderById(type);
-    }
-
-    /**
      * Get all categories
      *
      * @return

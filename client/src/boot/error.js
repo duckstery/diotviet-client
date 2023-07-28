@@ -93,8 +93,8 @@ const error = {
    * @param err
    */
   any(err) {
-    notify(err.response.data.message, 'negative')
     log(err)
+    notify(err.response.data.message, 'negative')
   },
 
   /**

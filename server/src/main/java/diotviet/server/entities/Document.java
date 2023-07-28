@@ -32,19 +32,14 @@ public class Document {
     @CsvIgnore
     private long id;
 
-    /**
-     * Category
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    @ToString.Exclude
-    private Category category;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     @ToString.Exclude
     private Group group;
+
+    @Column(length = 20)
+    @CsvBindByName
+    private String name;
 
     @Column(columnDefinition = "varchar")
     @CsvBindByName

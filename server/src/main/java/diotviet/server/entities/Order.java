@@ -63,7 +63,7 @@ public class Order implements Identifiable, Lockable {
      */
     @Column(length = 10)
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String code;
 
     /**
@@ -87,7 +87,7 @@ public class Order implements Identifiable, Lockable {
     @JoinColumn(name = "customer_id", nullable = false)
     @CsvCustomBindByName(converter = NameableField.class)
     @ToString.Exclude
-    @PrintTags({@PrintTag(group = "print_invoice", component = Customer.class)})
+    @PrintTags({@PrintTag(group = "print_order", component = Customer.class)})
     private Customer customer;
 
     /**
@@ -97,7 +97,7 @@ public class Order implements Identifiable, Lockable {
     @CsvCustomBindByName(converter = NameableSetField.class)
     @InitIgnore
     @ToString.Exclude
-    @PrintTags({@PrintTag(group = "print_invoice", component = Item.class, isIterable = true)})
+    @PrintTags({@PrintTag(group = "print_order", component = Item.class, isIterable = true)})
     private List<Item> items;
 
     /**
@@ -116,7 +116,7 @@ public class Order implements Identifiable, Lockable {
      */
     @Column(length = 15)
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String phoneNumber;
 
     /**
@@ -125,7 +125,7 @@ public class Order implements Identifiable, Lockable {
     @Column(length = 100)
     @InitHide
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String address;
 
     /**
@@ -134,7 +134,7 @@ public class Order implements Identifiable, Lockable {
     @Column(length = 11)
     @InitIgnore
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String provisionalAmount;
 
     /**
@@ -143,7 +143,7 @@ public class Order implements Identifiable, Lockable {
     @Column(length = 11)
     @InitIgnore
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String discount;
 
     /**
@@ -152,7 +152,7 @@ public class Order implements Identifiable, Lockable {
     @Column(length = 4)
     @InitIgnore
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String discountUnit;
 
     /**
@@ -160,7 +160,7 @@ public class Order implements Identifiable, Lockable {
      */
     @Column(length = 11)
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String paymentAmount;
 
     /**
@@ -184,7 +184,7 @@ public class Order implements Identifiable, Lockable {
     @Column
     @InitIgnore
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String note;
 
     /**
@@ -203,7 +203,7 @@ public class Order implements Identifiable, Lockable {
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private Date createdAt = new Date();
 
     /**

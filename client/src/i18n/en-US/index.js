@@ -139,6 +139,12 @@ export default {
     date: 'Date',
     setup: 'Setup',
     component_tags: 'Component tags',
+    template: 'Template',
+    print_template: 'Print template',
+    print_order: 'Order',
+    print_receipt: 'Receipt',
+    print_import: 'Import',
+    print_export: 'Export',
 
     role_1: 'Admin',
     role_2: 'Supervisor',

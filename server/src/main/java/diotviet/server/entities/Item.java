@@ -32,7 +32,7 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "product_id", nullable = false)
     @ToString.Exclude
-    @PrintTags({@PrintTag(group = "print_invoice", component = Product.class, merge = true)})
+    @PrintTags({@PrintTag(group = "print_order", component = Product.class, merge = true)})
     private Product product;
 
     /**
@@ -47,41 +47,41 @@ public class Item {
      * Price before discount
      */
     @Column(length = 11)
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String originalPrice;
 
     /**
      * Discount's amount
      */
     @Column(length = 11)
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String discount;
 
     /**
      * Discount's unit
      */
     @Column(length = 4)
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String discountUnit;
 
     /**
      * Price after discount
      */
     @Column(length = 11)
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String actualPrice;
 
     /**
      * Note
      */
     @Column
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private String note;
 
     /**
      * Quantity
      */
     @Column
-    @PrintTags({@PrintTag(group = "print_invoice")})
+    @PrintTags({@PrintTag(group = "print_order")})
     private int quantity;
 }

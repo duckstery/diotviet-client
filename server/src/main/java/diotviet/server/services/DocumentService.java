@@ -1,26 +1,12 @@
 package diotviet.server.services;
 
-import com.querydsl.core.BooleanBuilder;
-import diotviet.server.constants.PageConstants;
-import diotviet.server.constants.Status;
-import diotviet.server.constants.Type;
-import diotviet.server.entities.Category;
-import diotviet.server.entities.Group;
-import diotviet.server.entities.QDocument;
 import diotviet.server.repositories.DocumentRepository;
-import diotviet.server.templates.Order.OrderSearchRequest;
-import diotviet.server.utils.OtherUtils;
-import diotviet.server.views.Document.DocumentDisplayView;
-import diotviet.server.views.Order.OrderSearchView;
-import org.apache.commons.lang3.StringUtils;
+import diotviet.server.validators.DocumentValidator;
+import diotviet.server.views.Document.DocumentInitView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.List;
 
 @Service
 public class DocumentService {
@@ -35,31 +21,37 @@ public class DocumentService {
     @Autowired
     private DocumentRepository repository;
     /**
-     * Category service
+     * Document validator
      */
     @Autowired
-    private CategoryService categoryService;
-    /**
-     * Group service
-     */
-    @Autowired
-    private GroupService groupService;
+    private DocumentValidator validator;
 
     // ****************************
     // Public API
     // ****************************
 
     /**
-     * Get all groups and document by name (ASC) and id (DESC)
+     * Init Document by group id
      *
+     * @param groupId
      * @return
      */
-    public DocumentDisplayView init() {
-        // Init Category and Group of Type.PRINT
-        Category category = categoryService.init(Type.PRINT);
-        Group group = groupService.init(Type.PRINT);
+    public List<DocumentInitView> init(Long groupId) {
+        // Find all documents by groupId
+        List<DocumentInitView> documents = repository.findAllByGroupIdOrderById(groupId);
+        // Then, re-fetch the first Document (in Documents) with data
+        documents.set(0, repository.findById(documents.get(0).getId(), DocumentInitView.class));
 
-        // Query for Order's data
-        return repository.findFirstByCategoryAndGroupOrderById(category, group);
+        return documents;
+    }
+
+    /**
+     * Find by id
+     *
+     * @param id
+     * @return
+     */
+    public DocumentInitView findById(Long id) {
+        return validator.isExist(repository.findById(id, DocumentInitView.class));
     }
 }

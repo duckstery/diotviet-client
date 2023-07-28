@@ -1,9 +1,13 @@
 package diotviet.server.templates.Document;
 
-import diotviet.server.views.Document.DocumentDisplayView;
+import diotviet.server.entities.Group;
+import diotviet.server.views.Document.DocumentInitView;
+
+import java.util.List;
 
 public record DocumentInitResponse(
-        DocumentDisplayView document,
+        List<Group> groups,
+        List<DocumentInitView> documents,
         PrintableTag[] tags
 ) {
 }
