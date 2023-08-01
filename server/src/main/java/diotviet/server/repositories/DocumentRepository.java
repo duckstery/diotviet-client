@@ -25,4 +25,13 @@ public interface DocumentRepository extends JpaRepository<Document, Long>, Optim
      * @return
      */
     <T> T findById(Long id, Class<T> type);
+
+    /**
+     * Count all Document of Group except for specify id
+     *
+     * @param id
+     * @param groupId
+     * @return
+     */
+    long countByGroupIdAndIdNot(Long groupId, Long id);
 }

@@ -6,6 +6,7 @@ import diotviet.server.entities.Order;
 import diotviet.server.services.DocumentService;
 import diotviet.server.services.GroupService;
 import diotviet.server.templates.Document.DocumentInitResponse;
+import diotviet.server.templates.Document.DocumentInteractRequest;
 import diotviet.server.templates.Document.DocumentSelectResponse;
 import diotviet.server.templates.Document.PrintableTag;
 import diotviet.server.traits.BaseController;
@@ -14,9 +15,7 @@ import diotviet.server.views.Document.DocumentInitView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -83,5 +82,30 @@ public class DocumentController extends BaseController {
     @GetMapping("{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return ok(service.findById(id));
+    }
+
+    /**
+     * Store document
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/store")
+    public ResponseEntity<?> store(@RequestBody DocumentInteractRequest request) {
+        return ok(service.store(request));
+    }
+
+    /**
+     * Delete document
+     *
+     * @param ids
+     * @return
+     */
+    @DeleteMapping(value = "/delete/{groupId}/{id}")
+    public ResponseEntity<?> delete(@PathVariable("groupId") Long groupId, @PathVariable("id") Long id) {
+        // Store item
+        service.delete(groupId, id);
+
+        return ok("");
     }
 }

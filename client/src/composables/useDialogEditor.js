@@ -61,6 +61,9 @@ export function useDialogEditor(inputRef, mode = 'create') {
             default: error.any
           }))
       } else {
+        if (process.env.DEV) {
+          console.warn(extension.v$.value)
+        }
         // Notify about invalid
         notify($t("message.invalid_input"), 'negative')
       }

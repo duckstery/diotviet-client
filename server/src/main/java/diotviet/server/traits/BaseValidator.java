@@ -169,6 +169,13 @@ public abstract class BaseValidator<T> {
      * @param provider
      */
     public void checkOptimisticLock(Lockable lockable, OptimisticLockRepository olRepo) {
+        // Check if Lockable is newly added
+        if (lockable.getId() <= 0L) {
+            // Set lockable to 0
+            lockable.setVersion(0L);
+            return;
+        }
+
         // Check if lockable is a valid version of Entity
         if (!olRepo.existsByIdAndVersion(lockable.getId(), lockable.getVersion())) {
             inconsistent("invalid_lock");

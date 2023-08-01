@@ -22,6 +22,9 @@
     <template v-if="icon" #prepend>
       <q-icon :name="icon"/>
     </template>
+    <template v-for="(_, slot) of $slots" #[slot]="scope">
+      <slot v-if="slot !== 'prepend'" :name="slot" v-bind="scope"/>
+    </template>
   </q-select>
 </template>
 

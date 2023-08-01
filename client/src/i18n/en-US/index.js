@@ -148,6 +148,7 @@ export default {
     help: 'Help',
     reset: 'Reset',
     new: 'New',
+    load: 'Load',
 
     role_1: 'Admin',
     role_2: 'Supervisor',
@@ -264,6 +265,9 @@ export default {
     invalid_iterable_area: 'Child tags of [{attr}] must be placed in the same table',
     existed_tag: 'This tag is already exists',
     max_length: 'Maximum character is {max}',
+    save_document: 'Save this document',
+    delete_document: 'Delete this document',
+    least_document: 'You must have at least 1 document'
   },
 
   // ****************************

@@ -1,8 +1,11 @@
 package diotviet.server.services;
 
+import diotviet.server.entities.Document;
 import diotviet.server.repositories.DocumentRepository;
+import diotviet.server.templates.Document.DocumentInteractRequest;
 import diotviet.server.validators.DocumentValidator;
 import diotviet.server.views.Document.DocumentInitView;
+import diotviet.server.views.Document.DocumentMetaView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +56,33 @@ public class DocumentService {
      */
     public DocumentInitView findById(Long id) {
         return validator.isExist(repository.findById(id, DocumentInitView.class));
+    }
+
+    /**
+     * Store Document
+     *
+     * @param request
+     * @return
+     */
+    public DocumentMetaView store(DocumentInteractRequest request) {
+        // Common validate for create and update
+        Document document = validator.validateAndExtract(request);
+        // Save and flush
+        document = repository.saveAndFlush(document);
+
+        return repository.findById(document.getId(), DocumentMetaView.class);
+    }
+
+    /**
+     * Delete Document of Group
+     *
+     * @param groupId
+     * @param id
+     */
+    public void delete(Long groupId, Long id) {
+        // Validate if except for "id", Group has at least 1 Document
+        validator.mustHasAtLeastOneExceptFor(groupId, id);
+        // Delete
+        repository.deleteById(id);
     }
 }

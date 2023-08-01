@@ -36,7 +36,7 @@
               :label="$t('field.gender')"
               :vuelidate="v$.input.isMale"
             >
-              <template #default>
+              <template #default="props">
                 <q-radio v-for="option in genderOptions"
                          v-model="v$.input.isMale.$model"
                          unchecked-icon="panorama_fish_eye"

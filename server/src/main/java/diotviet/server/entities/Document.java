@@ -1,19 +1,14 @@
 package diotviet.server.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvCustomBindByName;
 import com.opencsv.bean.CsvIgnore;
-import diotviet.server.annotations.InitIgnore;
-import diotviet.server.generators.NameableField;
-import diotviet.server.generators.NameableSetField;
+import diotviet.server.views.Identifiable;
+import diotviet.server.views.Lockable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import java.util.Set;
 
 /**
  * Category but for user to create
@@ -22,7 +17,7 @@ import java.util.Set;
 @Table(name = "documents")
 @Data
 @Accessors(chain = true)
-public class Document {
+public class Document implements Lockable {
     /**
      * Id
      */
@@ -50,4 +45,18 @@ public class Document {
     @ToString.Exclude
     @CsvIgnore
     private Long version;
+
+
+    // ****************************
+    // Redundant API
+    // ****************************
+
+    @Override
+    public String getCode() {
+        return null;
+    }
+    @Override
+    public Identifiable setCode(String code) {
+        return null;
+    }
 }

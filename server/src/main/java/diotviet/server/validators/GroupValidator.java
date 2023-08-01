@@ -30,7 +30,24 @@ public class GroupValidator extends BaseValidator<Group> {
     // ****************************
 
     /**
-     * Validate for Group existence and return it
+     * Validate for Group (single) existence and return it
+     */
+    public Group isExistById(Long id) {
+        if (Objects.isNull(id)) {
+            return null;
+        }
+
+        // Check if category is exists
+        Group group = groupRepository.findById(id).orElse(null);
+        if (Objects.isNull(group)) {
+            throw new ServiceValidationException("invalid_group", "", "group");
+        }
+
+        return group;
+    }
+
+    /**
+     * Validate for Groups existence and return it
      *
      * @param ids
      * @return
