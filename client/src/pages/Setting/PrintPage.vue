@@ -41,6 +41,9 @@
               <Button :label="$t('field.delete')" :disabled="activeDoc.localOnly"
                       icon="fa-solid fa-trash" stretch flat color="white" class="tw-ml-2" no-caps
                       @click="remove"/>
+              <Button :label="$t('field.print')" :disabled="!activeDoc.localOnly"
+                      icon="fa-solid fa-print" stretch flat color="white" class="tw-ml-2" no-caps
+                      @click="print"/>
               <q-space/>
               <Button :label="$t('field.help')" icon="fa-solid fa-circle-question"
                       stretch flat color="white" class="tw-ml-2" no-caps/>
@@ -76,7 +79,7 @@ import RichTextEditor from "components/General/Other/RichTextEditor.vue";
 import Button from "components/General/Other/Button.vue";
 
 import {onMounted, ref, reactive, watch, nextTick} from "vue";
-import {axios, error, notify, util} from "src/boot"
+import {axios, buildPrinter, error, notify, util} from "src/boot"
 import {useI18n} from "vue-i18n";
 import Select from "components/General/Other/Select.vue";
 import IconMage from "components/General/Other/IconMage.vue";
@@ -327,7 +330,88 @@ export default {
 
   methods: {
     print() {
-      console.warn(this.content)
+      const example = {
+        "id": 742,
+        "address": "78/9 ADV",
+        "version": 8,
+        "groups": "",
+        "status": 3,
+        "code": "DH00001",
+        "items": [{
+          "id": 135,
+          "title": "Khuyến mãi",
+          "code": "MS00004",
+          "originalPrice": "0",
+          "quantity": 1,
+          "actualPrice": "0",
+          "note": "",
+          "discount": "0",
+          "discountUnit": "%",
+          "productId": 5
+        }, {
+          "id": 133,
+          "title": "GH-ĐẦM NGẮN",
+          "code": "MS00016",
+          "originalPrice": "50000",
+          "quantity": 1,
+          "actualPrice": "50000",
+          "note": "",
+          "discount": "50",
+          "discountUnit": "%",
+          "productId": 17
+        }, {
+          "id": 136,
+          "title": "ỦI QUẦN",
+          "code": "MS00003",
+          "originalPrice": "10000",
+          "quantity": 1,
+          "actualPrice": "10000",
+          "note": "",
+          "discount": "0",
+          "discountUnit": "%",
+          "productId": 4
+        }, {
+          "id": 134,
+          "title": "GIẶT ƯỚT 3-7kg",
+          "code": "MS00005",
+          "originalPrice": "35000",
+          "quantity": 1,
+          "actualPrice": "35000",
+          "note": "",
+          "discount": "5000",
+          "discountUnit": "cash",
+          "productId": 6
+        }, {
+          "id": 132,
+          "title": "TT Thêm : Ủi - Tẩy ...",
+          "code": "MS00001",
+          "originalPrice": "5000",
+          "quantity": 1,
+          "actualPrice": "5000",
+          "note": "",
+          "discount": "10",
+          "discountUnit": "%",
+          "productId": 2
+        }],
+        "phoneNumber": "0346576198",
+        "createdAt": "28-06-2023 11:21:18",
+        "customer": "KS00518 - C NHƯ HẢO",
+        "paymentAmount": "100000",
+        "resolvedAt": "",
+        "email": null,
+        "provisionalAmount": "100000",
+        "createdBy": "ahihi@gmail.com",
+        "point": "4",
+        "note": "",
+        "discount": "0",
+        "discountUnit": "%",
+        "groupIds": [],
+        "customerId": "520",
+        "totalQuantity": "5"
+      }
+
+      const printer = buildPrinter(this.content, this.tags, example)
+      console.warn(printer.element)
     }
   }
 }
