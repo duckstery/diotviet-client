@@ -93,11 +93,11 @@ export default {
       const type = errors[0].$validator
 
       return type === 'server'
-      ? errors[0].$message
-      : this.$t(
-        `message.${this.$util.camelToSnake(type)}`,
-        {...errors[0].$params}
-      )
+        ? errors[0].$message
+        : this.$t(
+          `message.${this.$util.camelToSnake(type)}`,
+          {...errors[0].$params}
+        )
     },
 
     /**

@@ -44,7 +44,7 @@
                              v-model="v$.input.isMale.$model"
                              unchecked-icon="panorama_fish_eye"
                              keep-color
-                             
+
                              :val="option.val"
                              :label="option.label"
                              :color="option.color"
