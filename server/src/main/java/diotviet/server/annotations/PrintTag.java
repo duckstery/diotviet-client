@@ -31,4 +31,6 @@ public @interface PrintTag {
     boolean merge() default false;
 
     boolean isIterable() default false;
+
+    boolean isIdentifier() default false;
 }

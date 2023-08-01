@@ -165,6 +165,13 @@ export default {
   // ****************************
   entity: {
     // ****************************
+    // Special: Identifier
+    // ****************************
+    id_raw: "Identify number",
+    id_bc: "Identify Barcode",
+    id_qr: "Identify QR code",
+
+    // ****************************
     // Entity: Product
     // ****************************
     product_id: 'ID',
@@ -193,6 +200,7 @@ export default {
     customer_createdBy: 'Created by',
     customer_createdAt: 'Created at',
     customer_lastTransactionAt: 'Last transaction',
+    customer_lastOrderAt: 'Last order at',
 
     // ****************************
     // Entity: Order

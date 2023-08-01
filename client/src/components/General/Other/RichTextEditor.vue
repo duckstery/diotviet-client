@@ -210,21 +210,25 @@ export default {
     /**
      * Preprocess tag before giving to Tinymce
      *
-     * @param {[{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}]} tags
+     * @param {[{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}]} tags
      * @return {array}
      */
     getPreprocessedTags(tags) {
       // Iterate and map each tag
       return tags.map(tag => {
+        // Set type
+        tag.type = "menuitem"
         // Translate Tag's text (or label)
         tag.text = this.$t(`entity.${tag.key}`)
         // Add icon
-        tag.icon = tag.isIterable || tag.isParentIterable ? 'unordered-list' : 'non-breaking'
+        tag.icon = this.getTagIcon(tag)
 
         // Create Tag click's handler
         tag.onAction = () => this.tryToInsertTag(tag)
         // Check if Tag has sub Tags
         if (!this.$_.isEmpty(tag.sub)) {
+          // Re-set type
+          tag.type = "nestedmenuitem"
           // Preprocess sub tag recursively
           tag.getSubmenuItems = () => this.getPreprocessedTags(tag.sub)
         }
@@ -234,9 +238,28 @@ export default {
     },
 
     /**
+     * Get tag's icon
+     *
+     * @param {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
+     * @return {string}
+     */
+    getTagIcon(tag) {
+      // Output
+      let icon = 'non-breaking'
+
+      if (tag.isIdentifier) {
+        icon = 'unlock'
+      } else if (tag.isIterable || tag.isParentIterable) {
+        icon = 'unordered-list'
+      }
+
+      return icon
+    },
+
+    /**
      * Try to insert tag
      *
-     * @param {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}} tag
+     * @param {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
      * @return {boolean}
      */
     tryToInsertTag(tag) {
@@ -266,24 +289,30 @@ export default {
     /**
      * Craft tag content
      *
-     * @param {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}} tag
+     * @param {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
      * @return {string}
      */
     craftTagContent(tag) {
       // Create extra class name
       let extraClassName = ''
-      // Check if tag is iterable
       if (tag.isParentIterable) {
-        extraClassName = ` iterable_tag ${tag.parentKey}`
+        // Check if tag is iterable
+        extraClassName = `iterable_tag ${tag.parentKey}`
+      } else if (tag.isIdentifier) {
+        // Check if tag is an identifier
+        extraClassName = `identifier_tag`
       }
 
-      return `<span class="printable_tag${extraClassName}" id="${tag.key}">{{${tag.key}}}</span>`
+      // Translate key
+      const translatedKey = this.$t(`entity.${tag.key}`).replace(' ', '_')
+
+      return `<span class="printable_tag ${extraClassName}" id="${tag.key}">{{${translatedKey}}}</span>`
     },
 
     /**
      * Validate tag
      *
-     * @param {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}} tag
+     * @param {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
      * @return {null|string}
      */
     validateTag(tag) {
@@ -320,7 +349,7 @@ export default {
      * 1. Adding tag.parentKey as wrapping table id
      * 2. Adding 'iterable_row' as wrapping <tr/>
      *
-     * @param {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}} tag
+     * @param {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
      * @param {HTMLElement} closestTable
      * @param {HTMLElement} el
      */
@@ -339,9 +368,9 @@ export default {
     /**
      * Search tag by html string
      *
-     * @param {[{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}]} tags
+     * @param {[{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}]} tags
      * @param {string} key
-     * @return {{type: string, key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string}|null} tag
+     * @return {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}|null} tag
      */
     searchTag(tags, key) {
       // Iterate through each tag

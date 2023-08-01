@@ -107,8 +107,6 @@ public class EntityUtils {
                 continue;
             }
 
-            // Get PrintTag type
-            String type = (ArrayUtils.isNotEmpty(printTag.component()) ? "NestedMenuItem" : "MenuItem").toLowerCase();
             // Get translation key
             String key = base + "_" + (StringUtils.isEmpty(printTag.value()) ? field.getName() : printTag.value().isEmpty());
 
@@ -138,15 +136,17 @@ public class EntityUtils {
             } else {
                 // Retrieve parent's isIterable flag
                 boolean isParentIterable = Objects.nonNull(parentTag) && parentTag.isIterable();
+                // Preprocess subfields
+                PrintableTag[] preprocessedFields = preprocessSubFields(printTag, subfields, key);
                 // Add new PrintableTag
                 printableFields.add(
                         new PrintableTag(
-                                type,                                       // Tag type
-                                key,                                        // Translation key
-                                subfields.toArray(new PrintableTag[0]),     // Subfields
-                                printTag.isIterable(),                      // Tag iterable flag
-                                isParentIterable,                           // Tag's parent iterable flag
-                                parentKey                                   // Tag's parent key
+                                key,                    // Translation key
+                                preprocessedFields,     // Subfields
+                                printTag.isIterable(),  // Tag iterable flag
+                                isParentIterable,       // Tag's parent iterable flag
+                                parentKey,              // Tag's parent key
+                                printTag.isIdentifier() // Tag's identifier
                         )
                 );
             }
@@ -187,5 +187,24 @@ public class EntityUtils {
 
         // Else, return null
         return null;
+    }
+
+    private PrintableTag[] preprocessSubFields(PrintTag printTag, ArrayList<PrintableTag> subfields, String key) {
+        // Create output holder
+        ArrayList<PrintableTag> tags = new ArrayList<>(subfields);
+
+        // Depends on the characteristic of PrintTag, subfields can be overwritten
+        if (printTag.isIdentifier()) {
+            // Clear all
+            tags.clear();
+            // Add plain value Tag
+            tags.add(new PrintableTag("id_raw", new PrintableTag[0], false, false, key, true));
+            // Add Barcode Tag
+            tags.add(new PrintableTag("id_bc", new PrintableTag[0], false, false, key, true));
+            // Add QR Code Tag
+            tags.add(new PrintableTag("id_qr", new PrintableTag[0], false, false, key, true));
+        }
+
+        return tags.toArray(new PrintableTag[0]);
     }
 }

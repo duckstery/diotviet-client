@@ -63,7 +63,7 @@ public class Order implements Identifiable, Lockable {
      */
     @Column(length = 10)
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_order")})
+    @PrintTags({@PrintTag(group = "print_order", isIdentifier = true)})
     private String code;
 
     /**
