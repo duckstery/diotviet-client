@@ -33,19 +33,28 @@
 
             <InputField
               src="/images/gender.png"
+              bottom
               :label="$t('field.gender')"
               :vuelidate="v$.input.isMale"
             >
               <template #default="props">
-                <q-radio v-for="option in genderOptions"
-                         v-model="v$.input.isMale.$model"
-                         unchecked-icon="panorama_fish_eye"
-
-                         :val="option.val"
-                         :label="option.label"
-                         :color="option.color"
-                         :checked-icon="option.icon"
-                />
+                <div class="tw-block" :class="props.class">
+                  <div class="row">
+                    <q-radio v-for="option in genderOptions"
+                             v-model="v$.input.isMale.$model"
+                             unchecked-icon="panorama_fish_eye"
+                             keep-color
+                             
+                             :val="option.val"
+                             :label="option.label"
+                             :color="option.color"
+                             :checked-icon="option.icon"
+                    />
+                  </div>
+                  <div class="row">
+                    <div :class="props['bottom-class']">{{ props['error-message'] }}</div>
+                  </div>
+                </div>
               </template>
             </InputField>
 
@@ -133,18 +142,18 @@ export default {
     item: {
       type: Object,
       default: () => ({
-          id: null,
-          code: null,
-          name: null,
-          groups: [],
-          gender: true,
-          birthday: null,
-          address: null,
-          phoneNumber: null,
-          email: null,
-          facebook: null,
-          description: null,
-        }
+        id: null,
+        code: null,
+        name: null,
+        groups: [],
+        gender: true,
+        birthday: null,
+        address: null,
+        phoneNumber: null,
+        email: null,
+        facebook: null,
+        description: null,
+      }
         /*{
           id: 0,
           code: null,

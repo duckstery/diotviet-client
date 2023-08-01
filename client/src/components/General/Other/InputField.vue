@@ -1,9 +1,9 @@
 <template>
-  <div :class="{'tw-flex': !horizontal, 'tw-mb-5': isUsingVuelidate}">
+  <div :class="{'tw-flex': !horizontal, 'tw-mb-5': !bottom && isUsingVuelidate, 'tw-mb-[9px]': bottom}">
     <LabelField :src="src" :label="label" class="tw-pt-2"/>
     <slot name="before"/>
     <q-space v-if="space"/>
-    <slot :class="classObject" v-bind="vuelidateUsageProp" @update:modelValue="modelProxy"/>
+    <slot :class="classObject" v-bind="slotProps" @update:modelValue="modelProxy"/>
   </div>
 </template>
 
@@ -27,7 +27,9 @@ export default {
     // Display horizontally
     horizontal: Boolean,
     // Vuelidate property
-    vuelidate: Object
+    vuelidate: Object,
+    // Use custom bottom
+    bottom: Boolean,
   },
 
   computed: {
@@ -43,7 +45,7 @@ export default {
       }
     },
 
-    // Checking if using Vuelidate
+    // Checking if using Vuelidate and does not have custom bottom
     isUsingVuelidate() {
       return !this.$util.isUnset(this.vuelidate)
     },
@@ -56,6 +58,14 @@ export default {
         'error-message': this.getFirstErrorMessage(),
       }
     },
+
+    // Props of slot
+    slotProps() {
+      return {
+        ...this.vuelidateUsageProp,
+        'bottom-class': 'tw-h-[11px] tw-text-[11px] text-negative'
+      }
+    }
   },
 
   methods: {
