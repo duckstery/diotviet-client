@@ -7,4 +7,5 @@ public interface DocumentMetaView {
     String getName();
     @Value("#{target.group.key}")
     String getKey();
+    String getVersion();
 }

@@ -28,4 +28,4 @@ const buildPrinter = (template, tags, data) => {
   }
 }
 
-export {buildPrinter, build}
+export {buildPrinter, print}

@@ -11,6 +11,7 @@ public record DocumentInteractRequest(
         Long id,
         Long groupId,
         String name,
-        String content
+        String content,
+        Long version
 ) {
 }

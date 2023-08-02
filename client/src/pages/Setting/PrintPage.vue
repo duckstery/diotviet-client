@@ -114,6 +114,7 @@ export default {
       ref: null,
       localContent: '',
       localOnly: false,
+      version: 0
     })
     // Documents
     const docs = ref([])
@@ -149,8 +150,9 @@ export default {
       activeDoc.name = payload.name
       activeDoc.localOnly = !!payload.localOnly
       activeDoc.content = !!payload.localOnly ? payload.localContent : payload.content
-      activeDoc.groupId = payload.groupId
+      activeDoc.groupId = activeGroupId.value
       activeDoc.ref = !!payload.localOnly ? res : null
+      activeDoc.version = payload.version
     }
     /**
      * Create new Doc instance
@@ -168,9 +170,9 @@ export default {
       return {
         id: payload === null ? `-${docs.value.length}` : `${payload.id}`,
         name: payload === null ? `${$t('field.template')} ${docs.value.length + 1}` : payload.name,
-        groupId: activeGroupId.value,
         localContent: '',
-        localOnly: payload === null
+        localOnly: payload === null,
+        version: payload === null ? 0 : payload.version
       }
     }
     /**
@@ -205,7 +207,6 @@ export default {
             activeDoc.id = `${res.data.payload.id}`
             // Find saved Doc index in Doc list
             const savedDocIndex = docs.value.findIndex(doc => doc.id === activeDoc.id)
-            console.warn(create(res))
             // Set new metadata for saved Doc
             docs.value.splice(savedDocIndex, 1, create(res))
             // Notify
