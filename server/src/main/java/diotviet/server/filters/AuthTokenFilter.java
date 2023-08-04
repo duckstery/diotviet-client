@@ -5,15 +5,18 @@ import diotviet.server.services.UserService;
 import diotviet.server.utils.JWTUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -88,11 +91,47 @@ public class AuthTokenFilter extends OncePerRequestFilter {
      */
     private String getToken(HttpServletRequest request) {
         // Get "Authorization" header
-        String authHeader = request.getHeader("Authorization");
+        String token = getTokenFromAuthorizationHeader(request);
+
+        // Check if token is not empty
+        if (Objects.isNull(token)) {
+            return getTokenFromCookieHeader(request);
+        }
+
+        return token;
+    }
+
+    /**
+     * Get token from "Authorization" header
+     *
+     * @param request
+     * @return
+     */
+    private String getTokenFromAuthorizationHeader(HttpServletRequest request) {
+        // Get "Authorization" header
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         // Check if header has text and contains "Bearer "
-        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+        if (StringUtils.isNotEmpty(authHeader) && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
+        }
+        // Check if cookie has token
+
+        return null;
+    }
+
+    /**
+     * Get token from "Cookie" header
+     *
+     * @param request
+     * @return
+     */
+    private String getTokenFromCookieHeader(HttpServletRequest request) {
+        // Get cookie that holding token
+        Cookie cookie = WebUtils.getCookie(request, "_token");
+        // Check if header has text and contains "Bearer "
+        if (Objects.nonNull(cookie)) {
+            return cookie.getValue();
         }
 
         return null;

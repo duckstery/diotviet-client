@@ -41,7 +41,7 @@
               <Button :label="$t('field.delete')" :disabled="activeDoc.localOnly"
                       icon="fa-solid fa-trash" stretch flat color="white" class="tw-ml-2" no-caps
                       @click="remove"/>
-              <Button :label="$t('field.print')" :disabled="!activeDoc.localOnly"
+              <Button :label="$t('field.print')"
                       icon="fa-solid fa-print" stretch flat color="white" class="tw-ml-2" no-caps
                       @click="print"/>
               <q-space/>
@@ -66,7 +66,7 @@
           <RichTextEditor v-model="activeDoc.content" height="600px" :loading="loading" :tags="tags"/>
         </div>
         <div class="col-12 col-md-6 tw-px-2 tw-pt-[88px]">
-          <div class="print-preview tw-min-h-[512px] tw-p-1" v-html="activeDoc.content"></div>
+          <div class="print-preview tw-min-h-[512px] tw-p-1" id="test" v-html="test"></div>
         </div>
       </div>
     </div>
@@ -311,6 +311,7 @@ export default {
     return {
       // State
       loading: loading,
+      test: ref(''),
       // Document
       tags: tags, activeDoc: activeDoc, docs: docs, docNamingRules: docNamingRules,
       add: add, save: save, reset: reset, remove: remove,
@@ -411,8 +412,9 @@ export default {
         "totalQuantity": "5"
       }
 
-      const printer = buildPrinter(this.content, this.tags, example)
-      console.warn(printer.element)
+      const printer = buildPrinter(this.activeDoc.content, this.tags, example)
+      // console.warn(printer)
+      this.test = '<div id="barcode" title="DH00001"><img src="/api/v1/order/barcode/742" style="display: block;" alt="Scan me!"></div>'
     }
   }
 }

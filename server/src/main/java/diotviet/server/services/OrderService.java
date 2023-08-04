@@ -102,6 +102,16 @@ public class OrderService extends BaseService {
     }
 
     /**
+     * Find code by id
+     *
+     * @param id
+     * @return
+     */
+    public String findCodeById(Long id) {
+        return repository.findCodeById(id);
+    }
+
+    /**
      * Store item
      *
      * @param request

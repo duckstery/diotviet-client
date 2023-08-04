@@ -1,9 +1,11 @@
 package diotviet.server.controllers;
 
+import com.google.zxing.WriterException;
 import diotviet.server.constants.Status;
 import diotviet.server.constants.Type;
 import diotviet.server.entities.Group;
 import diotviet.server.entities.Order;
+import diotviet.server.exceptions.FileServingException;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.OrderService;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
@@ -11,14 +13,23 @@ import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Order.*;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
+import diotviet.server.utils.OtherUtils;
+import diotviet.server.utils.StorageUtils;
+import diotviet.server.views.Order.OrderDetailView;
 import diotviet.server.views.Order.OrderSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/api/v1/order", produces = "application/json")
@@ -63,7 +74,7 @@ public class OrderController extends BaseController {
         EntityHeader[] headers = entityUtils.getHeaders(Order.class);
         // Get list of Orders (get all data, no need to filter anything)
         Page<OrderSearchView> items = orderService.paginate(request);
-        
+
         // Get group list for FilterPanel
         List<Group> groups = groupService.getGroups(Type.TRANSACTION);
 
@@ -144,6 +155,48 @@ public class OrderController extends BaseController {
     @GetMapping(value = "/query")
     public ResponseEntity<?> simpleSearch(OrderSearchRequest request) {
         return ok(orderService.query(request));
+    }
+
+    /**
+     * Serve Barcode image
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/barcode/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> genBarcode(@PathVariable Long id) {
+        // Get Order
+        String code = orderService.findCodeById(id);
+        if (Objects.isNull(code)) {
+            throw new FileServingException("file_not_exist");
+        }
+        // Generate Barcode
+        BufferedImage bufferedImage = OtherUtils.generateBarcode(code);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(bufferedImage);
+    }
+
+    /**
+     * Serve Barcode image
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/qrcode/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> genQRCode(@PathVariable Long id) throws WriterException {
+        // Get Order
+        String code = orderService.findCodeById(id);
+        if (Objects.isNull(code)) {
+            throw new FileServingException("file_not_exist");
+        }
+        // Generate Barcode
+        BufferedImage bufferedImage = OtherUtils.generateQRCode(code);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(bufferedImage);
     }
 
 //

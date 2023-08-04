@@ -194,6 +194,18 @@ const util = {
         callback(value, oldValue, onCleanup)
       }
     }
+  },
+
+  /**
+   * Execute callback asynchronously
+   *
+   * @param {function} callback
+   * @return {Promise<void>}
+   */
+  async async(callback) {
+    if (typeof callback === 'function') {
+      callback()
+    }
   }
 }
 

@@ -48,7 +48,7 @@ export default {
 
   emits: ['request', 'update:modelValue', 'control'],
 
-  setup (props, context) {
+  setup(props, context) {
     // Filter
     const filter = reactive({
       group: null,
