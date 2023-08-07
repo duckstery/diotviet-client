@@ -8,6 +8,7 @@ package diotviet.server.templates.Document;
  */
 public record PrintableTag(
         String key,
+        String path,
         PrintableTag[] sub,
         Boolean isIterable,
         Boolean isParentIterable,

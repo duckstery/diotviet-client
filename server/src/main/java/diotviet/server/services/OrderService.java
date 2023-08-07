@@ -18,6 +18,7 @@ import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.OrderValidator;
 import diotviet.server.views.Order.OrderDetailView;
 import diotviet.server.views.Order.OrderSearchView;
+import diotviet.server.views.Print.Order.OrderOrderPrintView;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -92,13 +93,23 @@ public class OrderService extends BaseService {
     }
 
     /**
-     * Get Product by id
+     * Get Order by id
      *
      * @param id
      * @return
      */
     public OrderDetailView findById(Long id) {
         return validator.isExist(repository.findById(id, OrderDetailView.class));
+    }
+
+    /**
+     * Get Order print data
+     *
+     * @param id
+     * @return
+     */
+    public OrderOrderPrintView print(Long id) {
+        return validator.isExist(repository.findById(id, OrderOrderPrintView.class));
     }
 
     /**

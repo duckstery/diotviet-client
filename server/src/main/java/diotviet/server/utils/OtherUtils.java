@@ -1,26 +1,27 @@
 package diotviet.server.utils;
 
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.codec.Hex;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.NumberFormat;
 import java.util.*;
-import com.google.zxing.oned.Code128Writer;
 
-import javax.imageio.ImageIO;
+import com.google.zxing.oned.Code128Writer;
 
 /**
  * Other utility
@@ -117,6 +118,22 @@ public abstract class OtherUtils {
     }
 
     /**
+     * Format money
+     *
+     * @param value
+     * @return
+     */
+    public static String formatMoney(String value) {
+        try {
+            // Try to change value to Number
+            Long holder = Long.parseLong(value);
+            return NumberFormat.getInstance(LocaleContextHolder.getLocale()).format(holder).replace(".", ",");
+        } catch (NumberFormatException e) {
+            return value;
+        }
+    }
+
+    /**
      * Get type arguments of clazz
      *
      * @param clazz
@@ -165,13 +182,13 @@ public abstract class OtherUtils {
      * @param content
      * @return
      */
-    public static BufferedImage generateBarcode(String content) {
+    public static String generateBarcode(String content) throws IOException {
         // Writer
         Code128Writer barcodeWriter = new Code128Writer();
         // Write content to BitMatrix
         BitMatrix bitMatrix = barcodeWriter.encode(content, BarcodeFormat.CODE_128, 200, 100);
         // Convert BitMatrix to BufferedImage
-        return MatrixToImageWriter.toBufferedImage(bitMatrix);
+        return bitMatrixToBase64(bitMatrix);
     }
 
     /**
@@ -181,12 +198,31 @@ public abstract class OtherUtils {
      * @return
      * @throws WriterException
      */
-    public static BufferedImage generateQRCode(String content) throws WriterException {
+    public static String generateQRCode(String content) throws WriterException, IOException {
         // Writer
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         // Write to BitMatrix
         BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, 150, 150);
         // Convert BitMatrix to BufferedImage
-        return MatrixToImageWriter.toBufferedImage(bitMatrix);
+        return bitMatrixToBase64(bitMatrix);
+    }
+
+    // ****************************
+    // Private API
+    // ****************************
+
+    /**
+     * Convert BitMatrix to Base64 String
+     *
+     * @param bitMatrix
+     * @return
+     */
+    private static String bitMatrixToBase64(BitMatrix bitMatrix) throws IOException {
+        // Create output stream
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        // Write to stream
+        MatrixToImageWriter.writeToStream(bitMatrix, "png", bos);
+
+        return Base64.getEncoder().encodeToString(bos.toByteArray());
     }
 }

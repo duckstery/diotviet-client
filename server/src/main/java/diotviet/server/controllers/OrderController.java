@@ -17,6 +17,7 @@ import diotviet.server.utils.OtherUtils;
 import diotviet.server.utils.StorageUtils;
 import diotviet.server.views.Order.OrderDetailView;
 import diotviet.server.views.Order.OrderSearchView;
+import diotviet.server.views.Print.Order.OrderOrderPrintView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -163,19 +164,15 @@ public class OrderController extends BaseController {
      * @param id
      * @return
      */
-    @GetMapping(value = "/barcode/{id}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> genBarcode(@PathVariable Long id) {
+    @GetMapping(value = "/barcode/{id}")
+    public ResponseEntity<?> genBarcode(@PathVariable Long id) throws IOException {
         // Get Order
         String code = orderService.findCodeById(id);
         if (Objects.isNull(code)) {
             throw new FileServingException("file_not_exist");
         }
-        // Generate Barcode
-        BufferedImage bufferedImage = OtherUtils.generateBarcode(code);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(bufferedImage);
+        return ok(OtherUtils.generateBarcode(code));
     }
 
     /**
@@ -184,19 +181,29 @@ public class OrderController extends BaseController {
      * @param id
      * @return
      */
-    @GetMapping(value = "/qrcode/{id}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> genQRCode(@PathVariable Long id) throws WriterException {
+    @GetMapping(value = "/qrcode/{id}")
+    public ResponseEntity<?> genQRCode(@PathVariable Long id) throws WriterException, IOException {
         // Get Order
         String code = orderService.findCodeById(id);
         if (Objects.isNull(code)) {
             throw new FileServingException("file_not_exist");
         }
-        // Generate Barcode
-        BufferedImage bufferedImage = OtherUtils.generateQRCode(code);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(bufferedImage);
+        return ok(OtherUtils.generateQRCode(code));
+    }
+
+    /**
+     * Get print data
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/print/{id}")
+    public ResponseEntity<?> print(@PathVariable Long id) {
+        // Get Order
+        OrderOrderPrintView orderOrderPrintView = orderService.print(id);
+
+        return ok(orderOrderPrintView);
     }
 
 //

@@ -131,6 +131,8 @@ export default {
       // Clear Doc list first
       docs.value = []
       nextTick(() => {
+        // Apply tags
+        tags.value = res.data.payload.tags
         // Load doc list
         res.data.payload.documents.map(res => add(res))
         // Load active doc
@@ -296,14 +298,12 @@ export default {
         // Apply general info
         groups.value = res.data.payload.groups.map(group => ({
           name: `${group.id}`,
-          label: $t(`field.${group.key}`)
+          label: $t(`field.${group.name}`)
         }))
         activeGroupId.value = `${res.data.payload.groups[0].id}`
 
         // Load docs
         loadDocs(res)
-        // Apply tags
-        tags.value = res.data.payload.tags
       })
       .catch(error.any)
       .finally(() => loading.value = false))

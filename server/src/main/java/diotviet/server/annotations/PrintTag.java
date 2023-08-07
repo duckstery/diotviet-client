@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Print Tag for Tinymce
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface PrintTag {
     /**
      * Optional argument that defines whether this annotation is active
@@ -22,15 +22,14 @@ public @interface PrintTag {
      * @return True if annotation is enabled (normal case); false if it is to
      *   be ignored (only useful for mix-in annotations to "mask" annotation)
      */
-    String group();
 
     String value() default "";
 
     Class<?>[] component() default {};
 
-    boolean merge() default false;
-
     boolean isIterable() default false;
 
     boolean isIdentifier() default false;
+
+    boolean ignored() default false;
 }

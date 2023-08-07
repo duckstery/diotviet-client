@@ -41,7 +41,7 @@ public class GroupService {
      */
     public List<Group> getGroups(Type type) {
         // Query for Product's data
-        return repository.findAllByType(type, Sort.by("name").ascending().and(Sort.by("id").ascending()));
+        return repository.findAllByType(type, Sort.by("id").ascending());
     }
 
     /**

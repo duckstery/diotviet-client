@@ -8,8 +8,6 @@ import com.opencsv.bean.CsvIgnore;
 import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
-import diotviet.server.annotations.PrintTag;
-import diotviet.server.annotations.PrintTags;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
@@ -84,7 +82,6 @@ public class Customer implements Identifiable, Visualize, Lockable {
      */
     @Column(length = 50)
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_order")})
     private String name;
 
     /**
@@ -110,7 +107,6 @@ public class Customer implements Identifiable, Visualize, Lockable {
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @CsvDate("yyyy-MM-dd")
-    @PrintTags({@PrintTag(group = "print_order")})
     private Date birthday;
 
     /**
@@ -126,7 +122,6 @@ public class Customer implements Identifiable, Visualize, Lockable {
     @Column
     @InitIgnore
     @CsvBindByName
-    @PrintTags({@PrintTag(group = "print_order")})
     private String email;
 
     /**

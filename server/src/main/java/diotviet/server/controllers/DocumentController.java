@@ -10,8 +10,9 @@ import diotviet.server.templates.Document.DocumentInteractRequest;
 import diotviet.server.templates.Document.DocumentSelectResponse;
 import diotviet.server.templates.Document.PrintableTag;
 import diotviet.server.traits.BaseController;
-import diotviet.server.utils.EntityUtils;
+import diotviet.server.utils.PrintUtils;
 import diotviet.server.views.Document.DocumentInitView;
+import diotviet.server.views.Print.Order.OrderOrderPrintView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,7 @@ public class DocumentController extends BaseController {
      * Utilities for Entity interact
      */
     @Autowired
-    private EntityUtils entityUtils;
+    private PrintUtils printUtils;
 
     // ****************************
     // Public API
@@ -58,7 +59,7 @@ public class DocumentController extends BaseController {
         // Init Document by group_id
         List<DocumentInitView> document = service.init(groups.get(0).getId());
         // Get PrintableTag
-        PrintableTag[] printableFields = entityUtils.getPrintableTag(document.get(0).getKey(), Order.class);
+        PrintableTag[] printableFields = printUtils.getPrintableTag(OrderOrderPrintView.class);
 
         return ok(new DocumentInitResponse(groups, document, printableFields));
     }
@@ -70,7 +71,15 @@ public class DocumentController extends BaseController {
      */
     @GetMapping("/group/{groupId}")
     public ResponseEntity<?> searchByGroup(@PathVariable Long groupId) {
-        return ok(new DocumentSelectResponse(service.init(groupId)));
+        // Init Document by group_id
+        List<DocumentInitView> documents = service.init(groupId);
+        // Get PrintableTag
+        PrintableTag[] printableFields = printUtils.getPrintableTag(switch (documents.get(0).getKey()) {
+            case "print_order" -> OrderOrderPrintView.class;
+            default -> OrderOrderPrintView.class;
+        });
+
+        return ok(new DocumentSelectResponse(documents, printableFields));
     }
 
     /**

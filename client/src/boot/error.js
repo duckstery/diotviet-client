@@ -1,6 +1,5 @@
 import {boot} from 'quasar/wrappers'
 import {notify} from "boot/notify"
-import {util} from "boot/util"
 
 let $t;
 

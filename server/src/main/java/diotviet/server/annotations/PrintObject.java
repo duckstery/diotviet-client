@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
  * Print Tag for Tinymce
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface PrintTags {
+@Target(ElementType.TYPE)
+public @interface PrintObject {
     /**
      * Optional argument that defines whether this annotation is active
      * or not. The only use for value 'false' if for overriding purposes
@@ -22,5 +22,6 @@ public @interface PrintTags {
      * @return True if annotation is enabled (normal case); false if it is to
      *   be ignored (only useful for mix-in annotations to "mask" annotation)
      */
-    PrintTag[] value();
+
+    String value() default "";
 }
