@@ -182,13 +182,13 @@ public abstract class OtherUtils {
      * @param content
      * @return
      */
-    public static String generateBarcode(String content) throws IOException {
+    public static BufferedImage generateBarcode(String content) {
         // Writer
         Code128Writer barcodeWriter = new Code128Writer();
         // Write content to BitMatrix
         BitMatrix bitMatrix = barcodeWriter.encode(content, BarcodeFormat.CODE_128, 200, 100);
         // Convert BitMatrix to BufferedImage
-        return bitMatrixToBase64(bitMatrix);
+        return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
 
     /**
@@ -198,31 +198,12 @@ public abstract class OtherUtils {
      * @return
      * @throws WriterException
      */
-    public static String generateQRCode(String content) throws WriterException, IOException {
+    public static BufferedImage generateQRCode(String content) throws WriterException {
         // Writer
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         // Write to BitMatrix
         BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, 150, 150);
         // Convert BitMatrix to BufferedImage
-        return bitMatrixToBase64(bitMatrix);
-    }
-
-    // ****************************
-    // Private API
-    // ****************************
-
-    /**
-     * Convert BitMatrix to Base64 String
-     *
-     * @param bitMatrix
-     * @return
-     */
-    private static String bitMatrixToBase64(BitMatrix bitMatrix) throws IOException {
-        // Create output stream
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        // Write to stream
-        MatrixToImageWriter.writeToStream(bitMatrix, "png", bos);
-
-        return Base64.getEncoder().encodeToString(bos.toByteArray());
+        return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
 }

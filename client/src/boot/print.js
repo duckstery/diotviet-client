@@ -1,146 +1,180 @@
 import _ from "lodash"
-import {util} from "boot/util";
-
-/**
- * Analyze tag key to get self and field key
- *
- * @param {string} key
- * @return {string[]}
- */
-const analyzeKey = (key) => {
-  return key.split('_')
-}
-
-/**
- * Flatten list of tags and its children <br>
- * Map through each tag and get a flat array
- *
- * @param {[{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}]} tags
- * @return {[{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}]}
- */
-const flattenTags = (tags) => _.isEmpty(tags) ? [] : _.flatMap(tags, (tag) => {
-  // Convert tag.sub to array of key and flatten tag.sub
-  return [{...tag, sub: tag.sub.map(t => t.key)}, ...flattenTags(tag.sub)]
-})
+import {axios, env, util} from "src/boot"
+import printJS from 'print-js'
 
 /**
  * Prepare generator for every map's entry
  *
- * @param {[{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}]} tags
- * @param {{data: object}} dataRef
+ * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {object}
  */
-const buildGenerators = (tags, dataRef) => Object.values(tags).reduce((generators, tag) => {
-  if (tag.isIdentifier) {
-    // Check if tag is an identifier, build generator for identifier
-    buildAndAddGeneratorForIdentifier(generators, tag, dataRef)
-  } else if (tag.isIterable) {
-    // Check if tag is iterable, build generator for iterable
-    buildAndAddGeneratorForIterable(generators, tag, dataRef)
-  } else if (!tag.isParentIterable) {
-    // Else, build a normal generator (for those tag with iterable parent, their generators will be built at above step)
-    buildAndAddGenerator(generators, tag, dataRef)
-  }
+const buildGenerators = (printer) => Object.values(printer.readonly.tags).reduce((generators, tag) => {
+  // Build and add generators
+  buildAndAddGenerators(generators, tag, printer)
 
   return generators
 }, {})
 
 /**
+ * Build and add generators
+ *
+ * @param {object} generators
+ * @param {{key: string, path: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}|string} tag
+ * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
+ * @return {function}
+ */
+const buildAndAddGenerators = (generators, tag, printer) => {
+  if (tag.isIdentifier) {
+    // Check if tag is an identifier, build generator for identifier
+    buildAndAddGeneratorForIdentifier(generators, tag, printer)
+  } else if (tag.isIterable) {
+    // Check if tag is iterable, build generator for iterable
+    buildAndAddGeneratorForIterable(generators, tag, printer)
+  } else if (!_.isEmpty(tag.sub)) {
+    // Check if tag has sub, build generator for sub
+    buildAndAddGeneratorForSubfields(generators, tag, printer)
+  } else {
+    // Else, build a normal generator (for those tag with iterable parent, their generators will be built at above step)
+    buildAndAddGeneratorForNormal(generators, tag, printer)
+  }
+}
+
+/**
  * Build content for tag
  *
  * @param {object} generators
- * @param {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}|string} tag
- * @param {{data: object}} dataRef
+ * @param {{key: string, path: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
+ * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {function}
  */
-const buildAndAddGenerator = (generators, tag, dataRef) => {
-  // Get key
-  const key = typeof tag === 'string' ? tag : tag.key
-  // Analyze key
-  const [_, field] = analyzeKey(key)
+const buildAndAddGeneratorForNormal = (generators, tag, printer) => {
   // Return
-  generators[key] = () => dataRef.data[field]
+  generators[tag.key] = () => util.getProp(printer.data, tag.path)
 }
 
 /**
  * Build content for identifier tag
  *
  * @param {object} generators
- * @param {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
- * @param {{data: object}} dataRef
+ * @param {{key: string, path: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
+ * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {function}
  */
-const buildAndAddGeneratorForIdentifier = (generators, tag, dataRef) => {
-  // Get dataRef key by getting parentKey of tag
-  let dataKey = tag.parentKey
-  // Check if parentKey is empty
-  if (dataKey === '' || util.isUnset(dataKey)) {
-    // In this case, use tag key instead
-    dataKey = tag.key
-  }
-  // Analyze key
-  const [_, field] = analyzeKey(dataKey)
-
-  // Check for generate approach
-  if (tag.key.includes('bc')) {
-    // Check if using Barcode
-    generators[tag.key] = () => generateBarcodeElement(dataRef.data['id'], dataRef.data[field])
-  } else if (tag.key.includes('qr')) {
-    // Check if using QR
-    generators[tag.key] = () => generateQRCodeElement(dataRef.data['id'], dataRef.data[field])
-  } else {
-    // Create normal generator
-    buildAndAddGenerator(generators, dataKey, dataRef)
-  }
+const buildAndAddGeneratorForIdentifier = (generators, tag, printer) => {
+  // Iterate through each subtag
+  tag.sub.forEach(subtag => {
+    // Check for generate approach
+    if (subtag.key.includes('bc')) {
+      console.warn(printer.data)
+      // Check if using Barcode
+      generators[subtag.key] = () => generateImgElement(printer.data['id'], 'barcode', util.getProp(printer.data, subtag.path))
+    } else if (subtag.key.includes('qr')) {
+      // Check if using QR
+      generators[subtag.key] = () => generateImgElement(printer.data['id'], 'qrcode', util.getProp(printer.data, subtag.path))
+    } else {
+      // Create normal generator
+      generators[subtag.key] = () => util.getProp(printer.data, subtag.path)
+    }
+  })
 }
 
 /**
  * Build content for iterable tag
  *
  * @param {object} generators
- * @param {{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
- * @param {{data: object}} dataRef
+ * @param {{key: string, path: string, sub: [{key: string, path: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}], isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
+ * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {function}
  */
-const buildAndAddGeneratorForIterable = (generators, tag, dataRef) => {
-  // Analyze parent key
-  const [_, parentField] = analyzeKey(tag.key)
-  // Iterate through each sub key
-  const subGenerators = tag.sub.reduce((subGens, subKey) => {
-    // Analyze sub key
-    const [_, subField] = analyzeKey(subKey)
-    // Iterate through each sub data in parentField
-    // Then create a generator to generate subData[subField]
-    dataRef.data[parentField].forEach((subData, index) => subGens[`${subField}_${index}`] = () => subData[subField])
-
-    return subGens;
-  }, {})
+const buildAndAddGeneratorForIterable = (generators, tag, printer) => {
+  // Deep clone tag to make sure changing readonly tag won't change
+  const _tag = _.cloneDeep(tag)
 
   // This generator will show the number of table row should be generated
-  generators[tag.key] = () => ({
-    size: tag.sub.length,
-    generators: subGenerators
-  })
+  generators[tag.key] = () => {
+    // Create sub generators
+    const subGenerators = {}
+    // Get the size of actual data
+    const size = util.getProp(printer.data, tag.path).length
+    // Template key, path
+    let templateKey, templatePath = ''
+    // Iterate through each subtag
+    _tag.sub.forEach(subtag => {
+      // Save the key
+      templateKey = subtag.key
+      // Save the path
+      templatePath = subtag.path
+      // Loop in the size of "size"
+      for (let i = 0; i < size; i++) {
+        // For each i,
+        // Replace subtag key with a key that can be indexed
+        subtag.key = templateKey + "_" + i
+        // Replace the subtag.path with a corresponding path that point to data
+        subtag.path = templatePath.replace('{i}', i)
+        // Add generate for new subtag
+        buildAndAddGenerators(subGenerators, subtag, printer)
+      }
+    })
+
+    return {
+      size: size,
+      generators: subGenerators
+    }
+  }
 }
 
 /**
- * Generate Barcode as SVG
+ * Build content for sub
  *
- * @param {string|number} id
- * @return {string}
+ * @param {object} generators
+ * @param {{key: string, path: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}} tag
+ * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
+ * @return {function}
  */
-const generateBarcodeElement = (id, content) => {
-  return `<div id="barcode" title="${content}"><img src="/v1/order/barcode/${id ?? 0}" style="display: block;" alt="Scan me!"></div>`
+const buildAndAddGeneratorForSubfields = (generators, tag, printer) => {
+  // Build and add generators
+  tag.sub.forEach(subtag => buildAndAddGenerators(generators, subtag, printer))
 }
 
 /**
- * Generate QRCode as span
+ * Generate <img/> for Barcode and QRCode
  *
  * @param {string|number} id
+ * @param {string} type
+ * @param {string} content
  * @return {string}
  */
-const generateQRCodeElement = (id, content) => {
-  return `<div id="qrcode" title="${content}"><img src="/v1/order/qrcode/${id ?? 0}" style="display: block;" alt="Scan me!"></div>`
+const generateImgElement = (id, type, content) => {
+  return `<div id="${type}" title="${content}"><img src="/api/v1/order/${type}/${id ?? 0}" alt="Scan me!"></div>`
+}
+
+/**
+ * Generate element
+ *
+ * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
+ * @return {function}
+ */
+const generateElement = (printer) => () => {
+  // Generate a div body for template
+  const body = util.div(printer.template)
+  // Iterate through each generator to generate content for body
+  for (const [key, generator] of Object.entries(printer.generators)) {
+    //
+    if (key.includes('items')) {
+      continue;
+    }
+    // Get the PrintableTag element with the id of [key]
+    const target = body.querySelector(`#${key}`)
+    // Continue to next entry if target is null
+    if (util.isUnset(target)) {
+      continue;
+    }
+
+    // Generate content for target textContent
+    target.innerHTML = generator() ?? ""
+  }
+
+  return body.innerHTML
 }
 
 /**
@@ -149,50 +183,55 @@ const generateQRCodeElement = (id, content) => {
  * @param {HTMLElement} element
  */
 const print = (element) => {
+  // console.warn(element)
+  printJS({printable: element, type: 'raw-html'})
   // Create a print window
-  const printWindow = window.open('', '', 'height=500, width=500');
-  printWindow.document.write(`<html lang="${env.get('language')}"><body>${element}</body></html>`);
-  printWindow.document.close();
-  printWindow.onload = () => printWindow.print()
+  // const printWindow = window.open('', '', 'height=500, width=500');
+  // printWindow.document.write(`<html lang="${env.get('language')}"><body>${element}</body></html>`);
+  // printWindow.document.close();
+  // printWindow.onload = () => printWindow.print()
 }
 
 /**
  * Build template to actual HTML element
  *
  * @param {string} template
- * @param {[{key: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}]} tags
+ * @param {[{key: string, path: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}]} tags
  * @param {object} data
  * @param {boolean} clone
- * @return {{template: string, tags: array, data: object, element: HTMLElement, print: function}}
+ * @return {Promise<{readonly: {tags: array}, template: string, tags: array, data: object, generate: Promise<string>, generators: object, print: function()}>}
  */
-const buildPrinter = (template, tags, data, clone = false) => {
+const buildPrinter = (template, tags, clone = false) => {
   // Build printer
   const printer = {
+    _private: {
+      data: null,
+      isDirty: false
+    },
     readonly: {
-      template: template,
       tags: _.cloneDeep(tags),
     },
+    template: template,
     generators: {},
-    data: data,
-    element: '',
-    print: () => print(this.element)
+    data: {
+      get
+    },
+    generate: null,
+    print: null
   }
 
   // Execute asynchronously
-  util.async(() => {
-    // Flatten tags
-    const flatTags = flattenTags(tags)
+  return util.async(() => {
     // Prepare generator for every map's entry
-    printer.generators = buildGenerators(flatTags, printer)
-    console.warn(tags)
-    Object.entries(printer.generators).map(([key, value]) => {
-      if (!key.includes('items')) {
-        console.warn(`${key}: ${value()}`)
-      }
-    })
-  });
+    printer.generators = buildGenerators(printer)
+    // Prepare generate method
+    printer.generate = generateElement(printer)
+    // Prepare print method
+    printer.print = () => print(printer.generate())
 
-  return printer
+    // Return printer
+    return printer
+  });
 }
 
 export {buildPrinter, print}

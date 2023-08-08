@@ -164,15 +164,19 @@ public class OrderController extends BaseController {
      * @param id
      * @return
      */
-    @GetMapping(value = "/barcode/{id}")
-    public ResponseEntity<?> genBarcode(@PathVariable Long id) throws IOException {
+    @GetMapping(value = "/barcode/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> genBarcode(@PathVariable Long id) {
         // Get Order
         String code = orderService.findCodeById(id);
         if (Objects.isNull(code)) {
             throw new FileServingException("file_not_exist");
         }
+        // Generate Barcode
+        BufferedImage bufferedImage = OtherUtils.generateBarcode(code);
 
-        return ok(OtherUtils.generateBarcode(code));
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(bufferedImage);
     }
 
     /**
@@ -181,15 +185,19 @@ public class OrderController extends BaseController {
      * @param id
      * @return
      */
-    @GetMapping(value = "/qrcode/{id}")
-    public ResponseEntity<?> genQRCode(@PathVariable Long id) throws WriterException, IOException {
+    @GetMapping(value = "/qrcode/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> genQRCode(@PathVariable Long id) throws WriterException {
         // Get Order
         String code = orderService.findCodeById(id);
         if (Objects.isNull(code)) {
             throw new FileServingException("file_not_exist");
         }
+        // Generate Barcode
+        BufferedImage bufferedImage = OtherUtils.generateQRCode(code);
 
-        return ok(OtherUtils.generateQRCode(code));
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(bufferedImage);
     }
 
     /**

@@ -225,6 +225,7 @@ export default {
     // ****************************
     // Entity: Item
     // ****************************
+    item_title: 'Product name',
     item_originalPrice: 'Original price',
     item_discount: 'Discount',
     item_discountUnit: 'Discount unit',

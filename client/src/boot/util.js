@@ -121,18 +121,20 @@ const util = {
    * Check prop in object by dot notation
    *
    * @param {object} obj
-   * @param {string} dotNotation
+   * @param {string} notation
+   * @param {string} delimiter
    * @return {*}
    */
-  getProp(obj, dotNotation) {
-    if (this.isUnset(obj)) {
+  getProp(obj, notation, delimiter = '.') {
+    if (this.isUnset(obj) || this.isUnset(notation)) {
+      console.warn(notation)
       return obj
     }
 
     // Result holder
     let result = obj
     // Split dotNotation by dot
-    const notations = dotNotation.split(".")
+    const notations = notation.split(delimiter)
 
     while (notations.length > 0) {
       // Get prop
@@ -204,7 +206,7 @@ const util = {
    */
   async async(callback) {
     if (typeof callback === 'function') {
-      callback()
+      return await callback()
     }
   }
 }

@@ -335,86 +335,74 @@ export default {
       const example = {
         "id": 742,
         "address": "78/9 ADV",
-        "version": 8,
-        "groups": "",
-        "status": 3,
         "code": "DH00001",
-        "items": [{
-          "id": 135,
-          "title": "Khuyến mãi",
-          "code": "MS00004",
-          "originalPrice": "0",
-          "quantity": 1,
-          "actualPrice": "0",
-          "note": "",
-          "discount": "0",
-          "discountUnit": "%",
-          "productId": 5
-        }, {
-          "id": 133,
-          "title": "GH-ĐẦM NGẮN",
-          "code": "MS00016",
-          "originalPrice": "50000",
-          "quantity": 1,
-          "actualPrice": "50000",
-          "note": "",
-          "discount": "50",
-          "discountUnit": "%",
-          "productId": 17
-        }, {
-          "id": 136,
-          "title": "ỦI QUẦN",
-          "code": "MS00003",
-          "originalPrice": "10000",
-          "quantity": 1,
-          "actualPrice": "10000",
-          "note": "",
-          "discount": "0",
-          "discountUnit": "%",
-          "productId": 4
-        }, {
-          "id": 134,
-          "title": "GIẶT ƯỚT 3-7kg",
-          "code": "MS00005",
-          "originalPrice": "35000",
-          "quantity": 1,
-          "actualPrice": "35000",
-          "note": "",
-          "discount": "5000",
-          "discountUnit": "cash",
-          "productId": 6
-        }, {
-          "id": 132,
-          "title": "TT Thêm : Ủi - Tẩy ...",
-          "code": "MS00001",
-          "originalPrice": "5000",
-          "quantity": 1,
-          "actualPrice": "5000",
-          "note": "",
-          "discount": "10",
-          "discountUnit": "%",
-          "productId": 2
-        }],
+        "items": [
+          {
+            "title": "Khuyến mãi",
+            "originalPrice": "0",
+            "actualPrice": "0",
+            "discount": "0",
+            "discountUnit": "%",
+            "note": "",
+            "quantity": 1
+          },
+          {
+            "title": "GH-ĐẦM NGẮN",
+            "originalPrice": "50000",
+            "actualPrice": "50000",
+            "discount": "50",
+            "discountUnit": "%",
+            "note": "",
+            "quantity": 1
+          },
+          {
+            "title": "ỦI QUẦN",
+            "originalPrice": "10000",
+            "actualPrice": "10000",
+            "discount": "0",
+            "discountUnit": "%",
+            "note": "",
+            "quantity": 1
+          },
+          {
+            "title": "GIẶT ƯỚT 3-7kg",
+            "originalPrice": "35000",
+            "actualPrice": "35000",
+            "discount": "5000",
+            "discountUnit": "cash",
+            "note": "",
+            "quantity": 1
+          },
+          {
+            "title": "TT Thêm : Ủi - Tẩy ...",
+            "originalPrice": "5000",
+            "actualPrice": "5000",
+            "discount": "10",
+            "discountUnit": "%",
+            "note": "",
+            "quantity": 1
+          }
+        ],
         "phoneNumber": "0346576198",
-        "createdAt": "28-06-2023 11:21:18",
-        "customer": "KS00518 - C NHƯ HẢO",
         "paymentAmount": "100000",
-        "resolvedAt": "",
-        "email": null,
+        "customer": {
+          "name": "C NHƯ HẢO",
+          "email": 'ahihi@gmail.com',
+          "birthday": '2023/12/11'
+        },
+        "createdAt": "2023-06-28T04:21:18.352+00:00",
         "provisionalAmount": "100000",
-        "createdBy": "ahihi@gmail.com",
-        "point": "4",
-        "note": "",
         "discount": "0",
         "discountUnit": "%",
-        "groupIds": [],
-        "customerId": "520",
-        "totalQuantity": "5"
+        "note": ""
       }
 
-      const printer = buildPrinter(this.activeDoc.content, this.tags, example)
-      // console.warn(printer)
-      this.test = '<div id="barcode" title="DH00001"><img src="/api/v1/order/barcode/742" style="display: block;" alt="Scan me!"></div>'
+      buildPrinter(this.activeDoc.content, this.tags, example)
+        .then(async (printer) => {
+          this.test = await printer.generate()
+          printer.print()
+        })
+        .catch(err => console.warn(err))
     }
   }
 }
