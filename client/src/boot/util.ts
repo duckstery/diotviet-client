@@ -1,13 +1,36 @@
 import {boot} from 'quasar/wrappers';
-import {Dialog, date} from "quasar";
-import {env} from "boot/env";
+import {Dialog, date, DialogChainObject} from "quasar";
+
+// *************************************************
+// Typed
+// *************************************************
+
+export interface Util {
+  dateOnly(value: string): string
+  formatMoney(value: string): string
+  promptConfirm(message: string): DialogChainObject
+  promptReason(): DialogChainObject
+  nullIfEmpty(value: string): string | null
+  camelToSnake(value: string): string
+  isUnset(value: any): boolean
+  craftFormData(value: object): FormData
+  getProp(obj: object, notation: string, delimiter?: string): any
+  compare(a: string, b: string): number
+  div(htmlString: string): HTMLDivElement
+  skipNull(callback: Function): void
+  async(callback: Function): Promise<Function>
+}
+
+// *************************************************
+// Implementation
+// *************************************************
 
 // I18n
 let $t;
 // Tree shaking
 const {isValid} = date
 
-const util = {
+const util: Util = {
   /**
    * Get date only
    *

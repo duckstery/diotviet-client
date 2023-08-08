@@ -3,7 +3,7 @@ import {defineStore} from 'pinia'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     jwt: '',
-    exp: '',
+    exp: 0,
     id: '',
     name: '',
     privilege: 4,

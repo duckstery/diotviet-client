@@ -38,7 +38,8 @@ module.exports = configure(function (/* ctx */) {
       'notify',
       'util',
       'error',
-      'auth'
+      'auth',
+      'types'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css

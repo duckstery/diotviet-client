@@ -1,9 +1,29 @@
 import {boot} from 'quasar/wrappers'
 
+// *************************************************
+// Typed
+// *************************************************
+
+export interface Constant {
+  types(): { id: number, name: string }[]
+  typeByKey(key: string): { id: number, name: string }
+  statuses(): { id: number, name: string, icon: string, color: string, verb?: string }[]
+  statusCodeToString(code: string | number): string
+  isStatusResolved(code: number): boolean
+  isStatusAborted(code: number): boolean
+  genders(): { id: number, name: string, icon: string, color: string }[]
+  booleans(): { id: number, name: string, icon: string, color: string }[]
+  matchedIcon(key: string): string
+}
+
+// *************************************************
+// Implementation
+// *************************************************
+
 // I18n
 let $t;
 
-const constant = {
+const constant: Constant = {
   /**
    * Predefined types
    *

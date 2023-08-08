@@ -1,19 +1,49 @@
 import {boot} from 'quasar/wrappers'
-import {Cookies} from "quasar"
+import {Cookies, date} from "quasar"
 import {axios} from "./axios"
-import {date} from 'quasar'
 import {useAuthStore} from "stores/auth"
 
+// *************************************************
+// Typed
+// *************************************************
+
+export interface Auth {
+  subscribe(jwt: string): void
+  user(): User
+  isAuthenticated(): boolean
+  login(credential: Credential): Promise<string|void>
+  logout(): Promise<string|void>
+}
+
+// User data
+export type User = { name: string, id: string }
+// Credential
+export type Credential = { email: string, password: string }
+// Token
+export type Token = {
+  role: string,
+  iss: string,
+  id: number,
+  exp: number,
+  iat: number,
+  jti: string,
+  email: string
+}
+
+// *************************************************
+// Implementation
+// *************************************************
+
 // Constant
-const tokenKey = '_token'
+const tokenKey: string = '_token'
 // Init store
 const store = useAuthStore();
 
-const auth = {
+const auth: Auth = {
   /**
    * Subscribe JWT
    *
-   * @param {jwt} jwt
+   * @param {string} jwt
    */
   subscribe(jwt) {
     try {
@@ -21,7 +51,7 @@ const auth = {
       const payload = decodeJWT(jwt)
 
       // Save JWT to cookie
-      Cookies.set(tokenKey, jwt, {expires: new Date(payload.exp * 1000), sameSite: 'lax'})
+      Cookies.set(tokenKey, jwt, {expires: new Date(payload.exp * 1000), sameSite: 'Lax'})
       // Save JWT and payload to $store
       store.subscribe({...payload, jwt})
     } catch (e) {
@@ -37,10 +67,8 @@ const auth = {
 
   /**
    * Get user info
-   *
-   * @returns {{name: string, id: string}}
    */
-  user() {
+  user(): User {
     return {
       id: store.getUserId,
       name: store.getUserName
@@ -52,18 +80,18 @@ const auth = {
    *
    * @returns {boolean}
    */
-  isAuthenticated() {
+  isAuthenticated(): boolean {
     // If expired is greater than now(), consider not expired
-    return !!store.getExpiredAt && date.subtractFromDate(new Date(), {seconds: 5}) / 1000 < store.getExpiredAt
+    return !!store.getExpiredAt && (date.subtractFromDate(new Date(), {seconds: 5})).getTime() / 1000 < store.getExpiredAt
   },
 
   /**
    * Login
    *
-   * @param {{email: string, password: string}} credential
-   * @returns {Promise<Result> | Promise<any>}
+   * @param {Credential} credential
+   * @returns {Promise<void>}
    */
-  login(credential) {
+  login(credential: Credential): Promise<string|void> {
     return axios.post(`${process.env.API_BASE_URL}/api/auth/login`, credential)
       .then(res => {
         // Subscribe JWT
@@ -77,9 +105,9 @@ const auth = {
   /**
    * Logout
    *
-   * @returns {Promise<Result> | Promise<any>}
+   * @returns {Promise<void>}
    */
-  logout() {
+  logout(): Promise<string|void> {
     return axios.get(`${process.env.API_BASE_URL}/api/auth/logout`)
       .then(res => {
         // Clear cookie
@@ -98,9 +126,9 @@ const auth = {
  * Decode JWT
  *
  * @param {string} jwt
- * @returns {object}
+ * @returns {Token}
  */
-function decodeJWT(jwt) {
+function decodeJWT(jwt: string): Token {
   // Split JWT parts
   const base64Url = jwt.split('.')[1];
   // Replace - with + and _ with / (+ and / is not URL friendly)
@@ -129,7 +157,7 @@ export default boot(({app, router}) => {
     if (auth.isAuthenticated()) {
       config.headers.Authorization = `Bearer ${store.getToken}`
     } else {
-      // Abort request if token is expired
+      // @ts-ignore. Abort request if token is expired
       config.signal = AbortSignal.abort("Token expired")
     }
 

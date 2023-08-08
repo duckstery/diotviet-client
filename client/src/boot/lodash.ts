@@ -1,3 +1,4 @@
+// @ts-ignore
 import _ from 'lodash'
 import {boot} from "quasar/wrappers";
 

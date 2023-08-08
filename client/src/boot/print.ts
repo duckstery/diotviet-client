@@ -1,6 +1,109 @@
+// @ts-ignore
 import _ from "lodash"
-import {axios, env, util} from "src/boot"
+import {util} from "src/boot"
 import printJS from 'print-js'
+
+// *************************************************
+// Typed
+// *************************************************
+
+// Printer shape
+export type IPrinter = {
+  data: any;
+  readonly tags: PrintTag[],
+  template: string,
+  generators: PrintGenerators,
+  generate(): string,
+  print(): void
+}
+
+// Print tag
+export type PrintTag = {
+  key: string,
+  path: string,
+  sub: PrintTag[],
+  isIterable: boolean,
+  isParentIterable: boolean,
+  parentKey: string,
+  isIdentifier: boolean
+}
+
+// Generator
+export type PrintGenerators = { [key: string]: Function }
+// Generator content
+export type PrintGeneratorContent = {
+  content: string
+  size?: number
+  generators?: PrintGenerators
+}
+
+export type GeneratorBuilder = (generators: PrintGenerators, tag: PrintTag, printer: IPrinter) => void
+
+// *************************************************
+// Implementation
+// *************************************************
+
+export class Printer implements IPrinter {
+  private _data: any
+  private _isDirty: boolean
+  readonly tags: PrintTag[]
+
+  generators: PrintGenerators;
+  template: string;
+
+  /**
+   * Constructors
+   *
+   * @param template
+   * @param tags
+   * @param data
+   */
+  constructor(template: string, tags: PrintTag[], data: any) {
+    this.template = template
+    this.tags = tags
+    this._data = data
+
+    this.generators = buildGenerators(this)
+  }
+
+  // @ts-ignore
+  get data() {
+    return this._data
+  }
+
+  // @ts-ignore
+  set data(value: any) {
+    this._isDirty = true
+    this._data = value
+  }
+
+  generate(): string {
+    // Generate a div body for template
+    const body = util.div(this.template)
+    // Iterate through each generator to generate content for body
+    for (const [key, generator] of Object.entries(this.generators)) {
+      //
+      if (key.includes('items')) {
+        continue;
+      }
+      // Get the PrintableTag element with the id of [key]
+      const target = body.querySelector(`#${key}`)
+      // Continue to next entry if target is null
+      if (util.isUnset(target)) {
+        continue;
+      }
+
+      // Generate content for target textContent
+      target.innerHTML = generator().content ?? ""
+    }
+
+    return body.innerHTML
+  }
+
+  print(): void {
+    print(this.generate())
+  }
+}
 
 /**
  * Prepare generator for every map's entry
@@ -8,7 +111,7 @@ import printJS from 'print-js'
  * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {object}
  */
-const buildGenerators = (printer) => Object.values(printer.readonly.tags).reduce((generators, tag) => {
+const buildGenerators = (printer: Printer) => Object.values(printer.tags).reduce((generators, tag): PrintGenerators => {
   // Build and add generators
   buildAndAddGenerators(generators, tag, printer)
 
@@ -23,7 +126,7 @@ const buildGenerators = (printer) => Object.values(printer.readonly.tags).reduce
  * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {function}
  */
-const buildAndAddGenerators = (generators, tag, printer) => {
+const buildAndAddGenerators: GeneratorBuilder = (generators, tag, printer) => {
   if (tag.isIdentifier) {
     // Check if tag is an identifier, build generator for identifier
     buildAndAddGeneratorForIdentifier(generators, tag, printer)
@@ -47,7 +150,7 @@ const buildAndAddGenerators = (generators, tag, printer) => {
  * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {function}
  */
-const buildAndAddGeneratorForNormal = (generators, tag, printer) => {
+const buildAndAddGeneratorForNormal: GeneratorBuilder = (generators, tag, printer) => {
   // Return
   generators[tag.key] = () => util.getProp(printer.data, tag.path)
 }
@@ -60,7 +163,7 @@ const buildAndAddGeneratorForNormal = (generators, tag, printer) => {
  * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {function}
  */
-const buildAndAddGeneratorForIdentifier = (generators, tag, printer) => {
+const buildAndAddGeneratorForIdentifier: GeneratorBuilder = (generators, tag, printer) => {
   // Iterate through each subtag
   tag.sub.forEach(subtag => {
     // Check for generate approach
@@ -86,7 +189,7 @@ const buildAndAddGeneratorForIdentifier = (generators, tag, printer) => {
  * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {function}
  */
-const buildAndAddGeneratorForIterable = (generators, tag, printer) => {
+const buildAndAddGeneratorForIterable: GeneratorBuilder = (generators, tag, printer) => {
   // Deep clone tag to make sure changing readonly tag won't change
   const _tag = _.cloneDeep(tag)
 
@@ -110,7 +213,7 @@ const buildAndAddGeneratorForIterable = (generators, tag, printer) => {
         // Replace subtag key with a key that can be indexed
         subtag.key = templateKey + "_" + i
         // Replace the subtag.path with a corresponding path that point to data
-        subtag.path = templatePath.replace('{i}', i)
+        subtag.path = templatePath.replace('{i}', `${i}`)
         // Add generate for new subtag
         buildAndAddGenerators(subGenerators, subtag, printer)
       }
@@ -131,7 +234,7 @@ const buildAndAddGeneratorForIterable = (generators, tag, printer) => {
  * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
  * @return {function}
  */
-const buildAndAddGeneratorForSubfields = (generators, tag, printer) => {
+const buildAndAddGeneratorForSubfields: GeneratorBuilder = (generators, tag, printer) => {
   // Build and add generators
   tag.sub.forEach(subtag => buildAndAddGenerators(generators, subtag, printer))
 }
@@ -144,37 +247,8 @@ const buildAndAddGeneratorForSubfields = (generators, tag, printer) => {
  * @param {string} content
  * @return {string}
  */
-const generateImgElement = (id, type, content) => {
+const generateImgElement = (id: number | string, type: string, content: string) => {
   return `<div id="${type}" title="${content}"><img src="/api/v1/order/${type}/${id ?? 0}" alt="Scan me!"></div>`
-}
-
-/**
- * Generate element
- *
- * @param {{readonly: {tags: array}, template: string, tags: array, data: object, generate: function, generators: object, print: function}} printer
- * @return {function}
- */
-const generateElement = (printer) => () => {
-  // Generate a div body for template
-  const body = util.div(printer.template)
-  // Iterate through each generator to generate content for body
-  for (const [key, generator] of Object.entries(printer.generators)) {
-    //
-    if (key.includes('items')) {
-      continue;
-    }
-    // Get the PrintableTag element with the id of [key]
-    const target = body.querySelector(`#${key}`)
-    // Continue to next entry if target is null
-    if (util.isUnset(target)) {
-      continue;
-    }
-
-    // Generate content for target textContent
-    target.innerHTML = generator() ?? ""
-  }
-
-  return body.innerHTML
 }
 
 /**
@@ -198,39 +272,13 @@ const print = (element) => {
  * @param {string} template
  * @param {[{key: string, path: string, sub: array, isIterable: boolean, isParentIterable: boolean, parentKey: string, isIdentifier: boolean}]} tags
  * @param {object} data
- * @param {boolean} clone
  * @return {Promise<{readonly: {tags: array}, template: string, tags: array, data: object, generate: Promise<string>, generators: object, print: function()}>}
  */
-const buildPrinter = (template, tags, clone = false) => {
-  // Build printer
-  const printer = {
-    _private: {
-      data: null,
-      isDirty: false
-    },
-    readonly: {
-      tags: _.cloneDeep(tags),
-    },
-    template: template,
-    generators: {},
-    data: {
-      get
-    },
-    generate: null,
-    print: null
-  }
-
+const buildPrinter = (template, tags, data) => {
   // Execute asynchronously
   return util.async(() => {
-    // Prepare generator for every map's entry
-    printer.generators = buildGenerators(printer)
-    // Prepare generate method
-    printer.generate = generateElement(printer)
-    // Prepare print method
-    printer.print = () => print(printer.generate())
-
-    // Return printer
-    return printer
+    // Build and return printer
+    return new Printer(template, tags, data)
   });
 }
 

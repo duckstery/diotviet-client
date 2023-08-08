@@ -3,8 +3,23 @@ import {LocalStorage} from 'quasar'
 import {util} from './util'
 import {useEnvStore} from "stores/env";
 
+// *************************************************
+// Typed
+// *************************************************
+
+export interface Env {
+  init(key: string, value: any): any
+  get(key: string): any
+  set(key: string, value: any): void
+  isOptimizeVisual(): boolean
+}
+
+// *************************************************
+// Implementation
+// *************************************************
+
 const $store = useEnvStore()
-const env = {
+const env: Env = {
   /**
    * Init env variable
    *

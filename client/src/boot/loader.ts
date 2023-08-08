@@ -1,8 +1,21 @@
 import {boot} from 'quasar/wrappers'
-import {axios} from "./axios"
+import {axios, LocalAxiosInternalRequestConfig} from "./axios"
 import {Loading, QSpinnerGears} from 'quasar'
 
-const loading = {
+// *************************************************
+// Typed
+// *************************************************
+
+export interface Loader {
+  show(): void
+  hide(): void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
+
+const loading: Loader = {
   /**
    * Show loading overlay
    */
@@ -21,9 +34,9 @@ const loading = {
 
 export default boot(({app}) => {
   // Show loading screen when sending axios request
-  axios.interceptors.request.use((cfg) => {
+  axios.interceptors.request.use((cfg: LocalAxiosInternalRequestConfig) => {
     // Disable loading option
-    if (cfg.loading !== false) {
+    if (cfg.loading) {
       loading.show()
     }
 

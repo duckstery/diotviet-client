@@ -1,5 +1,25 @@
 import {boot} from 'quasar/wrappers'
 import {notify} from "boot/notify"
+import {AxiosError} from "axios";
+import {LocalAxiosResponse} from "boot/axios";
+
+// *************************************************
+// Error
+// *************************************************
+
+export type ErrorSwitcher = { 400?: Function, 410?: Function, 422?: Function, default: Function }
+
+export interface ErrorHandler {
+  $400(callback: Function, err: AxiosError<LocalAxiosResponse, any>): void
+  $410(callback: Function, err: AxiosError<LocalAxiosResponse, any>): void
+  $422(key: string, err: AxiosError<LocalAxiosResponse, any>): void
+  any(err: AxiosError<LocalAxiosResponse, any>): void
+  switch(cases: ErrorSwitcher | Function): (AxiosError) => void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
 
 let $t;
 
@@ -38,7 +58,7 @@ const commonNotify = (callback, err, type) => {
  *
  * @type {object}
  */
-const error = {
+const error: ErrorHandler = {
   /**
    * Handle 400
    *
@@ -79,7 +99,7 @@ const error = {
       $error: true,
       $errors: [{
         $validator: 'server',
-        $message: data.message
+        $message: data.message // @ts-ignore
       }]
     }
     // Notify
@@ -113,8 +133,9 @@ const error = {
         const bindArgs = Array.isArray(cases[httpCode]) ? cases[httpCode] : [null, cases[httpCode]]
         // Execute the corresponding http status handler
         this[`$${httpCode}`].bind(...bindArgs)(error)
-      } else if (typeof cases.default === 'function') {
-        // Else if default case is present, execute it
+        // @ts-ignore
+      } else if (cases.default === 'function') {
+        // @ts-ignore Else if default case is present, execute it
         cases.default(error)
       }
     }

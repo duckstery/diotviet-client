@@ -2,6 +2,16 @@ import {boot} from 'quasar/wrappers'
 import {Notify} from 'quasar'
 import {util} from 'boot/util'
 
+// *************************************************
+// Typed
+// *************************************************
+
+export type Notifier = (content: string, type?: 'positive' | 'negative' | 'warning', err?: Error) => void
+
+// *************************************************
+// Implementation
+// *************************************************
+
 /**
  * Create a snackbar to notify user
  *
@@ -9,7 +19,7 @@ import {util} from 'boot/util'
  * @param {string} type
  * @param {Error} err
  */
-const notify = (content, type = 'positive', err = null) => {
+const notify: Notifier = (content: string, type = 'positive', err = null) => {
   if (process.env.DEV) {
     if (type === 'warning') {
       console.warn(content)
