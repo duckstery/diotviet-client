@@ -15,7 +15,7 @@ export function useDebounceModel<T>(refObj: Ref<T>, millisecond: number = 500): 
   const middle: Ref = ref(refObj.value)
 
   // Timeout
-  let timeout = null
+  let timeout: number | null = null
 
   // Watch when middle is change, active debounce to set ref data
   watch(middle, (value) => {
@@ -30,6 +30,7 @@ export function useDebounceModel<T>(refObj: Ref<T>, millisecond: number = 500): 
     // There is no point of wasting resources if middle is equal target
     if (middle.value === refObj.value) return
     // When middle.value is changed, create a timeout to set refObj.value
+    // @ts-ignore
     timeout = setTimeout(() => {
       // Set data
       refObj.value = value

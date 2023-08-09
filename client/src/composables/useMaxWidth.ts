@@ -8,7 +8,7 @@ import {Ref} from "@vue/reactivity";
  * @param {number} scaleDownRate
  * @return {Ref<string>}
  */
-export function useMaxWidth(provider: () => HTMLElement, scaleDownRate: number= 0.5): Ref<string> {
+export function useMaxWidth(provider: () => HTMLElement, scaleDownRate: number = 0.5): Ref<string> {
   // Create class ref
   const twClass = ref('')
 

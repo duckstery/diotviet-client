@@ -1,4 +1,5 @@
 import {boot} from 'quasar/wrappers'
+import {$T} from "boot/i18n";
 
 // *************************************************
 // Typed
@@ -13,7 +14,7 @@ export interface Constant {
   isStatusAborted(code: number): boolean
   genders(): { id: number, name: string, icon: string, color: string }[]
   booleans(): { id: number, name: string, icon: string, color: string }[]
-  matchedIcon(key: string): string
+  matchedIcon(key: string): string | undefined
 }
 
 // *************************************************
@@ -21,7 +22,7 @@ export interface Constant {
 // *************************************************
 
 // I18n
-let $t;
+let $t: $T<string>;
 
 const constant: Constant = {
   /**
@@ -46,7 +47,7 @@ const constant: Constant = {
    */
   typeByKey(key) {
     // Generate map
-    const map = {
+    const map: { [key: string]: number } = {
       product: 0,
       order: 1,
       customer: 2

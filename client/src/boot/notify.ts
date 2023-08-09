@@ -19,7 +19,7 @@ export type Notifier = (content: string, type?: 'positive' | 'negative' | 'warni
  * @param {string} type
  * @param {Error} err
  */
-const notify: Notifier = (content: string, type = 'positive', err = null) => {
+const notify: Notifier = (content: string, type = 'positive', err: Error | null = null) => {
   if (process.env.DEV) {
     if (type === 'warning') {
       console.warn(content)

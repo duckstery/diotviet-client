@@ -42,7 +42,7 @@ export function usePageRowDetail(props: any, context: SetupContext): UsePageRowD
   })
   // Get item id
   const getItemId = computed(() => {
-    return props.item.value.find(col => col.name === 'id').value
+    return props.item.value.find((col: any) => col.name === 'id').value
   })
 
   /**
@@ -60,7 +60,7 @@ export function usePageRowDetail(props: any, context: SetupContext): UsePageRowD
    * @param key
    * @param data
    */
-  const request = (key, data) => {
+  const request = (key: string, data: any) => {
     context.emit('request', key, data)
   }
 
@@ -69,7 +69,7 @@ export function usePageRowDetail(props: any, context: SetupContext): UsePageRowD
    *
    * @param payload
    */
-  const patch = (payload) => {
+  const patch = (payload: any) => {
     request('patch', {ids: [getItemId.value], versions: [detail.value.version], ...payload})
   }
 

@@ -3,37 +3,39 @@ import {notify} from "boot/notify"
 import {AxiosError} from "axios";
 import {LocalAxiosResponse} from "boot/axios";
 import {Validation} from "@vuelidate/core";
+import {$T} from "boot/i18n";
 
 // *************************************************
 // Error
 // *************************************************
 
-export type ErrorSwitcher = { 400?: Function, 410?: Function, 422?: [{v$: Validation}, string], default: Function }
+export type ErrorSwitcher = { 400?: Function, 410?: Function, 422?: [{ v$: Validation }, string], default: Function }
 
 export interface ErrorHandler {
   $400(callback: Function, err: AxiosError<LocalAxiosResponse, any>): void
   $410(callback: Function, err: AxiosError<LocalAxiosResponse, any>): void
   $422(key: string, err: AxiosError<LocalAxiosResponse, any>): void
   any(err: AxiosError<LocalAxiosResponse, any>): void
-  switch(cases: ErrorSwitcher | Function): (AxiosError) => void
+  switch(cases: ErrorSwitcher | Function): (error: AxiosError) => void
 }
 
 // *************************************************
 // Implementation
 // *************************************************
 
-let $t;
+let $t: $T<string>;
 
 // Log to console
-const log = (err) => {
+const log = (err: Error) => {
   if (process.env.DEV) {
     console.error(err)
   }
 }
 
 // Check if error status match the handler
-const mustBe = (status, error) => {
+const mustBe = (status: number, error: AxiosError<LocalAxiosResponse, any>) => {
   log(error)
+  // @ts-ignore
   if (error.response.status !== status) {
     throw error
   }
@@ -46,8 +48,9 @@ const mustBe = (status, error) => {
  * @param {Axios.Error} err
  * @param {string} type
  */
-const commonNotify = (callback, err, type) => {
+const commonNotify = (callback: Function, err: AxiosError<LocalAxiosResponse, any>, type: string | undefined) => {
   // Notify
+  // @ts-ignore
   notify($t(`message.${err.response.data.payload}`), type)
   if (typeof callback === 'function') {
     callback(err)
@@ -94,8 +97,10 @@ const error: ErrorHandler = {
     mustBe(422, err)
 
     // Get response's data of err
+    // @ts-ignore
     const data = err.response.data
     // Merge error
+    // @ts-ignore
     this.v$[key][data.payload].$server = {
       $error: true,
       $errors: [{
@@ -114,6 +119,7 @@ const error: ErrorHandler = {
    */
   any(err) {
     log(err)
+    // @ts-ignore
     notify(err.response.data.message, 'negative')
   },
 
@@ -126,13 +132,17 @@ const error: ErrorHandler = {
   switch(cases) {
     return (error) => {
       // Get code of error
+      // @ts-ignore
       const httpCode = error.response.status
 
       // Get handler of httpCode
+      // @ts-ignore
       if (typeof this[`$${httpCode}`] === 'function') {
         // Check if case of httpCode is an array, if not, convert to array
+        // @ts-ignore
         const bindArgs = Array.isArray(cases[httpCode]) ? cases[httpCode] : [null, cases[httpCode]]
         // Execute the corresponding http status handler
+        // @ts-ignore
         this[`$${httpCode}`].bind(...bindArgs)(error)
         // @ts-ignore
       } else if (cases.default === 'function') {

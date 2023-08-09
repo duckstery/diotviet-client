@@ -1,5 +1,6 @@
 import {boot} from 'quasar/wrappers';
 import {Dialog, date, DialogChainObject} from "quasar";
+import {$T} from "boot/i18n";
 
 // *************************************************
 // Typed
@@ -17,7 +18,7 @@ export interface Util {
   getProp(obj: object, notation: string, delimiter?: string): any
   compare(a: string, b: string): number
   div(htmlString: string): HTMLDivElement
-  skipNull(callback: Function): void
+  skipNull(callback: Function): (value: any, oldValue: any, onCleanup: Function) => void
   async(callback: Function): Promise<Function>
 }
 
@@ -26,9 +27,7 @@ export interface Util {
 // *************************************************
 
 // I18n
-let $t;
-// Tree shaking
-const {isValid} = date
+let $t: $T<string>;
 
 const util: Util = {
   /**
@@ -161,6 +160,7 @@ const util: Util = {
 
     while (notations.length > 0) {
       // Get prop
+      // @ts-ignore
       result = result[notations.shift()];
       // Immediately return if undefined
       if (this.isUnset(result)) {

@@ -9,7 +9,7 @@ import {UnwrapNestedRefs} from "@vue/reactivity";
  */
 export function useFilterRequest<T>(filterRef: UnwrapNestedRefs<T>, context: SetupContext) {
   // Setup watch handler
-  const handler = (value) => {
+  const handler = (value: any) => {
     context.emit('update:modelValue', value)
     context.emit('request')
   }

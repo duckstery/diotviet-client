@@ -3,6 +3,7 @@ import {useI18n} from 'vue-i18n';
 import {axios, util, constant, notify} from "src/boot";
 import GroupEditor from "components/Manage/Group/GroupEditor.vue";
 import {useRouteKey} from "src/composables/useRouteKey";
+import {Ref} from "vue";
 
 // *************************************************
 // Typed
@@ -22,7 +23,7 @@ export type UseGroupControlResources = {
  * @param {Ref<UnWrapRef<...>>} groupRef
  * @return {object}
  */
-export function useGroupControl(groupRef): UseGroupControlResources {
+export function useGroupControl(groupRef: Ref<any[]>): UseGroupControlResources {
   // Get key
   const key = useRouteKey()
   // i18n
@@ -38,9 +39,9 @@ export function useGroupControl(groupRef): UseGroupControlResources {
    * On direct request (non-interactive)
    *
    * @param {string} mode
-   * @param {array} item
+   * @param {any} item
    */
-  const onDirectRequest = (mode, item) => {
+  const onDirectRequest = (mode: string, item: any) => {
     // Send request
     axios.delete(`/group/delete`, {params: {id: item, type: constant.typeByKey(key)['id']}})
       .then(res => {
@@ -56,7 +57,7 @@ export function useGroupControl(groupRef): UseGroupControlResources {
    * @param mode
    * @param item
    */
-  const onInteractiveRequest = (mode, item) => {
+  const onInteractiveRequest = (mode: string, item: any) => {
     // Preprocess item
     const newItem = {...item, type: constant.typeByKey(key)['id']}
     // Invoke dialog

@@ -36,7 +36,7 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
    * @param {string} mode
    * @param {File} item
    */
-  const onImportRequest = (mode, item) => {
+  const onImportRequest = (mode: string, item: any) => {
     // Send request
     axios.post(
       (mode === 'legacy' ? 'legacy' : '') + `/${key}/import`,
@@ -44,6 +44,7 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
       {headers: {"Content-Type": "multipart/form-data"}}
     )
       .then(onSuccessOperation)
+      // @ts-ignore
       .catch(error.$422.bind(this, 'input'))
   }
 
@@ -63,7 +64,7 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
    * @param {string} mode
    * @param {array} item
    */
-  const onDirectRequest = (mode, item) => {
+  const onDirectRequest = (mode: string, item: any) => {
     let params = item
 
     if (mode === 'delete') {
@@ -71,11 +72,12 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
     }
 
     // Send request
+    // @ts-ignore
     axios[mode](`/${key}/${mode}`, params)
       .then(onSuccessOperation)
       .catch(error.switch({
         410: fetchCb,
-        default: (err) => notify($t('message.fail', {attr: $t('field.operation')}), 'negative', err)
+        default: (err: Error) => notify($t('message.fail', {attr: $t('field.operation')}), 'negative', err)
       }))
   }
 
@@ -84,9 +86,8 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
    *
    * @param mode
    * @param item
-   * @param customizer
    */
-  const onInteractiveRequest = (mode, item) => {
+  const onInteractiveRequest = (mode: string, item: any) => {
     // Create props so item("null") won't override Editor default value
     const componentProps = {mode, ...(util.isUnset(customizer) ? [] : customizer())}
 
@@ -130,7 +131,7 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
      * @param mode
      * @param item
      */
-    onRequest: (mode, item = null) => {
+    onRequest: (mode: string, item: any = null) => {
       if (['create', 'update', 'copy'].includes(mode)) {
         // Need to be interacted before sending request
         onInteractiveRequest(mode, item)

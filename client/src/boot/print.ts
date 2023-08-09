@@ -62,6 +62,7 @@ export class Printer implements IPrinter {
     this.template = template
     this.tags = tags
     this._data = data
+    this._isDirty = false
 
     this.generators = buildGenerators(this)
   }
@@ -94,6 +95,7 @@ export class Printer implements IPrinter {
       }
 
       // Generate content for target textContent
+      // @ts-ignore
       target.innerHTML = generator().content ?? ""
     }
 
@@ -202,7 +204,7 @@ const buildAndAddGeneratorForIterable: GeneratorBuilder = (generators, tag, prin
     // Template key, path
     let templateKey, templatePath = ''
     // Iterate through each subtag
-    _tag.sub.forEach(subtag => {
+    _tag.sub.forEach((subtag: PrintTag) => {
       // Save the key
       templateKey = subtag.key
       // Save the path
@@ -256,7 +258,7 @@ const generateImgElement = (id: number | string, type: string, content: string) 
  *
  * @param {HTMLElement} element
  */
-const print = (element) => {
+const print = (element: any) => {
   // console.warn(element)
   printJS({printable: element, type: 'raw-html'})
   // Create a print window
@@ -274,7 +276,7 @@ const print = (element) => {
  * @param {object} data
  * @return {Promise<{readonly: {tags: array}, template: string, tags: array, data: object, generate: Promise<string>, generators: object, print: function()}>}
  */
-const buildPrinter = (template, tags, data) => {
+const buildPrinter = (template: string, tags: PrintTag[], data: any) => {
   // Execute asynchronously
   return util.async(() => {
     // Build and return printer

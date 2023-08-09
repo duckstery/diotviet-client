@@ -9,11 +9,12 @@ import {util} from "src/boot";
  * @param {ComputedRef} detailRef
  * @return {function(): DialogChainObject}
  */
-export function useOrderProcessor(detailRef: Ref<{code: string}> | null | undefined): () => DialogChainObject {
+export function useOrderProcessor(detailRef: Ref<{ code: string }> | null): () => DialogChainObject {
   console.warn(detailRef)
   // Invoke dialog
   return () => Dialog.create({
     component: OrderProcessor,
+    // @ts-ignore
     componentProps: {selectedCode: util.isUnset(detailRef) ? null : detailRef.value.code}
   })
 }

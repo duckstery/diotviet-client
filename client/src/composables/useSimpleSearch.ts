@@ -15,7 +15,7 @@ export type UseSimpleSearchResources = {
   filter(): void,
   search(): void,
   // Event for Quasar's component
-  onFilter?(value: any, update: Function): void
+  onFilter: null | ((value: any, update: Function) => void)
 }
 
 // *************************************************
@@ -30,7 +30,7 @@ export type UseSimpleSearchResources = {
  * @param {ComputedRef<*>|function} filter
  * @return {object}
  */
-export function useSimpleSearch(api, useWatch: boolean = true, filter: Function | Ref<Function> = null): UnwrapNestedRefs<UseSimpleSearchResources> {
+export function useSimpleSearch(api: string, useWatch: boolean = true, filter: Function | Ref<Function> | null = null): UnwrapNestedRefs<UseSimpleSearchResources> {
   // Search resource
   const resource: UnwrapNestedRefs<UseSimpleSearchResources> = reactive({
     query: '',
@@ -43,7 +43,7 @@ export function useSimpleSearch(api, useWatch: boolean = true, filter: Function 
   })
 
   // Search logic
-  const search = (value) => {
+  const search = (value: string | null) => {
     if (value === null || value === '') {
       resource.data = []
       return
@@ -76,6 +76,7 @@ export function useSimpleSearch(api, useWatch: boolean = true, filter: Function 
       } else if (typeof filter === 'function') {
         resource.data = filter(clonedOriginal)
       } else {
+        // @ts-ignore
         resource.data = filter.value(clonedOriginal)
       }
     })

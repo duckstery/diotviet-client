@@ -30,11 +30,16 @@ export type UsePriceControlResources = {
  * @param {string} actualKey
  * @returns {object}
  */
-export function usePriceControl(refObj: UnwrapNestedRefs<{discountUnit: string, discount: string}>, originalKey: string, actualKey: string): UsePriceControlResources {
+export function usePriceControl(refObj: UnwrapNestedRefs<{
+  discountUnit: string,
+  discount: string,
+  [key: string]: string
+}>, originalKey: string, actualKey: string): UsePriceControlResources {
   // Resources
   const discountCalculator = useDiscountCalculator()
   // Make a computed fragments to modify computed key dynamically
-  const computedFragments = {}
+  const computedFragments: { [key: string]: ComputedRef<string> } = {}
+  // @ts-ignore
   computedFragments[actualKey] = computed(() => {
     const discountAmount = discountCalculator(refObj[originalKey], refObj.discountUnit, refObj.discount)
 

@@ -12,7 +12,7 @@ import {Validation} from "@vuelidate/core";
 
 export type UseDialogEditorExtension = { v$: Ref<Validation>, onConfirm(): void }
 export type UseDialogEditorResources<T> = {
-  dialogRef: Ref<QDialog>,
+  dialogRef: Ref<QDialog | undefined>,
   onHide(): void,
   onCancel(): void,
   ok(payload?: T): void,
@@ -42,7 +42,8 @@ export function useDialogEditor<T>(inputRef: UnwrapNestedRefs<T>, mode = 'create
   // Get $t
   const $t = useI18n().t
   // Extension
-  const extension: UseDialogEditorExtension = {v$: null, onConfirm: null}
+  // @ts-ignore
+  const extension: UseDialogEditorExtension = {v$: null, vonConfirm: null}
   // Default dialog behavior
   if (!util.isUnset(inputRef)) {
     // Get key

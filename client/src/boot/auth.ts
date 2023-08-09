@@ -11,8 +11,8 @@ export interface Auth {
   subscribe(jwt: string): void
   user(): User
   isAuthenticated(): boolean
-  login(credential: Credential): Promise<string|void>
-  logout(): Promise<string|void>
+  login(credential: Credential): Promise<string | void>
+  logout(): Promise<string | void>
 }
 
 // User data
@@ -91,7 +91,7 @@ const auth: Auth = {
    * @param {Credential} credential
    * @returns {Promise<void>}
    */
-  login(credential: Credential): Promise<string|void> {
+  login(credential: Credential): Promise<string | void> {
     return axios.post(`${process.env.API_BASE_URL}/api/auth/login`, credential)
       .then(res => {
         // Subscribe JWT
@@ -107,7 +107,7 @@ const auth: Auth = {
    *
    * @returns {Promise<void>}
    */
-  logout(): Promise<string|void> {
+  logout(): Promise<string | void> {
     return axios.get(`${process.env.API_BASE_URL}/api/auth/logout`)
       .then(res => {
         // Clear cookie
@@ -148,6 +148,7 @@ export default boot(({app, router}) => {
   // Register request interceptor to embed JWT and priorly check for JWT validity
   axios.interceptors.request.use(function (config) {
     // Check if target API is /login
+    // @ts-ignore
     if (config.url.includes("/api/auth/login")) {
       // This API won't be affect if token is expired
       return config

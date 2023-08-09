@@ -2,22 +2,32 @@ import {ref, onMounted} from 'vue'
 import {axios, util} from "src/boot";
 import {useRouteKey} from "src/composables/useRouteKey";
 import {Ref} from "@vue/reactivity";
+import {AxiosResponse} from 'axios';
+import {LocalAxiosResponse} from 'src/boot/axios';
 
 // *************************************************
 // Typed
 // *************************************************
 
+export type QTableLocalHeader = {
+  name: string,
+  label: string,
+  field: string,
+  isInitDisplay: boolean,
+  format: Function
+}
+
 export type QTablePagination = {
+  page: number,
+  rowsPerPage: number,
   sortBy?: string,
   descending?: boolean,
-  page?: number,
-  rowsPerPage?: number,
   rowsNumber?: number
 }
 
 export type QTableOnSearch = {
+  pagination: QTablePagination,
   search?: string,
-  pagination?: QTablePagination,
   filter?: string | any,
   getCellValue?: (col: any, row: any) => any
 }
@@ -78,11 +88,10 @@ export function usePageSearch<T>(initFilter: T): UsePageSearchResources<T> {
    */
   const onSearch = (data: QTableOnSearch) => {
     // Save search content
-    previousSearch.value = data ? data.search : ''
+    previousSearch.value = data ? <string>data.search : ''
     // Call API to get data for table
     axios.get(`/${key}/search`, {
       params: {
-        // @ts-ignore
         ...filter.value,
         search: previousSearch.value,
         page: data ? data.pagination.page - 1 : 0,
@@ -103,14 +112,14 @@ export function usePageSearch<T>(initFilter: T): UsePageSearchResources<T> {
   }
 
   // Apply common data
-  const applyCommon = (res) => {
+  const applyCommon = (res: AxiosResponse<LocalAxiosResponse, any>) => {
     // Table's headers
     headers.value = res.data.payload.headers
     // Add formatter for actualPrice
     if (Array.isArray(headers.value)) {
-      headers.value.forEach(header => {
+      headers.value.forEach((header: QTableLocalHeader) => {
         if (header.name === 'actualPrice') {
-          header["format"] = util.formatMoney
+          header.format = util.formatMoney
         }
       })
     }
@@ -121,7 +130,7 @@ export function usePageSearch<T>(initFilter: T): UsePageSearchResources<T> {
   }
 
   // Apply items data
-  const applyItems = (res) => {
+  const applyItems = (res: AxiosResponse<LocalAxiosResponse, any>) => {
     // Table's items
     items.value = res.data.payload.items.content
     // Pageable

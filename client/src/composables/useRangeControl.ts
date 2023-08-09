@@ -8,11 +8,11 @@ import {watch, nextTick, ref, Ref} from "vue"
  * @param {Number} lowerBound
  * @return {{rangeControlCommit: String}}
  */
-export function useRangeControl(refObj: Ref<string>, upperBound: number = 999999999999, lowerBound: number = null): {
+export function useRangeControl(refObj: Ref<string>, upperBound: number = 999999999999, lowerBound: number | null = null): {
   rangeControlCommit: Ref<string>
 } {
   // Create commit flag
-  const rangeControlCommit = ref(null)
+  const rangeControlCommit: Ref = ref(null)
 
   watch(refObj, (newValue, oldValue) => {
     // Allow null value

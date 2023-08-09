@@ -6,7 +6,7 @@ import {useRoute} from "vue-router";
  *
  * @param key
  */
-export function useKeyEnforcer(key) {
+export function useKeyEnforcer(key: string) {
   // Add forced key
   useRoute().meta.forcedKey = key
 

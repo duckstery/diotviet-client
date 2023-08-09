@@ -1,25 +1,20 @@
 import {boot} from 'quasar/wrappers'
-import {createI18n} from 'vue-i18n'
+import {
+  createI18n,
+  DefineLocaleMessage,
+  IsEmptyObject,
+  IsNever,
+  Locale,
+  NamedValue,
+  Path,
+  PickupPaths,
+  RemovedIndexResources,
+  TranslateOptions,
+  TranslateResult
+} from 'vue-i18n'
 import messages from 'src/i18n'
 import {axios} from 'boot/axios'
 import {env} from 'boot/env'
-
-export type MessageLanguages = keyof typeof messages;
-// Type-define 'en-US' as the master schema for the resource
-export type MessageSchema = typeof messages['en'];
-
-// See https://vue-i18n.intlify.dev/guide/advanced/typescript.html#global-resource-schema-type-definition
-/* eslint-disable @typescript-eslint/no-empty-interface */
-declare module 'vue-i18n' {
-  // define the locale messages schema
-  export interface DefineLocaleMessage extends MessageSchema {}
-
-  // define the datetime format schema
-  export interface DefineDateTimeFormat {}
-
-  // define the number format schema
-  export interface DefineNumberFormat {}
-}
 
 // Set axios Accept-Language header
 axios.interceptors.request.use((config) => {
@@ -40,3 +35,76 @@ export default boot(({app}) => {
   // Set i18n instance on app
   app.use(i18n)
 })
+
+export type $T<
+  Key extends string,
+  DefinedLocaleMessage extends RemovedIndexResources<DefineLocaleMessage> = RemovedIndexResources<DefineLocaleMessage>,
+  Keys = IsEmptyObject<DefinedLocaleMessage> extends false
+    ? PickupPaths<{
+      [K in keyof DefinedLocaleMessage]: DefinedLocaleMessage[K]
+    }>
+    : never,
+  ResourceKeys extends Keys = IsNever<Keys> extends false ? Keys : never
+> = ((
+  key: Key | ResourceKeys | Path
+) => TranslateResult) & ((
+  key: Key | ResourceKeys | Path,
+  locale: Locale,
+  list: unknown[]
+) => TranslateResult) & ((
+  key: Key | ResourceKeys | Path,
+  locale: Locale,
+  named: object
+) => TranslateResult) & ((
+  key: Key | ResourceKeys | Path,
+  list: unknown[]
+) => TranslateResult) & ((
+  key: Key | ResourceKeys | Path,
+  named: Record<string, unknown>
+) => TranslateResult) & ((
+  key: Key | ResourceKeys | Path
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  plural: number
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  plural: number,
+  options: TranslateOptions
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  defaultMsg: string
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  defaultMsg: string,
+  options: TranslateOptions
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  list: unknown[]
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  list: unknown[],
+  plural: number
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  list: unknown[],
+  defaultMsg: string
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  list: unknown[],
+  options: TranslateOptions
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  named: NamedValue
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  named: NamedValue,
+  plural: number
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  named: NamedValue,
+  defaultMsg: string
+) => string) & ((
+  key: Key | ResourceKeys | Path,
+  named: NamedValue,
+  options: TranslateOptions
+) => string)

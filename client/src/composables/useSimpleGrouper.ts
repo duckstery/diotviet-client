@@ -12,12 +12,12 @@ import {util} from "src/boot"
 export function useSimpleGrouper(
   field: string,
   sortAsc: boolean = true,
-  parser: (code: string) => string = null,
-  cutter: (code: string) => string = null
+  parser: (code: string) => string,
+  cutter: (code: string) => string
 ) {
-  return (value) => {
+  return (value: any) => {
     // Cache
-    const entries = {}
+    const entries: { [key: string]: any } = {}
 
     // Iterate through each item
     for (const item of value) {
