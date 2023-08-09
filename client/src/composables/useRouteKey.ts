@@ -6,11 +6,11 @@ import {util} from "src/boot"
  *
  * @return {string}
  */
-export function useRouteKey() {
+export function useRouteKey(): string {
   // Get route
   const route = useRoute()
 
-  return util.isUnset(route.meta['forcedKey'])
+  return <string>(util.isUnset(route.meta['forcedKey'])
     ? (route.meta['key'] ?? '')
-    : route.meta['forcedKey']
+    : route.meta['forcedKey'])
 }

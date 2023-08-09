@@ -1,6 +1,26 @@
-import {computed, watch, nextTick} from 'vue'
+import {computed, watch, nextTick, ComputedRef, UnwrapNestedRefs} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useDiscountCalculator} from "src/composables/useDiscountCalculator";
+
+// *************************************************
+// Typed
+// *************************************************
+
+export type UsePriceControlResources = {
+  // Computed
+  discountUnitIcon: ComputedRef<string>,
+  discountUnitLabel: ComputedRef<string>,
+  discountMask: ComputedRef<string>,
+  // Watcher
+  actualUnwatch(): void,
+  originalMaxMinUnwatch(): void,
+  discountMaxMinUnwatch(): void,
+  resetDiscountUnwatch(): void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
 
 /**
  * Setup control price system
@@ -10,7 +30,7 @@ import {useDiscountCalculator} from "src/composables/useDiscountCalculator";
  * @param {string} actualKey
  * @returns {object}
  */
-export function usePriceControl(refObj, originalKey, actualKey) {
+export function usePriceControl(refObj: UnwrapNestedRefs<{discountUnit: string, discount: string}>, originalKey: string, actualKey: string): UsePriceControlResources {
   // Resources
   const discountCalculator = useDiscountCalculator()
   // Make a computed fragments to modify computed key dynamically
@@ -36,16 +56,16 @@ export function usePriceControl(refObj, originalKey, actualKey) {
     },
 
     // Watch
-    watch: [
+    watch: {
       // Watch for fragment. Assign "actual" computed to component's data
-      watch(computedFragments[actualKey], (value) => {
+      actualUnwatch: watch(computedFragments[actualKey], (value) => {
         if (refObj[actualKey] !== undefined) {
           refObj[actualKey] = value
         }
       }),
 
       // Control original price max and min value
-      watch(() => refObj[originalKey], (value) => {
+      originalMaxMinUnwatch: watch(() => refObj[originalKey], (value) => {
 
         // Get value as integer
         const intValue = parseInt(value);
@@ -57,7 +77,7 @@ export function usePriceControl(refObj, originalKey, actualKey) {
       }),
 
       // Control discount max and min value
-      watch(() => refObj.discount, (value) => {
+      discountMaxMinUnwatch: watch(() => refObj.discount, (value) => {
         // Get value as integer
         const intValue = parseInt(value);
         // Can not lower than 0
@@ -76,12 +96,12 @@ export function usePriceControl(refObj, originalKey, actualKey) {
       }),
 
       // Reset discount to 0 if discountUnit is changed
-      watch(() => refObj.discountUnit, (value, oldValue) => {
+      resetDiscountUnwatch: watch(() => refObj.discountUnit, (value, oldValue) => {
         if (oldValue) {
           nextTick(() => refObj.discount = '0')
         }
       }),
-    ]
+    }
   }
 
   return {

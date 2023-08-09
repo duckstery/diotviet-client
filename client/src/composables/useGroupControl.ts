@@ -4,13 +4,25 @@ import {axios, util, constant, notify} from "src/boot";
 import GroupEditor from "components/Manage/Group/GroupEditor.vue";
 import {useRouteKey} from "src/composables/useRouteKey";
 
+// *************************************************
+// Typed
+// *************************************************
+
+export type UseGroupControlResources = {
+  onGroupControl(mode: string, item: any): void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
+
 /**
  * Setup Group control
  *
  * @param {Ref<UnWrapRef<...>>} groupRef
  * @return {object}
  */
-export function useGroupControl(groupRef) {
+export function useGroupControl(groupRef): UseGroupControlResources {
   // Get key
   const key = useRouteKey()
   // i18n

@@ -2,6 +2,19 @@ import {date, Dialog, exportFile} from "quasar";
 import {axios, util, notify, error} from "src/boot";
 import {useI18n} from 'vue-i18n';
 import {useRouteKey} from "src/composables/useRouteKey";
+import {Component} from "vue"
+
+// *************************************************
+// Typed
+// *************************************************
+
+export type UsePageRequestResources = {
+  onRequest(mode: string, item: string): void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
 
 /**
  * Setup request mechanism for pages of type Manage
@@ -9,9 +22,9 @@ import {useRouteKey} from "src/composables/useRouteKey";
  * @param {any} invoker
  * @param {function} customizer
  * @param {function} fetchCb
- * @return {object}
+ * @return {UsePageRequestResources}
  */
-export function usePageRequest(invoker, customizer, fetchCb) {
+export function usePageRequest(invoker: () => any | Component, customizer: () => {}, fetchCb: () => void): UsePageRequestResources {
   // Get key
   const key = useRouteKey()
   // i18n
@@ -40,6 +53,7 @@ export function usePageRequest(invoker, customizer, fetchCb) {
   const onExportRequest = () => {
     // Send request
     axios.get(`/${key}/export`, {responseType: "blob"})
+      // @ts-ignore
       .then(res => exportFile(`${key}_${date.formatDate(Date.now(), 'YYMMDD')}.csv`, res.data))
   }
 
@@ -78,6 +92,7 @@ export function usePageRequest(invoker, customizer, fetchCb) {
 
     // Add item
     if (item !== null) {
+      // @ts-ignore
       componentProps.item = {
         ...item,
         id: mode === 'copy' ? null : item.id,

@@ -1,11 +1,23 @@
 import {util} from 'src/boot'
 
+// *************************************************
+// Typed
+// *************************************************
+
+export type UseInteractiveFieldResources = {
+  onInteract(mode: string, data: string): void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
+
 /**
  * Use interactive field
  *
  * @return {{onInteract: function}}
  */
-export function useInteractiveField() {
+export function useInteractiveField(): UseInteractiveFieldResources {
   return {
     /**
      * On interact

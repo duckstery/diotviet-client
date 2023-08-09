@@ -7,11 +7,11 @@ import Qs from "qs";
 // *************************************************
 
 export interface LocalAxiosRequestConfig<D = any> extends AxiosRequestConfig<D> {
-  loading: boolean,
+  loading?: boolean,
 }
 
 export interface LocalAxiosInternalRequestConfig<D = any> extends InternalAxiosRequestConfig<D> {
-  loading: boolean,
+  loading?: boolean,
 }
 
 // Response shape

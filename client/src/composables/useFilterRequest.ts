@@ -1,4 +1,5 @@
-import {watch} from "vue";
+import {watch, SetupContext} from "vue";
+import {UnwrapNestedRefs} from "@vue/reactivity";
 
 /**
  * Setup filter request on filter changed
@@ -6,7 +7,7 @@ import {watch} from "vue";
  * @param {object} filterRef
  * @param {{emit: function}} context
  */
-export function useFilterRequest(filterRef, context) {
+export function useFilterRequest<T>(filterRef: UnwrapNestedRefs<T>, context: SetupContext) {
   // Setup watch handler
   const handler = (value) => {
     context.emit('update:modelValue', value)

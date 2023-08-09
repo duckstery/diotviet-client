@@ -1,4 +1,4 @@
-import {watch, nextTick, ref} from "vue"
+import {watch, nextTick, ref, Ref} from "vue"
 
 /**
  * Setup control range system
@@ -8,7 +8,9 @@ import {watch, nextTick, ref} from "vue"
  * @param {Number} lowerBound
  * @return {{rangeControlCommit: String}}
  */
-export function useRangeControl(refObj, upperBound= 999999999999, lowerBound= null) {
+export function useRangeControl(refObj: Ref<string>, upperBound: number = 999999999999, lowerBound: number = null): {
+  rangeControlCommit: Ref<string>
+} {
   // Create commit flag
   const rangeControlCommit = ref(null)
 

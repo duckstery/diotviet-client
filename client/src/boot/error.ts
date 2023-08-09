@@ -2,12 +2,13 @@ import {boot} from 'quasar/wrappers'
 import {notify} from "boot/notify"
 import {AxiosError} from "axios";
 import {LocalAxiosResponse} from "boot/axios";
+import {Validation} from "@vuelidate/core";
 
 // *************************************************
 // Error
 // *************************************************
 
-export type ErrorSwitcher = { 400?: Function, 410?: Function, 422?: Function, default: Function }
+export type ErrorSwitcher = { 400?: Function, 410?: Function, 422?: [{v$: Validation}, string], default: Function }
 
 export interface ErrorHandler {
   $400(callback: Function, err: AxiosError<LocalAxiosResponse, any>): void

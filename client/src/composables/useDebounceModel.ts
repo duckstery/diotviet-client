@@ -1,17 +1,19 @@
 import {watch, ref} from "vue";
+import {Ref} from "@vue/reactivity";
 
 /**
  * Setup debounce model <br>
  * This model will be attached to v-model <br>
  * When v-model emit @update, it'll will save data of @update and save to original ref after [millisecond]
  *
- * @param {Ref<UnwrapRef<...>>} refObj
+ * @param {Ref<UnwrapRef<T>>} refObj
  * @param {number} millisecond
- * @return {T}
+ * @return {Ref<UnwrapRef<T>>}
  */
-export function useDebounceModel(refObj, millisecond= 500) {
+export function useDebounceModel<T>(refObj: Ref<T>, millisecond: number = 500): Ref<T> {
   // Create ref to catch data
-  const middle = ref(refObj.value)
+  const middle: Ref = ref(refObj.value)
+
   // Timeout
   let timeout = null
 

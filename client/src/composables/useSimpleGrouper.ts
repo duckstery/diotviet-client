@@ -4,12 +4,17 @@ import {util} from "src/boot"
  * Setup simple list filter
  *
  * @param {string} field
- * @param {string} sortAsc
+ * @param {boolean} sortAsc
  * @param {function} parser Use to parse value of 'key' with some specific logic
  * @param {function} cutter Use to cut value of 'key' with some specific logic
  * @return {function}
  */
-export function useSimpleGrouper(field, sortAsc = true, parser = null, cutter = null) {
+export function useSimpleGrouper(
+  field: string,
+  sortAsc: boolean = true,
+  parser: (code: string) => string = null,
+  cutter: (code: string) => string = null
+) {
   return (value) => {
     // Cache
     const entries = {}
@@ -32,6 +37,7 @@ export function useSimpleGrouper(field, sortAsc = true, parser = null, cutter = 
     return Object
       .entries(entries)
       .sort((a, b) => util.compare(a[0], b[0]) * (sortAsc ? 1 : -1))
+      // @ts-ignore
       .map(([key, item]) => [{isLabel: true, label: typeof parser === 'function' ? parser(key) : key}, ...item])
       .flat()
   }

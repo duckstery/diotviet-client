@@ -1,6 +1,26 @@
-import {axios, error, util, } from "src/boot";
-import {nextTick, reactive, watch} from "vue";
+import {axios, error, util,} from "src/boot";
+import {nextTick, reactive, UnwrapNestedRefs, watch} from "vue";
+// @ts-ignore
 import _ from "lodash";
+import {Ref} from "@vue/reactivity";
+
+// *************************************************
+// Typed
+// *************************************************
+
+export type UseSimpleSearchResources = {
+  query: string,
+  data: [],
+  original: [],
+  filter(): void,
+  search(): void,
+  // Event for Quasar's component
+  onFilter?(value: any, update: Function): void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
 
 /**
  * Setup simple search and return options
@@ -10,9 +30,9 @@ import _ from "lodash";
  * @param {ComputedRef<*>|function} filter
  * @return {object}
  */
-export function useSimpleSearch(api, useWatch = true, filter = null) {
+export function useSimpleSearch(api, useWatch: boolean = true, filter: Function | Ref<Function> = null): UnwrapNestedRefs<UseSimpleSearchResources> {
   // Search resource
-  const resource = reactive({
+  const resource: UnwrapNestedRefs<UseSimpleSearchResources> = reactive({
     query: '',
     data: [],
     original: [],

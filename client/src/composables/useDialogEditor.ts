@@ -1,8 +1,26 @@
-import {useDialogPluginComponent} from 'quasar'
+import {QDialog, useDialogPluginComponent} from 'quasar'
 import {useVuelidate} from "@vuelidate/core";
 import {axios, util, notify, error} from "src/boot"
 import {useI18n} from "vue-i18n";
 import {useRouteKey} from "src/composables/useRouteKey";
+import {Ref, UnwrapNestedRefs} from "@vue/reactivity";
+import {Validation} from "@vuelidate/core";
+
+// *************************************************
+// Typed
+// *************************************************
+
+export type UseDialogEditorExtension = { v$: Ref<Validation>, onConfirm(): void }
+export type UseDialogEditorResources<T> = {
+  dialogRef: Ref<QDialog>,
+  onHide(): void,
+  onCancel(): void,
+  ok(payload?: T): void,
+} & UseDialogEditorExtension
+
+// *************************************************
+// Implementation
+// *************************************************
 
 /**
  * Setup dialog editor
@@ -11,7 +29,7 @@ import {useRouteKey} from "src/composables/useRouteKey";
  * @param {string} mode
  * @return {*}
  */
-export function useDialogEditor(inputRef, mode = 'create') {
+export function useDialogEditor<T>(inputRef: UnwrapNestedRefs<T>, mode = 'create'): UseDialogEditorResources<T> {
   // REQUIRED; must be called inside of setup()
   const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
   // dialogRef      - Vue ref to be applied to QDialog
@@ -24,7 +42,7 @@ export function useDialogEditor(inputRef, mode = 'create') {
   // Get $t
   const $t = useI18n().t
   // Extension
-  const extension = {}
+  const extension: UseDialogEditorExtension = {v$: null, onConfirm: null}
   // Default dialog behavior
   if (!util.isUnset(inputRef)) {
     // Get key
@@ -47,6 +65,7 @@ export function useDialogEditor(inputRef, mode = 'create') {
       if (await extension.v$.value.$validate()) {
 
         // Craft formData
+        // @ts-ignore
         const formData = util.craftFormData(inputRef)
         // Send request
         axios.post(`/${key}/store`, formData, {headers: {"Content-Type": "multipart/form-data"}})

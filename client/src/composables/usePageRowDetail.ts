@@ -1,7 +1,25 @@
-import {ref, computed, watch} from "vue";
+import {ref, computed, watch, ComputedRef, Prop, SetupContext} from "vue";
 import {axios, util, error} from "src/boot"
 import {useRouteKey} from "src/composables/useRouteKey";
 import {useI18n} from "vue-i18n";
+import {Ref} from "@vue/reactivity";
+
+// *************************************************
+// Typed
+// *************************************************
+
+export type UsePageRowDetailResources = {
+  detail: Ref,
+  isReady: ComputedRef<boolean>,
+  getItemId: ComputedRef<any>,
+  request(key: string, data: any): void,
+  patch(payload: any): void,
+  remove(): void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
 
 /**
  * Setup Detail pages in Manage
@@ -9,11 +27,11 @@ import {useI18n} from "vue-i18n";
  * @param {object} props
  * @param {object} context
  */
-export function usePageRowDetail(props, context) {
+export function usePageRowDetail(props: any, context: SetupContext): UsePageRowDetailResources {
   // Get key
   const key = useRouteKey()
   // Detail data
-  const detail = ref({})
+  const detail: Ref = ref({})
   // i18n
   const $t = useI18n().t
 
@@ -33,7 +51,7 @@ export function usePageRowDetail(props, context) {
   const fetch = () => {
     axios.get(`/${key}/${getItemId.value}`, {loading: false})
       .then(res => detail.value = res.data.payload)
-      .catch(error.$410.bind(null, () => request('fetch')))
+      .catch(error.$410.bind(null, () => request('fetch', null)))
   }
 
   /**

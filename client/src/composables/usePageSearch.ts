@@ -1,6 +1,42 @@
 import {ref, onMounted} from 'vue'
 import {axios, util} from "src/boot";
 import {useRouteKey} from "src/composables/useRouteKey";
+import {Ref} from "@vue/reactivity";
+
+// *************************************************
+// Typed
+// *************************************************
+
+export type QTablePagination = {
+  sortBy?: string,
+  descending?: boolean,
+  page?: number,
+  rowsPerPage?: number,
+  rowsNumber?: number
+}
+
+export type QTableOnSearch = {
+  search?: string,
+  pagination?: QTablePagination,
+  filter?: string | any,
+  getCellValue?: (col: any, row: any) => any
+}
+
+export type UsePageSearchResources<T> = {
+  categories: Ref<any[]>,
+  groups: Ref<any[]>,
+  headers: Ref<any[]>,
+  items: Ref<any[]>,
+  pagination: Ref<QTablePagination>,
+  previousSearch: Ref<string>,
+  filter: Ref<T>,
+  onSearch(data: QTableOnSearch): void,
+  searchWithPreviousData(): void
+}
+
+// *************************************************
+// Implementation
+// *************************************************
 
 /**
  * Setup page search for pages of type Manage
@@ -8,7 +44,7 @@ import {useRouteKey} from "src/composables/useRouteKey";
  * @param {object} initFilter
  * @returns {object}
  */
-export function usePageSearch(initFilter) {
+export function usePageSearch<T>(initFilter: T): UsePageSearchResources<T> {
   // Get key
   const key = useRouteKey()
   // General
@@ -18,13 +54,13 @@ export function usePageSearch(initFilter) {
   const headers = ref([])
   const items = ref([])
   // Paging
-  const pagination = ref({
+  const pagination: Ref<QTablePagination> = ref({
     page: 1,
     rowsPerPage: 10
   })
   const previousSearch = ref('')
   // Filter
-  const filter = ref(initFilter)
+  const filter: Ref = ref(initFilter)
 
   // On mounted, call API to get data for table
   onMounted(() =>
@@ -40,16 +76,17 @@ export function usePageSearch(initFilter) {
    *
    * @param data
    */
-  const onSearch = (data) => {
+  const onSearch = (data: QTableOnSearch) => {
     // Save search content
     previousSearch.value = data ? data.search : ''
     // Call API to get data for table
     axios.get(`/${key}/search`, {
       params: {
+        // @ts-ignore
         ...filter.value,
         search: previousSearch.value,
         page: data ? data.pagination.page - 1 : 0,
-        itemsPerPage: data ? data.pagination.rowsPerPage : pagination.rowsPerPage
+        itemsPerPage: data ? data.pagination.rowsPerPage : pagination.value.rowsPerPage
       }
     })
       .then(applyItems)

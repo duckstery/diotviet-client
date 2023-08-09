@@ -11,7 +11,7 @@ export function useDiscountCalculator() {
    * @param {string} discountUnit
    * @param {string} discount
    */
-  return (original, discountUnit, discount) => {
+  return (original: string, discountUnit: string, discount: string): string => {
     try {
       const discountAmount = discountUnit === '%'
         // Discount by percentage
