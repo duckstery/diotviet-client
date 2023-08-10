@@ -39,4 +39,6 @@ public interface OrderOrderPrintView {
     String getNote();
 
     Date getCreatedAt();
+
+    String getCreatedBy();
 }

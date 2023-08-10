@@ -333,74 +333,101 @@ export default {
   methods: {
     print() {
       const example = {
-        "id": 742,
+        "id": "742",
         "address": "78/9 ADV",
         "code": "DH00001",
         "items": [
           {
             "title": "Khuyến mãi",
             "originalPrice": "0",
-            "actualPrice": "0",
             "discount": "0",
+            "actualPrice": "0",
             "discountUnit": "%",
+            "quantity": 1,
             "note": "",
-            "quantity": 1
+            "olas": [
+              {
+                "text": "ahihi"
+              }
+            ]
           },
           {
             "title": "GH-ĐẦM NGẮN",
-            "originalPrice": "50000",
-            "actualPrice": "50000",
+            "originalPrice": "50,000",
             "discount": "50",
+            "actualPrice": "50,000",
             "discountUnit": "%",
+            "quantity": 1,
             "note": "",
-            "quantity": 1
+            "olas": [
+              {
+                "text": "ahihi"
+              }
+            ]
           },
           {
             "title": "ỦI QUẦN",
-            "originalPrice": "10000",
-            "actualPrice": "10000",
+            "originalPrice": "10,000",
             "discount": "0",
+            "actualPrice": "10,000",
             "discountUnit": "%",
+            "quantity": 1,
             "note": "",
-            "quantity": 1
+            "olas": [
+              {
+                "text": "ahihi"
+              }
+            ]
           },
           {
             "title": "GIẶT ƯỚT 3-7kg",
-            "originalPrice": "35000",
-            "actualPrice": "35000",
-            "discount": "5000",
+            "originalPrice": "35,000",
+            "discount": "5,000",
+            "actualPrice": "35,000",
             "discountUnit": "cash",
+            "quantity": 1,
             "note": "",
-            "quantity": 1
+            "olas": [
+              {
+                "text": "ahihi"
+              }
+            ]
           },
           {
             "title": "TT Thêm : Ủi - Tẩy ...",
-            "originalPrice": "5000",
-            "actualPrice": "5000",
+            "originalPrice": "5,000",
             "discount": "10",
+            "actualPrice": "5,000",
             "discountUnit": "%",
+            "quantity": 1,
             "note": "",
-            "quantity": 1
+            "olas": [
+              {
+                "text": "ahihi"
+              }
+            ]
           }
         ],
         "phoneNumber": "0346576198",
-        "paymentAmount": "100000",
+        "createdAt": "2023-06-28T04:21:18.352+00:00",
         "customer": {
           "name": "C NHƯ HẢO",
-          "email": 'ahihi@gmail.com',
-          "birthday": '2023/12/11'
+          "email": null,
+          "birthday": null
         },
-        "createdAt": "2023-06-28T04:21:18.352+00:00",
-        "provisionalAmount": "100000",
+        "paymentAmount": "100,000",
+        "provisionalAmount": "100,000",
+        "createdBy": "ahihi@gmail.com",
         "discount": "0",
         "discountUnit": "%",
         "note": ""
       }
 
       buildPrinter(this.activeDoc.content, this.tags, example)
-        .then(async (printer) => {
-          this.test = await printer.generate()
-          printer.print()
+        .then((printer) => {
+          console.warn(printer.tags)
+          this.test = printer.generate().innerHTML
+          // printer.print()
         })
         .catch(err => console.warn(err))
     }

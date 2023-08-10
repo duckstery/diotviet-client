@@ -19,7 +19,7 @@ export interface Util {
   compare(a: string, b: string): number
   div(htmlString: string): HTMLDivElement
   skipNull(callback: Function): (value: any, oldValue: any, onCleanup: Function) => void
-  async(callback: Function): Promise<Function>
+  async<T>(callback: () => T): Promise<Awaited<T>>
 }
 
 // *************************************************
@@ -227,10 +227,8 @@ const util: Util = {
    * @param {function} callback
    * @return {Promise<void>}
    */
-  async async(callback) {
-    if (typeof callback === 'function') {
-      return await callback()
-    }
+  async async<T>(callback: () => T): Promise<Awaited<T>> {
+    return await callback()
   }
 }
 

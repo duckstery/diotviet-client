@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
     /**
      * Issue token for user
      *
-     * @param user
+     * @param authentication
      * @return
      */
     public AccessToken issueToken(Authentication authentication) {

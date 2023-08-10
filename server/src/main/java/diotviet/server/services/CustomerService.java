@@ -87,7 +87,7 @@ public class CustomerService extends BaseService {
         // Common validate for create and update
         Customer customer = validator.validateAndExtract(request);
         // Set createdBy
-        customer.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        customer.setCreatedBy(OtherUtils.getRequester());
         // Save file and get saved file's path
         saveFileFor(customer, request.file(), validator);
         // Create file

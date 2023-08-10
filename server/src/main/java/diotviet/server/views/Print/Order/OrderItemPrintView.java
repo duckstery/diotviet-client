@@ -1,7 +1,11 @@
 package diotviet.server.views.Print.Order;
 
 import diotviet.server.annotations.PrintObject;
+import diotviet.server.annotations.PrintTag;
 import org.springframework.beans.factory.annotation.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @PrintObject("item")
 public interface OrderItemPrintView {
@@ -22,4 +26,8 @@ public interface OrderItemPrintView {
     String getNote();
 
     int getQuantity();
+
+    @Value("#{T(diotviet.server.utils.OtherUtils).test()}")
+    @PrintTag(component = OrderOlaPrintView.class, isIterable = true)
+    List<OrderOlaPrintView> getOlas();
 }

@@ -4,14 +4,16 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.Code128Writer;
 import com.google.zxing.qrcode.QRCodeWriter;
+import diotviet.server.entities.User;
+import diotviet.server.views.Print.Order.OrderOlaPrintView;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Hex;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -20,8 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.*;
-
-import com.google.zxing.oned.Code128Writer;
 
 /**
  * Other utility
@@ -186,7 +186,7 @@ public abstract class OtherUtils {
         // Writer
         Code128Writer barcodeWriter = new Code128Writer();
         // Write content to BitMatrix
-        BitMatrix bitMatrix = barcodeWriter.encode(content, BarcodeFormat.CODE_128, 200, 100);
+        BitMatrix bitMatrix = barcodeWriter.encode(content, BarcodeFormat.CODE_128, 150, 50);
         // Convert BitMatrix to BufferedImage
         return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
@@ -205,5 +205,20 @@ public abstract class OtherUtils {
         BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, 150, 150);
         // Convert BitMatrix to BufferedImage
         return MatrixToImageWriter.toBufferedImage(bitMatrix);
+    }
+
+    /**
+     * Get requester name
+     *
+     * @return
+     */
+    public static String getRequester() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName();
+    }
+
+    public static List<OrderOlaPrintView> test() {
+        List<OrderOlaPrintView> out = new ArrayList<>();
+        out.add(new OrderOlaPrintView());
+        return out;
     }
 }

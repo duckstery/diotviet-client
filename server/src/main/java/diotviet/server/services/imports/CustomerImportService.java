@@ -104,7 +104,7 @@ public class CustomerImportService extends BaseImportService<Customer> {
             customer.setDescription(row.getCell(15).getRawValue());
             customer.setPoint(resolvePoint(row.getCell(17).getRawValue()));
             customer.setCreatedAt(DateUtils.parseDate(row.getCell(19).getRawValue(), "dd/MM/yyyy"));
-            customer.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+            customer.setCreatedBy(OtherUtils.getRequester());
             customer.setGroups(new HashSet<>(List.of(new Group[]{groupMap.get(row.getCell(14).getRawValue())})));
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());

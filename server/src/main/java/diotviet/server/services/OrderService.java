@@ -303,7 +303,7 @@ public class OrderService extends BaseService {
      */
     private void basicSetup(OrderInteractRequest request, Order order) {
         // Set created by
-        order.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName())
+        order.setCreatedBy(OtherUtils.getRequester())
                 // Count Product that can be accumulated and set point
                 .setPoint(productRepository.countByIdInAndCanBeAccumulatedTrueAndIsDeletedFalse(request
                         .items()

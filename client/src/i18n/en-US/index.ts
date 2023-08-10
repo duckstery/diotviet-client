@@ -267,6 +267,8 @@ export default {
     action_on_order: '{attr} this order',
     invalid_iterable_tag: 'This tag must be placed in a table',
     invalid_iterable_area: 'Child tags of [{attr}] must be placed in the same table',
+    invalid_iterable_area_level: 'This tag must be placed in level {attr} above table',
+    invalid_child_iterable_placement: 'This tag must be places inside a table that inside [{attr}]',
     existed_tag: 'This tag is already exists',
     max_length: 'Maximum character is {max}',
     save_document: 'Save this document',
