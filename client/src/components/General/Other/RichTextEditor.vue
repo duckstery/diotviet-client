@@ -121,6 +121,14 @@ export default {
             if (node.tagName === 'SPAN' && node.classList.contains('iterable-tag')) {
               this.onAfterDeleteIterableTag(node)
             }
+            // Special treatment for <tr/> and <table/>
+            if (node.tagName === 'TR' || node.tagName === 'TABLE') {
+              // Get classList reference
+              const cl = node.classList
+              if (cl.contains('iterable-row') || cl.contains('wrapping-table') || cl.contains('sub-wrapping-table')) {
+                console.warn(node)
+              }
+            }
           })
         })
       })
@@ -139,7 +147,6 @@ export default {
      * @param callback
      */
     fetchMenuButton(callback) {
-      console.warn("hello")
       callback(this.getPreprocessedTags(this.tags))
     },
 
@@ -266,11 +273,13 @@ export default {
         this.editor.undoManager.transact(() => {
           // Backup content
           const content = this.editor.getContent()
+          // Generate timestamp
+          const timestamp = (new Date()).getTime()
           // Insert tag
-          this.editor.insertContent(this.craftTagContent(tag), {manual: true})
+          this.editor.insertContent(this.craftTagContent(tag, timestamp), {manual: true})
 
           // Validate
-          const message = this.validateTag(tag)
+          const message = this.validateTag(tag, timestamp)
           if (!this.$util.isUnset(message)) {
             // Rollback content
             this.editor.setContent(content)
@@ -288,14 +297,15 @@ export default {
      * Craft tag content
      *
      * @param {PrintTag} tag
+     * @param {number} timestamp
      * @return {string}
      */
-    craftTagContent(tag) {
+    craftTagContent(tag, timestamp) {
       // Create extra class name
       let extraClassName = ''
       if (tag.isParentIterable) {
         // Check if tag is iterable
-        extraClassName = `iterable-tag ${tag.parentKey}`
+        extraClassName = `iterable-tag of-${tag.parentKey}`
       } else {
         // For simple tag (just need to put data inside the tag)
         extraClassName = `simple-tag`
@@ -304,59 +314,68 @@ export default {
       // Translate key
       const translatedKey = this.$t(`entity.${tag.key}`).replace(' ', '_')
 
-      return `<span class="printable-tag ${extraClassName}" id="${tag.key}">{{${translatedKey}}}</span>`
+      return `<span class="printable-tag ${extraClassName}" id="t${timestamp}-${tag.key}">{{${translatedKey}}}</span>`
     },
 
     /**
      * Validate tag
      *
      * @param {PrintTag} tag
+     * @param {number} timestamp
      * @return {null|string}
      */
-    validateTag(tag) {
+    validateTag(tag, timestamp) {
       // Select tag
-      const tags = this.editor.dom.select(`#${tag.key}`)
+      const tags = this.editor.dom.select(`#t${timestamp}-${tag.key}`)
 
-      if (tags.length > 1) {
-        // Check if tag is occur more than twice
-        return this.$t('message.existed_tag')
-      } else if (tag.isParentIterable) {
-        // Check if this tag's parent is iterable, then get the nearest captured table
-        const closestTable = tags[0].closest('table.wrapping-table') ?? tags[0].closest('table')
-        // Get the wrapping table for tag is exists
-        const wrappingTable = this.editor.dom.select(`table[id='${tag.parentKey}']`)
-console.warn(closestTable)
-        // Check
-        if (this.$util.isUnset(closestTable)) {
-          // This means that tag is outside of table
-          return this.$t('message.invalid_iterable_tag')
-        } else if (wrappingTable.length === 0) {
+      // No need to validate if this tag is not iterable
+      if (!tag.isParentIterable) {
+        return null;
+      }
+
+      // Check if this tag's parent is iterable, then get the nearest captured table
+      const closestTable = tags[0].closest('table')
+      // Get the wrapping table for tag is exists
+      const wrappingTable = this.editor.dom.select(`table[id='${tag.parentKey}']`)
+
+      // Check
+      if (this.$util.isUnset(closestTable)) {
+        // This means that tag is outside of table
+        return this.$t('message.invalid_iterable_tag')
+      } else if (wrappingTable.length === 0) {
+        // Check  if closest table is not a sub wrapper
+        return closestTable.classList.contains('sub-wrapping-table')
+          // This means that closest table is a sub wrapper
+          ? this.$t('message.invalid_iterable_area', {attr: this.$t(`entity.${tag.parentKey}`)})
           // This means that tag is inside of table but the table is not captured
-          return this.captureTag(tag, closestTable)
-        } else if (closestTable.id !== wrappingTable[0].id) {
-          // This means that tag is outside of it correct wrapping table
-          return this.$t('message.invalid_iterable_area', {attr: this.$t(`entity.${tag.parentKey}`)})
-        }
+          : this.tryToCaptureTag(tag, tags[0], closestTable)
+      } else if (closestTable.id !== '' && closestTable.id !== wrappingTable[0].id) {console.warn('ahihi')
+        // This means that tag is placed in another iterable area (not it valid iterable area)
+        return this.$t('message.invalid_iterable_area', {attr: this.$t(`entity.${tag.parentKey}`)})
+      } else if (closestTable.id === '') {
+        // Check if wrapping table contains closest table
+        return wrappingTable[0].contains(closestTable)
+          // This means that tag is placed in an empty table inside it valid iterable area
+          ?  this.tryToMarkTagSubTable(tag, tags[0], closestTable)
+          // This means that tag is outside of it valid iterable tag
+          :  this.$t('message.invalid_iterable_area', {attr: this.$t(`entity.${tag.parentKey}`)})
       }
 
       return null
     },
 
     /**
-     * Capture wrapping table
-     * 1. Adding tag.parentKey as wrapping table id
-     * 2. Adding 'iterable_row' as wrapping <tr/>
+     * Check before capture
      *
-     * @param {PrintTag|null} tag
+     * @param {PrintTag} tag
+     * @param {HTMLElement} el
      * @param {HTMLElement} closestTable
      */
-    captureTag(tag, closestTable) {
-      // Table tree
-      const tree = []
+    tryToCaptureTag(tag, el, closestTable) {
       // Find the current level of tag
-      const requiredLevel = (tag.path.match(/\.\{i}/g) || []).length - 1
+      const requiredLevel = this.getTagLevel(tag)
       if (requiredLevel < 0) return
-      // Check closest table class
+      // To check if a new tag with new parentKey is added to a wrapping-table
       for (const className of closestTable.classList) {
         // Only care about className that start with 'wrapping-table'
         if (className.startsWith('wrapping-table-level')) {
@@ -364,10 +383,28 @@ console.warn(closestTable)
           // Else, notify error
           return className === `wrapping-table-level-${requiredLevel}` && closestTable.id === tag.parentKey
             ? null
-            : this.$t('message.invalid_child_iterable_placement', {attr: this.$t(`entity.${tag.parentKey}`)})
+            : this.$t('message.invalid_iterable_area', {attr: this.$t(`entity.${tag.parentKey}`)})
         }
       }
 
+      // Capture
+      this.captureTag(tag, el, closestTable)
+    },
+
+    /**
+     * Capture wrapping table
+     * 1. Adding tag.parentKey as wrapping table id
+     * 2. Adding 'wrapping-table-level' as wrapping table level <tr/>
+     *
+     * @param {PrintTag} tag
+     * @param {HTMLElement} el
+     * @param {HTMLElement} closestTable
+     */
+    captureTag(tag, el, closestTable) {
+      // Table tree
+      const tree = []
+      // Find the current level of tag
+      const requiredLevel = this.getTagLevel(tag)
       // Check table tree level
       for (let level = requiredLevel; level >= 0; level--) {
         // Prepare data to capture tables
@@ -382,14 +419,73 @@ console.warn(closestTable)
         }
       }
 
+      // Get parent wrapper (owner)
+      let parentWrapper = {parentKey: 'none'}
       // Capture table
       for (const [level, items] of tree.entries()) {
         // Get tag and table
         const {tag, table} = items
         // Add id and class to closest (or wrapping) table
         table.id = tag.parentKey
-        table.classList.add('wrapping-table', `wrapping-table-level-${level}`)
+        table.classList.add('wrapping-table', `wrapping-table-level-${level}`, `of-${parentWrapper.parentKey}`)
+        // This tag will be parent wrapper (owner) of next level
+        parentWrapper = tag
       }
+
+      // Capture <td> for watch
+      el.closest('tr').classList.add('iterable-row',  `of-${parentWrapper.parentKey}`)
+    },
+
+    /**
+     * Check before mark
+     *
+     * @param {PrintTag} tag
+     * @param {HTMLElement} el
+     * @param {HTMLElement} closestTable
+     */
+    tryToMarkTagSubTable(tag, el, closestTable) {
+      // Get closestTable classList
+      const cTClassList = closestTable.classList
+      // Check if this is not a valid sub table of tag if this table is marked
+      if (cTClassList.contains('sub-wrapping-table') && !cTClassList.contains(`of-${tag.parentKey}`)) {
+        // Get sub table owner
+        for (let i = 0; i < cTClassList.length; i++) {
+          // The template of owner is 'of-[owner's key]'
+          if (cTClassList.item(i).startsWith('of-')) {
+            // Get owner's key
+            const ownerKey = cTClassList.item(i).substring(3)
+            // Check if [belonging's key] === parentKey
+            return ownerKey === tag.parentKey
+              ? null
+              // This means trying to add tag to a not owned sub table
+              : this.$t('message.table_belongs_to', {attr: this.$t(`entity.${ownerKey}`)})
+          }
+        }
+      } else {
+        // Get tag required level
+        const requiredLevel = this.getTagLevel(tag)
+        // Get the closest wrapping table (closest wrapper)
+        const closestWrapper = closestTable.closest('.wrapping-table')
+        // Check closest wrapper's level
+        if (!closestWrapper.classList.contains(`wrapping-table-level-${requiredLevel}`)) {
+          // This means trying to add lower level tag to higher level sub table (empty)
+          return this.$t('message.table_belongs_to', {attr: this.$t(`entity.${closestWrapper.id}`)})
+        }
+
+        this.markTagSubTable(tag, el, closestTable)
+      }
+    },
+
+    /**
+     * Mark table as sub table
+     *
+     * @param {PrintTag} tag
+     * @param {HTMLElement} el
+     * @param {HTMLElement} closestTable
+     */
+    markTagSubTable(tag, el, closestTable) {
+      closestTable.classList.add('sub-wrapping-table', `of-${tag.parentKey}`)
+      el.closest('tr').classList.add('iterable-row',  `of-${tag.parentKey}`)
     },
 
     // ****************************
@@ -421,6 +517,15 @@ console.warn(closestTable)
       }
 
       return null
+    },
+
+    /**
+     * Get tag level
+     *
+     * @param tag
+     */
+    getTagLevel(tag) {
+      return (tag.path.match(/\.\{i}/g) || []).length - 1
     },
 
     /**
