@@ -7,7 +7,6 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.Code128Writer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import diotviet.server.entities.User;
-import diotviet.server.views.Print.Order.OrderOlaPrintView;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -214,11 +213,5 @@ public abstract class OtherUtils {
      */
     public static String getRequester() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName();
-    }
-
-    public static List<OrderOlaPrintView> test() {
-        List<OrderOlaPrintView> out = new ArrayList<>();
-        out.add(new OrderOlaPrintView());
-        return out;
     }
 }

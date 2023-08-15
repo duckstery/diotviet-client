@@ -345,11 +345,6 @@ export default {
             "discountUnit": "%",
             "quantity": 1,
             "note": "",
-            "olas": [
-              {
-                "text": "ahihi"
-              }
-            ]
           },
           {
             "title": "GH-ĐẦM NGẮN",
@@ -359,11 +354,6 @@ export default {
             "discountUnit": "%",
             "quantity": 1,
             "note": "",
-            "olas": [
-              {
-                "text": "ahihi"
-              }
-            ]
           },
           {
             "title": "ỦI QUẦN",
@@ -373,11 +363,6 @@ export default {
             "discountUnit": "%",
             "quantity": 1,
             "note": "",
-            "olas": [
-              {
-                "text": "ahihi"
-              }
-            ]
           },
           {
             "title": "GIẶT ƯỚT 3-7kg",
@@ -387,11 +372,6 @@ export default {
             "discountUnit": "cash",
             "quantity": 1,
             "note": "",
-            "olas": [
-              {
-                "text": "ahihi"
-              }
-            ]
           },
           {
             "title": "TT Thêm : Ủi - Tẩy ...",
@@ -401,11 +381,6 @@ export default {
             "discountUnit": "%",
             "quantity": 1,
             "note": "",
-            "olas": [
-              {
-                "text": "ahihi"
-              }
-            ]
           }
         ],
         "phoneNumber": "0346576198",
@@ -425,7 +400,7 @@ export default {
 
       buildPrinter(this.activeDoc.content, this.tags, example)
         .then((printer) => {
-          console.warn(printer.tags)
+          console.warn(printer)
           this.test = printer.generate().innerHTML
           // printer.print()
         })

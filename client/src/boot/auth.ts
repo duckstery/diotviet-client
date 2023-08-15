@@ -51,7 +51,7 @@ const auth: Auth = {
       const payload = decodeJWT(jwt)
 
       // Save JWT to cookie
-      Cookies.set(tokenKey, jwt, {expires: new Date(payload.exp * 1000), sameSite: 'Lax'})
+      Cookies.set(tokenKey, jwt, {path: '/', expires: new Date(payload.exp * 1000), sameSite: 'Lax'})
       // Save JWT and payload to $store
       store.subscribe({...payload, jwt})
     } catch (e) {
@@ -82,7 +82,7 @@ const auth: Auth = {
    */
   isAuthenticated(): boolean {
     // If expired is greater than now(), consider not expired
-    return !!store.getExpiredAt && (date.subtractFromDate(new Date(), {seconds: 5})).getTime() / 1000 < store.getExpiredAt
+    return !!store.getExpiredAt && store.getExpiredAt > (date.subtractFromDate(new Date(), {seconds: 5})).getTime() / 1000
   },
 
   /**

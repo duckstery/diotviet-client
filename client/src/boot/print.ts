@@ -224,7 +224,6 @@ export class Printer implements IPrinter {
       let templateKey, templatePath = ''
       // Iterate through each subtag
       _tag.sub.forEach((subtag: PrintTag) => {
-        // console.warn(subtag)
         // Save the key
         templateKey = subtag.key
         // Save the path
@@ -269,7 +268,7 @@ export class Printer implements IPrinter {
    */
   private _getGeneratorForElement(element: Element, generators: PrintGenerators | undefined, index: number = -1): PrintGenerator {
     // Get generator key
-    const key = element.id + (index >= 0 ? `_${index}` : '')
+    const key = element.id.substring(39) + (index >= 0 ? `_${index}` : '')
     // Check if generator for this key is exists
     if (generators !== undefined && typeof generators[key] === 'function') {
       return generators[key]
@@ -319,17 +318,10 @@ export class Printer implements IPrinter {
     element.querySelectorAll('.wrapping-table > tbody').forEach(tbody => {
       // Save childNodes (that is not a header) as template
       const templateElements = Array.from(tbody.children)
-        .filter(el =>
-          // wrapping-table
-          // Since wrapping-table may contains <th>, so
-          (el.querySelector('.wrapping-table') || util.isUnset(el.querySelector('th')) )
-          && !util.isUnset(tbody.removeChild(el))
-        )
-      console.error('wrapping-table ' + tbody.parentElement.id)
+        .filter(el => util.isUnset(el.querySelector('th')) && !util.isUnset(tbody.removeChild(el)))
       // Pick generator by table.id (<tbody>'s parent) and generate content
       // @ts-ignore
       const resource = generators[tbody.parentElement.id]()
-      console.warn(resource)
 
       // Loop
       for (let i = 0; i < (resource.size ?? 0); i++) {
@@ -340,20 +332,7 @@ export class Printer implements IPrinter {
           const cloned = <Element>el.cloneNode(true)
           // Query all .iterable-tag and iterate through each of them
           cloned.querySelectorAll('.iterable-tag')
-            // @ts-ignore
-            .forEach((tag: Element) => {
-              // Check if el contains .wrapping-table
-              const innerWrappingTable = cloned.querySelector('.wrapping-table')
-              if (util.isUnset()) {
-                // If not, generate normal content
-                this._generateAndSetContentForElement(tag, resource.generators, i)
-              } else {
-                // Else, generate content for inner .wrapping-table
-                const generator = this._getGeneratorForElement(tag, resource.generators, i)
-                console.warn(tag.id)
-                this._generateAndSetContentForWrappingTable(tag, generator().generators, times + 1)
-              }
-            })
+            .forEach((tag: Element) => this._generateAndSetContentForElement(tag, resource.generators, i))
           // Add new el to tbody
           tbody.appendChild(cloned)
         }

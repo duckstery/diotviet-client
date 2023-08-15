@@ -12,6 +12,7 @@ import Skeleton from "components/General/Other/Skeleton.vue";
 
 import {mapState} from "pinia";
 import {useEnvStore} from "stores/env";
+import {uid} from "quasar";
 
 export default {
   name: "RichTextEditor",
@@ -121,6 +122,9 @@ export default {
             if (node.tagName === 'SPAN' && node.classList.contains('iterable-tag')) {
               this.onAfterDeleteIterableTag(node)
             }
+            if (node.tagName === 'TR' && node.classList.contains('iterable-row')) {
+              this.onAfterDeleteIterableTag(node)
+            }
           })
         })
       })
@@ -154,24 +158,23 @@ export default {
 
       // Only care about non-manual mceInsertContent command
       if (command.command === 'mceInsertContent' && !value.manual) {
-        // Try to get printable tag
-        const printableTag = this.getPrintableTag(value.content ?? value)
-        // Only care if mceInsertContent is inserting printable tag
-        if (!this.$util.isUnset(printableTag)) {
-          // Stop event from running
-          command.preventDefault()
-          command.stopImmediatePropagation()
-          command.stopPropagation()
+        // Stop event from running
+        command.preventDefault()
+        command.stopImmediatePropagation()
+        command.stopPropagation()
 
-          // Check
-          if (value.paste) {
-            // This means that tag is copied and pasted
-            this.tryToInsertTag(this.searchTag(this.tags, printableTag.id) ?? {})
-          } else {
-            // This means that tag is dragged and dropped
-            // This action must occur after id removal from onAfterDeleteIterableTag
-            this.$nextTick(() => this.$nextTick(() => this.tryToInsertTag(this.searchTag(this.tags, printableTag.id) ?? {})))
-          }
+        // Check if that tag is copied and pasted
+        if (value.paste) {
+          // Insert pasted content
+          return this.editor.insertContent(this.updateTagsTimestamp(value.content), {manual: true})
+        }
+
+        // Get the dragged tag
+        const printableTag = this.$util.div(value.content ?? value).querySelector('.printable-tag')
+        // This means that tag is dragged and dropped
+        if (!this.$util.isUnset(printableTag)) {
+          // This action must occur after id removal from onAfterDeleteIterableTag
+          this.$nextTick(() => this.$nextTick(() => this.tryToInsertTag(this.searchTag(this.tags, printableTag.id.substring(39)))))
         }
       }
     },
@@ -192,6 +195,8 @@ export default {
           // Clear table metadata
           table.id = ''
           table.classList.remove('wrapping-table')
+          // Clear all class of <tr/>
+          table.querySelectorAll('tr').forEach(el => el.classList.remove(...el.classList))
         })
       }
     },
@@ -264,13 +269,15 @@ export default {
       try {
         // Open an undo transaction
         this.editor.undoManager.transact(() => {
+          // Uid
+          const stamp = uid()
           // Backup content
           const content = this.editor.getContent()
           // Insert tag
-          this.editor.insertContent(this.craftTagContent(tag), {manual: true})
+          this.editor.insertContent(this.craftTagContent(tag, stamp), {manual: true})
 
           // Validate
-          const message = this.validateTag(tag)
+          const message = this.validateTag(tag, stamp)
           if (!this.$util.isUnset(message)) {
             // Rollback content
             this.editor.setContent(content)
@@ -288,9 +295,10 @@ export default {
      * Craft tag content
      *
      * @param {PrintTag} tag
+     * @param {string} stamp
      * @return {string}
      */
-    craftTagContent(tag) {
+    craftTagContent(tag, stamp) {
       // Create extra class name
       let extraClassName = ''
       if (tag.isParentIterable) {
@@ -304,91 +312,59 @@ export default {
       // Translate key
       const translatedKey = this.$t(`entity.${tag.key}`).replace(' ', '_')
 
-      return `<span class="printable-tag ${extraClassName}" id="${tag.key}">{{${translatedKey}}}</span>`
+      return `<span class="printable-tag ${extraClassName}" id="u-${stamp}-${tag.key}">{{${translatedKey}}}</span>`
     },
 
     /**
      * Validate tag
      *
      * @param {PrintTag} tag
+     * @param {string} stamp
      * @return {null|string}
      */
-    validateTag(tag) {
+    validateTag(tag, stamp) {
       // Select tag
-      const tags = this.editor.dom.select(`#${tag.key}`)
+      const tags = this.editor.dom.select(`#u-${stamp}-${tag.key}`)
 
-      if (tags.length > 1) {
-        // Check if tag is occur more than twice
-        return this.$t('message.existed_tag')
-      } else if (tag.isParentIterable) {
-        // Check if this tag's parent is iterable, then get the nearest captured table
-        const closestTable = tags[0].closest('table.wrapping-table') ?? tags[0].closest('table')
-        // Get the wrapping table for tag is exists
-        const wrappingTable = this.editor.dom.select(`table[id='${tag.parentKey}']`)
-console.warn(closestTable)
-        // Check
-        if (this.$util.isUnset(closestTable)) {
-          // This means that tag is outside of table
-          return this.$t('message.invalid_iterable_tag')
-        } else if (wrappingTable.length === 0) {
-          // This means that tag is inside of table but the table is not captured
-          return this.captureTag(tag, closestTable)
-        } else if (closestTable.id !== wrappingTable[0].id) {
-          // This means that tag is outside of it correct wrapping table
-          return this.$t('message.invalid_iterable_area', {attr: this.$t(`entity.${tag.parentKey}`)})
-        }
+      // No need to validate if not iterable
+      if (!tag.isParentIterable) {
+        return
       }
 
-      return null
+      // Check if this tag's parent is iterable, then get the nearest captured table
+      const closestTable = tags[0].closest('table.wrapping-table') ?? tags[0].closest('table')
+      // Get the wrapping table for tag is existing
+      const wrappingTable = this.editor.dom.select(`table[id='${tag.parentKey}']`)
+
+      // Check
+      if (this.$util.isUnset(closestTable)) {
+        // This means that tag is outside of table
+        return this.$t('message.invalid_iterable_tag')
+      } else if (wrappingTable.length === 0) {
+        // This means that tag is inside of table but the table is not captured
+        this.captureTag(tag, closestTable)
+      } else if (closestTable.id !== wrappingTable[0].id) {
+        // This means that tag is outside of it correct wrapping table
+        return this.$t('message.invalid_iterable_area', {attr: this.$t(`entity.${tag.parentKey}`)})
+      }
+
+      // Capture the <tr/> so observer can observe it
+      tags[0].closest('tr').classList.add('printable-row', 'iterable-row', tag.parentKey)
     },
 
     /**
      * Capture wrapping table
      * 1. Adding tag.parentKey as wrapping table id
-     * 2. Adding 'iterable_row' as wrapping <tr/>
+     * 2. Adding 'wrapping-table' to wrapping table class list
      *
      * @param {PrintTag|null} tag
      * @param {HTMLElement} closestTable
      */
     captureTag(tag, closestTable) {
-      // Table tree
-      const tree = []
-      // Find the current level of tag
-      const requiredLevel = (tag.path.match(/\.\{i}/g) || []).length - 1
-      if (requiredLevel < 0) return
-      // Check closest table class
-      for (const className of closestTable.classList) {
-        // Only care about className that start with 'wrapping-table'
-        if (className.startsWith('wrapping-table-level')) {
-          // If tag is placed at correct level of correct parent tag, no need to capture anything
-          // Else, notify error
-          return className === `wrapping-table-level-${requiredLevel}` && closestTable.id === tag.parentKey
-            ? null
-            : this.$t('message.invalid_child_iterable_placement', {attr: this.$t(`entity.${tag.parentKey}`)})
-        }
-      }
-
-      // Check table tree level
-      for (let level = requiredLevel; level >= 0; level--) {
-        // Prepare data to capture tables
-        tree.unshift({tag: tag, table: closestTable})
-        // Get upper level tag and closestTable
-        tag = this.searchTag(this.tags, tag.parentKey)
-        closestTable = closestTable.parentElement.closest('table')
-
-        // Check if table is placed at correct table level
-        if (level > 0 && this.$util.isUnset(closestTable)) {
-          return this.$t('message.invalid_iterable_area_level', {attr: level + 1})
-        }
-      }
-
-      // Capture table
-      for (const [level, items] of tree.entries()) {
-        // Get tag and table
-        const {tag, table} = items
+      if (!closestTable.classList.contains('wrapping-table')) {
         // Add id and class to closest (or wrapping) table
-        table.id = tag.parentKey
-        table.classList.add('wrapping-table', `wrapping-table-level-${level}`)
+        closestTable.id = tag.parentKey
+        closestTable.classList.add('wrapping-table')
       }
     },
 
@@ -401,7 +377,7 @@ console.warn(closestTable)
      *
      * @param {[PrintTag]} tags
      * @param {string} key
-     * @return {PrintTag|null} tag
+     * @return {PrintTag} tag
      */
     searchTag(tags, key) {
       // Iterate through each tag
@@ -424,6 +400,24 @@ console.warn(closestTable)
     },
 
     /**
+     * Update tags timestamp
+     *
+     * @param htmlString
+     * @return {string}
+     */
+    updateTagsTimestamp(htmlString) {
+      // Wrap html string with div
+      const div = this.$util.div(htmlString)
+      // Get all <span/> with class of printable-tag
+      div.querySelectorAll('span.printable-tag').forEach(tag => {
+        // Set new id
+        tag.id = `u-${uid()}-${tag.id.substring(39)}`
+      })
+
+      return div.innerHTML
+    },
+
+    /**
      * Notify with Tinymce Notifier
      *
      * @param {string} message
@@ -435,16 +429,6 @@ console.warn(closestTable)
         timeout: 3000,
         type: type
       });
-    },
-
-    /**
-     * Get printable tag from html string
-     *
-     * @param htmlString
-     * @return {Element}
-     */
-    getPrintableTag(htmlString) {
-      return this.$util.div(htmlString).querySelector('.printable-tag')
     }
   }
 }
