@@ -122,6 +122,9 @@ export default {
             })
             .catch(error.any)
         })
+        .onCancel(() => {
+          if (action.value.id === constant.statuses()[3].id) action.value = null
+        })
     }
 
     return {

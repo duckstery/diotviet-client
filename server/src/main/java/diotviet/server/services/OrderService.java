@@ -128,7 +128,7 @@ public class OrderService extends BaseService {
      * @param request
      */
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
-    public void store(OrderInteractRequest request, Status status) {
+    public Long store(OrderInteractRequest request, Status status) {
         // Common validate for create and update
         Order order = validator.validateAndExtract(request);
         // Setup
@@ -144,8 +144,10 @@ public class OrderService extends BaseService {
         order.setItems(null);
 
         // Store and flush (immediate save to database), then proceed to store Product's Item
-        repository.saveAndFlush(order);
+        Long id = repository.save(order).getId();
         itemRepository.saveAll(items);
+
+        return id;
     }
 
     /**

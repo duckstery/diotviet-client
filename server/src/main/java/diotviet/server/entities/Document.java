@@ -40,6 +40,10 @@ public class Document implements Lockable {
     @CsvBindByName
     private String content;
 
+    @Column
+    @CsvBindByName
+    private Boolean isActive = false;
+
     @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

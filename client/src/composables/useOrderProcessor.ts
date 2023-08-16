@@ -1,4 +1,5 @@
 import {Dialog, DialogChainObject} from "quasar";
+// @ts-ignore
 import OrderProcessor from "components/Manage/Transaction/Order/OrderProcessor.vue";
 import {Ref} from "@vue/reactivity";
 import {util} from "src/boot";
@@ -10,7 +11,6 @@ import {util} from "src/boot";
  * @return {function(): DialogChainObject}
  */
 export function useOrderProcessor(detailRef: Ref<{ code: string }> | null): () => DialogChainObject {
-  console.warn(detailRef)
   // Invoke dialog
   return () => Dialog.create({
     component: OrderProcessor,

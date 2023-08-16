@@ -13,7 +13,7 @@ public interface OrderCustomerPrintView {
 
     @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.createdAt, \"dd-MM-yyyy HH:mm:ss\")}")
     @PrintTag(sequence = 1, example = "01-01-1970 12:34:56")
-    Date getBirthday();
+    String getBirthday();
 
     @PrintTag(sequence = 2, example = "john.doe@gmail.com")
     String getEmail();

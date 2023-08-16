@@ -7,7 +7,8 @@
         </div>
         <div class="col-6">
           <ItemPanel :items="items" ref="itemPanel" @order="onOpe('order')" @purchase="onOpe('purchase')"/>
-          <StatisticPanel :max-height="statisticPanelHeight" class="tw-mt-5 tw-flex-grow" :style="`height: ${statisticPanelHeight}px`"/>
+          <StatisticPanel class="tw-mt-5 tw-flex-grow"
+                          :max-height="statisticPanelHeight" :style="`height: ${statisticPanelHeight}px`"/>
         </div>
       </div>
     </div>
@@ -22,6 +23,7 @@ import OrderPanel from "components/Work/OrderPanel.vue";
 import ItemPanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
 import {useOrderStore} from "stores/order";
+import {buildPrinter} from "src/boot";
 
 export default defineComponent({
   name: 'WorkPage',
@@ -31,6 +33,8 @@ export default defineComponent({
   data: () => ({
     isMounted: false,
     items: [],
+
+    printer: null,
   }),
 
   computed: {
@@ -46,23 +50,22 @@ export default defineComponent({
 
   methods: {
     /**
-     * Initiate load
-     */
-    index() {
-      // Call API to get data for table
-      this.$axios.get('/product/display')
-        .then(res => this.items = res.data.payload)
-    },
-
-    /**
      * On operation
      *
      * @param type
      */
     onOpe(type) {
       if (this.validate()) {
+
         this.$axios.post(`/order/${type}`, unref(useOrderStore().getActiveOrder))
-          .then(console.warn)
+          // Get Order print data
+          .then(res => this.$axios.get(`/order/print/${res.data.payload}`)
+            .then(res => {
+              this.printer.data = res.data.payload
+              console.warn(this.printer.generate())
+              this.printer.print()
+            })
+            .catch(this.$error.any))
           .catch(this.$error.any)
       }
     },
@@ -87,7 +90,13 @@ export default defineComponent({
 
   mounted() {
     this.isMounted = true
-    this.index()
+    // Call API to get data for table
+    this.$axios.get('/product/display')
+      .then(res => {
+        this.items = res.data.payload.items
+        // Build printer
+        buildPrinter(res.data.payload.template, res.data.payload.tags).then(printer => this.printer = printer)
+      })
   }
 })
 </script>

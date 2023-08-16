@@ -90,7 +90,7 @@ export class Printer implements IPrinter {
   /**
    * Generate printed Element
    */
-  generate(): Element | null {
+  generate(): Element {
     // Check if is not dirty, return cached element
     if (!this._isDirty && this._element !== null) {
       return this._element
@@ -106,6 +106,8 @@ export class Printer implements IPrinter {
     // Generate iterable tag
     this._generateAndSetContentForWrappingTable(this._element, this.generators)
 
+    // Mark as not dirty
+    this._isDirty = false
     return this._element
   }
 
@@ -113,7 +115,7 @@ export class Printer implements IPrinter {
    * Print the printed Element
    */
   print(): void {
-    print(this.generate())
+    print(this.generate().innerHTML)
   }
 
   // ************************
@@ -159,13 +161,13 @@ export class Printer implements IPrinter {
   /**
    * Build a PrintGenerator
    *
-   * @param content
+   * @param callback
    * @param size
    * @param generators
    */
-  private _buildGenerator(content?: string, size?: number, generators?: PrintGenerators): PrintGenerator {
+  private _buildGenerator(callback: () => string, size?: number, generators?: PrintGenerators): PrintGenerator {
     return (): PrintGeneratorResource => ({
-      content: content,
+      content: callback(),
       size: size,
       generators: generators
     })
@@ -178,8 +180,10 @@ export class Printer implements IPrinter {
    * @param {PrintTag} tag
    */
   private _buildAndAddGeneratorForNormal(generators: PrintGenerators, tag: PrintTag) {
+    // Save tag path at this method scope
+    const path = tag.path
     // Return
-    generators[tag.key] = this._buildGenerator(util.getProp(this._data, tag.path))
+    generators[tag.key] = this._buildGenerator(() => util.getProp(this._data, path))
   }
 
   /**
@@ -194,13 +198,13 @@ export class Printer implements IPrinter {
       // Check for generate approach
       if (subtag.key.includes('bc')) {
         // Check if using Barcode
-        generators[subtag.key] = this._buildGenerator(this._generateImgElement(this._data['id'], 'barcode', util.getProp(this._data, subtag.path)))
+        generators[subtag.key] = this._buildGenerator(() => this._generateImgElement(this._data['id'], 'barcode', util.getProp(this._data, subtag.path)))
       } else if (subtag.key.includes('qr')) {
         // Check if using QR
-        generators[subtag.key] = this._buildGenerator(this._generateImgElement(this._data['id'], 'qrcode', util.getProp(this._data, subtag.path)))
+        generators[subtag.key] = this._buildGenerator(() => this._generateImgElement(this._data['id'], 'qrcode', util.getProp(this._data, subtag.path)))
       } else {
         // Create normal generator
-        generators[subtag.key] = this._buildGenerator(util.getProp(this._data, subtag.path))
+        generators[subtag.key] = this._buildGenerator(() => util.getProp(this._data, subtag.path))
       }
     })
   }
@@ -346,15 +350,9 @@ export class Printer implements IPrinter {
  *
  * @param {Element} element
  */
-const print = (element: Element | null) => {
-  if (!util.isUnset(element)) {
-    // console.warn(element)
+const print = (element: string) => {
+  if (!util.isUnset(util.nullIfEmpty(element))) {
     printJS({printable: element, type: 'raw-html'})
-    // Create a print window
-    // const printWindow = window.open('', '', 'height=500, width=500');
-    // printWindow.document.write(`<html lang="${env.get('language')}"><body>${element}</body></html>`);
-    // printWindow.document.close();
-    // printWindow.onload = () => printWindow.print()
   }
 }
 
@@ -366,7 +364,7 @@ const print = (element: Element | null) => {
  * @param {object} data
  * @return {Promise<{readonly: {tags: array}, template: string, tags: array, data: object, generate: Promise<string>, generators: object, print: function()}>}
  */
-const buildPrinter = (template: string, tags: PrintTag[], data: any): Promise<Printer> => {
+const buildPrinter = (template: string, tags: PrintTag[], data: any | null): Promise<Printer> => {
   // Execute asynchronously
   return util.async(() => {
     // Build and return printer

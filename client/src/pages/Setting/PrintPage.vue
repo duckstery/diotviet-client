@@ -338,7 +338,8 @@ export default {
       console.warn(this.example)
       buildPrinter(this.activeDoc.content, this.tags, this.example)
         .then((printer) => {
-          console.warn(printer)
+          console.warn(printer.generators['order_items']().generators['item_note_0']())
+          console.warn(printer.generators['order_items']().generators['item_note_1']())
           this.test = printer.generate().innerHTML
           // printer.print()
         })

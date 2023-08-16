@@ -47,7 +47,7 @@ public interface OrderOrderPrintView {
 
     @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.createdAt, \"dd-MM-yyyy HH:mm:ss\")}")
     @PrintTag(sequence = 11, example = "01-01-2023 12:34:56")
-    Date getCreatedAt();
+    String getCreatedAt();
 
     @PrintTag(sequence = 12, example = "Duckster")
     String getCreatedBy();

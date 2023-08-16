@@ -12,5 +12,6 @@ public record ProductInitResponse(
         EntityHeader[] headers,
         Page<ProductSearchView> items,
         List<Category> categories,
-        List<Group> groups) {
+        List<Group> groups
+) {
 }

@@ -108,9 +108,9 @@ public class OrderController extends BaseController {
     @PostMapping(value = "/order")
     public ResponseEntity<?> order(@RequestBody OrderInteractRequest request) {
         // Store item
-        orderService.store(request, Status.PENDING);
+        Long id = orderService.store(request, Status.PENDING);
 
-        return ok("");
+        return ok(id);
     }
 
     /**
@@ -122,9 +122,9 @@ public class OrderController extends BaseController {
     @PostMapping(value = "/purchase")
     public ResponseEntity<?> purchase(@RequestBody OrderInteractRequest request) {
         // Store item
-        orderService.store(request, Status.RESOLVED);
+        Long id = orderService.store(request, Status.RESOLVED);
 
-        return ok("");
+        return ok(id);
     }
 
     /**
@@ -202,10 +202,7 @@ public class OrderController extends BaseController {
      */
     @GetMapping(value = "/print/{id}")
     public ResponseEntity<?> print(@PathVariable Long id) {
-        // Get Order
-        OrderOrderPrintView orderOrderPrintView = orderService.print(id);
-
-        return ok(orderOrderPrintView);
+        return ok(orderService.print(id));
     }
 
 //

@@ -85,4 +85,14 @@ public class DocumentService {
         // Delete
         repository.deleteById(id);
     }
+
+    /**
+     * Find active document by group name
+     *
+     * @param groupName
+     * @return
+     */
+    public Document getActiveDocumentOfGroup(String groupName) {
+        return repository.findByIsActiveTrueAndGroupName(groupName);
+    }
 }

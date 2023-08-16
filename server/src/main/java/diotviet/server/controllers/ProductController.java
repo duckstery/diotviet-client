@@ -5,13 +5,18 @@ import diotviet.server.entities.Category;
 import diotviet.server.entities.Group;
 import diotviet.server.entities.Product;
 import diotviet.server.services.CategoryService;
+import diotviet.server.services.DocumentService;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.ProductService;
 import diotviet.server.services.imports.ProductImportService;
+import diotviet.server.templates.Document.PrintableTag;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Product.*;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
+import diotviet.server.utils.PrintUtils;
+import diotviet.server.views.Print.Order.OrderOrderPrintView;
+import diotviet.server.views.Product.ProductDisplayView;
 import diotviet.server.views.Product.ProductSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -47,6 +52,11 @@ public class ProductController extends BaseController {
     @Autowired
     private GroupService groupService;
     /**
+     * Document Service
+     */
+    @Autowired
+    private DocumentService documentService;
+    /**
      * Product import service
      */
     @Autowired
@@ -56,6 +66,11 @@ public class ProductController extends BaseController {
      */
     @Autowired
     private EntityUtils entityUtils;
+    /**
+     * Utilities for print
+     */
+    @Autowired
+    private PrintUtils printUtils;
 
     // ****************************
     // Public API
@@ -88,8 +103,15 @@ public class ProductController extends BaseController {
      */
     @GetMapping("/display")
     public ResponseEntity<?> display() {
+        // Get Product
+        List<ProductDisplayView> products = productService.display();
+        // Get active Document content
+        String content = documentService.getActiveDocumentOfGroup("print_order").getContent();
+        // Get PrintableTag
+        PrintableTag[] tags = printUtils.getPrintableTag(OrderOrderPrintView.class);
+
         // Return data
-        return ok(productService.display());
+        return ok(new ProductDisplayResponse(products, content, tags));
     }
 
     /**

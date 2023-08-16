@@ -34,4 +34,12 @@ public interface DocumentRepository extends JpaRepository<Document, Long>, Optim
      * @return
      */
     long countByGroupIdAndIdNot(Long groupId, Long id);
+
+    /**
+     * Find active Document by group name
+     *
+     * @param groupName
+     * @return
+     */
+    Document findByIsActiveTrueAndGroupName(String groupName);
 }
