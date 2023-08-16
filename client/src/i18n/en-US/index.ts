@@ -230,6 +230,7 @@ export default {
     item_discount: 'Discount',
     item_discountUnit: 'Discount unit',
     item_actualPrice: 'Actual price',
+    item_totalPrice: 'Total price',
     item_note: 'Note',
     item_quantity: 'Quantity',
   },

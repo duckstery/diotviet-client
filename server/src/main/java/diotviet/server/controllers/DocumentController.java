@@ -5,6 +5,7 @@ import diotviet.server.entities.Group;
 import diotviet.server.entities.Order;
 import diotviet.server.services.DocumentService;
 import diotviet.server.services.GroupService;
+import diotviet.server.structures.FakeJSON;
 import diotviet.server.templates.Document.DocumentInitResponse;
 import diotviet.server.templates.Document.DocumentInteractRequest;
 import diotviet.server.templates.Document.DocumentSelectResponse;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api/v1/print", produces = "application/json")
@@ -60,8 +62,10 @@ public class DocumentController extends BaseController {
         List<DocumentInitView> document = service.init(groups.get(0).getId());
         // Get PrintableTag
         PrintableTag[] printableFields = printUtils.getPrintableTag(OrderOrderPrintView.class);
+        // Get example
+        FakeJSON example = printUtils.getExample(OrderOrderPrintView.class);
 
-        return ok(new DocumentInitResponse(groups, document, printableFields));
+        return ok(new DocumentInitResponse(groups, document, printableFields, example));
     }
 
     /**
@@ -73,13 +77,17 @@ public class DocumentController extends BaseController {
     public ResponseEntity<?> searchByGroup(@PathVariable Long groupId) {
         // Init Document by group_id
         List<DocumentInitView> documents = service.init(groupId);
-        // Get PrintableTag
-        PrintableTag[] printableFields = printUtils.getPrintableTag(switch (documents.get(0).getKey()) {
+        // Get entityClass
+        Class<?> entityClass = switch (documents.get(0).getKey()) {
             case "print_order" -> OrderOrderPrintView.class;
             default -> OrderOrderPrintView.class;
-        });
+        };
+        // Get PrintableTag
+        PrintableTag[] printableFields = printUtils.getPrintableTag(entityClass);
+        // Get example
+        FakeJSON example = printUtils.getExample(entityClass);
 
-        return ok(new DocumentSelectResponse(documents, printableFields));
+        return ok(new DocumentSelectResponse(documents, printableFields, example));
     }
 
     /**

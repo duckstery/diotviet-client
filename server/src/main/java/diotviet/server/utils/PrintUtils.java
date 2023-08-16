@@ -2,6 +2,7 @@ package diotviet.server.utils;
 
 import diotviet.server.annotations.PrintObject;
 import diotviet.server.annotations.PrintTag;
+import diotviet.server.structures.FakeJSON;
 import diotviet.server.templates.Document.PrintableTag;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,9 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 
 @Component
 public class PrintUtils {
@@ -24,12 +24,21 @@ public class PrintUtils {
      * Get printable field of Entity
      *
      * @param entityClass
-     * @param group
      * @return
      */
     public PrintableTag[] getPrintableTag(Class<?> entityClass) {
         // Trace and harvest
         return traceAndHarvestPrintTag(entityClass, new ArrayList<>(), "", "", null).toArray(new PrintableTag[0]);
+    }
+
+    /**
+     * Get example of entityClass
+     *
+     * @param entityClass
+     * @return
+     */
+    public FakeJSON getExample(Class<?> entityClass) {
+        return traceAndHarvestPrintTagExample(entityClass, new ArrayList<>())[0];
     }
 
     // ****************************
@@ -97,6 +106,7 @@ public class PrintUtils {
             // Add new PrintableTag
             printableFields.add(
                     new PrintableTag(
+                            printTag.sequence(),
                             key,                    // Translation key
                             path,                   // Data path
                             preprocessedFields,     // Subfields
@@ -106,8 +116,11 @@ public class PrintUtils {
                             printTag.isIdentifier() // Tag's identifier
                     )
             );
+
         }
 
+        // Sort
+        printableFields.sort(Comparator.comparingInt(PrintableTag::sequence));
         return printableFields;
     }
 
@@ -128,19 +141,28 @@ public class PrintUtils {
     }
 
     /**
+     * Get size of example
+     *
+     * @param type
+     * @return
+     */
+    private int getSizeOfExample(Class<?> type) {
+        // Else, get class name as base
+        return type.isAnnotationPresent(PrintObject.class) ? type.getAnnotation(PrintObject.class).sizeOfExample() : 1;
+    }
+
+    /**
      * Retrieve Print Tag
      *
      * @param method
      * @return
      */
     private PrintTag retrievePrintTag(Method method) {
-        // Get printTag annotation of Method
-        PrintTag printTag = method.getAnnotation(PrintTag.class);
-        // Else, return a default @PrintTag
-        String methodName = method.getName();
-
         // Return null (represent default value)
         return new PrintTag() {
+            private PrintTag printTag = method.getAnnotation(PrintTag.class);
+            private String methodName = method.getName();
+
             @Override
             public Class<? extends Annotation> annotationType() {
                 return PrintTag.class;
@@ -151,6 +173,16 @@ public class PrintUtils {
                 return Objects.nonNull(printTag) && StringUtils.isNotBlank(printTag.value())
                         ? printTag.value()
                         : StringUtils.uncapitalize(methodName.substring(3));
+            }
+
+            @Override
+            public int sequence() {
+                return Objects.nonNull(printTag) ? printTag.sequence() : 0;
+            }
+
+            @Override
+            public String[] example() {
+                return Objects.nonNull(printTag) ? printTag.example() : new String[0];
             }
 
             @Override
@@ -193,13 +225,58 @@ public class PrintUtils {
             // Clear all
             tags.clear();
             // Add plain value Tag
-            tags.add(new PrintableTag("id_raw", path, new PrintableTag[0], false, false, key, true));
+            tags.add(new PrintableTag(0, "id_raw", path, new PrintableTag[0], false, false, key, true));
             // Add Barcode Tag
-            tags.add(new PrintableTag("id_bc", path, new PrintableTag[0], false, false, key, true));
+            tags.add(new PrintableTag(1, "id_bc", path, new PrintableTag[0], false, false, key, true));
             // Add QR Code Tag
-            tags.add(new PrintableTag("id_qr", path, new PrintableTag[0], false, false, key, true));
+            tags.add(new PrintableTag(2, "id_qr", path, new PrintableTag[0], false, false, key, true));
         }
 
         return tags.toArray(new PrintableTag[0]);
+    }
+
+    /**
+     * Trace and harvest Entity @PrintTag's example
+     *
+     * @param entityClass
+     * @param harvested
+     * @return
+     */
+    private FakeJSON[] traceAndHarvestPrintTagExample(Class<?> entityClass, ArrayList<String> harvested) {
+        // Create output
+        FakeJSON[] objects = new FakeJSON[getSizeOfExample(entityClass)];
+        // Initialize array
+        for (int i = 0; i < objects.length; i++) objects[i] = new FakeJSON();
+
+        // Cache the field's class, so it won't be harvested next time
+        harvested.add(entityClass.getName());
+
+        // Iterate through each field
+        for (Method method : entityClass.getDeclaredMethods()) {
+            // Get PrintTag Annotation
+            PrintTag printTag = retrievePrintTag(method);
+
+            // Get key
+            String key = printTag.value();
+            // Get example data
+            String[] examples = printTag.example();
+            // Create FakeJson [size] times to demonstrate example
+            for (int i = 0; i < objects.length; i++) {
+                // Json data
+                Object data = null;
+                // Check if PrintTag is a PrintObject
+                if (ArrayUtils.isNotEmpty(printTag.component())) {
+                    // Trace and harvest
+                    FakeJSON[] sub = traceAndHarvestPrintTagExample(printTag.component()[0], harvested);
+                    // Get first
+                    data = sub.length == 1 ? sub[0] : sub;
+                }
+
+                // Put data
+                objects[i].put(key, Objects.isNull(data) ? examples[i] : data);
+            }
+        }
+
+        return objects;
     }
 }

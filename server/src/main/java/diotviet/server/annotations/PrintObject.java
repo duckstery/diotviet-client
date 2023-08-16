@@ -24,4 +24,6 @@ public @interface PrintObject {
      */
 
     String value() default "";
+
+    int sizeOfExample() default 1;
 }

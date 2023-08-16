@@ -122,12 +122,15 @@ export default {
       v => !!v || $t('message.required'),
       v => v.length <= 20 || $t('message.max_length', {max: 20})
     ]
+    const example = ref({})
     /**
      * Load docs
      *
      * @param res
      */
     const loadDocs = (res) => {
+      // Set example
+      example.value = res.data.payload.example
       // Clear Doc list first
       docs.value = []
       nextTick(() => {
@@ -313,7 +316,7 @@ export default {
       loading: loading,
       test: ref(''),
       // Document
-      tags: tags, activeDoc: activeDoc, docs: docs, docNamingRules: docNamingRules,
+      tags: tags, activeDoc: activeDoc, docs: docs, docNamingRules: docNamingRules, example: example,
       add: add, save: save, reset: reset, remove: remove,
       // General
       groups: groups, activeGroupId: activeGroupId
@@ -332,73 +335,8 @@ export default {
 
   methods: {
     print() {
-      const example = {
-        "id": "742",
-        "address": "78/9 ADV",
-        "code": "DH00001",
-        "items": [
-          {
-            "title": "Khuyến mãi",
-            "originalPrice": "0",
-            "discount": "0",
-            "actualPrice": "0",
-            "discountUnit": "%",
-            "quantity": 1,
-            "note": "",
-          },
-          {
-            "title": "GH-ĐẦM NGẮN",
-            "originalPrice": "50,000",
-            "discount": "50",
-            "actualPrice": "50,000",
-            "discountUnit": "%",
-            "quantity": 1,
-            "note": "",
-          },
-          {
-            "title": "ỦI QUẦN",
-            "originalPrice": "10,000",
-            "discount": "0",
-            "actualPrice": "10,000",
-            "discountUnit": "%",
-            "quantity": 1,
-            "note": "",
-          },
-          {
-            "title": "GIẶT ƯỚT 3-7kg",
-            "originalPrice": "35,000",
-            "discount": "5,000",
-            "actualPrice": "35,000",
-            "discountUnit": "cash",
-            "quantity": 1,
-            "note": "",
-          },
-          {
-            "title": "TT Thêm : Ủi - Tẩy ...",
-            "originalPrice": "5,000",
-            "discount": "10",
-            "actualPrice": "5,000",
-            "discountUnit": "%",
-            "quantity": 1,
-            "note": "",
-          }
-        ],
-        "phoneNumber": "0346576198",
-        "createdAt": "2023-06-28T04:21:18.352+00:00",
-        "customer": {
-          "name": "C NHƯ HẢO",
-          "email": null,
-          "birthday": null
-        },
-        "paymentAmount": "100,000",
-        "provisionalAmount": "100,000",
-        "createdBy": "ahihi@gmail.com",
-        "discount": "0",
-        "discountUnit": "%",
-        "note": ""
-      }
-
-      buildPrinter(this.activeDoc.content, this.tags, example)
+      console.warn(this.example)
+      buildPrinter(this.activeDoc.content, this.tags, this.example)
         .then((printer) => {
           console.warn(printer)
           this.test = printer.generate().innerHTML

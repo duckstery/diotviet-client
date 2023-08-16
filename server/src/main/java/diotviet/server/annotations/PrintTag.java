@@ -25,6 +25,10 @@ public @interface PrintTag {
 
     String value() default "";
 
+    int sequence();
+
+    String[] example() default {};
+
     Class<?>[] component() default {};
 
     boolean isIterable() default false;
