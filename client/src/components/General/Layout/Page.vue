@@ -15,6 +15,7 @@ import Breadcrumbs from "components/Manage/Breadcrumbs.vue";
 
 export default {
   name: 'Page',
+
   components: {Breadcrumbs},
 
   inject: ['globalVars'],

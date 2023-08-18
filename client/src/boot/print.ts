@@ -1,6 +1,6 @@
 // @ts-ignore
 import _ from "lodash"
-import {util} from "src/boot"
+import {loading, util} from "src/boot"
 import printJS from 'print-js'
 
 // *************************************************
@@ -115,7 +115,7 @@ export class Printer implements IPrinter {
    * Print the printed Element
    */
   print(): void {
-    print(this.generate().innerHTML)
+    loading.wait(() => print(this.generate().innerHTML))
   }
 
   // ************************
@@ -273,7 +273,7 @@ export class Printer implements IPrinter {
   private _getGeneratorForElement(element: Element, generators: PrintGenerators | undefined, index: number = -1): PrintGenerator {
     // Get generator key
     const key = element.id.substring(39) + (index >= 0 ? `_${index}` : '')
-    // Check if generator for this key is exists
+    // Check if generator for this key is existing
     if (generators !== undefined && typeof generators[key] === 'function') {
       return generators[key]
     }

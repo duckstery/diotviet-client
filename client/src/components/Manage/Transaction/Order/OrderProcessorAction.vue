@@ -11,8 +11,10 @@
   <q-space key="space"/>
   <q-slide-transition :duration="150" @hide="state = 2">
     <div v-if="showActions" class="tw-my-auto tw-flex">
+      <Button key="process" flat color="secondary" icon="fa-solid fa-print"
+              :label="$t('field.print')" @click="print"/>
       <template v-if="!isResolved">
-        <Button key="process" flat color="info" icon="fa-solid fa-circle-dot"
+        <Button key="process" flat color="info" icon="fa-solid fa-circle-dot" class="tw-ml-3"
                 :label="$t('field.process')" @click="set(1)"/>
         <Button key="resolved" flat color="positive" icon="fa-solid fa-circle-check" class="tw-ml-3"
                 :label="$t('field.resolve')" @click="set(2)"/>
@@ -40,7 +42,7 @@ import TextField from "components/General/Other/TextField.vue";
 import IconMage from "components/General/Other/IconMage.vue";
 
 import {useRangeControl} from "src/composables/useRangeControl";
-import {ref, computed, nextTick} from "vue";
+import {ref, computed, nextTick, inject} from "vue";
 import {axios, constant, util, error, notify} from "src/boot";
 import {Dark} from "quasar";
 import {useI18n} from "vue-i18n";
@@ -127,11 +129,17 @@ export default {
         })
     }
 
+    // Printer action
+    const printer = inject('printer')
+    const print = () => {
+      axios.get(`/order/print/${props.active.id}`).then(printer.print).catch(error.any)
+    }
+
     return {
       /** Data **/
       action, paymentAmount,
       /** Manipulate action **/
-      set, reset, handle,
+      set, reset, handle, print,
       /** Active status **/
       isResolved, isAborted,
       /** Style **/

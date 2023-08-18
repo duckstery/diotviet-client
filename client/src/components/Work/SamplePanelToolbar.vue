@@ -2,7 +2,7 @@
   <CustomerQuery/>
   <q-space/>
   <Button
-    color="info"
+    color="secondary"
     class="tw-p-2"
     icon="receipt"
     :label="$t('field.order')"
@@ -24,6 +24,7 @@ import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import CustomerQuery from "components/Work/CustomerQuery.vue";
 import {useOrderProcessor} from "src/composables/useOrderProcessor";
+import {inject} from "vue";
 
 export default {
   name: 'SamplePanelToolbar',
@@ -37,7 +38,7 @@ export default {
 
   setup() {
     return {
-      onProcess: useOrderProcessor()
+      onProcess: useOrderProcessor(null, inject('printer'))
     }
   },
 

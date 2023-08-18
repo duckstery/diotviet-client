@@ -1,5 +1,5 @@
 import {boot} from 'quasar/wrappers';
-import {Dialog, date, DialogChainObject} from "quasar";
+import {Dialog, DialogChainObject} from "quasar";
 import {$T} from "boot/i18n";
 
 // *************************************************

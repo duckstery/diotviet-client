@@ -274,7 +274,8 @@ export default {
     max_length: 'Maximum character is {max}',
     save_document: 'Save this document',
     delete_document: 'Delete this document',
-    least_document: 'You must have at least 1 document'
+    least_document: 'You must have at least 1 document',
+    print_unavailable: 'Printing is unavailable here'
   },
 
   // ****************************

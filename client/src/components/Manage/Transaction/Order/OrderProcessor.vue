@@ -83,13 +83,14 @@ import OrderProcessorAction from "components/Manage/Transaction/Order/OrderProce
 import Skeleton from "components/General/Other/Skeleton.vue";
 
 import {useDialogPluginComponent} from 'quasar'
-import {computed, nextTick, onMounted, ref, toRef, watch} from "vue";
+import {computed, nextTick, onMounted, ref, toRef, watch, provide} from "vue";
 import {useDialogEditor} from "src/composables/useDialogEditor";
 import {useDebounceModel} from "src/composables/useDebounceModel";
 import {useSimpleSearch} from "src/composables/useSimpleSearch";
 import {useSimpleGrouper} from "src/composables/useSimpleGrouper";
 import {env, util, constant} from "src/boot"
 import {useI18n} from "vue-i18n";
+import {Printer} from "boot/print";
 
 export default {
   name: 'OrderEditor',
@@ -98,6 +99,8 @@ export default {
   props: {
     // Selected id
     selectedCode: String,
+    // Printer
+    printer: Object
   },
 
   emits: [
@@ -109,6 +112,8 @@ export default {
   setup(props) {
     // Get $t
     const $t = useI18n().t
+    // Provide printer
+    provide('printer', props.printer)
 
     // Group method flag
     const isGroupByStatus = ref(env.init("isGroupByStatus", false))
