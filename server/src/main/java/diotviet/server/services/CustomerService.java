@@ -177,7 +177,11 @@ public class CustomerService extends BaseService {
         }
         // Filter by search string
         if (StringUtils.isNotBlank(request.search())) {
-            query.and(customer.name.concat(customer.phoneNumber).concat(customer.address).toLowerCase().contains(request.search().toLowerCase()));
+            query.and(customer.name.coalesce("")
+                    .concat(customer.phoneNumber.coalesce(""))
+                    .concat(customer.address.coalesce(""))
+                    .toLowerCase()
+                    .contains(request.search().toLowerCase()));
         }
 
         // Connect expression

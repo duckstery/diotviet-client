@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Repository
@@ -69,6 +70,15 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
      */
     @EntityGraph(attributePaths = {"transactions"})
     List<Order> findByIdInAndStatusNot(List<Long> ids, Status status);
+
+    /**
+     * Find Order by code
+     *
+     * @param code
+     * @return
+     */
+    @EntityGraph("order_detail")
+    Optional<Order> findByCode(String code);
 
     /**
      * Update Order's status

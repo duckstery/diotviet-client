@@ -40,7 +40,6 @@ public abstract class BaseValidator<T> {
      *
      * @param object
      * @param destinationType
-     * @param <S>
      * @return
      */
     public T map(Object object, Class<T> destinationType) {
@@ -106,18 +105,19 @@ public abstract class BaseValidator<T> {
      *
      * @param target:          Target of validation
      * @param format:          Preserved format
+     * @param lengthOfNumber:  Length of number after preserved format
      * @param provider:        Provider to provider template item for validation
      * @param defaultProvider: Provider to provide default entity
      * @return
      */
-    public void checkCode(Identifiable target, String format, EntityProvider<Identifiable, String> provider, EntityProvider<Identifiable, String> defaultProvider) {
+    public void checkCode(Identifiable target, String format, int lengthOfNumber, EntityProvider<Identifiable, String> provider, EntityProvider<Identifiable, String> defaultProvider) {
         // Init holder
         long id = target.getId();
         String code = target.getCode();
 
         if (StringUtils.isBlank(code)) {
             // If code is null, no need for validation
-            code = generateCode(format, defaultProvider);
+            code = generateCode(format, lengthOfNumber, defaultProvider);
         } else if (id == 0) {
             // Validate for "CREATE"
             if (code.startsWith(format)) {
@@ -146,6 +146,19 @@ public abstract class BaseValidator<T> {
     }
 
     /**
+     * Validate if code is valid, then return the valid code, else, interrupt
+     *
+     * @param target:          Target of validation
+     * @param format:          Preserved format
+     * @param provider:        Provider to provider template item for validation
+     * @param defaultProvider: Provider to provide default entity
+     * @return
+     */
+    public void checkCode(Identifiable target, String format, EntityProvider<Identifiable, String> provider, EntityProvider<Identifiable, String> defaultProvider) {
+        checkCode(target, format, 5, provider, defaultProvider);
+    }
+
+    /**
      * Check if img source is default, then set it to null
      *
      * @param object
@@ -166,7 +179,7 @@ public abstract class BaseValidator<T> {
      * Optimistic lock check
      *
      * @param lockable
-     * @param provider
+     * @param olRepo
      */
     public void checkOptimisticLock(Lockable lockable, OptimisticLockRepository olRepo) {
         // Check if Lockable is newly added
@@ -212,16 +225,30 @@ public abstract class BaseValidator<T> {
      * Generate code
      *
      * @param format
+     * @param lengthOfNumber
      * @param provider
      * @return
      */
-    protected String generateCode(String format, EntityProvider<Identifiable, String> provider) {
+    protected String generateCode(String format, int lengthOfNumber, EntityProvider<Identifiable, String> provider) {
         // Get Product with "largest" code
         Identifiable identifiable = provider.provide(format + "%");
         // Get number part from code
         String alphanumeric = Objects.isNull(identifiable) ? "0" : identifiable.getCode().substring(2);
 
-        return String.format("%s%05d", format, Integer.parseInt(alphanumeric) + 1);
+        // Generate format
+        String f = "%s%0" + lengthOfNumber + "d";
+        return String.format(f, format, Integer.parseInt(alphanumeric) + 1);
+    }
+
+    /**
+     * Generate code
+     *
+     * @param format
+     * @param provider
+     * @return
+     */
+    protected String generateCode(String format, EntityProvider<Identifiable, String> provider) {
+        return generateCode(format, 5, provider);
     }
 
     /**

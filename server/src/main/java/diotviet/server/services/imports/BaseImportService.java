@@ -84,6 +84,15 @@ public abstract class BaseImportService<E> {
      * Generate code begin from index (index will increase after each generation)
      */
     public String generateCode() {
-        return String.format("%s%05d", prefix, index++);
+        return generateCode(5);
+    }
+
+    /**
+     * Generate code begin from index (index will increase after each generation)
+     */
+    public String generateCode(int lengthOfNumber) {
+        // Generate format
+        String format = "%s%0" + lengthOfNumber + "d";
+        return String.format(format, prefix, index++);
     }
 }

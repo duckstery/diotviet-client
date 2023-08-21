@@ -136,7 +136,7 @@ public class OrderService extends BaseService {
         // Check if order should be resolved
         if (Status.RESOLVED.equals(status)) {
             // Use transaction service to resolve Order
-            transactionService.resolve(order, null);
+            transactionService.resolve(order, request.paymentAmount());
         }
         // For some reason, including this when saving Order cause multiple Selection point to Category and Group
         // For performance, Items will be saved separately by it repository
@@ -265,9 +265,9 @@ public class OrderService extends BaseService {
         // Filter by search string
         if (StringUtils.isNotBlank(request.search())) {
             query.and(order.code
-                    .concat(order.phoneNumber)
-                    .concat(order.address)
-                    .concat(order.customer.name)
+                    .concat(order.phoneNumber.coalesce(""))
+                    .concat(order.address.coalesce(""))
+                    .concat(order.customer.name.coalesce(""))
                     .toLowerCase()
                     .contains(request.search().toLowerCase()));
         }
