@@ -126,6 +126,7 @@ import {usePageRowDetail} from "src/composables/usePageRowDetail";
 import {useInteractiveField} from "src/composables/useInteractiveField";
 import {useDiscountCalculator} from "src/composables/useDiscountCalculator";
 import {useOrderProcessor} from "src/composables/useOrderProcessor";
+import {error} from "src/boot";
 
 export default {
   name: 'OrderDetail',
@@ -151,6 +152,8 @@ export default {
       default: false
     }
   },
+
+  inject: ['printer'],
 
   emits: ['request'],
 
@@ -207,7 +210,7 @@ export default {
 
   methods: {
     onPrint() {
-
+      this.$axios.get(`/order/print/${this.getItemId}`).then(this.printer.print).catch(error.any)
     },
   }
 }

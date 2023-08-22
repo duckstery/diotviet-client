@@ -1,7 +1,6 @@
 import {ref, computed, watch, ComputedRef, Prop, SetupContext} from "vue";
 import {axios, util, error} from "src/boot"
 import {useRouteKey} from "src/composables/useRouteKey";
-import {useI18n} from "vue-i18n";
 import {Ref} from "@vue/reactivity";
 
 // *************************************************
@@ -32,8 +31,6 @@ export function usePageRowDetail(props: any, context: SetupContext): UsePageRowD
   const key = useRouteKey()
   // Detail data
   const detail: Ref = ref({})
-  // i18n
-  const $t = useI18n().t
 
   // Check if component is ready to display data
   const isReady = computed(() => {

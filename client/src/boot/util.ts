@@ -11,7 +11,7 @@ export interface Util {
   formatMoney(value: string): string
   promptConfirm(message: string): DialogChainObject
   promptReason(): DialogChainObject
-  nullIfEmpty(value: string): string | null
+  nullIfEmpty(value: any): string | null
   camelToSnake(value: string): string
   isUnset(value: any): boolean
   craftFormData(value: object): FormData

@@ -6,13 +6,18 @@ import diotviet.server.constants.Type;
 import diotviet.server.entities.Group;
 import diotviet.server.entities.Order;
 import diotviet.server.exceptions.FileServingException;
+import diotviet.server.services.DocumentService;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.OrderService;
+import diotviet.server.templates.Document.PrintableTag;
 import diotviet.server.templates.EntityHeader;
+import diotviet.server.templates.InitPrintResponse;
 import diotviet.server.templates.Order.*;
+import diotviet.server.templates.Product.ProductDisplayResponse;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.utils.OtherUtils;
+import diotviet.server.utils.PrintUtils;
 import diotviet.server.views.Order.OrderSearchView;
 import diotviet.server.views.Print.Order.OrderOrderPrintView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +48,11 @@ public class OrderController extends BaseController {
      */
     @Autowired
     private GroupService groupService;
+    /**
+     * Document service
+     */
+    @Autowired
+    private DocumentService documentService;
 //    /**
 //     * Order import service
 //     */
@@ -53,6 +63,11 @@ public class OrderController extends BaseController {
      */
     @Autowired
     private EntityUtils entityUtils;
+    /**
+     * Utilities for Print
+     */
+    @Autowired
+    private PrintUtils printUtils;
 
     // ****************************
     // Public API
@@ -74,6 +89,22 @@ public class OrderController extends BaseController {
         List<Group> groups = groupService.getGroups(Type.TRANSACTION);
 
         return ok(new OrderInitResponse(headers, items, groups));
+    }
+
+    /**
+     * Display items for page
+     *
+     * @return
+     */
+    @GetMapping("/init/print")
+    public ResponseEntity<?> initPrint() {
+        // Get active Document content
+        String content = documentService.getActiveDocumentOfGroup("print_order").getContent();
+        // Get PrintableTag
+        PrintableTag[] tags = printUtils.getPrintableTag(OrderOrderPrintView.class);
+
+        // Return data
+        return ok(new InitPrintResponse(content, tags));
     }
 
     /**

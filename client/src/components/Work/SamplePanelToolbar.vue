@@ -24,7 +24,6 @@ import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import CustomerQuery from "components/Work/CustomerQuery.vue";
 import {useOrderProcessor} from "src/composables/useOrderProcessor";
-import {inject} from "vue";
 
 export default {
   name: 'SamplePanelToolbar',
@@ -38,7 +37,7 @@ export default {
 
   setup() {
     return {
-      onProcess: useOrderProcessor(null, inject('printer'))
+      onProcess: useOrderProcessor(null)
     }
   },
 

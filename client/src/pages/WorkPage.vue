@@ -27,6 +27,7 @@ import {useOrderStore} from "stores/order";
 import {axios, buildPrinter, error, util, notify} from "src/boot";
 import {useI18n} from "vue-i18n";
 import _ from "lodash";
+import {usePrinter} from "src/composables/usePrinter";
 
 export default defineComponent({
   name: 'WorkPage',
@@ -51,26 +52,15 @@ export default defineComponent({
 
       return false
     }
-    // Printer
-    const printer = ref(null)
-    // Print content
-    const print = (res) => {
-      // Set data for printer
-      printer.value.data = res.data.payload
-      // Print
-      printer.value.print()
-    }
-    // Provide printer for other component
-    provide('printer', {print: print})
 
+    // Setup Printer
+    const resources = usePrinter('/product/display', res => items.value = res.data.payload.items)
     // On operation
     const onOpe = (type) => {
       if (validate()) {
         axios.post(`/order/${type}`, unref(useOrderStore().getActiveOrder))
           // Get Order print data
-          .then(res => axios.get(`/order/print/${res.data.payload}`)
-            .then(print)
-            .catch(error.any))
+          .then(res => axios.get(`/order/print/${res.data.payload}`).then(resources.print).catch(error.any))
           .catch(error.any)
       }
     }
@@ -80,16 +70,7 @@ export default defineComponent({
     // Products for display
     const items = ref([])
     // On mounted
-    onMounted(() => {
-      isMounted.value = true
-      // Call API to get data for table
-      axios.get('/product/display')
-        .then(res => {
-          items.value = res.data.payload.items
-          // Build printer
-          buildPrinter(res.data.payload.template, res.data.payload.tags, null).then(printerObject => printer.value = printerObject)
-        })
-    })
+    onMounted(() => isMounted.value = true)
 
     // ItemPanel's reference
     const itemPanel = ref(null)

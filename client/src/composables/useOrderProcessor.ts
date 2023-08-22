@@ -3,21 +3,22 @@ import {Dialog, DialogChainObject} from "quasar";
 import OrderProcessor from "components/Manage/Transaction/Order/OrderProcessor.vue";
 import {Ref} from "@vue/reactivity";
 import {notify, util} from "src/boot";
-import {Printer} from "boot/print";
 import {useI18n} from "vue-i18n";
+import {inject} from "vue";
 
 /**
  * Setup Order processor
  *
  * @param {Ref | null} detailRef
- * @param {Printer | null} printer
+ * @param printerInjectKey
  * @return {function(): DialogChainObject}
  */
-export function useOrderProcessor(detailRef: Ref<{ code: string }> | null, printer: Printer | null = null): () => DialogChainObject {
+export function useOrderProcessor(detailRef: Ref<{ code: string }> | null, printerInjectKey: string = 'printer'): () => DialogChainObject {
   // Get $t
   const $t = useI18n().t
-  // Setup printer
-  if (printer === null) {
+  // Try to inject printer
+  let printer = inject(printerInjectKey)
+  if (util.isUnset(printer)) {
     // @ts-ignore
     printer = {print: () => notify($t('message.print_unavailable'), 'warning')}
   }
