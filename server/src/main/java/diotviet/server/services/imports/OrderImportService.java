@@ -1,23 +1,22 @@
 package diotviet.server.services.imports;
 
-import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.Status;
-import diotviet.server.constants.Type;
-import diotviet.server.entities.*;
+import diotviet.server.entities.Customer;
+import diotviet.server.entities.Item;
+import diotviet.server.entities.Order;
+import diotviet.server.entities.Product;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.repositories.OrderRepository;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.services.GroupService;
 import diotviet.server.utils.OtherUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.dhatim.fastexcel.reader.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderImportService extends BaseImportService<Order> {
@@ -67,10 +66,6 @@ public class OrderImportService extends BaseImportService<Order> {
      * Cache Product
      */
     private Map<String, Product> productMap;
-    /**
-     * Cache Group
-     */
-    private HashMap<String, Group> groupMap;
 
     // ****************************
     // Public API
@@ -84,12 +79,10 @@ public class OrderImportService extends BaseImportService<Order> {
     @Override
     public List<Order> prep() {
         // Init code
-        initializeCode("DH", orderRepository::findFirstByCodeLikeOrderByCodeDesc);
-        // Cache group map
-        groupMap = new HashMap<>();
-        for (Group group : groupService.getGroups(Type.TRANSACTION)) {
-            groupMap.put(group.getName(), group);
-        }
+        order = null;
+        code = "";
+        customer = null;
+
         // Cache product map
         productMap = new HashMap<>();
         for (Product product : productRepository.findAll()) {
@@ -107,25 +100,31 @@ public class OrderImportService extends BaseImportService<Order> {
      */
     @Override
     public Order convert(Row row) {
-        // Check if you should fetch for new Order
-        if (!this.code.equals(row.getCell(1).getRawValue())) {
-            // Check if code is not empty
-            if (StringUtils.isNotEmpty(this.code)) {
-                // Then, save Order before fetching new Order
-                orderRepository.save(this.order);
+        try {
+            // Check if you should fetch for new Order
+            if (!this.code.equals(resolve(row, 1))) {
+                // Check if code is not empty
+                if (StringUtils.isNotEmpty(this.code)) {
+                    // Then, save Order before fetching new Order
+                    orderRepository.save(this.order);
+                }
+
+                // Cache code
+                this.code = resolve(row, 1);
+                // Try to fetch Order, if it's not exists, create a new Order. Skip if fail to fetch (or convert)
+                if (Objects.isNull(fetchOrConvertToOrder(row))) {
+                    this.code = "";
+                    return null;
+                }
             }
 
-            // Cache code
-            this.code = row.getCell(1).getRawValue();
-            // Try to fetch Order, if it's not exists, create a new Order. Skip if fail to fetch (or convert)
-            if (!fetchOrConvertToOrder(row)) {
-                this.code = "";
-                return null;
-            }
+            // Convert row to Item and add to Order
+            this.order.getItems().add(convertToItem(row, order));
+        } catch (Exception e) {
+            System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        // Convert row to Item and add to Order
-        this.order.getItems().add(convertToItem(row, order));
 
         return this.order;
     }
@@ -138,14 +137,7 @@ public class OrderImportService extends BaseImportService<Order> {
      */
     @Override
     public void pull(List<Order> orders) {
-        for (Order order : orders) {
-            // Create new Set
-            order.setGroups(order
-                    .getGroups()
-                    .stream()
-                    .map(group -> groupMap.getOrDefault(group.getName(), null)) // Iterate through each staled Group, use it to pull from the persisted Group
-                    .collect(Collectors.toCollection(HashSet::new)));
-        }
+
     }
 
     /**
@@ -156,6 +148,11 @@ public class OrderImportService extends BaseImportService<Order> {
     @Override
     @Transactional
     public void runImport(List<Order> orders) {
+        // Check if code is not empty
+        if (StringUtils.isNotEmpty(this.code)) {
+            // Save the last Order
+            orderRepository.save(this.order);
+        }
         // Flush all cache
         this.flush();
     }
@@ -166,13 +163,11 @@ public class OrderImportService extends BaseImportService<Order> {
     @Override
     public void flush() {
         order = null;
+        code = "";
         customer = null;
 
         productMap.clear();
         productMap = null;
-
-        groupMap.clear();
-        groupMap = null;
     }
 
     // ****************************
@@ -180,26 +175,12 @@ public class OrderImportService extends BaseImportService<Order> {
     // ****************************
 
     /**
-     * Resolve phone number
-     *
-     * @param value
-     * @return
-     */
-    private String resolvePhoneNumber(String value) {
-        if (Objects.isNull(value)) {
-            return null;
-        }
-
-        return value.length() > 15 ? value.substring(0, 15) : value;
-    }
-
-    /**
      * Convert row to new Order
      *
      * @param row
      * @return
      */
-    private boolean fetchOrConvertToOrder(Row row) {
+    private Order fetchOrConvertToOrder(Row row) throws Exception {
         // Try to fetch Order through database and cache
         this.order = orderRepository.findByCode(this.code).orElse(new Order());
         // Initiate Order's items list
@@ -208,34 +189,30 @@ public class OrderImportService extends BaseImportService<Order> {
         }
 
         // Check if Order is fetched successfully
-        if (this.order.getId() != 0) return true;
+        if (this.order.getId() != 0) return this.order;
 
-        try {
-            // Try to fetch Customer. Return false if fail to fetch
-            if (!fetchCustomer(row)) return false;
+        // Try to fetch Customer. Return false if fail to fetch
+        if (Objects.isNull(fetchCustomer(row))) return null;
 
-            // Set basic data
-            this.order.setCustomer(this.customer);
-            this.order.setCode(row.getCellText(1));
-            this.order.setCreatedAt(DateUtils.parseDate(row.getCell(6).getRawValue(), "dd/MM/yyyy HH:mm:ss"));
-            this.order.setResolvedAt(DateUtils.parseDate(row.getCell(6).getRawValue(), "dd/MM/yyyy HH:mm:ss"));
-            this.order.setPhoneNumber(resolvePhoneNumber(row.getCell(9).getRawValue()));
-            this.order.setAddress(row.getCell(10).getRawValue());
-            this.order.setNote(row.getCell(28).getRawValue());
-            this.order.setProvisionalAmount(row.getCell(29).getRawValue());
-            this.order.setPaymentAmount(row.getCell(29).getRawValue());
-            this.order.setDiscount(row.getCell(30).getRawValue());
-            this.order.setDiscountUnit("cash");
-            this.order.setStatus(Status.RESOLVED);
-            this.order.setPoint(0L);
-            this.order.setCreatedBy(OtherUtils.getRequester());
-            this.order.setGroups(new HashSet<>(Collections.singletonList(groupMap.get(row.getCell(14).getRawValue()))));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Set basic data
+        this.order.setCustomer(this.customer);
+        this.order.setCode(StringUtils.substring(resolve(row, 1), 0, 8));
+        this.order.setCreatedAt(resolveDate(row, 6));
+        this.order.setResolvedAt(resolveDate(row, 6));
+        this.order.setPhoneNumber(resolvePhoneNumber(row, 9));
+        this.order.setAddress(resolve(row, 10));
+        this.order.setNote(resolve(row, 28));
+        this.order.setProvisionalAmount(resolveDecimal(row, 29));
+        this.order.setPaymentAmount(resolveDecimal(row, 29));
+        this.order.setDiscount(resolveDecimal(row, 30));
+        this.order.setDiscountUnit("cash");
+        this.order.setStatus(Status.RESOLVED);
+        this.order.setPoint(0L);
+        this.order.setCreatedBy(OtherUtils.getRequester());
+        this.order.setGroups(new HashSet<>());
 
         // Return
-        return true;
+        return this.order;
     }
 
     /**
@@ -248,19 +225,15 @@ public class OrderImportService extends BaseImportService<Order> {
         // Create output
         Item item = new Item();
 
-        try {
-            // Set basic data
-            item.setOrder(order);
-            item.setProduct(productMap.get(row.getCell(40).getRawValue().trim()));
-            item.setNote(row.getCell(42).getRawValue());
-            item.setQuantity(Integer.parseInt(row.getCell(43).getRawValue()));
-            item.setOriginalPrice(row.getCell(44).getRawValue());
-            item.setDiscount(row.getCell(45).getRawValue());
-            item.setDiscountUnit("cash");
-            item.setActualPrice(row.getCell(46).getRawValue());
-        } catch (Exception e) {
-            System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
-        }
+        // Set basic data
+        item.setOrder(order);
+        item.setProduct(productMap.get(resolve(row, 40).trim()));
+        item.setNote(resolve(row, 42));
+        item.setQuantity(Integer.parseInt(resolveDecimal(row, 43)));
+        item.setOriginalPrice(resolveDecimal(row, 44));
+        item.setDiscount(resolveDecimal(row, 45));
+        item.setDiscountUnit("cash");
+        item.setActualPrice(resolve(row, 46));
 
         // Return
         return item;
@@ -272,34 +245,16 @@ public class OrderImportService extends BaseImportService<Order> {
      * @param row
      * @return
      */
-    private boolean fetchCustomer(Row row) {
-        // Customer
-        QCustomer customer = QCustomer.customer;
-        // Get data from Row
-        String data = Arrays.stream(new Integer[]{8, 9, 10})
-                .map(row::getCellText)
-                .reduce("", StringUtils::join);
-
+    private Customer fetchCustomer(Row row) {
         // Check if cached Customer is usable
         if (Objects.nonNull(this.customer)) {
-            // Join some string data of cached Customer
-            String cachedCustomer = StringUtils.join(this.customer.getName(), this.customer.getPhoneNumber(), this.customer.getAddress());
             // Check if the Customer need to fetch is the cached one
-            if (cachedCustomer.equals(data)) {
-                return true;
+            if (StringUtils.equals(this.customer.getCode(), resolve(row, 7))) {
+                return this.customer;
             }
         }
 
         // Fetch Customer
-        Optional<Customer> optional = customerRepository.findOne((new BooleanBuilder()).and(
-                customer.name.coalesce("")
-                        .concat(customer.phoneNumber.coalesce(""))
-                        .concat(customer.address.coalesce(""))
-                        .toLowerCase()
-                        .contains(data.toLowerCase())));
-
-        // Cache Customer
-        optional.ifPresent(value -> this.customer = value);
-        return optional.isPresent();
+        return (this.customer = customerRepository.findFirstByCodeAndIsDeletedFalse(resolve(row, 7)));
     }
 }

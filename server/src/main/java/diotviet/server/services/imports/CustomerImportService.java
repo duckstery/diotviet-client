@@ -8,6 +8,7 @@ import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
 import diotviet.server.utils.OtherUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.dhatim.fastexcel.reader.Row;
@@ -66,8 +67,6 @@ public class CustomerImportService extends BaseImportService<Customer> {
      */
     @Override
     public List<Customer> prep() {
-        // Init code
-        initializeCode("KS", customerRepository::findFirstByCodeLikeOrderByCodeDesc);
         // Cache category
         category = categoryService.getCategories(Type.PARTNER).stream().findFirst().orElseThrow();
         // Cache group map
@@ -92,20 +91,21 @@ public class CustomerImportService extends BaseImportService<Customer> {
 
         try {
             // Set basic data
-            customer.setCode(generateCode());
             customer.setCategory(category);
-            customer.setName(row.getCell(3).getRawValue());
-            customer.setPhoneNumber(resolvePhoneNumber(row.getCell(4).getRawValue()));
-            customer.setAddress(row.getCell(5).getRawValue());
+            customer.setCode(StringUtils.substring(StringUtils.deleteWhitespace(resolve(row, 2)), 0, 10));
+            customer.setName(resolve(row, 3));
+            customer.setPhoneNumber(resolvePhoneNumber(row, 4));
+            customer.setAddress(resolve(row, 5));
             customer.setBirthday(null);
-            customer.setMale(resolveGender(row.getCell(11).getRawValue()));
-            customer.setEmail(row.getCell(12).getRawValue());
-            customer.setFacebook(row.getCell(13).getRawValue());
-            customer.setDescription(row.getCell(15).getRawValue());
-            customer.setPoint(resolvePoint(row.getCell(17).getRawValue()));
-            customer.setCreatedAt(DateUtils.parseDate(row.getCell(19).getRawValue(), "dd/MM/yyyy"));
+            customer.setMale(resolveGender(row, 11));
+            customer.setEmail(resolve(row, 12));
+            customer.setFacebook(resolve(row, 13));
+            customer.setDescription(resolve(row, 15));
+            customer.setPoint(resolvePoint(row, 17));
+            customer.setCreatedAt(resolveDate(row, 19));
             customer.setCreatedBy(OtherUtils.getRequester());
-            customer.setGroups(new HashSet<>(List.of(new Group[]{groupMap.get(row.getCell(14).getRawValue())})));
+
+            customer.setGroups(SetUtils.hashSet(groupMap.get(resolve(row, 14))));
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
         }
@@ -155,43 +155,5 @@ public class CustomerImportService extends BaseImportService<Customer> {
 
         groupMap.clear();
         groupMap = null;
-    }
-
-    // ****************************
-    // Private API
-    // ****************************
-
-    /**
-     * Resolve phone number
-     *
-     * @param value
-     * @return
-     */
-    private String resolvePhoneNumber(String value) {
-        if (Objects.isNull(value)) {
-            return null;
-        }
-
-        return value.length() > 15 ? value.substring(0, 15) : value;
-    }
-
-    /**
-     * Resolve gender
-     *
-     * @param value
-     * @return
-     */
-    private Boolean resolveGender(String value) {
-        return StringUtils.compare(value, "Nam") == 0;
-    }
-
-    /**
-     * Resolve point
-     *
-     * @param value
-     * @return
-     */
-    private Long resolvePoint(String value) {
-        return Long.parseLong(OtherUtils.get(value, "0"));
     }
 }

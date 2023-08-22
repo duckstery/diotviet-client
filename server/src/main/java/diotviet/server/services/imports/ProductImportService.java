@@ -8,6 +8,7 @@ import diotviet.server.repositories.ProductRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
 import diotviet.server.utils.StorageUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.dhatim.fastexcel.reader.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,19 +101,19 @@ public class ProductImportService extends BaseImportService<Product> {
         try {
             // Set basic data
             product.setCode(generateCode());
-            product.setTitle(row.getCell(3).getRawValue());
-            product.setOriginalPrice(row.getCell(5).getRawValue().replaceAll(",|\\.\\d*", ""));
+            product.setTitle(resolve(row, 3));
+            product.setOriginalPrice(resolve(row, 5).replaceAll(",|\\.\\d*", ""));
             product.setActualPrice(product.getOriginalPrice());
             product.setDiscount("0");
             product.setDiscountUnit("%");
             product.setDescription("");
-            product.setMeasureUnit(Objects.isNull(row.getCell(12).getValue()) ? "" : row.getCell(12).getRawValue());
-            product.setSrc(StorageUtils.pull(row.getCell(15).getRawValue(), timer));
+            product.setMeasureUnit(resolveValue(row, 12));
+            product.setSrc(StorageUtils.pull(resolve(row, 15), timer));
             product.setWeight("0");
-            product.setCanBeAccumulated(row.getCell(17).getRawValue().equals("1"));
-            product.setIsInBusiness(row.getCell(18).getRawValue().equals("1"));
-            product.setCategory(categoryMap.get(row.getCell(0).getRawValue()));
-            product.setGroups(new HashSet<>(List.of(new Group[]{groupMap.get(row.getCell(1).getRawValue())})));
+            product.setCanBeAccumulated(resolve(row, 17).equals("1"));
+            product.setIsInBusiness(resolve(row, 18).equals("1"));
+            product.setCategory(categoryMap.get(resolve(row, 0)));
+            product.setGroups(SetUtils.hashSet(groupMap.get(resolve(row, 1))));
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
         }
