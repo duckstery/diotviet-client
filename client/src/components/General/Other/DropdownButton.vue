@@ -13,7 +13,7 @@
     :disable="disable"
   >
     <template v-if="isUsingImage">
-      <img class="d-btn-img" :src="src">
+      <img class="d-btn-img" :src="src" alt="">
       <span class="tw-ml-3">{{ label }}</span>
     </template>
     <Tooltip v-if="tooltip" :content="tooltip"/>

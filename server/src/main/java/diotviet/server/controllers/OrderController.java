@@ -1,11 +1,9 @@
 package diotviet.server.controllers;
 
-import com.google.zxing.WriterException;
 import diotviet.server.constants.Status;
 import diotviet.server.constants.Type;
 import diotviet.server.entities.Group;
 import diotviet.server.entities.Order;
-import diotviet.server.exceptions.FileServingException;
 import diotviet.server.services.DocumentService;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.OrderService;
@@ -13,23 +11,18 @@ import diotviet.server.templates.Document.PrintableTag;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.InitPrintResponse;
 import diotviet.server.templates.Order.*;
-import diotviet.server.templates.Product.ProductDisplayResponse;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
-import diotviet.server.utils.OtherUtils;
 import diotviet.server.utils.PrintUtils;
 import diotviet.server.views.Order.OrderSearchView;
 import diotviet.server.views.Print.Order.OrderOrderPrintView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/api/v1/order", produces = "application/json")
@@ -181,48 +174,6 @@ public class OrderController extends BaseController {
     @GetMapping(value = "/query")
     public ResponseEntity<?> simpleSearch(OrderSearchRequest request) {
         return ok(orderService.query(request));
-    }
-
-    /**
-     * Serve Barcode image
-     *
-     * @param id
-     * @return
-     */
-    @GetMapping(value = "/barcode/{id}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> genBarcode(@PathVariable Long id) {
-        // Get Order
-        String code = orderService.findCodeById(id);
-        if (Objects.isNull(code)) {
-            throw new FileServingException("file_not_exist");
-        }
-        // Generate Barcode
-        BufferedImage bufferedImage = OtherUtils.generateBarcode(code);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(bufferedImage);
-    }
-
-    /**
-     * Serve Barcode image
-     *
-     * @param id
-     * @return
-     */
-    @GetMapping(value = "/qrcode/{id}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> genQRCode(@PathVariable Long id) throws WriterException {
-        // Get Order
-        String code = orderService.findCodeById(id);
-        if (Objects.isNull(code)) {
-            throw new FileServingException("file_not_exist");
-        }
-        // Generate Barcode
-        BufferedImage bufferedImage = OtherUtils.generateQRCode(code);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(bufferedImage);
     }
 
     /**

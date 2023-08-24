@@ -1,9 +1,9 @@
+import {uid} from 'quasar'
 import {defineStore} from 'pinia'
 import {util} from 'src/boot'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
-    counter: 1,
     activeId: 0,
     activeIndex: 0,
     orders: [{
@@ -76,64 +76,76 @@ export const useOrderStore = defineStore('order', {
      */
     setCustomer(customer) {
       // Get activeOrder reference
-      this.orders.at(this.getActiveIndex).customer = util.isUnset(customer) ? null : {...customer}
+      this.getActiveOrder.customer = util.isUnset(customer) ? null : {...customer}
     },
 
     /**
      * Add item to active order
      *
      * @param {Object} item
+     * @param {boolean} duplicate
+     * @return {*}
      */
-    addItem(item) {
+    addItem(item, duplicate = false) {
       // Get activeOrder reference
-      const activeOrder = this.orders.at(this.getActiveIndex)
+      const activeOrder = this.getActiveOrder
 
       // Check if item is already exist in order's item list
-      const index = activeOrder.items.findIndex(i => i.id === item.id)
+      const index = duplicate ? -1 : activeOrder.items.findIndex(i => i.id === item.id && i.root)
 
       if (index !== -1) {
+        // Get target reference
+        const targetItem = activeOrder.items.at(index)
         // If item is existed, edit item with increased quantity
-        this.editItem(index, {
+        this.replaceItem(targetItem.uid, {
           ...item,
-          quantity: `${parseInt(activeOrder.items.at(index).quantity) + 1}`,
+          uid: targetItem,
+          quantity: `${parseInt(targetItem.quantity) + 1}`,
           totalPrice: '',
-          note: activeOrder.items.at(index).note,
+          note: targetItem.note,
+          root: targetItem.root
         })
       } else {
         // Else, just add item
         activeOrder.items.push({
           ...item,
+          uid: uid(),
           quantity: '1',
           totalPrice: item.actualPrice,
-          note: ''
+          note: '',
+          root: !duplicate
         })
       }
+
+      return activeOrder.items.at(index)
     },
 
     /**
      * Edit item to active order
      *
-     * @param {number} index
+     * @param {string} uid
      * @param {Object} item
+     * @return {*}
      */
-    editItem(index, item) {
+    replaceItem(uid, item = null) {
       // Get order
-      const order = this.orders.at(this.getActiveIndex);
-      // Splice old item and push new item in
-      order.items.splice(index, 1, item)
-      // Update provisional amount
-      this.updateProvisionalAmount()
-    },
+      const activeOrder = this.getActiveOrder;
+      // Find index of target in uid
+      const index = activeOrder.items.findIndex(i => i.uid === uid)
 
-    /**
-     * Remove item from active order
-     *
-     * @param {Number} index
-     */
-    removeItem(index) {
-      this.orders.at(this.getActiveIndex).items.splice(index, 1)
-      // Update provisional amount
-      this.updateProvisionalAmount()
+      if (index !== -1) {
+        if (item === null) {
+          // Splice old item only
+          activeOrder.items.splice(index, 1)
+        } else {
+          // Splice old item and push new item in
+          activeOrder.items.splice(index, 1, item)
+        }
+        // Update provisional amount
+        this.updateProvisionalAmount()
+      }
+
+      return activeOrder.items.at(index)
     },
 
     /**
@@ -142,7 +154,7 @@ export const useOrderStore = defineStore('order', {
     createOrder() {
       // Add new order
       this.orders.push({
-        id: this.counter++,
+        id: uid(),
         items: [],
         provisionalAmount: '0',
         discount: '0',
@@ -192,7 +204,7 @@ export const useOrderStore = defineStore('order', {
     /**
      * Set active order
      *
-     * @param {number} id
+     * @param {string} id
      */
     setActive(id) {
       this.activeId = id

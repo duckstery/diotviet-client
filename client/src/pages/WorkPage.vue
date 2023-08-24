@@ -21,13 +21,14 @@ import OrderPanel from "components/Work/OrderPanel.vue";
 import ItemPanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
 
-import {computed, defineComponent, onMounted, ref, unref, provide} from 'vue'
+import {computed, defineComponent, onMounted, ref, unref} from 'vue'
 import {useQuasar} from 'quasar';
 import {useOrderStore} from "stores/order";
-import {axios, buildPrinter, error, util, notify} from "src/boot";
+import {axios, error, util, notify} from "src/boot";
 import {useI18n} from "vue-i18n";
 import _ from "lodash";
 import {usePrinter} from "src/composables/usePrinter";
+import {useMounted} from "@vueuse/core";
 
 export default defineComponent({
   name: 'WorkPage',
@@ -66,11 +67,9 @@ export default defineComponent({
     }
 
     // Check if page is mounted
-    const isMounted = ref(false)
+    const isMounted = useMounted()
     // Products for display
     const items = ref([])
-    // On mounted
-    onMounted(() => isMounted.value = true)
 
     // ItemPanel's reference
     const itemPanel = ref(null)

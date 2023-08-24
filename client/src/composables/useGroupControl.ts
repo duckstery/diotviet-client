@@ -1,6 +1,7 @@
 import {Dialog} from "quasar";
 import {useI18n} from 'vue-i18n';
 import {axios, util, constant, notify} from "src/boot";
+// @ts-ignore
 import GroupEditor from "components/Manage/Group/GroupEditor.vue";
 import {useRouteKey} from "src/composables/useRouteKey";
 import {Ref} from "vue";

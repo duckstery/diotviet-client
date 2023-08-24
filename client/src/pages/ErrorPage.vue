@@ -34,8 +34,6 @@
 export default {
   name: 'ErrorPage',
 
-
-
   computed: {
     // Error status code
     status() {

@@ -31,15 +31,15 @@ export default {
     }
   },
 
+  data: () => ({
+    expanded: true
+  }),
+  
   computed: {
     // Expand icon
     expandIcon() {
       return this.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
     }
   },
-
-  data: () => ({
-    expanded: true
-  })
 }
 </script>

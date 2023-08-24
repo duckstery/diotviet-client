@@ -183,9 +183,7 @@ const util: Util = {
     try {
       return Date.parse(a) - Date.parse(b)
     } catch (e) {
-      if (process.env.DEV) {
-        console.warn(e)
-      }
+      console.warn(e)
     }
 
     return a.localeCompare(b)

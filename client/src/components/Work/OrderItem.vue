@@ -1,6 +1,6 @@
 <template>
   <q-card class="order-item hover:tw-border-sky-400 tw-border-transparent tw-border-solid tw-cursor-pointer" flat>
-    <q-card-section class="">
+    <q-card-section>
       <!-- Title section -->
       <div class="row tw-text-[16px]">
         <div class="tw-font-semibold">{{ this.index + 1 }}.&nbsp;</div>
@@ -15,148 +15,37 @@
         <q-chip v-if="value.measureUnit" color="info" text-color="white" class="tw-mr-2">
           {{ value.measureUnit }}
         </q-chip>
-        <Button icon="fa-solid fa-trash" text-color="dark" :tooltip="$t('field.remove')" size="sm"
-                @click="onRemoveItem"/>
-        <Button icon="fa-solid fa-ellipsis-vertical" text-color="dark" :tooltip="$t('field.more')" size="sm"
-                @click="onMore"/>
+        <Button icon="fa-solid fa-plus" flat :tooltip="$t('field.add')" size="sm" @click="onAddDuplicateItem"/>
+        <Button icon="fa-solid fa-ellipsis-vertical" flat :tooltip="$t('field.more')" size="sm" @click="onMore"/>
       </div>
 
       <!-- Detail section -->
-      <div class="row tw-mt-0.5">
-        <TextField v-model="bill.quantity" compact required type="number" class="tw-ml-10 tw-w-14"
-                   :label="$t('field.quantity')"/>
-        <TextField
-          :model-value="value.actualPrice"
+      <OrderItemDetail :value="value"/>
 
-          compact
-          required
-          readonly
-          mask="###,###,###"
-          class="tw-ml-10 tw-w-24"
-          :label="$t('field.price')"
-        >
-          <!-- Edit price section -->
-          <q-popup-proxy @hide="onResetPrice">
-            <q-card>
-              <q-card-section>
-                <div class="tw-text-lg tw-font-medium">{{ $t('field.edit_price') }}</div>
-                <TextField
-                  v-model="bill.originalPrice"
-
-                  compact
-                  required
-                  class="tw-w-36"
-                  mask="###,###,###"
-                  :label="$t('field.original_price')"
-                >
-                  <template #before>
-                    <q-icon name="fa-solid fa-money-bill-wave" class="tw-mr-1"/>
-                  </template>
-                </TextField>
-                <TextField
-                  v-model="bill.discount"
-
-                  compact
-                  required
-                  icon="fa-solid fa-tag"
-                  class="tw-w-36"
-                  :mask="discountMask"
-                  :label="$t('field.discount')"
-                >
-                  <template #before>
-                    <q-icon name="fa-solid fa-tag" class="tw-mr-1"/>
-                  </template>
-                </TextField>
-                <q-toggle
-                  v-model="bill.discountUnit"
-
-                  class="tw-ml-2"
-                  true-value="cash"
-                  false-value="%"
-                  :icon="discountUnitIcon"
-                  :label="discountUnitLabel"
-                />
-                <q-separator class="tw-mt-3"/>
-                <TextField
-                  :model-value="actualPrice"
-
-                  compact
-                  readonly
-                  mask="###,###,###"
-                  label-color="warning"
-                  class="tw-w-36 tw-mt-3"
-                  :label="$t('field.actual_price')"
-                >
-                  <template #before>
-                    <q-icon name="fa-solid fa-coins" color="warning" class="tw-mr-1"/>
-                  </template>
-                </TextField>
-              </q-card-section>
-
-              <q-card-actions>
-                <Button :label="$t('field.cancel')" flat color="negative" icon="fa-solid fa-xmark" v-close-popup
-                        @click="onResetPrice"/>
-                <Button :label="$t('field.save')" flat color="positive" icon="fa-solid fa-check" v-close-popup
-                        @click="onEdit"/>
-              </q-card-actions>
-            </q-card>
-          </q-popup-proxy>
-        </TextField>
-
-        <TextField
-          :model-value="value.totalPrice"
-
-          compact
-          required
-          readonly
-          mask="###,###,###,###"
-          class="tw-ml-10 tw-w-24"
-          input-class="tw-font-semibold"
-          :label="$t('field.total')"
-        />
-
-        <TextField
-          :model-value="value.note"
-
-          compact
-          readonly
-          class="tw-ml-10 tw-w-24"
-          :label="$t('field.note')"
-        >
-          <q-popup-edit
-            buttons
-            v-model="note"
-            v-slot="scope"
-          >
-            <q-input
-              type="textarea"
-              v-model="scope.value"
-              autofocus
-              counter
-              @keyup.enter.stop
-              input-class="virtual-scrollbar"
-            />
-          </q-popup-edit>
-        </TextField>
-
+      <!-- Sub detail section -->
+      <div>
+        <template v-for="(detail, index) in details" :key="detail.uid">
+          <hr class="tw-mt-4 tw-border-dotted tw-border-gray-400 tw-border-0 tw-border-t-[1px]"/>
+          <OrderItemDetail v-model:value="details[index]" @remove="details.splice(index, 1)"/>
+        </template>
       </div>
+
     </q-card-section>
+
   </q-card>
 </template>
 
 <script>
-import {mapActions} from "pinia";
-import {useOrderStore} from "stores/order";
-import {reactive, ref, toRef} from "vue";
-import {usePriceControl} from "src/composables/usePriceControl";
-import {useRangeControl} from "src/composables/useRangeControl";
-
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
+import OrderItemDetail from "components/Work/OrderItemDetail.vue";
+import {useOrderStore} from "stores/order";
+import {notify} from "src/boot";
+import {ref} from "vue";
 
 export default {
   name: 'OrderItem',
-  components: {TextField, Button},
+  components: {OrderItemDetail, TextField, Button},
 
   props: {
     // Item's index
@@ -165,6 +54,7 @@ export default {
     value: {
       type: Object,
       default: () => ({
+        uid: "",
         id: 1,
         code: '000',
         title: 'Title of cdddd ddddd ddddd ddd dddddddddd ddddddddd'.toUpperCase(),
@@ -180,98 +70,19 @@ export default {
     }
   },
 
-  setup() {
-    // Create bill reactive
-    const bill = reactive({
-      quantity: null,
-      originalPrice: null,
-      discount: null,
-      discountUnit: null,
-    })
-    // Put range control on bill.quantity
+  setup(props) {
+    // Store
+    const orderStore = useOrderStore()
+    // Sub details
+    const details = ref([])
 
     return {
-      bill,
-      note: ref(''),
-      ...useRangeControl(toRef(bill, 'quantity'), 99, 1),
-      ...usePriceControl(bill, 'originalPrice', 'actualPrice')
+      details: details,
+      // More functionality
+      onMore: () => notify('Under development!', 'warning'),
+      // Add sub details
+      onAddDuplicateItem: () => details.value.push(orderStore.addItem(props.value, true))
     }
-  },
-
-  computed: {
-    // Calculate total price
-    totalPrice() {
-      return `${parseInt(this.actualPrice) * parseInt(this.bill.quantity)}`
-    }
-  },
-
-  watch: {
-    // If quantity is changed and committed by range control, update item's data
-    rangeControlCommit() {
-      this.onEdit()
-    },
-    // Update item when add note
-    note(value) {
-      this.onEdit()
-    },
-    value: {
-      immediate: true,
-      handler(value) {
-        if (this.bill.quantity === null) {
-          // If is not init, try to init
-          this.onResetPrice()
-        } else if (value['quantity'] !== this.bill.quantity) {
-          // Else if quantity is changed by pressing SampleItem in SamplePanel, update bill quantity
-          this.bill.quantity = value['quantity']
-        }
-      }
-    }
-  },
-
-  methods: {
-    /**
-     * On remove item event handler
-     */
-    onRemoveItem() {
-      this.removeItem(this.index)
-    },
-
-    /**
-     * On click "More" event handler
-     */
-    onMore() {
-      this.$notifyWarn('Under development!')
-    },
-
-    /**
-     * On reset local bill
-     */
-    onResetPrice() {
-      this.bill.originalPrice = this.value.originalPrice
-      this.bill.discount = this.value.discount
-      this.bill.discountUnit = this.value.discountUnit
-      this.bill.quantity = this.value.quantity
-    },
-
-    /**
-     * On item edit event handler
-     */
-    onEdit() {
-      // Send request to update item's data
-      this.editItem(this.index, {
-        note: this.note,
-        ...this.value,
-        ...this.bill,
-        ...{
-          actualPrice: this.actualPrice,
-          totalPrice: this.totalPrice,
-          note: this.note
-        }
-      })
-    },
-
-    // "Order" store
-    ...mapActions(useOrderStore, ['editItem', 'removeItem'])
   },
 }
 </script>

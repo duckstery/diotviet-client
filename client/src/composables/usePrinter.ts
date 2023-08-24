@@ -10,7 +10,7 @@ import {AxiosResponse} from "axios";
 // *************************************************
 
 export type UsePrinterResources = {
-  printer: ShallowRef<IPrinter>,
+  printer: ShallowRef<IPrinter | null>,
   print(res: AxiosResponse<LocalAxiosResponse>): void,
 }
 
@@ -28,24 +28,17 @@ export type UsePrinterResources = {
 export function usePrinter(api: string, callback: ((res: AxiosResponse<LocalAxiosResponse>) => void) | null | undefined = null): UsePrinterResources {
   // Get i18n
   const $t = useI18n().t
-  // Create Ref<IPrinter>
-  const printer: ShallowRef<IPrinter> = shallowRef({
-    tags: [],
-    data: null,
-    isReady: false,
-    template: "",
-    generators: undefined,
-    generate: () => null,
-    print: () => {
-    },
-  })
+  // Create ShallowRef<IPrinter>
+  const printer: ShallowRef<IPrinter | null> = shallowRef(null)
 
   // Const print method
   const print = (res: AxiosResponse<LocalAxiosResponse>) => {
-    // Set data for printer
-    printer.value.data = res.data.payload
-    // Print
-    printer.value.print()
+    if (printer.value !== null) {
+      // Set data for printer
+      printer.value.data = res.data.payload
+      // Print
+      printer.value.print()
+    }
   }
   // Provide printer for other component
   provide('printer', {print: print})

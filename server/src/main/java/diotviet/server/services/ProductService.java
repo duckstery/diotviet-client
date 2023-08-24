@@ -150,15 +150,15 @@ public class ProductService extends BaseService {
     public List<Item> produce(List<Item> items, Order order) {
         // Get Product base on requested Item
         List<Product> products = repository.findByIdInAndIsInBusinessTrueAndIsDeletedFalse(items.stream().map(Item::getId).toList());
-        // If any Product is not valid, no need to produce anything
-        if (products.size() != items.size()) {
-            return null;
-        }
 
         // Iterate through each Item in items
         for (Item item : items) {
+            // Find matching Product to produce
+            Product match = IterableUtils.find(products, product -> product.getId() == item.getId());
+            // If no matching, it means Item is invalid
+            if (Objects.isNull(match)) return null;
             // Set original Product for Item
-            item.setProduct(IterableUtils.find(products, product -> product.getId() == item.getId()))
+            item.setProduct(match)
                     // Clear item's id since it was Product's id
                     .setId(0)
                     // Set order

@@ -38,16 +38,14 @@ const loading: Loader = {
    *
    * @param callback
    */
-  wait(callback: () => void) {
+  async wait(callback: () => void) {
     try {
       this.show()
-      callback()
+      await callback()
       this.hide()
     } catch (e) {
       this.hide()
-      if (process.env.DEV) {
-        console.error(e)
-      }
+      console.error(e)
     }
   }
 }

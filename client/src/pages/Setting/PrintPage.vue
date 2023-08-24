@@ -77,14 +77,15 @@
 import Page from "components/General/Layout/Page.vue";
 import RichTextEditor from "components/General/Other/RichTextEditor.vue";
 import Button from "components/General/Other/Button.vue";
-
-import {onMounted, ref, reactive, watch, nextTick} from "vue";
-import {axios, buildPrinter, error, notify, util} from "src/boot"
-import {useI18n} from "vue-i18n";
 import Select from "components/General/Other/Select.vue";
 import IconMage from "components/General/Other/IconMage.vue";
 import TextField from "components/General/Other/TextField.vue";
+
+import {onMounted, ref, reactive, watch, nextTick} from "vue";
+import {axios, error, notify, util} from "src/boot"
+import {useI18n} from "vue-i18n";
 import _ from "lodash";
+import QRCode from 'qrcode'
 
 export default {
   name: 'PrintPage',
@@ -335,15 +336,17 @@ export default {
 
   methods: {
     print() {
-      console.warn(this.example)
-      buildPrinter(this.activeDoc.content, this.tags, this.example)
-        .then((printer) => {
-          console.warn(printer.generators['order_items']().generators['item_note_0']())
-          console.warn(printer.generators['order_items']().generators['item_note_1']())
-          this.test = printer.generate().innerHTML
-          // printer.print()
-        })
-        .catch(err => console.warn(err))
+      // console.warn(this.example)
+      // buildPrinter(this.activeDoc.content, this.tags, this.example)
+      //   .then((printer) => {
+      //     console.warn(printer.generators['order_items']().generators['item_note_0']())
+      //     console.warn(printer.generators['order_items']().generators['item_note_1']())
+      //     this.test = printer.generate().innerHTML
+      //     // printer.print()
+      //   })
+      //   .catch(err => console.warn(err))
+
+      console.warn()
     }
   }
 }

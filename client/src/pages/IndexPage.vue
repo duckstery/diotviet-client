@@ -14,6 +14,7 @@ import Setting from "components/General/Layout/Setting.vue";
 
 export default {
   name: 'IndexPage',
+
   components: {Setting, LoginPanel},
 }
 </script>

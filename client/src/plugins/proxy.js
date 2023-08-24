@@ -1,6 +1,4 @@
 import {computed} from "vue";
-import {useOrderStore} from "stores/order";
-import {util} from "boot/util";
 
 /**
  * Proxy a field through computed
@@ -54,7 +52,7 @@ export {proxy}
 //     bill['totalPrice'] = `${util.toDec(bill['actualPrice']) * util.toDec(bill['quantity'])}`
 //
 //     // Send request to update item's data
-//     store.editItem(props.index, clonedValue)
+//     store.replaceItem(props.index, clonedValue)
 //   }
 //   // Destructuring
 //

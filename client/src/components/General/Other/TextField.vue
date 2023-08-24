@@ -60,7 +60,7 @@ export default {
     mask: {
       type: String,
       default: "",
-    }
+    },
   },
 }
 </script>

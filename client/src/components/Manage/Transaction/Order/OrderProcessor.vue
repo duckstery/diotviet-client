@@ -90,7 +90,7 @@ import {useSimpleSearch} from "src/composables/useSimpleSearch";
 import {useSimpleGrouper} from "src/composables/useSimpleGrouper";
 import {env, util, constant} from "src/boot"
 import {useI18n} from "vue-i18n";
-import {Printer} from "boot/print";
+import {watchOnce} from "@vueuse/core";
 
 export default {
   name: 'OrderEditor',
@@ -172,16 +172,14 @@ export default {
     watch(() => search.query, () => setActiveOrder())
     // If selectedCode is provided
     if (!util.isUnset(props.selectedCode)) {
-      const stop = watch(() => search.data, (value) => {
+      // Only watch once
+      watchOnce(() => search.data, (value) => {
         // Pre-select the item that has code of [selectedCode]
         setActiveOrder(value.find(v => v.code === props.selectedCode) ?? null)
-        // Only need to run once
-        stop()
       })
       // Set initial value to trigger initial search if selectedCode is not null
       onMounted(() => search.query = `${props.selectedCode}`)
     }
-
 
     return {
       ...useDialogEditor(null, props.mode),
