@@ -9,8 +9,19 @@ import * as process from "process";
 // *************************************************
 
 export interface Loader {
+  /**
+   * Show loader overlay
+   */
   show(): void
+  /**
+   * Hide loader overlay
+   */
   hide(): void
+  /**
+   * Wait for a callback
+   *
+   * @param callback
+   */
   wait(callback: () => void): void
 }
 

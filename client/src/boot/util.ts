@@ -7,18 +7,84 @@ import {$T} from "boot/i18n";
 // *************************************************
 
 export interface Util {
+  /**
+   * Get date only
+   *
+   * @param value
+   */
   dateOnly(value: string): string
+  /**
+   * Format money (add comma to separate unit)
+   *
+   * @param value
+   */
   formatMoney(value: string): string
+  /**
+   * Prompt for confirm
+   *
+   * @param message
+   */
   promptConfirm(message: string): DialogChainObject
+  /**
+   * Prompt for reason input and confirm
+   */
   promptReason(): DialogChainObject
+  /**
+   * Return null if getting empty string
+   *
+   * @param value
+   */
   nullIfEmpty(value: any): string | null
+  /**
+   * Convert camelCase to snake_case
+   *
+   * @param value
+   */
   camelToSnake(value: string): string
+  /**
+   * Check if target is null or undefined
+   *
+   * @param value
+   */
   isUnset(value: any): boolean
+  /**
+   * Craft formData
+   *
+   * @param value
+   */
   craftFormData(value: object): FormData
+  /**
+   * Get prop (dot notation) from object
+   *
+   * @param obj
+   * @param notation
+   * @param delimiter
+   */
   getProp(obj: object, notation: string, delimiter?: string): any
+  /**
+   * Compare string
+   *
+   * @param a
+   * @param b
+   */
   compare(a: string, b: string): number
+  /**
+   * Create div container (<div/>)
+   *
+   * @param htmlString
+   */
   div(htmlString: string): HTMLDivElement
+  /**
+   * Skip null value for Vue watcher
+   *
+   * @param callback
+   */
   skipNull(callback: Function): (value: any, oldValue: any, onCleanup: Function) => void
+  /**
+   * Execute callback asynchronously
+   *
+   * @param callback
+   */
   async<T>(callback: () => T): Promise<Awaited<T>>
 }
 
@@ -183,7 +249,9 @@ const util: Util = {
     try {
       return Date.parse(a) - Date.parse(b)
     } catch (e) {
-      console.warn(e)
+      if (process.env.DEV) {
+        console.warn(e)
+      }
     }
 
     return a.localeCompare(b)

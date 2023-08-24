@@ -81,7 +81,9 @@ export function useDialogEditor<T>(inputRef: UnwrapNestedRefs<T>, mode = 'create
             default: error.any
           }))
       } else {
-        console.warn(extension.v$.value)
+        if (process.env.DEV) {
+          console.warn(extension.v$.value)
+        }
         // Notify about invalid
         notify($t("message.invalid_input"), 'negative')
       }

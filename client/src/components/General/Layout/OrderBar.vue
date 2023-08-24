@@ -27,10 +27,9 @@
         flat
         size="sm"
         icon="close"
-        v-if="getTotalSize > 1"
         class="tw--right-2 tw-bottom-2"
         :color="id === getActiveId ? 'primary' : 'white'"
-        @click.stop="removeOrder(index)"
+        @click.stop="onRemoveOrder(index)"
       />
     </q-tab>
   </q-tabs>
@@ -66,6 +65,15 @@ export default {
         // Notify and prevent adding new tab
         this.$notifyWarn(this.$t('error.limit_exceeded'))
       }
+    },
+
+    /**
+     * Remove order from tabList
+     *
+     * @param index
+     */
+    onRemoveOrder(index) {
+      this.$util.promptConfirm(this.$t('message.delete_order')).onOk(() => this.removeOrder(index))
     },
 
     // Order store

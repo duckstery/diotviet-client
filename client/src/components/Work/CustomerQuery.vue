@@ -59,10 +59,23 @@ export default {
     const maxWidth = useMaxWidth(() => select.value.$el.querySelector("input"), 0.7)
     const getActiveCustomer = computed(() => useOrderStore().getActiveCustomer)
 
+    // Selected info
+    const selectedInfo = computed(() => {
+      // Info
+      let info = ""
+      if (!util.isUnset(getActiveCustomer.value)) {
+        info += `${getActiveCustomer.value.name}`
+        if (!util.isUnset(getActiveCustomer.value.phoneNumber)) {
+          info += ` - ${getActiveCustomer.value.phoneNumber}`
+        }
+      }
+      return info
+    })
+
     return {
       select, getActiveCustomer,
       customer: useSimpleSearch('/customer/query', false),
-      selectedInfo: computed(() => !util.isUnset(getActiveCustomer.value) && `${getActiveCustomer.value.name} - ${getActiveCustomer.value.phoneNumber}`),
+      selectedInfo: selectedInfo,
       selectedClass: computed(() => 'text-primary tw-text-ellipsis tw-line-clamp-1 ' + maxWidth.value),
     }
   },

@@ -21,14 +21,15 @@ import OrderPanel from "components/Work/OrderPanel.vue";
 import ItemPanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
 
-import {computed, defineComponent, onMounted, ref, unref} from 'vue'
+import {computed, defineComponent, ref, unref} from 'vue'
+import {useMounted} from "@vueuse/core";
 import {useQuasar} from 'quasar';
 import {useOrderStore} from "stores/order";
 import {axios, error, util, notify} from "src/boot";
 import {useI18n} from "vue-i18n";
 import _ from "lodash";
 import {usePrinter} from "src/composables/usePrinter";
-import {useMounted} from "@vueuse/core";
+import {useLocalStore} from "src/composables/useLocalStore";
 
 export default defineComponent({
   name: 'WorkPage',
@@ -36,6 +37,9 @@ export default defineComponent({
   components: {Page, StatisticPanel, ItemPanel, OrderPanel},
 
   setup() {
+    // Get "Order" store
+    const orderStore = useLocalStore(useOrderStore)
+
     // Get i18n
     const $t = useI18n().t
     // Get quasar
@@ -43,9 +47,9 @@ export default defineComponent({
 
     // Validate before create Order
     const validate = () => {
-      if (util.isUnset(useOrderStore().getActiveCustomer)) {
+      if (util.isUnset(orderStore.getActiveCustomer)) {
         notify($t("message.specify_customer"), 'negative')
-      } else if (_.isEmpty(useOrderStore().getActiveOrder.items)) {
+      } else if (_.isEmpty(orderStore.getActiveOrder.items)) {
         notify($t("message.specify_least_item"), 'negative')
       } else {
         return true
@@ -59,7 +63,7 @@ export default defineComponent({
     // On operation
     const onOpe = (type) => {
       if (validate()) {
-        axios.post(`/order/${type}`, unref(useOrderStore().getActiveOrder))
+        axios.post(`/order/${type}`, unref(orderStore.getCleanActiveOrder))
           // Get Order print data
           .then(res => axios.get(`/order/print/${res.data.payload}`).then(resources.print).catch(error.any))
           .catch(error.any)

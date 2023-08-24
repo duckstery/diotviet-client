@@ -6,6 +6,9 @@ import {util} from 'boot/util'
 // Typed
 // *************************************************
 
+/**
+ * Show snackbar to notify user
+ */
 export type Notifier = (content: string, type?: 'positive' | 'negative' | 'warning', err?: Error) => void
 
 // *************************************************

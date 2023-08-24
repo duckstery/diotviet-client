@@ -261,6 +261,7 @@ export default {
     no_recent_searches: 'No recent searches',
     search_orders: 'Search orders',
     group_by: 'Group by {attr}',
+    delete_order: 'Delete this order',
     delete_item: 'Delete this item',
     action_on_item: '{attr} this item',
     import_file: 'Import this file',

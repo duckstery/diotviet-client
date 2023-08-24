@@ -8,9 +8,29 @@ import {useEnvStore} from "stores/env";
 // *************************************************
 
 export interface Env {
+  /**
+   * Init env
+   *
+   * @param key
+   * @param value
+   */
   init(key: string, value: any): any
+  /**
+   * Get env by key
+   *
+   * @param key
+   */
   get(key: string): any
+  /**
+   * Set env by key
+   *
+   * @param key
+   * @param value
+   */
   set(key: string, value: any): void
+  /**
+   * Check if optimizing by visual
+   */
   isOptimizeVisual(): boolean
 }
 

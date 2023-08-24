@@ -11,12 +11,33 @@ import _ from "lodash"
 
 // Printer shape
 export type IPrinter = {
+  /**
+   * Print tags
+   */
   readonly tags: PrintTag[],
+  /**
+   * Data to print
+   */
   data: any;
+  /**
+   * Whether Printer is ready to work
+   */
   isReady: boolean,
+  /**
+   * Print template
+   */
   template: string,
+  /**
+   * Content generator
+   */
   generators: PrintGenerators | undefined,
+  /**
+   * Generate document
+   */
   generate(): Promise<Element | null>,
+  /**
+   * Print document
+   */
   print(): void
 }
 

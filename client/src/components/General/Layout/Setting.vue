@@ -74,15 +74,15 @@ export default {
   computed: {
     // Check if language is English. Why? cuz it is default value
     isEnglish() {
-      return this.language === 'en'
+      return this.language !== 'vi'
     },
     // Check if display is Light. Why? cuz it is default value
     isLight() {
-      return this.display === 'light'
+      return this.display !== 'dark'
     },
     // Check if optimize for visual. Why? cuz it is default value
     isOptimizeVisual() {
-      return this.optimize === 'visual'
+      return this.optimize !== 'speed'
     }
   },
 

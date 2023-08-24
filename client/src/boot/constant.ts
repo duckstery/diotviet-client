@@ -6,14 +6,50 @@ import {$T} from "boot/i18n";
 // *************************************************
 
 export interface Constant {
+  /**
+   * Get predefined types
+   */
   types(): { id: number, name: string }[]
+  /**
+   * Get predefined types by key
+   *
+   * @param key
+   */
   typeByKey(key: string): { id: number, name: string }
+  /**
+   * Get predefined statuses
+   */
   statuses(): { id: number, name: string, icon: string, color: string, verb?: string }[]
+  /**
+   * Convert status code to string
+   *
+   * @param code
+   */
   statusCodeToString(code: string | number): string
+  /**
+   * Check if code is Status: RESOLVED
+   *
+   * @param code
+   */
   isStatusResolved(code: number): boolean
+  /**
+   * Check if code is Status: ABORT
+   * @param code
+   */
   isStatusAborted(code: number): boolean
+  /**
+   * Get predefined genders
+   */
   genders(): { id: number, name: string, icon: string, color: string }[]
+  /**
+   * Get predefined boolean options
+   */
   booleans(): { id: number, name: string, icon: string, color: string }[]
+  /**
+   * Map png to icon
+   *
+   * @param key
+   */
   matchedIcon(key: string): string | undefined
 }
 

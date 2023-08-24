@@ -12,10 +12,38 @@ import {$T} from "boot/i18n";
 export type ErrorSwitcher = { 400?: Function, 410?: Function, 422?: [{ v$: Validation }, string], default: Function }
 
 export interface ErrorHandler {
+  /**
+   * Handle HTTP Status: 400
+   *
+   * @param callback
+   * @param err
+   */
   $400(callback: Function, err: AxiosError<LocalAxiosResponse, any>): void
+  /**
+   * Handle HTTP Status: 410
+   *
+   * @param callback
+   * @param err
+   */
   $410(callback: Function, err: AxiosError<LocalAxiosResponse, any>): void
+  /**
+   * Handle HTTP Status: 422 (Work with Vuelidate)
+   *
+   * @param key
+   * @param err
+   */
   $422(key: string, err: AxiosError<LocalAxiosResponse, any>): void
+  /**
+   * Simple log
+   *
+   * @param err
+   */
   any(err: AxiosError<LocalAxiosResponse, any>): void
+  /**
+   * Match error with cases
+   *
+   * @param cases
+   */
   switch(cases: ErrorSwitcher | Function): (error: AxiosError) => void
 }
 

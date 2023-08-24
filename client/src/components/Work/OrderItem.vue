@@ -74,7 +74,7 @@ export default {
     // Store
     const orderStore = useOrderStore()
     // Sub details
-    const details = ref([])
+    const details = ref(orderStore.getDuplicateItemById(props.value.id))
 
     return {
       details: details,

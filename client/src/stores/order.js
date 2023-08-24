@@ -44,12 +44,20 @@ export const useOrderStore = defineStore('order', {
     getActiveId: (state) => state.activeId,
 
     /**
-     * Get items in order
+     * Get active order
      *
      * @param state
      * @returns {*}
      */
     getActiveOrder: (state) => state.orders.at(state.activeIndex),
+
+    /**
+     * Get clean active order
+     *
+     * @param state
+     * @return {*&{id: number}}
+     */
+    getCleanActiveOrder: (state) => ({...state.orders.at(state.activeIndex), id: 0}),
 
     /**
      * Find index of active order in orders
@@ -69,6 +77,16 @@ export const useOrderStore = defineStore('order', {
   },
 
   actions: {
+    /**
+     * Get duplicate item by id
+     *
+     * @param id
+     * @return {*}
+     */
+    getDuplicateItemById(id) {
+      return this.getActiveOrder.items.filter(i => i.id === id && !i.root)
+    },
+
     /**
      * Set customer for active order
      *
@@ -189,9 +207,11 @@ export const useOrderStore = defineStore('order', {
     removeOrder(index) {
       // Get index of removed item
       const removedOrder = this.orders.splice(index, 1).at(0)
-      // Check if index is 0 (first item)
-      if (removedOrder.id === this.activeId) {
-        // Set tab to new first item
+      // If all Order is removed, add new Order
+      if (this.getTotalSize === 0) {
+        this.createOrder()
+      } else if (removedOrder.id === this.activeId) {
+        // Check if index is 0 (first item), then set tab to new first item
         this.setActive(this.orders.at(0).id)
       } else {
         // Re-activate activeId to force getting activeIndex

@@ -9,15 +9,49 @@ import {Auth} from "boot/auth";
 // @ts-ignore
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
+    /**
+     * Axios
+     */
     $axios: LocalAxios
+    /**
+     * API (Same as Axios)
+     */
     $api: LocalAxios
+    /**
+     * Authentication
+     */
     $auth: Auth;
+    /**
+     * Constant
+     */
     $constant: Constant
+    /**
+     * Environment
+     */
     $env: Env
+    /**
+     * Loader
+     */
     $loading: Loader
+    /**
+     * Notifier
+     */
     $notify: Notifier
+    /**
+     * Notifier (warning)
+     *
+     * @param content
+     */
     $notifyWarn: (content: string) => void
+    /**
+     * Notifier (error)
+     *
+     * @param content
+     */
     $notifyErr: (content: string) => void
+    /**
+     * Utilities
+     */
     $util: Util
   }
 }

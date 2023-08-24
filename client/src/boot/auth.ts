@@ -8,10 +8,29 @@ import {useAuthStore} from "stores/auth"
 // *************************************************
 
 export interface Auth {
+  /**
+   * Subscribe JWT
+   *
+   * @param jwt
+   */
   subscribe(jwt: string): void
+  /**
+   * Get user info
+   */
   user(): User
+  /**
+   * Check if is authenticated
+   */
   isAuthenticated(): boolean
+  /**
+   * Login
+   *
+   * @param credential
+   */
   login(credential: Credential): Promise<string | void>
+  /**
+   * Logout
+   */
   logout(): Promise<string | void>
 }
 
@@ -55,7 +74,9 @@ const auth: Auth = {
       // Save JWT and payload to $store
       store.subscribe({...payload, jwt})
     } catch (e) {
-      console.error(e)
+      if (process.env.DEV) {
+        console.warn(e)
+      }
       // Clear cookie
       Cookies.remove(tokenKey)
       // Reset store
@@ -189,7 +210,8 @@ export default boot(({app, router}) => {
   // Register middleware to check if user is authorized
   router.beforeEach((to, from, next) => {
     // Get path privilege (the privilege need to have to access this path)
-    const pathPrivilege = to.meta.privilege ?? 4;
+    // @ts-ignore
+    const pathPrivilege: number = to.meta.privilege ?? 4;
 
     // The lower the privilege, the higher the role
     if (store.getPrivilege <= pathPrivilege) {
