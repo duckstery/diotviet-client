@@ -88,7 +88,7 @@ import {useDialogEditor} from "src/composables/useDialogEditor";
 import {useDebounceModel} from "src/composables/useDebounceModel";
 import {useSimpleSearch} from "src/composables/useSimpleSearch";
 import {useSimpleGrouper} from "src/composables/useSimpleGrouper";
-import {env, util, constant} from "src/boot"
+import {env, util, constant, error} from "src/boot"
 import {useI18n} from "vue-i18n";
 import {watchOnce} from "@vueuse/core";
 
@@ -153,7 +153,7 @@ export default {
         nextTick(async () => nextTick(() => {
           active.value = item
           isActiveReady.value = true
-        }))
+        })).catch(error.log)
       }
     }
 

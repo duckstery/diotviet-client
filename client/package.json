@@ -18,6 +18,7 @@
     "@vuelidate/validators": "^2.0.3",
     "@vueuse/core": "^10.3.0",
     "axios": "^1.4.0",
+    "hash-wasm": "^4.9.0",
     "lodash": "^4.17.21",
     "pinia": "^2.1.6",
     "print-js": "^1.6.0",

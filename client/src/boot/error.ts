@@ -45,6 +45,12 @@ export interface ErrorHandler {
    * @param cases
    */
   switch(cases: ErrorSwitcher | Function): (error: AxiosError) => void
+  /**
+   * Log error
+   *
+   * @param err
+   */
+  log(err: Error): void
 }
 
 // *************************************************
@@ -178,6 +184,10 @@ const error: ErrorHandler = {
         cases.default(error)
       }
     }
+  },
+
+  log(err) {
+    log(err)
   }
 }
 

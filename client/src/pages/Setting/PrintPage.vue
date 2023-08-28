@@ -141,7 +141,7 @@ export default {
         res.data.payload.documents.map(res => add(res))
         // Load active doc
         loadActiveDoc(res.data.payload.documents[0])
-      })
+      }).catch(error.log)
     }
     /**
      * Load active doc

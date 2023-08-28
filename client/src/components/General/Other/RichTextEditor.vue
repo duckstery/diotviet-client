@@ -197,7 +197,7 @@ export default {
           table.classList.remove('wrapping-table')
           // Clear all class of <tr/>
           table.querySelectorAll('tr').forEach(el => el.classList.remove(...el.classList))
-        })
+        }).catch(this.$error.log)
       }
     },
 

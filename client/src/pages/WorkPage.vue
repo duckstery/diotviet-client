@@ -29,7 +29,7 @@ import {axios, error, util, notify} from "src/boot";
 import {useI18n} from "vue-i18n";
 import _ from "lodash";
 import {usePrinter} from "src/composables/usePrinter";
-import {useLocalStore} from "src/composables/useLocalStore";
+import {useAdvanceStorage} from "src/composables/useAdvanceStorage";
 
 export default defineComponent({
   name: 'WorkPage',
@@ -38,7 +38,7 @@ export default defineComponent({
 
   setup() {
     // Get "Order" store
-    const orderStore = useLocalStore(useOrderStore)
+    const orderStore = useAdvanceStorage(useOrderStore)
 
     // Get i18n
     const $t = useI18n().t

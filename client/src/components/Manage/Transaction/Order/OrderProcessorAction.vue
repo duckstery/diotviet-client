@@ -89,10 +89,8 @@ export default {
       action.value = null
       // By transitioning back to state 1, prompt will also be hidden
       hanging()
-      nextTick(() => {
-        // Avoid data glitching when q-slide is transitioning
-        paymentAmount.value = props.active.paymentAmount
-      })
+      // Avoid data glitching when q-slide is transitioning
+      nextTick(() => paymentAmount.value = props.active.paymentAmount)
     }
     // Handle action
     const handle = () => {

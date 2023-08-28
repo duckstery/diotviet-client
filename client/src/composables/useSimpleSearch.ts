@@ -1,4 +1,4 @@
-import {axios, error, util,} from "src/boot";
+import {axios, error, util} from "src/boot";
 import {nextTick, reactive, UnwrapNestedRefs, watch} from "vue";
 // @ts-ignore
 import _ from "lodash";
@@ -79,7 +79,7 @@ export function useSimpleSearch(api: string, useWatch: boolean = true, filter: F
         // @ts-ignore
         resource.data = filter.value(clonedOriginal)
       }
-    })
+    }).catch(error.log)
   }
 
   // Fetch options when query is changed

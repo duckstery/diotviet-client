@@ -5,6 +5,7 @@ import {Loader} from "boot/loader";
 import {Util} from "boot/util";
 import {LocalAxios} from "boot/axios";
 import {Auth} from "boot/auth";
+import {ErrorHandler} from "boot/error";
 
 // @ts-ignore
 declare module '@vue/runtime-core' {
@@ -29,6 +30,10 @@ declare module '@vue/runtime-core' {
      * Environment
      */
     $env: Env
+    /**
+     * Error handler
+     */
+    $error: ErrorHandler
     /**
      * Loader
      */
