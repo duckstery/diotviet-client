@@ -102,14 +102,14 @@ public class ProductImportService extends BaseImportService<Product> {
             // Set basic data
             product.setCode(generateCode());
             product.setTitle(resolve(row, 3));
-            product.setOriginalPrice(resolve(row, 5).replaceAll(",|\\.\\d*", ""));
+            product.setOriginalPrice(Long.parseLong(resolve(row, 5).replaceAll(",|\\.\\d*", "")));
             product.setActualPrice(product.getOriginalPrice());
-            product.setDiscount("0");
+            product.setDiscount(0L);
             product.setDiscountUnit("%");
             product.setDescription("");
             product.setMeasureUnit(resolveValue(row, 12));
             product.setSrc(StorageUtils.pull(resolve(row, 15), timer));
-            product.setWeight("0");
+            product.setWeight(0);
             product.setCanBeAccumulated(resolve(row, 17).equals("1"));
             product.setIsInBusiness(resolve(row, 18).equals("1"));
             product.setCategory(categoryMap.get(resolve(row, 0)));

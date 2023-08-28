@@ -43,26 +43,26 @@ public class Item {
     /**
      * Price before discount
      */
-    @Column(length = 11)
-    private String originalPrice;
+    @Column
+    private Long originalPrice;
 
     /**
      * Discount's amount
      */
-    @Column(length = 11)
-    private String discount;
+    @Column
+    private Long discount;
 
     /**
      * Discount's unit
      */
-    @Column(length = 4)
+    @Column
     private String discountUnit;
 
     /**
      * Price after discount
      */
     @Column(length = 11)
-    private String actualPrice;
+    private Long actualPrice;
 
     /**
      * Note
@@ -74,5 +74,5 @@ public class Item {
      * Quantity
      */
     @Column
-    private int quantity;
+    private Integer quantity;
 }

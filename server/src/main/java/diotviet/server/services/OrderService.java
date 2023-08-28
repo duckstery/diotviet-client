@@ -255,12 +255,12 @@ public class OrderService extends BaseService {
             query.and(order.resolvedAt.loe(request.resolvedAtTo()));
         }
         // Filter by min price
-        if (StringUtils.isNotBlank(request.priceFrom())) {
-            query.and(order.paymentAmount.castToNum(Long.class).goe(Long.parseLong(request.priceFrom())));
+        if (Objects.nonNull(request.priceFrom())) {
+            query.and(order.paymentAmount.goe(request.priceFrom()));
         }
         // Filter by max price
-        if (StringUtils.isNotBlank(request.priceTo())) {
-            query.and(order.paymentAmount.castToNum(Long.class).loe(Long.parseLong(request.priceTo())));
+        if (Objects.nonNull(request.priceTo())) {
+            query.and(order.paymentAmount.loe(request.priceTo()));
         }
         // Filter by search string
         if (StringUtils.isNotBlank(request.search())) {
@@ -288,9 +288,9 @@ public class OrderService extends BaseService {
 
         // Calculate Order current payment amount only for PROCESSING Order
         if (Status.PROCESSING.equals(order.getStatus())) {
-            Long paymentAmount = Long.parseLong(order.getPaymentAmount());
+            Long paymentAmount = order.getPaymentAmount();
             Long paidAmount = transactionService.getPaidAmountOf(order);
-            order.setPaymentAmount(String.valueOf(paymentAmount - paidAmount));
+            order.setPaymentAmount(paymentAmount - paidAmount);
         }
 
         // Project OrderSearchView to Order
@@ -328,7 +328,7 @@ public class OrderService extends BaseService {
      *
      * @param orders
      */
-    private void processOrders(List<Order> orders, String amount) {
+    private void processOrders(List<Order> orders, Long amount) {
         // Resolve Orders and save resolve Transaction
         for (Order order : orders) {
             switch (order.getStatus()) {
@@ -348,7 +348,7 @@ public class OrderService extends BaseService {
      *
      * @param orders
      */
-    private void resolveOrders(List<Order> orders, String amount) {
+    private void resolveOrders(List<Order> orders, Long amount) {
         // Resolve Orders and save resolve Transaction
         for (Order order : orders) {
             switch (order.getStatus()) {

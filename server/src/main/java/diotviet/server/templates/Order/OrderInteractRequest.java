@@ -8,10 +8,10 @@ import java.util.List;
 public record OrderInteractRequest(
         Long id,
         String note,
-        String provisionalAmount,
-        String discount,
+        Long provisionalAmount,
+        Long discount,
         String discountUnit,
-        String paymentAmount,
+        Long paymentAmount,
         OrderCustomer customer,
         List<OrderItem> items
 ) {

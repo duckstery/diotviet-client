@@ -177,11 +177,11 @@ public abstract class BaseImportService<E> {
      * @param index
      * @return
      */
-    protected String resolveDecimal(Row row, int index) {
+    protected Long resolveDecimal(Row row, int index) {
         // Get value
         Optional<BigDecimal> optional = row.getCellAsNumber(index);
 
-        return Objects.isNull(optional) || optional.isEmpty() ? "0" : String.valueOf(optional.get().toBigInteger());
+        return Objects.isNull(optional) || optional.isEmpty() ? 0L : optional.get().toBigInteger().longValue();
     }
 
     /**

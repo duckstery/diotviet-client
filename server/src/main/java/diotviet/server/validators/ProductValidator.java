@@ -77,10 +77,10 @@ public class ProductValidator extends BaseValidator<Product> {
     private void validate(ProductInteractRequest request) {
         assertStringRequired(request, "title", 50);
         assertStringNonRequired(request, "code", 0, 10);
-        assertStringRequired(request, "originalPrice", 11);
-        assertStringRequired(request, "actualPrice", 11);
-        assertStringRequired(request, "discount", 11);
+        assertNumb(request, "originalPrice", true, 0, 999999999999L);
+        assertNumb(request, "actualPrice", true, 0, 999999999999L);
+        assertNumb(request, "discount", true, 0, 999999999999L);
         assertStringNonRequired(request, "measureUnit", 0, 10);
-        assertStringNonRequired(request, "weight", 0, 8);
+        assertNumb(request, "weight", false, 0, 1000);
     }
 }

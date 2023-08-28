@@ -12,7 +12,7 @@ public record OrderPatchRequest(
         Long[] ids,
         Long[] versions,
         Long option,
-        String amount,
+        Long amount,
         String reason
 ) {
 }

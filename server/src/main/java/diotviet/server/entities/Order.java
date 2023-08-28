@@ -124,18 +124,18 @@ public class Order implements Identifiable, Lockable {
     /**
      * Price before discount
      */
-    @Column(length = 11)
+    @Column
     @InitIgnore
     @CsvBindByName
-    private String provisionalAmount;
+    private Long provisionalAmount;
 
     /**
      * Discount's amount
      */
-    @Column(length = 11)
+    @Column
     @InitIgnore
     @CsvBindByName
-    private String discount;
+    private Long discount;
 
     /**
      * Discount's unit
@@ -148,9 +148,9 @@ public class Order implements Identifiable, Lockable {
     /**
      * Price after discount
      */
-    @Column(length = 11)
+    @Column
     @CsvBindByName
-    private String paymentAmount;
+    private Long paymentAmount;
 
     /**
      * Status

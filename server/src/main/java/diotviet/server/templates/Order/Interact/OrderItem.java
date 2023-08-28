@@ -3,10 +3,10 @@ package diotviet.server.templates.Order.Interact;
 public record OrderItem(
         Long id,
         String note,
-        String originalPrice,
-        String discount,
+        Long originalPrice,
+        Long discount,
         String discountUnit,
-        String actualPrice,
+        Long actualPrice,
         Integer quantity
 ) {
 }

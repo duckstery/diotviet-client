@@ -93,7 +93,7 @@ public class ProductService extends BaseService {
     /**
      * Store item
      *
-     * @param param
+     * @param request
      */
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void store(ProductInteractRequest request) {
@@ -193,12 +193,12 @@ public class ProductService extends BaseService {
             query.and(product.groups.any().id.eq(request.group()));
         }
         // Filter by min price
-        if (StringUtils.isNotBlank(request.minPrice())) {
-            query.and(product.actualPrice.castToNum(Long.class).goe(Long.parseLong(request.minPrice())));
+        if (Objects.nonNull(request.minPrice())) {
+            query.and(product.actualPrice.goe(request.minPrice()));
         }
         // Filter by max price
-        if (StringUtils.isNotBlank(request.maxPrice())) {
-            query.and(product.actualPrice.castToNum(Long.class).loe(Long.parseLong(request.maxPrice())));
+        if (Objects.nonNull(request.maxPrice())) {
+            query.and(product.actualPrice.loe(request.maxPrice()));
         }
         // Filter by canBeAccumulated flag
         if (Objects.nonNull(request.canBeAccumulated())) {

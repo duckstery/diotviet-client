@@ -18,7 +18,7 @@ export interface Util {
    *
    * @param value
    */
-  formatMoney(value: string): string
+  formatMoney(value: string | number): string
   /**
    * Prompt for confirm
    *
@@ -112,6 +112,10 @@ const util: Util = {
    * @returns {string}
    */
   formatMoney(value) {
+    if (typeof value === 'number') {
+      value = `${value}`
+    }
+
     // Create endIdx, after each endIdx, a comma (,) will be inserted. endIdx will be initiated with remainder of value's length div by 3
     let endIdx = value.length % 3;
     // If no remainder, assign to 3

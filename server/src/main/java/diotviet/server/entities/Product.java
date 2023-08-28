@@ -97,18 +97,18 @@ public class Product implements Identifiable, Visualize {
     /**
      * Price before discount
      */
-    @Column(length = 11)
+    @Column
     @InitIgnore
     @CsvBindByName
-    private String originalPrice;
+    private Long originalPrice;
 
     /**
      * Discount's amount
      */
-    @Column(length = 11)
+    @Column
     @InitIgnore
     @CsvBindByName
-    private String discount;
+    private Long discount;
 
     /**
      * Discount's unit
@@ -121,9 +121,9 @@ public class Product implements Identifiable, Visualize {
     /**
      * Price after discount
      */
-    @Column(length = 11)
+    @Column
     @CsvBindByName
-    private String actualPrice;
+    private Long actualPrice;
 
     /**
      * Measure's unit
@@ -143,10 +143,10 @@ public class Product implements Identifiable, Visualize {
     /**
      * Weight of product
      */
-    @Column(length = 8)
+    @Column
     @InitHide
     @CsvBindByName
-    private String weight;
+    private Integer weight;
 
     /**
      * Whether this production can be point accumulated

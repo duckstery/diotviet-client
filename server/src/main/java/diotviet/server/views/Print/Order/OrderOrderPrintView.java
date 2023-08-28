@@ -27,18 +27,18 @@ public interface OrderOrderPrintView {
     @PrintTag(sequence = 5, example = "123 ABC, P.11, Q.5, TP.HCM")
     String getAddress();
 
-    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(target.provisionalAmount)}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(T(String).valueOf(target.provisionalAmount))}")
     @PrintTag(sequence = 6, example = "100,000")
     String getProvisionalAmount();
 
-    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(target.discount)}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(T(String).valueOf(target.discount))}")
     @PrintTag(sequence = 7, example = "10,000")
     String getDiscount();
 
     @PrintTag(sequence = 8, example = "cash")
     String getDiscountUnit();
 
-    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(target.paymentAmount)}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(T(String).valueOf(target.paymentAmount))}")
     @PrintTag(sequence = 9, example = "90,000")
     String getPaymentAmount();
 

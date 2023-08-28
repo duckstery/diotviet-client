@@ -1,25 +1,23 @@
 package diotviet.server.templates.Product;
 
-import lombok.NoArgsConstructor;
-
 /**
  * Request for Product search
  *
- * @param category
- * @param groups
- * @param search
+ * @param categories
+ * @param group
  * @param minPrice
  * @param maxPrice
  * @param canBeAccumulated
  * @param isInBusiness
+ * @param search
  * @param page
  * @param itemsPerPage
  */
 public record ProductSearchRequest(
         Long[] categories,
         Long group,
-        String minPrice,
-        String maxPrice,
+        Long minPrice,
+        Long maxPrice,
         Boolean canBeAccumulated,
         Boolean isInBusiness,
 

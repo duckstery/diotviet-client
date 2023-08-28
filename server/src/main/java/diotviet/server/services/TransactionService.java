@@ -39,11 +39,11 @@ public class TransactionService extends BaseService {
      *
      * @param order
      */
-    public void process(Order order, String amount) {
+    public void process(Order order, Long amount) {
         // Get Order payment amount and convert to Long
-        long paymentAmount = Long.parseLong(order.getPaymentAmount());
+        long paymentAmount = order.getPaymentAmount();
         // Parse provided amount
-        long processAmount = Long.parseLong(amount);
+        long processAmount = amount;
         // Get paid amount
         long paidAmount = getPaidAmountOf(order);
 
@@ -64,17 +64,17 @@ public class TransactionService extends BaseService {
      *
      * @param order
      */
-    public void resolve(Order order, String amount) {
+    public void resolve(Order order, Long amount) {
         // Create a resolve Transaction
         Transaction resolveTransaction;
 
         if (Objects.nonNull(amount)) {
             // If amount is null, resolve by subtract paid amount from payment amount
-            Long paymentAmount = Long.valueOf(order.getPaymentAmount());
+            Long paymentAmount = order.getPaymentAmount();
             Long paidAmount = getPaidAmountOf(order);
 
             // Create Transaction
-            resolveTransaction = createTransactionFor(order, String.valueOf(paymentAmount - paidAmount));
+            resolveTransaction = createTransactionFor(order, paymentAmount - paidAmount);
         } else {
             // Else, apply requested amount as resolve amount
             resolveTransaction = createTransactionFor(order, amount);
@@ -107,7 +107,7 @@ public class TransactionService extends BaseService {
                     .toList());
         } else {
             // Create a Transaction to set reason for Order
-            transactions.add(createTransactionFor(order, "0").setReason(reason));
+            transactions.add(createTransactionFor(order, 0L).setReason(reason));
         }
 
         // Setup Order
@@ -129,7 +129,6 @@ public class TransactionService extends BaseService {
         // If Order has some Transactions, iterate through those Transaction to see how much money is paid
         return order.getTransactions().stream()
                 .map(Transaction::getAmount)
-                .map(Long::valueOf)
                 .reduce(0L, Long::sum);
     }
 
@@ -153,7 +152,7 @@ public class TransactionService extends BaseService {
      * @param amount
      * @return
      */
-    private Transaction createTransactionFor(Order order, String amount) {
+    private Transaction createTransactionFor(Order order, Long amount) {
         // Create Transaction and setup
         return new Transaction()
                 .setAmount(amount)

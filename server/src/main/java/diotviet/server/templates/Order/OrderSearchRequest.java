@@ -30,8 +30,8 @@ public record OrderSearchRequest(
         Date resolvedAtFrom,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         Date resolvedAtTo,
-        String priceFrom,
-        String priceTo,
+        Long priceFrom,
+        Long priceTo,
         Boolean isMale,
 
         // Common part but cannot be inherited anymore

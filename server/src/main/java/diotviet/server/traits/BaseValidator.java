@@ -328,12 +328,12 @@ public abstract class BaseValidator<T> {
      * @param min
      * @param max
      */
-    protected void assertInt(Object object, String attribute, boolean isRequired, int min, int max) {
+    protected void assertNumb(Object object, String attribute, boolean isRequired, long min, long max) {
         assertObject(object, attribute, isRequired);
 
         try {
             // Cast object to String
-            Integer value = Integer.valueOf((String) OtherUtils.invokeGetter(object, attribute));
+            Long value = Long.parseLong(OtherUtils.invokeGetter(object, attribute).toString());
 
             if (Objects.isNull(value)) {
                 return;

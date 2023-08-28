@@ -54,11 +54,4 @@ public interface ProductDetailView extends ProductSearchView, Visualize {
      * @return
      */
     String getDiscountUnit();
-
-    /**
-     * Weight
-     *
-     * @return
-     */
-    String getWeight();
 }

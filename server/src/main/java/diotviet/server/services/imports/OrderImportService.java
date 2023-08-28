@@ -229,11 +229,11 @@ public class OrderImportService extends BaseImportService<Order> {
         item.setOrder(order);
         item.setProduct(productMap.get(resolve(row, 40).trim()));
         item.setNote(resolve(row, 42));
-        item.setQuantity(Integer.parseInt(resolveDecimal(row, 43)));
+        item.setQuantity(resolveDecimal(row, 43).intValue());
         item.setOriginalPrice(resolveDecimal(row, 44));
-        item.setDiscount(resolveDecimal(row, 45));
+        item.setDiscount(resolveDecimal(row, 46));
         item.setDiscountUnit("cash");
-        item.setActualPrice(resolve(row, 46));
+        item.setActualPrice(resolveDecimal(row, 47));
 
         // Return
         return item;

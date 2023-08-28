@@ -39,8 +39,8 @@ public class Transaction {
     /**
      * Payed amount
      */
-    @Column(length = 11)
-    private String amount;
+    @Column
+    private Long amount;
 
     /**
      * Date of creation

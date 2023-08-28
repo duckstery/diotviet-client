@@ -10,22 +10,22 @@ public interface OrderItemPrintView {
     @PrintTag(sequence = 0, example = {"Apple", "Orange", "Mango"})
     String getTitle();
 
-    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(target.originalPrice)}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(T(String).valueOf(target.originalPrice))}")
     @PrintTag(sequence = 1, example = {"10,000", "20,000", "15,000"})
     String getOriginalPrice();
 
-    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(target.discount)}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(T(String).valueOf(target.discount))}")
     @PrintTag(sequence = 2, example = {"1,000", "2,000", "1,500"})
     String getDiscount();
 
     @PrintTag(sequence = 3, example = {"cash", "cash", "cash"})
     String getDiscountUnit();
 
-    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(target.actualPrice)}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).formatMoney(T(String).valueOf(target.actualPrice))}")
     @PrintTag(sequence = 4, example = {"9,000", "18,000", "13,500"})
     String getActualPrice();
 
-    @Value("#{T(String).valueOf(T(Long).parseLong(target.actualPrice) * T(Long).parseLong(target.quantity))}")
+    @Value("#{T(String).valueOf(target.actualPrice * target.quantity)}")
     @PrintTag(sequence = 5, example = {"27,000", "36,000", "27,000"})
     String getTotalPrice();
 
