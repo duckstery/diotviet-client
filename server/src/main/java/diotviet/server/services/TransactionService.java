@@ -68,7 +68,7 @@ public class TransactionService extends BaseService {
         // Create a resolve Transaction
         Transaction resolveTransaction;
 
-        if (Objects.nonNull(amount)) {
+        if (Objects.isNull(amount)) {
             // If amount is null, resolve by subtract paid amount from payment amount
             Long paymentAmount = order.getPaymentAmount();
             Long paidAmount = getPaidAmountOf(order);

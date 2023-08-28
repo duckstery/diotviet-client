@@ -65,7 +65,10 @@ export default defineComponent({
       if (validate()) {
         axios.post(`/order/${type}`, unref(orderStore.getCleanActiveOrder))
           // Get Order print data
-          .then(res => axios.get(`/order/print/${res.data.payload}`).then(resources.print).catch(error.any))
+          .then(res => {
+            notify($t('message.order_create'))
+            axios.get(`/order/print/${res.data.payload}`).then(resources.print).catch(error.any)
+          })
           .catch(error.any)
       }
     }

@@ -266,6 +266,7 @@ export default {
     action_on_item: '{attr} this item',
     import_file: 'Import this file',
     export_data: 'Export this data',
+    order_create: 'Order create successfully',
     action_on_order: '{attr} this order',
     invalid_iterable_tag: 'This tag must be placed in a table',
     invalid_iterable_area: 'Child tags of [{attr}] must be placed in the same table',

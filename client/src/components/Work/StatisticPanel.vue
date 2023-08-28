@@ -74,6 +74,7 @@
 
 <script>
 import {useOrderStore} from "stores/order";
+import {toReactive} from "@vueuse/core";
 import {mapState, storeToRefs} from "pinia";
 import {usePriceControl} from "src/composables/usePriceControl";
 
@@ -101,7 +102,7 @@ export default {
 
     return {
       getActiveOrder,
-      ...usePriceControl(getActiveOrder.value, 'provisionalAmount', 'paymentAmount')
+      ...usePriceControl(toReactive(getActiveOrder), 'provisionalAmount', 'paymentAmount')
     }
   }
 }
