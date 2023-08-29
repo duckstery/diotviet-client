@@ -12,6 +12,7 @@ export default {
     order_item: 'Order',
     purchase: 'Purchase',
     search_customer: 'Search for customer',
+    search_product: 'Search for product',
     categorize: 'Categorize',
     filter: 'Filter',
     visualize: 'Visualize',

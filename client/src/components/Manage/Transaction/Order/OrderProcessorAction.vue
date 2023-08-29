@@ -27,7 +27,8 @@
     <div v-if="showPrompt" class="tw-my-auto tw-flex">
       <TextField v-model="paymentAmount"
                  class="tw-w-32 tw-p-0" input-class="tw-font-semibold tw-p-0" mask="###,###,###,###" required
-                 :placeholder="$t('field.payment_amount')"/>
+                 :placeholder="$t('field.payment_amount')"
+                 @keyup.enter="handle"/>
       <Button class="tw-w-[41px] tw-ml-2" color="positive" icon="fa-solid fa-paper-plane"
               :tooltip="$t('field.confirm')" @click="handle"/>
       <Button class="tw-w-[41px] tw-ml-2" color="negative" icon="fa-solid fa-arrow-left"

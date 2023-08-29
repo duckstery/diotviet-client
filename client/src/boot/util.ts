@@ -69,7 +69,7 @@ export interface Util {
    */
   compare(a: string, b: string): number
   /**
-   * Create div container (<div/>)
+   * Create div container
    *
    * @param htmlString
    */
@@ -108,7 +108,7 @@ const util: Util = {
   /**
    * Format money (add comma to separate unit)
    *
-   * @param {string} value
+   * @param {string|number} value
    * @returns {string}
    */
   formatMoney(value) {

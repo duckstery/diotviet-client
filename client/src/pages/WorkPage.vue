@@ -22,7 +22,7 @@ import ItemPanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
 
 import {computed, defineComponent, ref, unref} from 'vue'
-import {useMounted} from "@vueuse/core";
+import {useMounted, templateRef} from "@vueuse/core";
 import {useQuasar} from 'quasar';
 import {useOrderStore} from "stores/order";
 import {axios, error, util, notify} from "src/boot";
@@ -30,6 +30,8 @@ import {useI18n} from "vue-i18n";
 import _ from "lodash";
 import {usePrinter} from "src/composables/usePrinter";
 import {useAdvanceStorage} from "src/composables/useAdvanceStorage";
+import {useProductStore} from "stores/product";
+import {storeToRefs} from "pinia";
 
 export default defineComponent({
   name: 'WorkPage',
@@ -76,10 +78,10 @@ export default defineComponent({
     // Check if page is mounted
     const isMounted = useMounted()
     // Products for display
-    const items = ref([])
+    const {items} = storeToRefs(useProductStore())
 
     // ItemPanel's reference
-    const itemPanel = ref(null)
+    const itemPanel = templateRef('itemPanel')
     // Calculate OrderPanel (by subtract header height and top, bot padding from screen height
     const orderPanelHeight = computed(() => $q.screen.height - 50 - 40)
     // Calculate StatisticPanel height (by subtract ItemPanel height from OrderPanel)
@@ -93,7 +95,7 @@ export default defineComponent({
       // Handler
       onOpe: onOpe,
       // Screen properties
-      itemPanel: itemPanel, orderPanelHeight: orderPanelHeight, statisticPanelHeight: statisticPanelHeight
+      orderPanelHeight: orderPanelHeight, statisticPanelHeight: statisticPanelHeight
     }
   },
 })

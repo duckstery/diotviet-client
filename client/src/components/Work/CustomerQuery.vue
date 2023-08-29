@@ -35,11 +35,12 @@ import Tooltip from "components/General/Other/Tooltip.vue";
 
 import {Dialog} from "quasar";
 import {util} from "src/boot";
-import {computed, ref} from "vue";
+import {computed} from "vue";
 import {mapActions} from "pinia";
 import {useOrderStore} from "stores/order";
 import {useMaxWidth} from "src/composables/useMaxWidth";
 import {useSimpleSearch} from "src/composables/useSimpleSearch";
+import {templateRef} from "@vueuse/core";
 
 export default {
   name: "CustomerQuery",
@@ -55,7 +56,7 @@ export default {
 
   setup() {
     // Resources
-    const select = ref(null)
+    const select = templateRef('select')
     const maxWidth = useMaxWidth(() => select.value.$el.querySelector("input"), 0.7)
     const getActiveCustomer = computed(() => useOrderStore().getActiveCustomer)
 
@@ -73,7 +74,7 @@ export default {
     })
 
     return {
-      select, getActiveCustomer,
+      getActiveCustomer: getActiveCustomer,
       customer: useSimpleSearch('/customer/query', false),
       selectedInfo: selectedInfo,
       selectedClass: computed(() => 'text-primary tw-text-ellipsis tw-line-clamp-1 ' + maxWidth.value),
@@ -103,8 +104,3 @@ export default {
   }
 }
 </script>
-
-
-<style scoped>
-
-</style>
