@@ -109,7 +109,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      *
      * @param ids
      */
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query(value = "DELETE FROM diotviet.assoc_groups_products WHERE product_id in :ids", nativeQuery = true)
     void deleteGroupAssocById(@Param("ids") Long[] ids);
 
@@ -118,7 +118,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      *
      * @param ids
      */
-    @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE diotviet.products SET is_deleted = true WHERE id in :ids AND is_deleted = false RETURNING src", nativeQuery = true)
-    List<String> softDeleteByIdsReturningSrc(@Param("ids") Long[] ids);
+    @Modifying
+    @Query(value = "UPDATE Product p SET p.isDeleted = true WHERE p.id in :ids AND p.isDeleted = false")
+    void softDeleteByIds(@Param("ids") Long[] ids);
 }

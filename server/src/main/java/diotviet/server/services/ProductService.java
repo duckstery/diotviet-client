@@ -11,6 +11,7 @@ import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.templates.Product.ProductPatchRequest;
 import diotviet.server.templates.Product.ProductSearchRequest;
 import diotviet.server.utils.OtherUtils;
+import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
 import diotviet.server.views.Product.ProductDisplayView;
@@ -103,8 +104,8 @@ public class ProductService {
      */
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void store(ProductInteractRequest request) {
-        // Common validate for create and update
-        Product product = validator.validateAndExtract(request);
+        // Common validate for create and update, then save it
+        Product product = repository.save(validator.validateAndExtract(request));
         // Try to add file first and save file src
         imageService.uploadAndSave(product, List.of(request.file()));
         // Create file
@@ -135,7 +136,9 @@ public class ProductService {
         // Delete assoc
         repository.deleteGroupAssocById(ids);
         // Delete and get image path (this is physical resource, not database resource)
-//        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
+        repository.softDeleteByIds(ids);
+        // Delete Image
+        imageService.delete("product", ids);
     }
 
     /**

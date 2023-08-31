@@ -6,13 +6,17 @@ import diotviet.server.repositories.ImageRepository;
 import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.ImageValidator;
 import diotviet.server.views.Identifiable;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ImageService {
@@ -26,12 +30,16 @@ public class ImageService {
      */
     @Autowired
     private ImageRepository repository;
-
     /**
      * Image validator
      */
     @Autowired
     private ImageValidator validator;
+    /**
+     * Storage utils
+     */
+    @Autowired
+    private StorageUtils storageUtils;
 
     // ****************************
     // Public API
@@ -51,7 +59,7 @@ public class ImageService {
             // Iterate through each MultipartFile
             for (MultipartFile file : files) {
                 // Upload each MultipartFile to ImgBB
-                JsonNode json = StorageUtils.upload(file);
+                JsonNode json = storageUtils.upload(file);
                 // Convert json to Image and add to images list
                 images.add(findOrCreateImage(entity, json));
             }
@@ -61,6 +69,27 @@ public class ImageService {
 
         // First save all Images since no Cascade is set
         repository.saveAll(images);
+    }
+
+    /**
+     * Delete connection between Identifiable and Image
+     * @param type
+     * @param ids
+     */
+    public void delete(String type, Long[] ids) {
+        // Delete link between Identifiable and Image
+        Set<Long> imageIds = repository.deleteImageAssocByTypeAndIdentifiableId(type, ids);
+        // Count occurrence of Image to make sure, Image is not used by other Identifiable
+        List<Long> inUseImageIds = repository.findInUseImageIdByImgIds(imageIds.toArray(Long[]::new));
+        // Remove in use Image out of imageIds
+        inUseImageIds.forEach(imageIds::remove);
+
+        // Get uid of these unused Image
+        if (!imageIds.isEmpty()) {
+            List<String> imageUIds = repository.deleteByIdsReturningUid(imageIds.toArray(Long[]::new));
+            // Delete these Images on ImgBB
+            storageUtils.delete(imageUIds);
+        }
     }
 
     // ****************************

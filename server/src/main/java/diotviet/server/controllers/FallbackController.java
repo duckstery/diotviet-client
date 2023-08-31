@@ -7,6 +7,7 @@ import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.GeneralResponse;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
+import diotviet.server.utils.StorageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class FallbackController extends BaseController {
 
     @GetMapping("")
     public String index() {
-        System.out.println(repository.findById(1L, Customer.class).getImages());
+//        StorageUtils.delete("3NKgDjW");
         return "Greetings from Spring Boot!";
     }
 

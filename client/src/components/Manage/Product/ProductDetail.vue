@@ -26,7 +26,6 @@
           <Skeleton v-model="isReady" height="300px">
             <q-img
               no-native-menu
-              no-spinner
               no-transition
               width="300"
               height="300"

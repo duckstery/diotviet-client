@@ -12,10 +12,12 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.BufferedImageHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.awt.image.BufferedImage;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@EnableAsync
 public class ServerApplication {
 
     /**

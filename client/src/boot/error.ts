@@ -179,9 +179,9 @@ const error: ErrorHandler = {
         // @ts-ignore
         this[`$${httpCode}`].bind(...bindArgs)(error)
         // @ts-ignore
-      } else if (cases.default === 'function') {
+      } else if (typeof cases['default'] === 'function') {
         // @ts-ignore Else if default case is present, execute it
-        cases.default(error)
+        cases['default'](error)
       }
     }
   },

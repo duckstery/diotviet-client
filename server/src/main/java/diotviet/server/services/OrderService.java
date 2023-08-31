@@ -190,20 +190,6 @@ public class OrderService {
     }
 //
 //    /**
-//     * Delete multiple item with ids
-//     *
-//     * @param ids
-//     */
-//    @Transactional(rollbackFor = {Exception.class, Throwable.class})
-//    public void delete(Long[] ids) {
-//        // Delete assoc
-//        repository.deleteGroupAssocById(ids);
-//        // Delete and get image path (this is physical resource, not database resource)
-//        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
-//    }
-//
-//
-//    /**
 //     * Get all Order for export
 //     *
 //     * @return

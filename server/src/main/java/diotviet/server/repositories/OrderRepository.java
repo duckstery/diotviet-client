@@ -112,13 +112,4 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
 //    @Modifying(clearAutomatically = true)
 //    @Query(value = "DELETE FROM diotviet.assoc_groups_orders WHERE order_id in :ids", nativeQuery = true)
 //    void deleteGroupAssocById(@Param("ids") Long[] ids);
-//
-//    /**
-//     * Delete Order by ID (this operation won't delete assoc, need to delete assoc first)
-//     *
-//     * @param ids
-//     */
-//    @Modifying(clearAutomatically = true)
-//    @Query(value = "UPDATE diotviet.orders SET is_deleted = true WHERE id in :ids AND is_deleted = false RETURNING src", nativeQuery = true)
-//    List<String> softDeleteByIdsReturningSrc(@Param("ids") Long[] ids);
 }

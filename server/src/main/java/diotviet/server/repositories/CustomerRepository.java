@@ -77,7 +77,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      *
      * @param ids
      */
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query(value = "DELETE FROM diotviet.assoc_groups_customers WHERE customer_id in :ids", nativeQuery = true)
     void deleteGroupAssocById(@Param("ids") Long[] ids);
 
@@ -86,7 +86,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      *
      * @param ids
      */
-    @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE diotviet.customers SET is_deleted = true, version = version + 1 WHERE id in :ids AND is_deleted = false RETURNING src", nativeQuery = true)
-    List<String> softDeleteByIdsReturningSrc(@Param("ids") Long[] ids);
+    @Modifying
+    @Query(value = "UPDATE Customer c SET c.isDeleted = true, c.version = c.version + 1 WHERE c.id in :ids AND c.isDeleted = false")
+    void softDeleteByIds(@Param("ids") Long[] ids);
 }

@@ -92,10 +92,12 @@ public class CustomerService {
         Customer customer = validator.validateAndExtract(request);
         // Set createdBy
         customer.setCreatedBy(OtherUtils.getRequester());
+        // Save customer
+        customer = repository.save(customer);
         // Save file and get saved file's path
         imageService.uploadAndSave(customer, List.of(request.file()));
-        // Create file
-        return repository.save(customer);
+
+        return customer;
     }
 
     /**
@@ -108,7 +110,9 @@ public class CustomerService {
         // Delete assoc
         repository.deleteGroupAssocById(ids);
         // Delete and get image path (this is physical resource, not database resource)
-//        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
+        repository.softDeleteByIds(ids);
+        // Delete Image
+        imageService.delete("customer", ids);
     }
 
 
