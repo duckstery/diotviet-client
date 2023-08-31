@@ -3,14 +3,14 @@ package diotviet.server.validators;
 import diotviet.server.entities.Document;
 import diotviet.server.repositories.DocumentRepository;
 import diotviet.server.templates.Document.DocumentInteractRequest;
-import diotviet.server.traits.BaseValidator;
+import diotviet.server.traits.BusinessValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
 @Component
-public class DocumentValidator extends BaseValidator<Document> {
+public class DocumentValidator extends BusinessValidator<Document> {
 
     // ****************************
     // Properties

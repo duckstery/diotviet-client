@@ -10,7 +10,6 @@ import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.templates.Product.ProductPatchRequest;
 import diotviet.server.templates.Product.ProductSearchRequest;
-import diotviet.server.traits.BaseService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.ProductValidator;
 import diotviet.server.views.Product.ProductDetailView;
@@ -30,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class ProductService extends BaseService {
+public class ProductService {
 
     // ****************************
     // Properties
@@ -46,6 +45,13 @@ public class ProductService extends BaseService {
      */
     @Autowired
     private ProductValidator validator;
+
+    /**
+     * Image service
+     */
+    @Autowired
+    private ImageService imageService;
+
 
     // ****************************
     // Public API
@@ -100,7 +106,7 @@ public class ProductService extends BaseService {
         // Common validate for create and update
         Product product = validator.validateAndExtract(request);
         // Try to add file first and save file src
-        saveFileFor(product, request.file(), validator);
+        imageService.uploadAndSave(product, List.of(request.file()));
         // Create file
         repository.save(product);
     }
@@ -129,7 +135,7 @@ public class ProductService extends BaseService {
         // Delete assoc
         repository.deleteGroupAssocById(ids);
         // Delete and get image path (this is physical resource, not database resource)
-        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
+//        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
     }
 
     /**

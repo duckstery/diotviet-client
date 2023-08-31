@@ -38,7 +38,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      * @param <T>
      * @return
      */
-    @EntityGraph(attributePaths = {"category", "groups"})
+    @EntityGraph(attributePaths = {"category", "groups", "images"})
     <T> T findByIdAndIsDeletedFalse(Long id, Class<T> classType);
 
     @Override

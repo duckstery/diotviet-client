@@ -4,7 +4,7 @@ import diotviet.server.entities.Order;
 import diotviet.server.repositories.OrderRepository;
 import diotviet.server.services.ProductService;
 import diotviet.server.templates.Order.OrderInteractRequest;
-import diotviet.server.traits.BaseValidator;
+import diotviet.server.traits.BusinessValidator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class OrderValidator extends BaseValidator<Order> {
+public class OrderValidator extends BusinessValidator<Order> {
 
     // ****************************
     // Properties

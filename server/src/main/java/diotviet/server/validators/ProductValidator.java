@@ -3,7 +3,7 @@ package diotviet.server.validators;
 import diotviet.server.entities.Product;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductInteractRequest;
-import diotviet.server.traits.BaseValidator;
+import diotviet.server.traits.BusinessValidator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Objects;
 
 @Component
-public class ProductValidator extends BaseValidator<Product> {
+public class ProductValidator extends BusinessValidator<Product> {
 
     // ****************************
     // Properties
@@ -59,8 +59,6 @@ public class ProductValidator extends BaseValidator<Product> {
         }
         // Check code
         checkCode(product, "MS", productRepository::findFirstByCodeAndIsDeletedFalse, productRepository::findFirstByCodeLikeOrderByCodeDesc);
-        // Check if Product's source is default
-        checkImageSrc(product);
 
         return product;
     }

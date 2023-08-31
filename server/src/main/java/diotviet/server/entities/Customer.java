@@ -12,15 +12,16 @@ import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
 import diotviet.server.views.Lockable;
-import diotviet.server.views.Visualize;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.WhereJoinTable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,7 +32,7 @@ import java.util.Set;
 @Data
 @Accessors(chain = true)
 @QueryEntity
-public class Customer implements Identifiable, Visualize, Lockable {
+public class Customer implements Identifiable, Lockable {
 
     // ****************************
     // Properties
@@ -151,10 +152,17 @@ public class Customer implements Identifiable, Visualize, Lockable {
     /**
      * Image source
      */
-    @Column
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "assoc_image_identifiable",
+            joinColumns = @JoinColumn(name = "identifiable_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id"),
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+    )
+    @WhereJoinTable(clause = "identifiable_type = 'customer'")
     @InitIgnore
     @CsvBindByName
-    private String src;
+    private List<Image> images;
 
     /**
      * Name of creator

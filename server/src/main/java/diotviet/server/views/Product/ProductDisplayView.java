@@ -1,8 +1,8 @@
 package diotviet.server.views.Product;
 
-import diotviet.server.views.Visualize;
+import diotviet.server.views.Visualizer;
 
-public interface ProductDisplayView extends Visualize {
+public interface ProductDisplayView extends Visualizer {
     /**
      * ID
      *

@@ -38,7 +38,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      * @param <T>
      * @return
      */
-    @EntityGraph(attributePaths = {"category", "groups"})
+    @EntityGraph(attributePaths = {"category", "groups", "images"})
     <T> T findById(Long id, Class<T> classType);
 
     /**
@@ -49,7 +49,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      * @param <T>
      * @return
      */
-    @EntityGraph(attributePaths = {"groups"})
+    @EntityGraph(attributePaths = {"groups", "images"})
     <T> T findByIdAndIsDeletedFalse(Long id, Class<T> classType);
 
     @Override

@@ -28,6 +28,7 @@ public record CustomerInteractRequest(
         String email,
         String facebook,
         Boolean isMale,
+        Long imgId,
         String src,
         String description,
         MultipartFile file,

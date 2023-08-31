@@ -10,12 +10,12 @@ import diotviet.server.annotations.InitIgnore;
 import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
-import diotviet.server.views.Visualize;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.WhereJoinTable;
 
 import java.util.List;
 import java.util.Set;
@@ -28,7 +28,7 @@ import java.util.Set;
 @Data
 @Accessors(chain = true)
 @QueryEntity
-public class Product implements Identifiable, Visualize {
+public class Product implements Identifiable {
     /**
      * Id
      */
@@ -135,10 +135,17 @@ public class Product implements Identifiable, Visualize {
     /**
      * Image source
      */
-    @Column
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "assoc_image_identifiable",
+            joinColumns = @JoinColumn(name = "identifiable_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id"),
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+    )
+    @WhereJoinTable(clause = "identifiable_type = 'product'")
     @InitIgnore
     @CsvBindByName
-    private String src;
+    private List<Image> images;
 
     /**
      * Weight of product

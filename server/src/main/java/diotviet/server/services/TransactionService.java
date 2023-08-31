@@ -4,7 +4,6 @@ import diotviet.server.constants.Status;
 import diotviet.server.entities.Order;
 import diotviet.server.entities.Transaction;
 import diotviet.server.repositories.TransactionRepository;
-import diotviet.server.traits.BaseService;
 import diotviet.server.utils.OtherUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class TransactionService extends BaseService {
+public class TransactionService {
 
     // ****************************
     // Properties

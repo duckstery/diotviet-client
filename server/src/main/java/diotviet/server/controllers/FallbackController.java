@@ -1,6 +1,9 @@
 package diotviet.server.controllers;
 
+import diotviet.server.entities.Customer;
 import diotviet.server.entities.QProduct;
+import diotviet.server.repositories.CustomerRepository;
+import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.GeneralResponse;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
@@ -17,9 +20,12 @@ public class FallbackController extends BaseController {
     @Autowired
     private EntityUtils entityUtils;
 
-    @GetMapping("/")
-    public String index() {
+    @Autowired
+    private CustomerRepository repository;
 
+    @GetMapping("")
+    public String index() {
+        System.out.println(repository.findById(1L, Customer.class).getImages());
         return "Greetings from Spring Boot!";
     }
 

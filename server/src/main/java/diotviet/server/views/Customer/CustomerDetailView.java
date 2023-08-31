@@ -1,10 +1,10 @@
 package diotviet.server.views.Customer;
 
 import diotviet.server.views.Lockable;
-import diotviet.server.views.Visualize;
+import diotviet.server.views.Visualizer;
 import org.springframework.beans.factory.annotation.Value;
 
-public interface CustomerDetailView extends CustomerSearchView, Visualize, Lockable {
+public interface CustomerDetailView extends CustomerSearchView, Lockable, Visualizer {
     /**
      * Category ID
      *
@@ -48,11 +48,4 @@ public interface CustomerDetailView extends CustomerSearchView, Visualize, Locka
      * @return
      */
     String getDescription();
-
-    /**
-     * Src
-     *
-     * @return
-     */
-    String getSrc();
 }

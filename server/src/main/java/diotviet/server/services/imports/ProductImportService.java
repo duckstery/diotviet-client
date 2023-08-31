@@ -108,7 +108,7 @@ public class ProductImportService extends BaseImportService<Product> {
             product.setDiscountUnit("%");
             product.setDescription("");
             product.setMeasureUnit(resolveValue(row, 12));
-            product.setSrc(StorageUtils.pull(resolve(row, 15), timer));
+//            product.set(StorageUtils.pull(resolve(row, 15), timer));
             product.setWeight(0);
             product.setCanBeAccumulated(resolve(row, 17).equals("1"));
             product.setIsInBusiness(resolve(row, 18).equals("1"));

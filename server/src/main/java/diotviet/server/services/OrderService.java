@@ -13,7 +13,6 @@ import diotviet.server.templates.Order.Interact.OrderItem;
 import diotviet.server.templates.Order.OrderInteractRequest;
 import diotviet.server.templates.Order.OrderPatchRequest;
 import diotviet.server.templates.Order.OrderSearchRequest;
-import diotviet.server.traits.BaseService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.OrderValidator;
 import diotviet.server.views.Order.OrderDetailView;
@@ -27,7 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +34,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class OrderService extends BaseService {
+public class OrderService {
 
     // ****************************
     // Properties

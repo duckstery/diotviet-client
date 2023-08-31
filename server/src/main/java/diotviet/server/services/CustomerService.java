@@ -7,7 +7,6 @@ import diotviet.server.entities.QCustomer;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
-import diotviet.server.traits.BaseService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.CustomerValidator;
 import diotviet.server.views.Customer.CustomerDetailView;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class CustomerService extends BaseService {
+public class CustomerService {
 
     // ****************************
     // Properties
@@ -42,6 +40,12 @@ public class CustomerService extends BaseService {
      */
     @Autowired
     private CustomerValidator validator;
+
+    /**
+     * Image service
+     */
+    @Autowired
+    private ImageService imageService;
 
     // ****************************
     // Public API
@@ -89,9 +93,9 @@ public class CustomerService extends BaseService {
         // Set createdBy
         customer.setCreatedBy(OtherUtils.getRequester());
         // Save file and get saved file's path
-        saveFileFor(customer, request.file(), validator);
+        imageService.uploadAndSave(customer, List.of(request.file()));
         // Create file
-        return repository.saveAndFlush(customer);
+        return repository.save(customer);
     }
 
     /**
@@ -104,7 +108,7 @@ public class CustomerService extends BaseService {
         // Delete assoc
         repository.deleteGroupAssocById(ids);
         // Delete and get image path (this is physical resource, not database resource)
-        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
+//        removeFiles(repository.softDeleteByIdsReturningSrc(ids));
     }
 
 

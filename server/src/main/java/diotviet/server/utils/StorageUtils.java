@@ -1,18 +1,17 @@
 package diotviet.server.utils;
 
-import diotviet.server.exceptions.FileServingException;
-import org.apache.commons.compress.utils.FileNameUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import diotviet.server.structures.Tuple;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 import java.util.Objects;
 
 /**
@@ -24,65 +23,74 @@ public class StorageUtils {
     // Constants
     // ****************************
 
-    // Public directory
-    public static final Path PUBLIC_DIR = Path.of(System.getProperty("user.home"), ".diotviet");
-    public static final Path FILES_ROOT = Path.of("files");
+    /**
+     * ImgBB account username
+     */
+    private static final String username = "ducdao";
+    /**
+     * ImgBB account password
+     */
+    private static final String password = "z/PpH*J*7jigEiK";
+
+    /**
+     * ImgBB Login URL
+     */
+    private static final String IMG_BB_LOGIN_URL = "https://imgbb.com/login";
+    /**
+     * ImgBB Upload API
+     */
+    private static final String IMG_BB_UPLOAD_API = "https://api.imgbb.com/1/upload?key=5ae2315a8c7e1debf761ed1282f7c933";
+
+
+    /**
+     * Auth token form's key
+     */
+    private static final String AUTH_FORM_KEY = "auth_token";
+    /**
+     * Username form's key
+     */
+    private static final String USERNAME_FORM_KEY = "login-subject";
+    /**
+     * Password form's key
+     */
+    private static final String PASSWORD_FORM_KEY = "password";
+    /**
+     * Session cookie's name
+     */
+    private static final String SESSION_COOKIE_KEY = "PHPSESSID";
 
     // ****************************
     // Properties
     // ****************************
 
-    // Flag to mark that PUBLIC_DIR is created
-    private static boolean isInit = false;
+    /**
+     * PHP Session (Cookie
+     */
+    private static String phpSession;
+    /**
+     * Authentication token
+     */
+    private static String authToken;
 
     // ****************************
     // Public API
     // ****************************
 
     /**
-     * Try to init storage
-     */
-    public static void init() throws IOException {
-        // Check if PUBLIC_DIR is not exist
-        if (!isInit && Files.notExists(PUBLIC_DIR, LinkOption.NOFOLLOW_LINKS)) {
-            Files.createDirectory(PUBLIC_DIR);
-            Files.createDirectory(PUBLIC_DIR.resolve(FILES_ROOT));
-        }
-    }
-
-    /**
-     * Get file extension
-     *
-     * @param filename
-     * @return
-     */
-    public static String getExtension(String filename) {
-        // Output
-        String output = "";
-        try {
-            output = Objects.isNull(filename) ? "" : StringUtils.strip(filename, "/").split("\\.")[1];
-        } catch (Exception ignored) {
-        }
-
-        return output;
-    }
-
-    /**
      * Save file and generate filename
      *
-     * @param multipartFile
+     * @param file
      * @return
      */
-    public static String save(MultipartFile multipartFile) throws IOException {
-        // Try to init
-        init();
-
-        return copy(
-                multipartFile.getInputStream(),
-                OtherUtils.hash(multipartFile.getBytes(), true),
-                System.currentTimeMillis(),
-                getExtension(multipartFile.getOriginalFilename())
+    public static JsonNode upload(MultipartFile file) throws IOException {
+        // Create HttpEntity
+        HttpEntity<?> request = new HttpEntity<>(
+                RestUtils.craftFormData(Tuple.of("image", Base64.getEncoder().encodeToString(file.getBytes()))),
+                RestUtils.generateHeaders(true)
         );
+
+        // Send file to ImgBB Upload API to save file
+        return RestUtils.requestForBody(IMG_BB_UPLOAD_API, HttpMethod.POST, request);
     }
 
     /**
@@ -97,47 +105,9 @@ public class StorageUtils {
             return;
         }
         // Resolve path
-        Path absolutePath = resolve(filename);
+        Path absolutePath = Path.of("");
         // Delete path
         Files.deleteIfExists(absolutePath);
-    }
-
-    /**
-     * Check for file existence and resolve filename
-     *
-     * @param filename
-     * @throws IOException
-     */
-    public static Path resolve(String filename) throws IOException {
-        // Try to init
-        init();
-
-        // Get matched file
-        Path target = Files
-                .list(PUBLIC_DIR.resolve(FILES_ROOT))
-                .filter(path -> path.getFileName().toString().equals(filename))
-                .findFirst()
-                .orElse(null);
-        // Check if file is exists
-        if (Objects.isNull(target)) {
-            throw new FileServingException("file_not_exist");
-        }
-
-        return target;
-    }
-
-    /**
-     * Serve file
-     *
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    public static InputStream serve(Path file) throws IOException {
-        // Try to init
-        init();
-
-        return Files.newInputStream(file);
     }
 
     /**
@@ -153,18 +123,11 @@ public class StorageUtils {
 
         // Open stream to URL
         try {
-            // Try to init
-            init();
             // Get filename in URL
             String filepath = URI.create(url).getPath();
 
             // Save file
-            return copy(
-                    new URL(url).openStream(),
-                    FileNameUtils.getBaseName(filepath),
-                    timeSuffix,
-                    FileNameUtils.getExtension(filepath)
-            );
+            return "";
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -177,29 +140,21 @@ public class StorageUtils {
     // ****************************
 
     /**
-     * Copy file to destination of ([hash]_[timeSuffix].[extension]
-     *
-     * @param is
-     * @param hash
-     * @param timeSuffix
-     * @param extension
-     * @return
-     * @throws IOException
+     * Login to ImgBB server
      */
-    private static String copy(InputStream is, String hash, long timeSuffix, String extension) throws IOException {
-        // Generate filename
-        String filename = hash + "_" + timeSuffix + "." + extension;
-        // Create target path
-        Path relativePath = FILES_ROOT.resolve(filename);
+    public static void loginToImgBB() {
+        getPHPSession();
+    }
 
-        // Save file to location
-        Files.copy(is, PUBLIC_DIR.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
-        // Try to close input stream
-        try {
-            is.close();
-        } catch (Exception ignored) {
-        }
+    /**
+     * Get PHP Session of ImgBB
+     */
+    private static void getPHPSession() {
+        // Create HttpEntity
+        HttpEntity<?> request = new HttpEntity<>(RestUtils.generateHeaders(false));
+        // Send request to ImgBB to get response
+        ResponseEntity<String> response = RestUtils.request(IMG_BB_LOGIN_URL, HttpMethod.GET, request);
 
-        return filename;
+        System.out.println(response.getHeaders());
     }
 }

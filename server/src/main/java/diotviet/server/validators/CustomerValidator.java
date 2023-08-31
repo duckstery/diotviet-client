@@ -5,7 +5,7 @@ import diotviet.server.entities.Customer;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.templates.Customer.CustomerInteractRequest;
-import diotviet.server.traits.BaseValidator;
+import diotviet.server.traits.BusinessValidator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Component
-public class CustomerValidator extends BaseValidator<Customer> {
+public class CustomerValidator extends BusinessValidator<Customer> {
 
     // ****************************
     // Properties
@@ -60,8 +60,6 @@ public class CustomerValidator extends BaseValidator<Customer> {
         }
         // Check and get the valid code
         checkCode(customer, "KH", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
-        // Check src
-        checkImageSrc(customer);
         // Preserve Date type data
         checkDateData(customer);
 

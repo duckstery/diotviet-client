@@ -1,9 +1,9 @@
 package diotviet.server.views.Product;
 
-import diotviet.server.views.Visualize;
+import diotviet.server.views.Visualizer;
 import org.springframework.beans.factory.annotation.Value;
 
-public interface ProductDetailView extends ProductSearchView, Visualize {
+public interface ProductDetailView extends ProductSearchView, Visualizer {
     /**
      * Category ID
      *

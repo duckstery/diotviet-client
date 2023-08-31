@@ -14,6 +14,7 @@ public record ProductInteractRequest(
         String discountUnit,
         Long actualPrice,
         String measureUnit,
+        Long imgId,
         String src,
         Integer weight,
         Boolean canBeAccumulated,
