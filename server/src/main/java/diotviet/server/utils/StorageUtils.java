@@ -1,30 +1,27 @@
 package diotviet.server.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import diotviet.server.structures.Tuple;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.HttpCookie;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Other utility
@@ -128,32 +125,40 @@ public class StorageUtils {
      * @param uIds
      */
     public void delete(List<String> uIds) {
-        for (String uid : uIds) {
+        try {
+            // Try to log in
+            tryToLoginToImgBB();
+
+            // Create HttpEntity with form data
+            HttpEntity<?> request = createRequestEntity(ArrayUtils.addAll(
+                    uIds.stream().map(uid -> Tuple.of("deleting[ids][]", uid)).toArray(Tuple[]::new),
+                    Tuple.of(TOKEN_FORM_KEY, authToken),
+                    Tuple.of("pathname", "/"),
+                    Tuple.of("action", "delete"),
+                    Tuple.of("from", "list"),
+                    Tuple.of("delete", "images"),
+                    Tuple.of("multiple", "true")
+            ));
+
+            // Request to delete and check if fail because of 403
             try {
-                // Try to log in
-                tryToLoginToImgBB();
-
-                // Create HttpEntity with form data
-                HttpEntity<?> request = createRequestEntity(
-                        Tuple.of(TOKEN_FORM_KEY, authToken),
-                        Tuple.of("pathname", "/"),
-                        Tuple.of("action", "delete"),
-                        Tuple.of("single", "true"),
-                        Tuple.of("delete", "image"),
-                        Tuple.of("deleting[id]", uid)
-                );
-
-                // Request to delete and check if fail because of 403
-                if (is403(RestUtils.requestForBody(IMG_BB_ACTION_URL, HttpMethod.POST, request))) {
+                RestUtils.requestForBody(IMG_BB_ACTION_URL, HttpMethod.POST, request);
+            } catch (HttpClientErrorException e) {
+                // Get response code
+                int code = e.getResponseBodyAs(JsonNode.class).get("error").get("code").asInt();
+                if (code == 403) {
                     // Force login
                     forceLoginToImgBB();
                     // Retry
                     RestUtils.request(IMG_BB_ACTION_URL, HttpMethod.POST, request);
+                } else if (code != 100) {
+                    throw e;
                 }
-            } catch (Throwable ignored) {
-                // Really don't care if deleted or not since ImgBB space is unlimited
-                System.out.println("Failed to delete " + uid);
             }
+        } catch (Throwable ignored) {
+            ignored.printStackTrace();
+            // Really don't care if deleted or not since ImgBB space is unlimited
+            System.out.println("Failed to delete " + uIds);
         }
     }
 
@@ -217,10 +222,9 @@ public class StorageUtils {
     /**
      * Try to log in to ImgBB server
      */
-    public void tryToLoginToImgBB() {
-        System.out.println(authToken);
+    private void tryToLoginToImgBB() {
         // Only login if no credential information is stored
-        if (StringUtils.isBlank(authToken) || StringUtils.isBlank(phpSession)) {
+        if (StringUtils.isBlank(authToken) || StringUtils.isBlank(phpSession) || StringUtils.isBlank(lid)) {
             // Get PHP Session
             getPHPSessionAndAuthToken();
 
@@ -232,14 +236,27 @@ public class StorageUtils {
             );
 
             // Send login request to ImgBB and get response
-            System.out.println(RestUtils.request(IMG_BB_LOGIN_URL, HttpMethod.POST, request));
+            ResponseEntity<String> response = RestUtils.request(IMG_BB_LOGIN_URL, HttpMethod.POST, request);
+            // Get Cookies in Set-Cookie header
+            String cookiesString = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+            if (Objects.isNull(cookiesString)) {
+                throw new RuntimeException("LID not found");
+            }
+            // Parse LID cookie
+            HttpCookie cookie = HttpCookie.parse(cookiesString).get(0);
+            if (!cookie.getName().equalsIgnoreCase("lid")) {
+                throw new RuntimeException("LID not found");
+            }
+
+            // Set LID
+            lid = cookie.getValue();
         }
     }
 
     /**
      * Force login
      */
-    public void forceLoginToImgBB() {
+    private void forceLoginToImgBB() {
         // Clear all credential
         phpSession = null;
         lid = null;
@@ -282,16 +299,5 @@ public class StorageUtils {
         }
 
         throw new RuntimeException("PHP Session not found");
-    }
-
-    /**
-     * Check if having 403 (Auth session expired)
-     *
-     * @param body
-     * @return
-     */
-    private boolean is403(JsonNode body) {
-        System.out.println(body.get("error").get("code"));
-        return body.get("error").get("code").asInt() == 403;
     }
 }
