@@ -161,7 +161,7 @@ public class Customer implements Identifiable, Lockable {
     )
     @WhereJoinTable(clause = "identifiable_type = 'customer'")
     @InitIgnore
-    @CsvBindByName
+    @CsvIgnore
     private List<Image> images;
 
     /**

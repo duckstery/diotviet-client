@@ -7,17 +7,18 @@ import diotviet.server.entities.Group;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
-import diotviet.server.utils.OtherUtils;
+import diotviet.server.services.UserService;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.dhatim.fastexcel.reader.Row;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,7 +104,7 @@ public class CustomerImportService extends BaseImportService<Customer> {
             customer.setDescription(resolve(row, 15));
             customer.setPoint(resolvePoint(row, 17));
             customer.setCreatedAt(resolveDate(row, 19));
-            customer.setCreatedBy(OtherUtils.getRequester());
+            customer.setCreatedBy(UserService.getRequester());
 
             customer.setGroups(SetUtils.hashSet(groupMap.get(resolve(row, 14))));
         } catch (Exception e) {

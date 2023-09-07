@@ -8,7 +8,7 @@ public interface Visualizer {
      *
      * @return
      */
-    @Value("#{target.images[0].id}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).getFirstOrUseDefault(target.images, \"getId\", null)}")
     Long getImgId();
 
     /**
@@ -16,6 +16,6 @@ public interface Visualizer {
      *
      * @return
      */
-    @Value("#{target.images[0].src}")
+    @Value("#{T(diotviet.server.utils.OtherUtils).getFirstOrUseDefault(target.images, \"getSrc\", \"https://i.ibb.co/GspmYFm/33d42f31ce7f.jpg\")}")
     String getSrc();
 }

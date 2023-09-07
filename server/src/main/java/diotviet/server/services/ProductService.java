@@ -106,10 +106,14 @@ public class ProductService {
     public void store(ProductInteractRequest request) {
         // Common validate for create and update, then save it
         Product product = repository.save(validator.validateAndExtract(request));
-        // Try to add file first and save file src
-        imageService.uploadAndSave(product, List.of(request.file()));
         // Create file
         repository.save(product);
+
+        // Check if there is file to upload
+        if (Objects.nonNull(request.file())) {
+            // Save file and bind file to Customer
+            imageService.uploadAndSave(product, List.of(request.file()));
+        }
     }
 
     /**

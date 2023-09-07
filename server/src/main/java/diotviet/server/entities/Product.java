@@ -144,7 +144,7 @@ public class Product implements Identifiable {
     )
     @WhereJoinTable(clause = "identifiable_type = 'product'")
     @InitIgnore
-    @CsvBindByName
+    @CsvIgnore
     private List<Image> images;
 
     /**

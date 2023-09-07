@@ -7,6 +7,8 @@ import diotviet.server.entities.Product;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.services.GroupService;
+import diotviet.server.services.ImageService;
+import diotviet.server.structures.URLStreamFile;
 import diotviet.server.utils.StorageUtils;
 import org.apache.commons.collections4.SetUtils;
 import org.dhatim.fastexcel.reader.Row;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,11 @@ public class ProductImportService extends BaseImportService<Product> {
      */
     @Autowired
     private GroupService groupService;
+    /**
+     * Image service
+     */
+    @Autowired
+    private ImageService imageService;
 
     // ****************************
     // Cache
@@ -53,9 +61,9 @@ public class ProductImportService extends BaseImportService<Product> {
      */
     private HashMap<String, Group> groupMap;
     /**
-     * Time of import
+     * Map between Product and image's URL
      */
-    private Long timer;
+    private HashMap<String, String> productToImgURLMap;
 
     // ****************************
     // Public API
@@ -80,9 +88,8 @@ public class ProductImportService extends BaseImportService<Product> {
         for (Group group : groupService.getGroups(Type.PRODUCT)) {
             groupMap.put(group.getName(), group);
         }
-
-        // Mark time of Import
-        timer = System.currentTimeMillis();
+        // Create image's src map
+        productToImgURLMap = new HashMap<>();
 
         return new ArrayList<>();
     }
@@ -108,12 +115,13 @@ public class ProductImportService extends BaseImportService<Product> {
             product.setDiscountUnit("%");
             product.setDescription("");
             product.setMeasureUnit(resolveValue(row, 12));
-//            product.set(StorageUtils.pull(resolve(row, 15), timer));
             product.setWeight(0);
             product.setCanBeAccumulated(resolve(row, 17).equals("1"));
             product.setIsInBusiness(resolve(row, 18).equals("1"));
             product.setCategory(categoryMap.get(resolve(row, 0)));
             product.setGroups(SetUtils.hashSet(groupMap.get(resolve(row, 1))));
+            // Temporary cache Product image's src
+            productToImgURLMap.put(product.getCode(), resolve(row, 15));
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
         }
@@ -154,8 +162,23 @@ public class ProductImportService extends BaseImportService<Product> {
     @Override
     @Transactional
     public void runImport(List<Product> products) {
-        // Bulk insert
-        productRepository.saveAll(products);
+        // Iterate through each Product to upload image
+        productRepository.saveAll(products).forEach(product -> {
+            // Get url from mapper
+            String url = productToImgURLMap.get(product.getCode());
+            // Create an URLStreamFile
+            URLStreamFile file;
+            try {
+                file = URLStreamFile.of(url);
+            } catch (MalformedURLException e) {
+                file = null;
+            }
+
+            // Save file and bind file to Product
+            if (Objects.nonNull(file)) {
+                imageService.uploadAndSave(product, List.of(file));
+            }
+        });
         // Flush all cache
         this.flush();
     }
@@ -170,5 +193,8 @@ public class ProductImportService extends BaseImportService<Product> {
 
         groupMap.clear();
         groupMap = null;
+
+        productToImgURLMap.clear();
+        productToImgURLMap = null;
     }
 }

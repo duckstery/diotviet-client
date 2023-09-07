@@ -9,7 +9,7 @@ import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.repositories.OrderRepository;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.services.GroupService;
-import diotviet.server.utils.OtherUtils;
+import diotviet.server.services.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.dhatim.fastexcel.reader.Row;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,7 +208,7 @@ public class OrderImportService extends BaseImportService<Order> {
         this.order.setDiscountUnit("cash");
         this.order.setStatus(Status.RESOLVED);
         this.order.setPoint(0L);
-        this.order.setCreatedBy(OtherUtils.getRequester());
+        this.order.setCreatedBy(UserService.getRequester());
         this.order.setGroups(new HashSet<>());
 
         // Return

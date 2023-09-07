@@ -1,6 +1,9 @@
 package diotviet.server.utils;
 
+import diotviet.server.entities.Image;
 import diotviet.server.entities.User;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -169,11 +172,25 @@ public abstract class OtherUtils {
     }
 
     /**
-     * Get requester name
+     * Get property of first item or use default value
      *
+     * @param items
+     * @param getter
+     * @param defaultValue
      * @return
      */
-    public static String getRequester() {
-        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName();
+    public static Object getFirstOrUseDefault(List<Object> items, String getter, Object defaultValue) {
+        // Create output
+        Object output = defaultValue;
+
+        try {
+            // Try to invoke getter
+            output = invokeGetter(items.get(0), getter);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("List is null");
+        } catch (Exception e) {
+            System.out.println("No getter " + getter + " for " + items.get(0));
+        }
+        return output;
     }
 }

@@ -2,6 +2,7 @@ package diotviet.server.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import diotviet.server.structures.Tuple;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
@@ -13,8 +14,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpCookie;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -103,15 +106,26 @@ public class StorageUtils {
     // ****************************
 
     /**
-     * Save file and generate filename
+     * Save file to ImgBB
      *
      * @param file
      * @return
      */
     public JsonNode upload(MultipartFile file) throws IOException {
+        // Convert Multipart file to bytes[]
+        return upload(file.getBytes());
+    }
+
+    /**
+     * Save file as bytes to ImgBB
+     * @param bytes
+     * @return
+     * @throws IOException
+     */
+    public JsonNode upload(byte[] bytes) throws IOException {
         // Create HttpEntity
         HttpEntity<?> request = new HttpEntity<>(
-                RestUtils.craftFormData(Tuple.of("image", Base64.getEncoder().encodeToString(file.getBytes()))),
+                RestUtils.craftFormData(Tuple.of("image", Base64.getEncoder().encodeToString(bytes))),
                 RestUtils.generateHeaders(true)
         );
 
@@ -160,31 +174,6 @@ public class StorageUtils {
             // Really don't care if deleted or not since ImgBB space is unlimited
             System.out.println("Failed to delete " + uIds);
         }
-    }
-
-    /**
-     * Pull image
-     *
-     * @param url
-     * @return
-     */
-    public String pull(String url, long timeSuffix) {
-        if (Objects.isNull(url)) {
-            return "";
-        }
-
-        // Open stream to URL
-        try {
-            // Get filename in URL
-            String filepath = URI.create(url).getPath();
-
-            // Save file
-            return "";
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return "";
     }
 
     // ****************************

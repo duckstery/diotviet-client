@@ -91,11 +91,15 @@ public class CustomerService {
         // Common validate for create and update
         Customer customer = validator.validateAndExtract(request);
         // Set createdBy
-        customer.setCreatedBy(OtherUtils.getRequester());
+        customer.setCreatedBy(UserService.getRequester());
         // Save customer
         customer = repository.save(customer);
-        // Save file and get saved file's path
-        imageService.uploadAndSave(customer, List.of(request.file()));
+
+        // Check if there is file to upload
+        if (Objects.nonNull(request.file())) {
+            // Save file and bind file to Customer
+            imageService.uploadAndSave(customer, List.of(request.file()));
+        }
 
         return customer;
     }

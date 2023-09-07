@@ -3,18 +3,17 @@ package diotviet.server.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import diotviet.server.entities.Image;
 import diotviet.server.repositories.ImageRepository;
+import diotviet.server.utils.OtherUtils;
 import diotviet.server.utils.StorageUtils;
 import diotviet.server.validators.ImageValidator;
 import diotviet.server.views.Identifiable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -79,13 +78,18 @@ public class ImageService {
     public void delete(String type, Long[] ids) {
         // Delete link between Identifiable and Image
         Set<Long> imageIds = repository.deleteImageAssocByTypeAndIdentifiableId(type, ids);
-        // Count occurrence of Image to make sure, Image is not used by other Identifiable
-        List<Long> inUseImageIds = repository.findInUseImageIdByImgIds(imageIds.toArray(Long[]::new));
-        // Remove in use Image out of imageIds
-        inUseImageIds.forEach(imageIds::remove);
+
+        // Only need to check for unused Image if any assoc is deleted
+        if (!imageIds.isEmpty()) {
+            // Count occurrence of Image to make sure, Image is not used by other Identifiable
+            List<Long> inUseImageIds = repository.findInUseImageIdByImgIds(imageIds.toArray(Long[]::new));
+            // Remove in use Image out of imageIds
+            inUseImageIds.forEach(imageIds::remove);
+        }
 
         // Get uid of these unused Image
         if (!imageIds.isEmpty()) {
+            // Delete Images in database, then return it's ImgBB uid
             List<String> imageUIds = repository.deleteByIdsReturningUid(imageIds.toArray(Long[]::new));
             // Delete these Images on ImgBB
             storageUtils.delete(imageUIds);
@@ -112,7 +116,6 @@ public class ImageService {
         Image image = repository.findByUid(uid).orElseGet(() -> (new Image())
                 .setUid(uid)
                 .setSrc(root.get("url").asText(""))
-                .setIsDefault(false)
                 .setIsActive(false)
                 .setOwners(new ArrayList<>()));
         // Add new owner to Image

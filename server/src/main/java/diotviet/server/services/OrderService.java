@@ -289,7 +289,7 @@ public class OrderService {
      */
     private void basicSetup(OrderInteractRequest request, Order order) {
         // Set created by
-        order.setCreatedBy(OtherUtils.getRequester())
+        order.setCreatedBy(UserService.getRequester())
                 // Count Product that can be accumulated and set point
                 .setPoint(productRepository.countByIdInAndCanBeAccumulatedTrueAndIsDeletedFalse(request
                         .items()

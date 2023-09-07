@@ -2,12 +2,11 @@ package diotviet.server.entities;
 
 import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.views.Identifiable;
-import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 
 import java.util.List;
 
@@ -36,12 +35,6 @@ public class Image {
      */
     @Column
     private String src;
-
-    /**
-     * Whether this is default image
-     */
-    @Column(nullable = false)
-    private Boolean isDefault;
 
     /**
      * Whether this is active image
