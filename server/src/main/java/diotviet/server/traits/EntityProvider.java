@@ -1,4 +1,4 @@
-package diotviet.server.views;
+package diotviet.server.traits;
 
 /**
  * Entity provider
@@ -13,5 +13,5 @@ public interface EntityProvider<S, T> {
      * @param param
      * @return
      */
-    public S provide(T param);
+    S provide(T param);
 }

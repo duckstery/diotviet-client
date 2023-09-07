@@ -68,7 +68,7 @@ public class DocumentService {
         // Common validate for create and update
         Document document = validator.validateAndExtract(request);
         // Save and flush
-        document = repository.saveAndFlush(document);
+        document = repository.save(document);
 
         return repository.findById(document.getId(), DocumentMetaView.class);
     }

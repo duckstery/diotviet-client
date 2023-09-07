@@ -6,11 +6,16 @@ import diotviet.server.exceptions.ServiceValidationException;
 import diotviet.server.repositories.GroupRepository;
 import diotviet.server.templates.Group.GroupInteractRequest;
 import diotviet.server.traits.BusinessValidator;
+import diotviet.server.views.Organizable;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.stream.Streams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class GroupValidator extends BusinessValidator<Group> {
@@ -52,13 +57,13 @@ public class GroupValidator extends BusinessValidator<Group> {
      * @param ids
      * @return
      */
-    public List<Group> isExistByIds(Long[] ids) {
+    public Set<Group> isExistByIds(Long[] ids) {
         if (Objects.isNull(ids)) {
             return null;
         }
 
         // Check if groups are exists
-        List<Group> group = groupRepository.findAllById(List.of(ids));
+        Set<Group> group = groupRepository.findAllByIdIn(ids);
         if (group.size() != ids.length) {
             throw new ServiceValidationException("invalid_groups", "", "groups");
         }
@@ -86,5 +91,24 @@ public class GroupValidator extends BusinessValidator<Group> {
         group.setType(Type.fromCode(request.type()));
 
         return group;
+    }
+
+    /**
+     * Assign Groups by id for Organizable
+     *
+     * @param organizable
+     * @param assignedIds
+     */
+    public void assignGroups(Organizable organizable, Long[] assignedIds) {
+        // Validate assignedIds to make sure all Groups with these ids are exist
+        Set<Group> groups = isExistByIds(assignedIds);
+        // Convert Organization's current Groups to Set of Group's id
+        Set<Long> currentGroup = Streams.of(organizable.getGroups()).map(Group::getId).collect(Collectors.toUnmodifiableSet());
+
+        // Check if Groups before and after assignment is not the same
+        if (!(groups.size() == CollectionUtils.size(organizable.getGroups()) && Set.of(assignedIds).containsAll(currentGroup))) {
+            // If so, assign new Set of Groups for Organizable
+            organizable.setGroups(groups);
+        }
     }
 }

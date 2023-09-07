@@ -2,6 +2,7 @@ package diotviet.server.validators;
 
 import diotviet.server.constants.Type;
 import diotviet.server.entities.Customer;
+import diotviet.server.entities.Product;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.services.CategoryService;
 import diotviet.server.templates.Customer.CustomerInteractRequest;
@@ -51,12 +52,16 @@ public class CustomerValidator extends BusinessValidator<Customer> {
         // Primary validation
         validate(request);
         // Convert request to Customer
-        Customer customer = map(request, Customer.class);
+        Customer customer = Objects.isNull(request.id())
+                ? map(request, Customer.class)
+                : directMap(request, repository.findWithGroupById(request.id()));
+        // Optimistic lock check
+        checkOptimisticLock(customer, repository);
 
         // Check if request's group is not empty
         if (ArrayUtils.isNotEmpty(request.groups())) {
             // Check and get valid Group
-            customer.setGroups(new HashSet<>(groupValidator.isExistByIds(request.groups())));
+            groupValidator.assignGroups(customer, request.groups());
         }
         // Check and get the valid code
         checkCode(customer, "KH", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
@@ -65,8 +70,6 @@ public class CustomerValidator extends BusinessValidator<Customer> {
 
         // Set category
         customer.setCategory(categoryService.getCategories(Type.PARTNER).stream().findFirst().orElseThrow());
-        // Optimistic lock check
-        checkOptimisticLock(customer, repository);
 
         return customer;
     }

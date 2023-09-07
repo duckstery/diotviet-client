@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
@@ -21,6 +22,14 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
      * @return
      */
     List<Group> findAllByType(Type type, Sort sort);
+
+    /**
+     * Find all by ids
+     *
+     * @param ids
+     * @return
+     */
+    Set<Group> findAllByIdIn(Long[] ids);
 
     /**
      * Delete by ID

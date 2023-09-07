@@ -73,6 +73,14 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
     Customer findFirstByCodeLikeOrderByCodeDesc(String code);
 
     /**
+     * Find with Group by id
+     *
+     * @return
+     */
+    @EntityGraph(attributePaths = {"groups"})
+    Customer findWithGroupById(Long id);
+
+    /**
      * Delete assoc between Group and Customer
      *
      * @param ids

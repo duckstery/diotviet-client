@@ -1,8 +1,13 @@
 package diotviet.server;
 
+import diotviet.server.entities.Customer;
+import diotviet.server.entities.Product;
 import diotviet.server.repositories.CategoryRepository;
 import diotviet.server.repositories.GroupRepository;
+import diotviet.server.templates.Customer.CustomerInteractRequest;
+import diotviet.server.templates.Product.ProductInteractRequest;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.modelmapper.config.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -71,6 +76,23 @@ public class ServerApplication {
         modelMapper.getConfiguration()
                 .setFieldMatchingEnabled(true)
                 .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
+
+        // Skip Group when map from ProductInteractRequest to Product
+        modelMapper.addMappings(new PropertyMap<ProductInteractRequest, Product>() {
+            @Override
+            protected void configure() {
+                skip(destination.getGroups());
+            }
+        });
+
+        // Skip Group when map from CustomerInteractRequest to Customer
+        modelMapper.addMappings(new PropertyMap<CustomerInteractRequest, Customer>() {
+            @Override
+            protected void configure() {
+                skip(destination.getGroups());
+            }
+        });
+
         return modelMapper;
     }
 

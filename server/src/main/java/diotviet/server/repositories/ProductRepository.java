@@ -85,6 +85,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
     Product findFirstByCodeLikeOrderByCodeDesc(String code);
 
     /**
+     * Find with Group by id
+     *
+     * @return
+     */
+    @EntityGraph(attributePaths = {"groups"})
+    Product findWithGroupById(Long id);
+
+    /**
      * Update Product isInBusiness flag
      *
      * @param isInBusiness

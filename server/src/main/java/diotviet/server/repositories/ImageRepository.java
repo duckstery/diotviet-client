@@ -23,7 +23,7 @@ public interface ImageRepository extends JpaRepository<Image, Long>, QuerydslPre
      * @return
      */
     @Query(value = "" +
-            "SELECT i.* " +
+            "SELECT i.id, i.is_active, i.src, i.uid " +
             "FROM diotviet.images i " +
             "INNER JOIN diotviet.assoc_image_identifiable a " +
             "   ON a.identifiable_id = :identifiableId " +

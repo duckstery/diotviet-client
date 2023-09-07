@@ -42,20 +42,15 @@ public class DocumentValidator extends BusinessValidator<Document> {
         validate(request);
         // Convert request to Customer
         Document document = map(request, Document.class);
+        // Optimistic lock check
+        checkOptimisticLock(document, repository);
 
         // Check if request's groupId is not empty
         if (Objects.nonNull(request.groupId())) {
             // Check and get valid Group
             document.setGroup(groupValidator.isExistById(request.groupId()));
         }
-        // Check if Document's id should be 0 (for adding)
-        if (Objects.isNull(request.id()) || request.id() < 0) {
-            // Set id to 0
-            document.setId(0);
-        }
-        // Optimistic lock check
-        checkOptimisticLock(document, repository);
-
+        
         return document;
     }
 

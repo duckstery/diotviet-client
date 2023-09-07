@@ -2,6 +2,8 @@ package diotviet.server.templates.Product;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Set;
+
 public record ProductInteractRequest(
         Long id,
         Long category,

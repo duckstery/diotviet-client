@@ -13,6 +13,7 @@ import diotviet.server.generators.NameableField;
 import diotviet.server.generators.NameableSetField;
 import diotviet.server.views.Identifiable;
 import diotviet.server.views.Lockable;
+import diotviet.server.views.Organizable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,7 +42,7 @@ import java.util.Set;
 @Data
 @Accessors(chain = true)
 @QueryEntity
-public class Order implements Identifiable, Lockable {
+public class Order implements Identifiable, Lockable, Organizable {
 
     // ****************************
     // Properties

@@ -1,15 +1,21 @@
 package diotviet.server.validators;
 
+import diotviet.server.entities.Group;
 import diotviet.server.entities.Product;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.templates.Product.ProductInteractRequest;
 import diotviet.server.traits.BusinessValidator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.stream.Streams;
+import org.modelmapper.spi.DestinationSetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductValidator extends BusinessValidator<Product> {
@@ -22,7 +28,7 @@ public class ProductValidator extends BusinessValidator<Product> {
      * Product repository
      */
     @Autowired
-    private ProductRepository productRepository;
+    private ProductRepository repository;
     /**
      * Category validator
      */
@@ -45,7 +51,9 @@ public class ProductValidator extends BusinessValidator<Product> {
         // Primary validate
         validate(request);
         // Convert request to Product
-        Product product = map(request, Product.class);
+        Product product = Objects.isNull(request.id())
+                ? map(request, Product.class)
+                : directMap(request, repository.findWithGroupById(request.id()));
 
         // Check if request's category is not null
         if (Objects.nonNull(request.category())) {
@@ -54,11 +62,11 @@ public class ProductValidator extends BusinessValidator<Product> {
         }
         // Check if request's group is not empty
         if (ArrayUtils.isNotEmpty(request.groups())) {
-            // Check and get valid Group
-            product.setGroups(new HashSet<>(groupValidator.isExistByIds(request.groups())));
+            // Assign Groups for Product
+            groupValidator.assignGroups(product, request.groups());
         }
         // Check code
-        checkCode(product, "MS", productRepository::findFirstByCodeAndIsDeletedFalse, productRepository::findFirstByCodeLikeOrderByCodeDesc);
+        checkCode(product, "MS", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
 
         return product;
     }

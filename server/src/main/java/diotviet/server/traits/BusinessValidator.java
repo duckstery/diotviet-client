@@ -1,6 +1,5 @@
 package diotviet.server.traits;
 
-import diotviet.server.views.EntityProvider;
 import diotviet.server.views.Identifiable;
 import diotviet.server.views.Lockable;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +34,23 @@ public abstract class BusinessValidator<T> extends BaseValidator<T> {
      */
     public T map(Object object, Class<T> destinationType) {
         return modelMapper.map(object, destinationType);
+    }
+
+    /**
+     * Direct map
+     *
+     * @param object
+     * @param destination
+     * @return
+     */
+    public final <S, D> D directMap(S object, D destination) {
+        // Check if destination is existed
+        isExist(destination);
+
+        // Direct map object to destination object
+        modelMapper.map(object, destination);
+
+        return destination;
     }
 
     /**
