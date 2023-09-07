@@ -45,6 +45,17 @@ public class ImageService {
     // ****************************
 
     /**
+     * Pull Image list for Identifiable
+     *
+     * @param type
+     * @param identifiableId
+     * @return
+     */
+    public List<Image> pull(String type, Long identifiableId) {
+        return repository.findAllByIdentifiableIdAndType(type, identifiableId);
+    }
+
+    /**
      * Upload image
      *
      * @param files

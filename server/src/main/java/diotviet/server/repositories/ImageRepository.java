@@ -14,6 +14,24 @@ import java.util.Set;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long>, QuerydslPredicateExecutor<Image> {
+
+    /**
+     * Find list of Image by identifiable id and type
+     *
+     * @param type
+     * @param identifiableId
+     * @return
+     */
+    @Query(value = "" +
+            "SELECT i.* " +
+            "FROM diotviet.images i " +
+            "INNER JOIN diotviet.assoc_image_identifiable a " +
+            "   ON a.identifiable_id = :identifiableId " +
+            "   AND a.identifiable_type = :type " +
+            "   AND i.id = a.image_id"
+            , nativeQuery = true)
+    List<Image> findAllByIdentifiableIdAndType(@Param("type") String type, @Param("identifiableId") Long identifiableId);
+
     /**
      * Find by uid
      *

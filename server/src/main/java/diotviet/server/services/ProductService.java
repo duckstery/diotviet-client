@@ -105,9 +105,11 @@ public class ProductService {
     @Transactional(rollbackFor = {Exception.class, Throwable.class})
     public void store(ProductInteractRequest request) {
         // Common validate for create and update, then save it
-        Product product = repository.save(validator.validateAndExtract(request));
-        // Create file
-        repository.save(product);
+        Product product = validator.validateAndExtract(request);
+        // Pull and set Image for Product, this step will make sure assoc between Product and Images won't be deleted accidentally
+        product.setImages(imageService.pull("product", product.getId()));
+        // Save Product
+        product = repository.save(product);
 
         // Check if there is file to upload
         if (Objects.nonNull(request.file())) {

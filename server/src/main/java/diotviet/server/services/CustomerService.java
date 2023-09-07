@@ -92,6 +92,8 @@ public class CustomerService {
         Customer customer = validator.validateAndExtract(request);
         // Set createdBy
         customer.setCreatedBy(UserService.getRequester());
+        // Pull Images and set Images, this step will make sure assoc between Customer and Images won't be deleted accidentally
+        customer.setImages(imageService.pull("customer", customer.getId()));
         // Save customer
         customer = repository.save(customer);
 
