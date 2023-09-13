@@ -50,7 +50,9 @@ import Button from "components/General/Other/Button.vue";
 
 export default {
   name: "UploadMage",
+
   components: {Button},
+
   props: {
     // Model value
     modelValue: File,

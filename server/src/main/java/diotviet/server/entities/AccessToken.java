@@ -11,7 +11,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.SQLDelete;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 
 @Entity
@@ -46,13 +47,13 @@ public class AccessToken {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
-    private Date issuedAt;
+    private LocalDateTime issuedAt;
     /**
      * Expire at
      */
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
-    private Date expiredAt;
+    private LocalDateTime expiredAt;
     /**
      * Corresponding User
      */
@@ -81,8 +82,8 @@ public class AccessToken {
      */
     public AccessToken(DecodedJWT jwt) {
         this.token = jwt.getToken();
-        this.issuedAt = jwt.getIssuedAt();
-        this.expiredAt = jwt.getExpiresAt();
+        this.issuedAt = LocalDateTime.ofInstant(jwt.getIssuedAtAsInstant(), ZoneId.systemDefault());
+        this.expiredAt = LocalDateTime.ofInstant(jwt.getExpiresAtAsInstant(), ZoneId.systemDefault());
     }
 
     /**

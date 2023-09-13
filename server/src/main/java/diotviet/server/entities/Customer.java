@@ -21,7 +21,8 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.WhereJoinTable;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -109,7 +110,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @CsvDate("yyyy-MM-dd")
-    private Date birthday;
+    private LocalDate birthday;
 
     /**
      * Gender
@@ -174,34 +175,34 @@ public class Customer implements Identifiable, Lockable, Organizable {
     private String createdBy;
 
     /**
-     * Date of creation
+     * LocalDateTime of creation
      */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date createdAt = new Date();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     /**
-     * Date of last order
+     * LocalDateTime of last order
      */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date lastOrderAt;
+    private LocalDateTime lastOrderAt;
 
     /**
-     * Date of last transaction
+     * LocalDateTime of last transaction
      */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date lastTransactionAt;
+    private LocalDateTime lastTransactionAt;
 
     /**
      * Is deleted flag

@@ -79,48 +79,35 @@
     source-map "0.6.1"
     yaml-eslint-parser "^0.3.2"
 
-"@intlify/core-base@9.2.2":
-  version "9.2.2"
-  resolved "https://registry.npmjs.org/@intlify/core-base/-/core-base-9.2.2.tgz"
-  integrity sha512-JjUpQtNfn+joMbrXvpR4hTF8iJQ2sEFzzK3KIESOx+f+uwIjgw20igOyaIdhfsVVBCds8ZM64MoeNSx+PHQMkA==
+"@intlify/core-base@9.3.0":
+  version "9.3.0"
+  resolved "https://registry.npmjs.org/@intlify/core-base/-/core-base-9.3.0.tgz"
+  integrity sha512-SRzn8TMnPZ6MY8OFrgouRq4DGaf01SHcJEF6FglYFYvRkgPzziEcQe+v2PD+O5lUp/rJafP4dabm1CmsVAA7rA==
   dependencies:
-    "@intlify/devtools-if" "9.2.2"
-    "@intlify/message-compiler" "9.2.2"
-    "@intlify/shared" "9.2.2"
-    "@intlify/vue-devtools" "9.2.2"
+    "@intlify/devtools-if" "9.3.0"
+    "@intlify/message-compiler" "9.3.0"
+    "@intlify/shared" "9.3.0"
+    "@intlify/vue-devtools" "9.3.0"
 
-"@intlify/devtools-if@9.2.2":
-  version "9.2.2"
-  resolved "https://registry.npmjs.org/@intlify/devtools-if/-/devtools-if-9.2.2.tgz"
-  integrity sha512-4ttr/FNO29w+kBbU7HZ/U0Lzuh2cRDhP8UlWOtV9ERcjHzuyXVZmjyleESK6eVP60tGC9QtQW9yZE+JeRhDHkg==
+"@intlify/devtools-if@9.3.0":
+  version "9.3.0"
+  resolved "https://registry.npmjs.org/@intlify/devtools-if/-/devtools-if-9.3.0.tgz"
+  integrity sha512-5aKZnqj0Ff4dfwBX2Oo+MheVs00CBnC0RzWK26aT2M4AF0cxdFLOJAs51/eHT01jmzrxSvfBMjdArUWHwgetfg==
   dependencies:
-    "@intlify/shared" "9.2.2"
+    "@intlify/shared" "9.3.0"
 
-"@intlify/message-compiler@9.2.2":
-  version "9.2.2"
-  resolved "https://registry.npmjs.org/@intlify/message-compiler/-/message-compiler-9.2.2.tgz"
-  integrity sha512-IUrQW7byAKN2fMBe8z6sK6riG1pue95e5jfokn8hA5Q3Bqy4MBJ5lJAofUsawQJYHeoPJ7svMDyBaVJ4d0GTtA==
+"@intlify/message-compiler@9.3.0", "@intlify/message-compiler@next":
+  version "9.3.0"
+  resolved "https://registry.npmjs.org/@intlify/message-compiler/-/message-compiler-9.3.0.tgz"
+  integrity sha512-D8tSJEhTCSFcCzkThjE4Sbk1tIdvzkYa1FaVIzUtZ8hKPATvokNrOiDw1i/h671m8A80l9Ywq594i/LPTB6EJA==
   dependencies:
-    "@intlify/shared" "9.2.2"
-    source-map "0.6.1"
+    "@intlify/shared" "9.3.0"
+    source-map-js "^1.0.2"
 
-"@intlify/message-compiler@next":
-  version "9.3.0-beta.17"
-  resolved "https://registry.npmjs.org/@intlify/message-compiler/-/message-compiler-9.3.0-beta.17.tgz"
-  integrity sha512-i7hvVIRk1Ax2uKa9xLRJCT57to08OhFMhFXXjWN07rmx5pWQYQ23MfX1xgggv9drnWTNhqEiD+u4EJeHoS5+Ww==
-  dependencies:
-    "@intlify/shared" "9.3.0-beta.17"
-    source-map "0.6.1"
-
-"@intlify/shared@9.2.2":
-  version "9.2.2"
-  resolved "https://registry.npmjs.org/@intlify/shared/-/shared-9.2.2.tgz"
-  integrity sha512-wRwTpsslgZS5HNyM7uDQYZtxnbI12aGiBZURX3BTR9RFIKKRWpllTsgzHWvj3HKm3Y2Sh5LPC1r0PDCKEhVn9Q==
-
-"@intlify/shared@9.3.0-beta.17", "@intlify/shared@next":
-  version "9.3.0-beta.17"
-  resolved "https://registry.npmjs.org/@intlify/shared/-/shared-9.3.0-beta.17.tgz"
-  integrity sha512-mscf7RQsUTOil35jTij4KGW1RC9SWQjYScwLxP53Ns6g24iEd5HN7ksbt9O6FvTmlQuX77u+MXpBdfJsGqizLQ==
+"@intlify/shared@9.3.0", "@intlify/shared@next":
+  version "9.3.0"
+  resolved "https://registry.npmjs.org/@intlify/shared/-/shared-9.3.0.tgz"
+  integrity sha512-MMGRz6zWxtz7rHtxIIdnyb8SYOIaaseN1IvUhAEs9tOW4u77RD4DFp4qgPXesp2Gxo/5QitH9kwSs0jnxGUNEw==
 
 "@intlify/vite-plugin-vue-i18n@^6.0.3":
   version "6.0.3"
@@ -134,13 +121,13 @@
     fast-glob "^3.2.5"
     source-map "0.6.1"
 
-"@intlify/vue-devtools@9.2.2":
-  version "9.2.2"
-  resolved "https://registry.npmjs.org/@intlify/vue-devtools/-/vue-devtools-9.2.2.tgz"
-  integrity sha512-+dUyqyCHWHb/UcvY1MlIpO87munedm3Gn6E9WWYdWrMuYLcoIoOEVDWSS8xSwtlPU+kA+MEQTP6Q1iI/ocusJg==
+"@intlify/vue-devtools@9.3.0":
+  version "9.3.0"
+  resolved "https://registry.npmjs.org/@intlify/vue-devtools/-/vue-devtools-9.3.0.tgz"
+  integrity sha512-kEaxIz1VEgsz2q5RhoS+fBGTkXr/4+pxmK9mN14+speVGb82HPRntKBmz0GO18I1JisD4Z0vAva+KCTHGeAqbQ==
   dependencies:
-    "@intlify/core-base" "9.2.2"
-    "@intlify/shared" "9.2.2"
+    "@intlify/core-base" "9.3.0"
+    "@intlify/shared" "9.3.0"
 
 "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
@@ -205,10 +192,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@quasar/app-vite@^1.4.6":
-  version "1.4.6"
-  resolved "https://registry.npmjs.org/@quasar/app-vite/-/app-vite-1.4.6.tgz"
-  integrity sha512-bawukxw5CScTc+NFla3RbZpIGVw3g2AVjgAHCSk/LzJ2B0FQj1Tbhsf2lQy4rANx9sHl52t5EvMM2t+zktECIA==
+"@quasar/app-vite@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.npmjs.org/@quasar/app-vite/-/app-vite-1.5.1.tgz"
+  integrity sha512-OjD5fL1oSdLH+wSYsvfoEkahub9c13Gfccvu1cvGwiisICo/MvwAab08T1y31YnvsQVAlBmjGOo8BsFehNlxYg==
   dependencies:
     "@quasar/render-ssr-error" "^1.0.1"
     "@quasar/vite-plugin" "^1.3.3"
@@ -245,10 +232,10 @@
     vite "^2.9.13"
     webpack-merge "^5.8.0"
 
-"@quasar/extras@^1.16.5":
-  version "1.16.5"
-  resolved "https://registry.npmjs.org/@quasar/extras/-/extras-1.16.5.tgz"
-  integrity sha512-3VAJS9NECr1OSHX674+3YvEMIlHclr81aZrEkoBtVqr+sX4In22Up44toua+qNFsxnoATPqzpwKOJxA3iAF71Q==
+"@quasar/extras@^1.16.6":
+  version "1.16.6"
+  resolved "https://registry.npmjs.org/@quasar/extras/-/extras-1.16.6.tgz"
+  integrity sha512-yHvp2Z73LuS29fhjE+dSzUvEKGCuTTy+WGIsAYxbnhBVW2rTYlYmFQfGdOPdzNreHZh+G/1D56n0Q6ClZxJHKg==
 
 "@quasar/render-ssr-error@^1.0.1":
   version "1.0.1"
@@ -428,7 +415,7 @@
     "@vue/compiler-dom" "3.3.4"
     "@vue/shared" "3.3.4"
 
-"@vue/devtools-api@^6.2.1", "@vue/devtools-api@^6.5.0":
+"@vue/devtools-api@^6.5.0":
   version "6.5.0"
   resolved "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.5.0.tgz"
   integrity sha512-o9KfBeaBmCKl10usN4crU53fYtC1r7jJwdGKjPT24t348rHxgfpZ0xL3Xm/gLUYnc0oTp8LAmrxOeLyu6tbk2Q==
@@ -823,7 +810,7 @@ chardet@^0.7.0:
   resolved "https://registry.npmjs.org/chardet/-/chardet-0.7.0.tgz"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
-chart.js@^4.4.0:
+chart.js@^4.1.1, chart.js@^4.4.0:
   version "4.4.0"
   resolved "https://registry.npmjs.org/chart.js/-/chart.js-4.4.0.tgz"
   integrity sha512-vQEj6d+z0dcsKLlQvbKIMYFHd3t8W/7L2vfJIbYcfyPcRx92CsHqECpueN8qVGNlKyDcr5wBrYAYKnfu/9Q1hQ==
@@ -1028,6 +1015,11 @@ csstype@^3.1.1:
   version "3.1.2"
   resolved "https://registry.npmjs.org/csstype/-/csstype-3.1.2.tgz"
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
+
+dayjs@^1.11.9:
+  version "1.11.9"
+  resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.9.tgz"
+  integrity sha512-QvzAURSbQ0pKdIye2txOzNaHmxtUBXerpY0FJsFXUMKbIZeFm5ht1LS/jFsrncjnmtv8HsG0W2g6c0zUjZWmpA==
 
 debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4:
   version "4.3.4"
@@ -2367,10 +2359,10 @@ postcss-value-parser@^4.0.0, postcss-value-parser@^4.2.0:
   resolved "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
 
-postcss@^8.0.0, postcss@^8.1.0, postcss@^8.1.10, postcss@^8.2.14, postcss@^8.4.13, postcss@^8.4.21, postcss@^8.4.23, postcss@^8.4.28, postcss@>=8.0.9:
-  version "8.4.28"
-  resolved "https://registry.npmjs.org/postcss/-/postcss-8.4.28.tgz"
-  integrity sha512-Z7V5j0cq8oEKyejIKfpD8b4eBy9cwW2JWPk0+fB1HOAMsfHbnAXLLS+PfVWlzMSLQaWttKDt607I0XHmpE67Vw==
+postcss@^8.0.0, postcss@^8.1.0, postcss@^8.1.10, postcss@^8.2.14, postcss@^8.4.13, postcss@^8.4.21, postcss@^8.4.23, postcss@^8.4.29, postcss@>=8.0.9:
+  version "8.4.29"
+  resolved "https://registry.npmjs.org/postcss/-/postcss-8.4.29.tgz"
+  integrity sha512-cbI+jaqIeu/VGqXEarWkRCCffhjgXc0qjBtXpqJhTBohMUjUQnbBr0xqX3vEKudc4iviTewcJo5ajcec5+wdJw==
   dependencies:
     nanoid "^3.3.6"
     picocolors "^1.0.0"
@@ -2381,10 +2373,10 @@ prelude-ls@^1.2.1:
   resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
-prettier@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/prettier/-/prettier-3.0.2.tgz"
-  integrity sha512-o2YR9qtniXvwEZlOKbveKfDQVyqxbEIWn48Z8m3ZJjBjcCmUy3xZGIv+7AkaeuaTr6yPXJjwv07ZWlsWbEy1rQ==
+prettier@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.npmjs.org/prettier/-/prettier-3.0.3.tgz"
+  integrity sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==
 
 print-js@^1.6.0:
   version "1.6.0"
@@ -2438,10 +2430,10 @@ qs@6.11.0:
   dependencies:
     side-channel "^1.0.4"
 
-quasar@^2.12.5, quasar@^2.8.0:
-  version "2.12.5"
-  resolved "https://registry.npmjs.org/quasar/-/quasar-2.12.5.tgz"
-  integrity sha512-YPG9O+bRq3imN53EGKPyM6rUdx+IGxrs4Q1AljeA4JQh0FibWyPzM44hxFpO8JQiuWAJ5e5wZXhsyeyFyb4a2w==
+quasar@^2.12.6, quasar@^2.8.0:
+  version "2.12.6"
+  resolved "https://registry.npmjs.org/quasar/-/quasar-2.12.6.tgz"
+  integrity sha512-C4rDMzRu+onIP+4f8WrXUJYqMZ7KsZZewU5zjxCPHQqDVKAWNbfqePN/4ME42PZ3u5C26J9eLLW32rc/vEXXfg==
 
 queue-microtask@^1.2.2:
   version "1.2.3"
@@ -3040,6 +3032,11 @@ vary@~1.1.2:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vue-chartjs@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.npmjs.org/vue-chartjs/-/vue-chartjs-5.2.0.tgz"
+  integrity sha512-d3zpKmGZr2OWHQ1xmxBcAn5ShTG917+/UCLaSpaCDDqT0U7DBsvFzTs69ZnHCgKoXT55GZDW8YEj9Av+dlONLA==
+
 vue-demi@^0.13.11:
   version "0.13.11"
   resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.13.11.tgz"
@@ -3063,15 +3060,15 @@ vue-eslint-parser@^9.3.1:
     lodash "^4.17.21"
     semver "^7.3.6"
 
-vue-i18n@*, vue-i18n@^9.2.2:
-  version "9.2.2"
-  resolved "https://registry.npmjs.org/vue-i18n/-/vue-i18n-9.2.2.tgz"
-  integrity sha512-yswpwtj89rTBhegUAv9Mu37LNznyu3NpyLQmozF3i1hYOhwpG8RjcjIFIIfnu+2MDZJGSZPXaKWvnQA71Yv9TQ==
+vue-i18n@*, vue-i18n@^9.3.0:
+  version "9.3.0"
+  resolved "https://registry.npmjs.org/vue-i18n/-/vue-i18n-9.3.0.tgz"
+  integrity sha512-+2L+ae/e4+fixhjym3lgzGCGQG8wVGlGrDHzjfdgUudheHvbVHu5i6tn6FF+buH75UFA7T5ZO2ZO7zrh6CzuaA==
   dependencies:
-    "@intlify/core-base" "9.2.2"
-    "@intlify/shared" "9.2.2"
-    "@intlify/vue-devtools" "9.2.2"
-    "@vue/devtools-api" "^6.2.1"
+    "@intlify/core-base" "9.3.0"
+    "@intlify/shared" "9.3.0"
+    "@intlify/vue-devtools" "9.3.0"
+    "@vue/devtools-api" "^6.5.0"
 
 vue-router@^4.0.12, vue-router@^4.2.4:
   version "4.2.4"
@@ -3080,7 +3077,7 @@ vue-router@^4.0.12, vue-router@^4.2.4:
   dependencies:
     "@vue/devtools-api" "^6.5.0"
 
-"vue@^2.0.0 || >=3.0.0", "vue@^2.6.14 || ^3.3.0", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", vue@^3.2.0, vue@^3.2.25, vue@^3.2.29, vue@^3.3.4, vue@3.3.4:
+"vue@^2.0.0 || >=3.0.0", "vue@^2.6.14 || ^3.3.0", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", "vue@^3.0.0-0 || ^2.7.0", vue@^3.2.0, vue@^3.2.25, vue@^3.2.29, vue@^3.3.4, vue@3.3.4:
   version "3.3.4"
   resolved "https://registry.npmjs.org/vue/-/vue-3.3.4.tgz"
   integrity sha512-VTyEYn3yvIeY1Py0WaYGZsXnz3y5UnGi62GjVEqvEGPl6nxbOrCXbVOTQWBEJUqAyTUk2uJ5JLVnYJ6ZzGbrSw==

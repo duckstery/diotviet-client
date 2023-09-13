@@ -2,7 +2,7 @@ package diotviet.server.templates.Customer;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Request for Customer search
@@ -22,17 +22,17 @@ import java.util.Date;
 public record CustomerSearchRequest(
         Long group,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date createAtFrom,
+        LocalDate createAtFrom,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date createAtTo,
+        LocalDate createAtTo,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date birthdayFrom,
+        LocalDate birthdayFrom,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date birthdayTo,
+        LocalDate birthdayTo,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date lastTransactionAtFrom,
+        LocalDate lastTransactionAtFrom,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date lastTransactionAtTo,
+        LocalDate lastTransactionAtTo,
         Boolean isMale,
 
         // Common part but cannot be inherited anymore

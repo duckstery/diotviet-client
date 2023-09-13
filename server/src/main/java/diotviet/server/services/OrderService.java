@@ -29,6 +29,7 @@ import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -224,19 +225,19 @@ public class OrderService {
         }
         // Filter by min createdAt
         if (Objects.nonNull(request.createAtFrom())) {
-            query.and(order.createdAt.goe(request.createAtFrom()));
+            query.and(order.createdAt.goe(request.createAtFrom().atStartOfDay()));
         }
         // Filter by max createdAt
         if (Objects.nonNull(request.createAtTo())) {
-            query.and(order.createdAt.loe(request.createAtTo()));
+            query.and(order.createdAt.loe(request.createAtTo().atTime(LocalTime.MAX)));
         }
         // Filter by min resolvedAt
         if (Objects.nonNull(request.resolvedAtFrom())) {
-            query.and(order.resolvedAt.goe(request.resolvedAtFrom()));
+            query.and(order.resolvedAt.goe(request.resolvedAtFrom().atStartOfDay()));
         }
         // Filter by max resolvedAt
         if (Objects.nonNull(request.resolvedAtTo())) {
-            query.and(order.resolvedAt.loe(request.resolvedAtTo()));
+            query.and(order.resolvedAt.loe(request.resolvedAtTo().atTime(LocalTime.MAX)));
         }
         // Filter by min price
         if (Objects.nonNull(request.priceFrom())) {

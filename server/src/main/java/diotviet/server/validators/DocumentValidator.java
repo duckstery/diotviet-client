@@ -50,7 +50,7 @@ public class DocumentValidator extends BusinessValidator<Document> {
             // Check and get valid Group
             document.setGroup(groupValidator.isExistById(request.groupId()));
         }
-        
+
         return document;
     }
 

@@ -65,7 +65,7 @@ public class CustomerValidator extends BusinessValidator<Customer> {
         }
         // Check and get the valid code
         checkCode(customer, "KH", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
-        // Preserve Date type data
+        // Preserve LocalDate type data
         checkDateData(customer);
 
         // Set category
@@ -108,7 +108,7 @@ public class CustomerValidator extends BusinessValidator<Customer> {
     }
 
     /**
-     * Check and preserve Date data
+     * Check and preserve LocalDate data
      *
      * @param customer
      */
@@ -119,7 +119,7 @@ public class CustomerValidator extends BusinessValidator<Customer> {
             return;
         }
 
-        // Get original customer to preserve Date data
+        // Get original customer to preserve LocalDate data
         Customer original = readonly.get();
 
         // Set data for modified customer

@@ -1,6 +1,6 @@
 <template>
   <Page :breadcrumbs="breadcrumbs">
-    <div class="col-2 tw-pr-3">
+    <div class="col-12 col-md-2 tw-pr-3">
       <!-- Title -->
       <div class="tw-text-3xl tw-font-semibold">{{ $t('field.order') }}</div>
 
@@ -8,7 +8,7 @@
       <OrderFilter v-model="filter" :groups="groups"
                    @request="onSearch" @control="onGroupControl"/>
     </div>
-    <div class="col-10">
+    <div class="col-12 col-md-10">
       <!-- Data table -->
       <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
                  :operations="operations"

@@ -10,7 +10,8 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Component
@@ -66,8 +67,8 @@ public class JWTUtils {
     public String generate(User userPrincipal) {
         return JWT.create()
                 .withIssuer("diotviet")
-                .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + Integer.parseInt(expiration)))
+                .withIssuedAt(Instant.now())
+                .withExpiresAt(Instant.ofEpochMilli(System.currentTimeMillis() + Integer.parseInt(expiration)))
                 .withJWTId(UUID.randomUUID().toString())
                 .withSubject(userPrincipal.getName())
                 .withClaim("id", userPrincipal.getId())

@@ -9,8 +9,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,7 +81,7 @@ public class TransactionService {
 
         // Setup Order
         order.setStatus(Status.RESOLVED)
-                .setResolvedAt(new Date())
+                .setResolvedAt(LocalDateTime.now())
                 .setTransactions(new ArrayList<>(List.of(resolveTransaction)));
     }
 
@@ -155,7 +155,7 @@ public class TransactionService {
         // Create Transaction and setup
         return new Transaction()
                 .setAmount(amount)
-                .setCreatedAt(OtherUtils.get(order.getResolvedAt(), new Date()))
+                .setCreatedAt(OtherUtils.get(order.getResolvedAt(), LocalDateTime.now()))
                 .setOrder(order);
     }
 }

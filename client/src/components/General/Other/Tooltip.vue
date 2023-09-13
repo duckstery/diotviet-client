@@ -1,5 +1,5 @@
 <template>
-  <q-tooltip transition-show="scale" transition-hide="scale" class="tw-text-sm">
+  <q-tooltip v-if="content && content !== ''" transition-show="scale" transition-hide="scale" class="tw-text-sm">
     <slot>
       {{ content }}
     </slot>

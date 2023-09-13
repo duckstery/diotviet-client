@@ -4,8 +4,6 @@ import diotviet.server.annotations.PrintObject;
 import diotviet.server.annotations.PrintTag;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Date;
-
 @PrintObject("customer")
 public interface OrderCustomerPrintView {
     @PrintTag(sequence = 0, example = "John Doe")

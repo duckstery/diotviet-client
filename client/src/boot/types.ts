@@ -6,6 +6,7 @@ import {Util} from "boot/util";
 import {LocalAxios} from "boot/axios";
 import {Auth} from "boot/auth";
 import {ErrorHandler} from "boot/error";
+import {ConfigType, Dayjs} from "dayjs";
 
 // @ts-ignore
 declare module '@vue/runtime-core' {
@@ -21,11 +22,15 @@ declare module '@vue/runtime-core' {
     /**
      * Authentication
      */
-    $auth: Auth;
+    $auth: Auth
     /**
      * Constant
      */
     $constant: Constant
+    /**
+     * Dayjs instance
+     */
+    $dayjs: (date?: ConfigType) => Dayjs
     /**
      * Environment
      */

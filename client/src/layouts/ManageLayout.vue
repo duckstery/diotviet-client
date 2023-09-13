@@ -53,6 +53,9 @@ export default {
       ],
       'setting': [
         {key: 'print', icon: 'fa-print', to: '/setting/print'},
+      ],
+      'report': [
+        {key: 'income', icon: 'fa-money-bill-trend-up', to: '/report/income'},
       ]
     }
   }),

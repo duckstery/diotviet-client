@@ -1,35 +1,84 @@
 <template>
-  <TextField :model-value="modelValue" mask="date" :label="label" readonly>
-    <template v-slot:append>
-      <q-icon name="event" class="cursor-pointer">
-        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-          <q-date
-            :model-value="modelValue" @update:model-value="$emit('update:model-value', $event)"
-            mask="YYYY-MM-DD"
-            navigation-min-year-month="2000/01"
-            minimal
-          />
-        </q-popup-proxy>
-      </q-icon>
+  <PopupTextField popup-icon="event" :value="displayValue" :label="label">
+    <template #default="{hide}">
+      <q-card>
+        <q-date
+            :model-value="tempModel" :range="range" :multiple="multiple"
+            mask="YYYY-MM-DD" navigation-min-year-month="2000/01" minimal
+            @update:model-value="update($event)"
+        />
+        <q-card-actions align="right" class="tw-pt-0">
+          <Button flat icon="close" @click="close(hide)">{{$t('field.cancel')}}</Button>
+          <Button flat icon="check" @click="confirm(hide)">{{$t('field.confirm')}}</Button>
+        </q-card-actions>
+      </q-card>
     </template>
-  </TextField>
+  </PopupTextField>
 </template>
 
 <script>
 import TextField from "components/General/Other/TextField.vue";
+import PopupTextField from "components/General/Other/PopupTextField.vue";
+import Button from "components/General/Other/Button.vue";
+import {computed, nextTick, ref, toRef} from "vue";
+import {syncRef} from "@vueuse/core";
 
 export default {
   name: "DatePicker",
 
-  components: {TextField},
+  components: {Button, PopupTextField, TextField},
 
   props: {
     // Model
-    modelValue: String,
+    modelValue: String | Array,
     // Label
     label: String,
+    // Readonly
+    readonly: Boolean,
+    // Range
+    range: Boolean,
+    // Multiple
+    multiple: Boolean,
   },
 
-  emits: ['update:model-value']
+  emits: ['update:model-value', 'finish'],
+
+  setup(props, {emit}) {
+    // Convert modelValue to ref
+    const modelValue = toRef(props, 'modelValue')
+    // Temp model value
+    const tempModel = ref(modelValue.value)
+    // Sync modelValue and tempModel (ltr)
+    syncRef(modelValue, tempModel, {direction: 'ltr'})
+
+    // Display value
+    const displayValue = computed(() => modelValue.value && typeof modelValue.value === "object"
+        ? `${modelValue.value.from} ~ ${modelValue.value.to}`
+        : modelValue.value)
+
+    // Update model temporary
+    const update = (value) => tempModel.value = value
+    // On confirm
+    const confirm = (callback) => {
+      // Emit modelValue
+      emit('update:model-value', tempModel.value)
+      // Hide proxy
+      callback()
+      // Notify that a value has been picked by DatePicker
+      nextTick(() => emit('finish'))
+    }
+    // On close
+    const close = (callback) => {
+      // Reset temp model
+      tempModel.value = modelValue.value
+      // Hide proxy
+      callback()
+    }
+
+    return {
+      tempModel: tempModel, displayValue: displayValue,
+      update: update, confirm: confirm, close: close,
+    }
+  },
 }
 </script>

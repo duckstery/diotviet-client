@@ -14,7 +14,7 @@
       <IconMage class="d-btn-img" :src="src" color="light"/>
       <span class="tw-ml-3">{{ label }}</span>
     </template>
-    <Tooltip v-if="tooltip" :content="tooltip"/>
+    <Tooltip :content="tooltip"/>
     <slot/>
   </q-btn>
 </template>

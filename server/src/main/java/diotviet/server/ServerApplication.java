@@ -20,6 +20,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.awt.image.BufferedImage;
+import java.util.TimeZone;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableAsync
@@ -37,6 +38,8 @@ public class ServerApplication {
     GroupRepository groupRepository;
 
     public static void main(String[] args) {
+        // Set default TimeZone
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
         SpringApplication.run(ServerApplication.class, args);
     }
 

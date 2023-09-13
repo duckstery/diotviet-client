@@ -3,6 +3,7 @@
     <q-card-section horizontal class="tw-p-2">
       <div class="tw-text-base tw-font-medium text-orange-9 tw-underline tw-underline-offset-2">{{ title }}</div>
       <q-space/>
+      <Button v-if="reloadable" icon="refresh" flat :tooltip="$t('field.reload')" @click="$emit('reload')"/>
       <Button :icon="expandIcon" flat :tooltip="$t('field.expand')" @click="expanded = !expanded"/>
     </q-card-section>
 
@@ -28,13 +29,16 @@ export default {
     title: {
       type: String,
       default: ''
-    }
+    },
+    reloadable: Boolean
   },
+
+  emits: ['reload'],
 
   data: () => ({
     expanded: true
   }),
-  
+
   computed: {
     // Expand icon
     expandIcon() {

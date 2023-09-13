@@ -16,7 +16,7 @@
       <img class="d-btn-img" :src="src" alt="">
       <span class="tw-ml-3">{{ label }}</span>
     </template>
-    <Tooltip v-if="tooltip" :content="tooltip"/>
+    <Tooltip :content="tooltip"/>
     <slot/>
   </q-btn-dropdown>
 </template>
@@ -26,6 +26,7 @@ import Tooltip from "components/General/Other/Tooltip.vue";
 
 export default {
   name: "DropdownButton",
+
   components: {Tooltip},
 
   props: {

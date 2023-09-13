@@ -12,6 +12,7 @@ import diotviet.server.validators.CustomerValidator;
 import diotviet.server.views.Customer.CustomerDetailView;
 import diotviet.server.views.Customer.CustomerSearchView;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -163,11 +165,11 @@ public class CustomerService {
         }
         // Filter by min createdAt
         if (Objects.nonNull(request.createAtFrom())) {
-            query.and(customer.createdAt.goe(request.createAtFrom()));
+            query.and(customer.createdAt.goe(request.createAtFrom().atStartOfDay()));
         }
         // Filter by max createdAt
         if (Objects.nonNull(request.createAtTo())) {
-            query.and(customer.createdAt.loe(request.createAtTo()));
+            query.and(customer.createdAt.loe(request.createAtTo().atTime(LocalTime.MAX)));
         }
         // Filter by min birthday
         if (Objects.nonNull(request.birthdayFrom())) {
@@ -179,11 +181,11 @@ public class CustomerService {
         }
         // Filter by min lastTransactionAt
         if (Objects.nonNull(request.lastTransactionAtFrom())) {
-            query.and(customer.lastTransactionAt.goe(request.lastTransactionAtFrom()));
+            query.and(customer.lastTransactionAt.goe(request.lastTransactionAtFrom().atStartOfDay()));
         }
         // Filter by max lastTransactionAt
         if (Objects.nonNull(request.lastTransactionAtTo())) {
-            query.and(customer.lastTransactionAt.loe(request.lastTransactionAtTo()));
+            query.and(customer.lastTransactionAt.loe(request.lastTransactionAtTo().atTime(LocalTime.MAX)));
         }
         // Filter by isMale flag
         if (Objects.nonNull(request.isMale())) {

@@ -1,18 +1,17 @@
 package diotviet.server.services.imports;
 
-import diotviet.server.utils.OtherUtils;
 import diotviet.server.traits.EntityProvider;
+import diotviet.server.utils.OtherUtils;
 import diotviet.server.views.Identifiable;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.dhatim.fastexcel.reader.ExcelReaderException;
 import org.dhatim.fastexcel.reader.Row;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -62,7 +61,7 @@ public abstract class BaseImportService<E> {
     /**
      * Import List of entity
      *
-     * @param products
+     * @param entities
      */
     public abstract void runImport(List<E> entities);
 
@@ -190,7 +189,7 @@ public abstract class BaseImportService<E> {
      * @param index
      * @return
      */
-    protected Date resolveDate(Row row, int index) throws ParseException {
+    protected LocalDateTime resolveDate(Row row, int index) {
         Optional<LocalDateTime> optional;
 
         try {
@@ -201,7 +200,7 @@ public abstract class BaseImportService<E> {
         }
 
         return Objects.isNull(optional) || optional.isEmpty()
-            ? DateUtils.parseDate(resolve(row, index), "dd/MM/yyyy HH:mm:ss")
-            : Date.from(optional.get().toInstant(ZoneOffset.UTC));
+            ? LocalDateTime.parse(resolve(row, index), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+            : LocalDateTime.ofInstant(optional.get().toInstant(ZoneOffset.UTC), ZoneId.systemDefault());
     }
 }

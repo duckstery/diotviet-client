@@ -8,7 +8,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
@@ -43,11 +43,11 @@ public class Transaction {
     private Long amount;
 
     /**
-     * Date of creation
+     * LocalDateTime of creation
      */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date createdAt = new Date();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     /**
      * Reason of removal

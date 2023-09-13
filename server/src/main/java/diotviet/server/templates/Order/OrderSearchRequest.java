@@ -2,7 +2,7 @@ package diotviet.server.templates.Order;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Request for Customer search
@@ -23,13 +23,13 @@ public record OrderSearchRequest(
         Long group,
         Long[] status,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date createAtFrom,
+        LocalDate createAtFrom,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date createAtTo,
+        LocalDate createAtTo,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date resolvedAtFrom,
+        LocalDate resolvedAtFrom,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date resolvedAtTo,
+        LocalDate resolvedAtTo,
         Long priceFrom,
         Long priceTo,
         Boolean isMale,

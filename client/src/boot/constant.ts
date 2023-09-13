@@ -1,5 +1,6 @@
 import {boot} from 'quasar/wrappers'
 import {$T} from "boot/i18n";
+import {Color} from "chart.js";
 
 // *************************************************
 // Typed
@@ -45,6 +46,10 @@ export interface Constant {
    * Get predefined boolean options
    */
   booleans(): { id: number, name: string, icon: string, color: string }[]
+  /**
+   * Get ChartJs predefined color by key
+   */
+  chartColors(key: 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'grey', opacity: number): Color | undefined
   /**
    * Map png to icon
    *
@@ -158,12 +163,30 @@ const constant: Constant = {
   },
 
   /**
+   * Get ChartJs predefined color by key
+   *
+   * @param key
+   * @param opacity
+   */
+  chartColors(key: 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'grey', opacity: number = 1): any {
+    return {
+      'red': 'rgba(255, 99, 132, 256)',
+      'orange': 'rgba(255, 159, 64, 256)',
+      'yellow': 'rgba(255, 205, 86, 256)',
+      'green': 'rgba(75, 192, 192, 256)',
+      'blue': 'rgba(54, 162, 235, 256)',
+      'purple': 'rgba(153, 102, 255, 256)',
+      'grey': 'rgba(201, 203, 207, 256)'
+    }[key]?.replace('256', `${opacity}`)
+  },
+
+  /**
    * Get corresponding icon of image
    *
-   * @param {string} key
-   * @return {string}
+   * @param key
+   * @return
    */
-  matchedIcon(key) {
+  matchedIcon(key: string) {
     return {
       'actual_price': 'fa-solid fa-money-bill',
       'category': 'list',

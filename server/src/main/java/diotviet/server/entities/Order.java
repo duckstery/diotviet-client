@@ -21,7 +21,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -185,24 +185,24 @@ public class Order implements Identifiable, Lockable, Organizable {
     private String createdBy;
 
     /**
-     * Date of creation
+     * LocalDateTime of creation
      */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date createdAt = new Date();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     /**
-     * Date of resolve
+     * LocalDateTime of resolve
      */
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     @CsvBindByName
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date resolvedAt;
+    private LocalDateTime resolvedAt;
 
     /**
      * Version

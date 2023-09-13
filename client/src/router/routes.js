@@ -59,6 +59,14 @@ const routes = [
       r('print', 'Setting.Print', () => import('pages/Setting/PrintPage.vue')),
     ]
   },
+  {
+    path: '/report',
+    component: () => import('layouts/ManageLayout.vue'),
+    children: [
+      r('', 'Report', () => import('pages/Report/ReportPage.vue')),
+      r('income', 'Report.Income', () => import('pages/Report/IncomePage.vue')),
+    ]
+  },
 
   // Error page
   {
