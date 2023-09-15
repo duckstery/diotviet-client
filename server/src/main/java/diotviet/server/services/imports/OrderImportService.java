@@ -9,6 +9,7 @@ import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.repositories.OrderRepository;
 import diotviet.server.repositories.ProductRepository;
 import diotviet.server.services.GroupService;
+import diotviet.server.services.TransactionService;
 import diotviet.server.services.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.dhatim.fastexcel.reader.Row;
@@ -41,10 +42,10 @@ public class OrderImportService extends BaseImportService<Order> {
     @Autowired
     private ProductRepository productRepository;
     /**
-     * Group service
+     * Transaction service
      */
     @Autowired
-    private GroupService groupService;
+    private TransactionService transactionService;
 
     // ****************************
     // Cache
@@ -107,6 +108,8 @@ public class OrderImportService extends BaseImportService<Order> {
                 if (StringUtils.isNotEmpty(this.code)) {
                     // Then, save Order before fetching new Order
                     orderRepository.save(this.order);
+                    // Resolve Transaction
+                    transactionService.resolve(order, null);
                 }
 
                 // Cache code
@@ -152,6 +155,8 @@ public class OrderImportService extends BaseImportService<Order> {
         if (StringUtils.isNotEmpty(this.code)) {
             // Save the last Order
             orderRepository.save(this.order);
+            // Resolve Transaction
+            transactionService.resolve(order, null);
         }
         // Flush all cache
         this.flush();
