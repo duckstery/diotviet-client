@@ -170,6 +170,10 @@ export default {
     year_now: 'This year',
     year_prev: 'Last year',
     reload: 'Reload',
+    chart_type: 'Chart type',
+    bar: 'Bar',
+    line: 'Line',
+    time: 'Time',
 
     role_1: 'Admin',
     role_2: 'Supervisor',

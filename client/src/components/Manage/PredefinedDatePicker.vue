@@ -7,11 +7,11 @@
             <div v-for="col in structure" :key="col.key">
               <div class="tw-shrink-0 tw-font-semibold tw-mb-1">{{ $t(`field.by_${col.key}`) }}</div>
               <div
-                  v-for="option in col.options"
-                  class="tw-mt-2 tw-text-sky-500 tw-cursor-pointer hover:!tw-underline hover:!tw-text-blue-700"
-                  @click="onPick(option, hide)"
+                v-for="option in col.options"
+                class="tw-mt-2 tw-text-sky-500 tw-cursor-pointer hover:!tw-underline hover:!tw-text-blue-700"
+                @click="onPick(option, hide)"
               >
-                {{ $t(`field.${option}`) }}
+                <span :class="activeClasses(option)"> {{ $t(`field.${option}`) }}</span>
               </div>
             </div>
           </div>
@@ -28,6 +28,7 @@ import PopupTextField from "components/General/Other/PopupTextField.vue";
 import {computed, ref, watch} from "vue";
 import {useVModel} from "@vueuse/core";
 import {dayjs, util} from "src/boot"
+import {useI18n} from "vue-i18n";
 
 export default {
   name: "PredefinedDatePicker",
@@ -41,9 +42,13 @@ export default {
   emits: ['update:model-value', 'finish'],
 
   setup(props, {emit}) {
+    // i18n
+    const $t = useI18n().t
     // Model
     const model = useVModel(props, 'modelValue', emit)
 
+    // Convert string to a radio option
+    const toRadio = (value) => ({value: value, label: $t(`field.${value}`)})
     // Predefined option structure
     const structure = computed(() => ([
       {key: 'day', options: ['day_now', 'day_prev', 'day_backward_2']},
@@ -61,10 +66,10 @@ export default {
     watch(pickedOption, value => {
       // Check if value is unset
       if (util.isUnset(value)) {
-        modelValue.value = null
+        model.value = null
         return
       }
-      console.warn(value)
+
       // Split option to get [unit]-[moment]
       const [unit, moment, days] = value.split('_')
       // Get current dayjs

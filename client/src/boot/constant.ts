@@ -51,6 +51,10 @@ export interface Constant {
    */
   chartColors(key: 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'grey', opacity: number): Color | undefined
   /**
+   * ChartJS available types
+   */
+  chartTypes(): { value: string, label: string }[]
+  /**
    * Map png to icon
    *
    * @param key
@@ -106,7 +110,13 @@ const constant: Constant = {
     return [
       {id: 0, name: $t('field.pending'), icon: 'fa-solid fa-circle-notch', color: 'warning'},
       {id: 1, name: $t('field.processing'), verb: $t('field.process'), icon: 'fa-solid fa-circle-dot', color: 'info'},
-      {id: 2, name: $t('field.resolved'), verb: $t('field.resolve'), icon: 'fa-solid fa-circle-check', color: 'positive'},
+      {
+        id: 2,
+        name: $t('field.resolved'),
+        verb: $t('field.resolve'),
+        icon: 'fa-solid fa-circle-check',
+        color: 'positive'
+      },
       {id: 3, name: $t('field.aborted'), verb: $t('field.abort'), icon: 'fa-solid fa-circle-stop', color: 'negative'},
     ]
   },
@@ -178,6 +188,16 @@ const constant: Constant = {
       'purple': 'rgba(153, 102, 255, 256)',
       'grey': 'rgba(201, 203, 207, 256)'
     }[key]?.replace('256', `${opacity}`)
+  },
+
+  /**
+   * ChartJS available types
+   */
+  chartTypes(): { value: string; label: string }[] {
+    return [
+      {value: 'bar', label: $t('field.bar')},
+      {value: 'line', label: $t('field.line')}
+    ]
   },
 
   /**

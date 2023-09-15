@@ -3,9 +3,9 @@ package diotviet.server.services;
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
 import diotviet.server.constants.Status;
+import diotviet.server.data.OrderDAO;
 import diotviet.server.entities.Item;
 import diotviet.server.entities.Order;
-import diotviet.server.entities.QOrder;
 import diotviet.server.repositories.ItemRepository;
 import diotviet.server.repositories.OrderRepository;
 import diotviet.server.repositories.ProductRepository;
@@ -18,7 +18,6 @@ import diotviet.server.validators.OrderValidator;
 import diotviet.server.views.Order.OrderDetailView;
 import diotviet.server.views.Order.OrderSearchView;
 import diotviet.server.views.Print.Order.OrderOrderPrintView;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,10 +28,7 @@ import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class OrderService {
@@ -46,6 +42,11 @@ public class OrderService {
      */
     @Autowired
     private OrderRepository repository;
+    /**
+     * Order DAO
+     */
+    @Autowired
+    private OrderDAO dao;
     /**
      * Product repository
      */
@@ -79,7 +80,7 @@ public class OrderService {
      */
     public Page<OrderSearchView> paginate(OrderSearchRequest request) {
         // Create filter
-        BooleanBuilder filter = createFilter(request);
+        BooleanBuilder filter = dao.createFilter(request);
         // Create pageable
         Pageable pageable = PageRequest.of(
                 OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
@@ -181,7 +182,7 @@ public class OrderService {
      * @return
      */
     public List<OrderSearchView> query(OrderSearchRequest request) {
-        return repository.findBy(createFilter(request), q -> q
+        return repository.findBy(dao.createFilter(request), q -> q
                         .sortBy(Sort.by(Sort.Direction.DESC, "createdAt", "code"))
                         .limit(100)
                         .all())
@@ -202,64 +203,6 @@ public class OrderService {
     // ****************************
     // Private
     // ****************************
-
-    /**
-     * Create filter based on request
-     *
-     * @param request
-     * @return
-     */
-    private BooleanBuilder createFilter(OrderSearchRequest request) {
-        // Get QOrder
-        QOrder order = QOrder.order;
-        // Final expressions
-        BooleanBuilder query = new BooleanBuilder();
-
-        // Filter by groups
-        if (Objects.nonNull(request.group())) {
-            query.and(order.groups.any().id.eq(request.group()));
-        }
-        // Filter by type
-        if (Objects.nonNull(request.status())) {
-            query.and(order.status.in(Arrays.stream(request.status()).map(Status::fromCode).toArray(Status[]::new)));
-        }
-        // Filter by min createdAt
-        if (Objects.nonNull(request.createAtFrom())) {
-            query.and(order.createdAt.goe(request.createAtFrom().atStartOfDay()));
-        }
-        // Filter by max createdAt
-        if (Objects.nonNull(request.createAtTo())) {
-            query.and(order.createdAt.loe(request.createAtTo().atTime(LocalTime.MAX)));
-        }
-        // Filter by min resolvedAt
-        if (Objects.nonNull(request.resolvedAtFrom())) {
-            query.and(order.resolvedAt.goe(request.resolvedAtFrom().atStartOfDay()));
-        }
-        // Filter by max resolvedAt
-        if (Objects.nonNull(request.resolvedAtTo())) {
-            query.and(order.resolvedAt.loe(request.resolvedAtTo().atTime(LocalTime.MAX)));
-        }
-        // Filter by min price
-        if (Objects.nonNull(request.priceFrom())) {
-            query.and(order.paymentAmount.goe(request.priceFrom()));
-        }
-        // Filter by max price
-        if (Objects.nonNull(request.priceTo())) {
-            query.and(order.paymentAmount.loe(request.priceTo()));
-        }
-        // Filter by search string
-        if (StringUtils.isNotBlank(request.search())) {
-            query.and(order.code
-                    .concat(order.phoneNumber.coalesce(""))
-                    .concat(order.address.coalesce(""))
-                    .concat(order.customer.name.coalesce(""))
-                    .toLowerCase()
-                    .contains(request.search().toLowerCase()));
-        }
-
-        // Connect expression
-        return query;
-    }
 
     /**
      * Calculate current payment amount for Order

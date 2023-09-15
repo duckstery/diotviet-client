@@ -43,7 +43,7 @@ export default {
     groups: Array
   },
 
-  emits: ['request', 'update:modelValue', 'control'],
+  emits: ['request', 'update:model-value', 'control'],
 
   setup(props, context) {
     // Filter

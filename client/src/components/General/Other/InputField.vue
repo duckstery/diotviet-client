@@ -3,7 +3,7 @@
     <LabelField :src="src" :label="label" class="tw-pt-2"/>
     <slot name="before"/>
     <q-space v-if="space"/>
-    <slot :class="classObject" v-bind="slotProps" @update:modelValue="modelProxy"/>
+    <slot :class="classObject" v-bind="slotProps" @update:model-value="modelProxy"/>
   </div>
 </template>
 
@@ -101,7 +101,7 @@ export default {
     },
 
     /**
-     * Proxy @update:modelValue event to clear $external error
+     * Proxy @update:model-value event to clear $external error
      */
     modelProxy() {
       if (!this.$util.isUnset(this.vuelidate.$server)) {

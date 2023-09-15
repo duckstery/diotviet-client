@@ -18,6 +18,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.NumberFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -112,6 +113,10 @@ public abstract class OtherUtils {
      * @return
      */
     public static String formatDateTime(TemporalAccessor date, String format) {
+        if (Objects.isNull(date)) {
+            return "";
+        }
+
         try {
             return DateTimeFormatter.ofPattern(format).format(date);
         } catch (Exception e) {
@@ -200,5 +205,15 @@ public abstract class OtherUtils {
             System.out.println("No getter " + getter + " for " + items.get(0));
         }
         return output;
+    }
+
+    /**
+     * Convert any LocalDate to Date
+     *
+     * @param LocalDate
+     * @return
+     */
+    public static Date toDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 }

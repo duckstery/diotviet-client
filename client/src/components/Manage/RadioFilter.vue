@@ -1,27 +1,19 @@
 <template>
   <FilterPanel :title="title">
-    <q-item v-for="option in [null, true, false]" tag="label" dense>
-      <q-item-section avatar>
-        <q-radio :model-value="modelValue" @update:model-value="$emit('update:model-value', $event)"
-                 :val="option" color="primary" dense/>
-      </q-item-section>
-      <q-item-section>
-        <q-item-label v-if="option === null">{{ $t('field.all') }}</q-item-label>
-        <q-item-label v-else-if="option">{{ trueLabel ?? $t('field.true') }}</q-item-label>
-        <q-item-label v-else>{{ falseLabel ?? $t('field.false') }}</q-item-label>
-      </q-item-section>
-    </q-item>
+    <RadioList :options="options" :model-value="modelValue" @update:model-value="$emit('update:model-value', $event)"/>
   </FilterPanel>
 </template>
 
 <script>
 import FilterPanel from "components/Manage/FilterPanel.vue";
 import TextField from "components/General/Other/TextField.vue";
+import RadioList from "components/General/Other/RadioList.vue";
+import {computed} from "vue";
 
 export default {
   name: "RadioFilter",
 
-  components: {TextField, FilterPanel},
+  components: {RadioList, TextField, FilterPanel},
 
   props: {
     // Model
@@ -41,5 +33,16 @@ export default {
   },
 
   emits: ['update:model-value'],
+
+  computed: {
+    // RadioFilter options
+    options() {
+      return [
+        {value: null, label: this.$t('field.all')},
+        {value: true, label: this.$t('field.true')},
+        {value: false, label: this.$t('field.false')}
+      ]
+    }
+  }
 }
 </script>

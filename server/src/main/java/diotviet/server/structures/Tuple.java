@@ -1,11 +1,12 @@
 package diotviet.server.structures;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @AllArgsConstructor
-@Setter
+@Data
 public class Tuple<L, R> extends Pair<L, R> {
 
     // ****************************
@@ -36,26 +37,6 @@ public class Tuple<L, R> extends Pair<L, R> {
      */
     public static <L, R> Tuple<L, R> of(L left, R right) {
         return new Tuple<>(left, right);
-    }
-
-    /**
-     * Get left (key)
-     *
-     * @return
-     */
-    @Override
-    public L getLeft() {
-        return this.left;
-    }
-
-    /**
-     * Get right (value)
-     *
-     * @return
-     */
-    @Override
-    public R getRight() {
-        return this.right;
     }
 
     /**

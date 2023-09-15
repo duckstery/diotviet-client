@@ -50,7 +50,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
      * @return
      */
     @Query("SELECT o.code FROM Order o WHERE o.id = :id")
-    String findCodeById(@Param("id")Long id);
+    String findCodeById(@Param("id") Long id);
 
     /**
      * Find first Order where code like "?" Order by code desc

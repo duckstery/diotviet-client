@@ -2,6 +2,7 @@ package diotviet.server.services;
 
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
+import diotviet.server.data.CustomerDAO;
 import diotviet.server.entities.Customer;
 import diotviet.server.entities.QCustomer;
 import diotviet.server.repositories.CustomerRepository;
@@ -38,6 +39,11 @@ public class CustomerService {
     @Autowired
     private CustomerRepository repository;
     /**
+     * Customer DAO
+     */
+    @Autowired
+    private CustomerDAO dao;
+    /**
      * Product validator
      */
     @Autowired
@@ -61,7 +67,7 @@ public class CustomerService {
      */
     public Page<CustomerSearchView> paginate(CustomerSearchRequest request) {
         // Create filter
-        BooleanBuilder filter = createFilter(request);
+        BooleanBuilder filter = dao.createFilter(request);
         // Create pageable
         Pageable pageable = PageRequest.of(
                 OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
@@ -140,67 +146,6 @@ public class CustomerService {
      * @return
      */
     public List<CustomerSearchView> query(CustomerSearchRequest request) {
-        return repository.findBy(createFilter(request), q -> q.as(CustomerSearchView.class).all());
-    }
-
-    // ****************************
-    // Private
-    // ****************************
-
-    /**
-     * Create filter based on request
-     *
-     * @param request
-     * @return
-     */
-    private BooleanBuilder createFilter(CustomerSearchRequest request) {
-        // Get QCustomer
-        QCustomer customer = QCustomer.customer;
-        // Final expressions
-        BooleanBuilder query = new BooleanBuilder();
-
-        // Filter by groups
-        if (Objects.nonNull(request.group())) {
-            query.and(customer.groups.any().id.eq(request.group()));
-        }
-        // Filter by min createdAt
-        if (Objects.nonNull(request.createAtFrom())) {
-            query.and(customer.createdAt.goe(request.createAtFrom().atStartOfDay()));
-        }
-        // Filter by max createdAt
-        if (Objects.nonNull(request.createAtTo())) {
-            query.and(customer.createdAt.loe(request.createAtTo().atTime(LocalTime.MAX)));
-        }
-        // Filter by min birthday
-        if (Objects.nonNull(request.birthdayFrom())) {
-            query.and(customer.birthday.goe(request.birthdayFrom()));
-        }
-        // Filter by max birthday
-        if (Objects.nonNull(request.birthdayTo())) {
-            query.and(customer.birthday.loe(request.birthdayTo()));
-        }
-        // Filter by min lastTransactionAt
-        if (Objects.nonNull(request.lastTransactionAtFrom())) {
-            query.and(customer.lastTransactionAt.goe(request.lastTransactionAtFrom().atStartOfDay()));
-        }
-        // Filter by max lastTransactionAt
-        if (Objects.nonNull(request.lastTransactionAtTo())) {
-            query.and(customer.lastTransactionAt.loe(request.lastTransactionAtTo().atTime(LocalTime.MAX)));
-        }
-        // Filter by isMale flag
-        if (Objects.nonNull(request.isMale())) {
-            query.and(customer.isMale.eq(request.isMale()));
-        }
-        // Filter by search string
-        if (StringUtils.isNotBlank(request.search())) {
-            query.and(customer.name.coalesce("")
-                    .concat(customer.phoneNumber.coalesce(""))
-                    .concat(customer.address.coalesce(""))
-                    .toLowerCase()
-                    .contains(request.search().toLowerCase()));
-        }
-
-        // Connect expression
-        return query.and(customer.isDeleted.isFalse());
+        return repository.findBy(dao.createFilter(request), q -> q.as(CustomerSearchView.class).all());
     }
 }

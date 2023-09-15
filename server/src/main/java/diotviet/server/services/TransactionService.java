@@ -4,11 +4,16 @@ import diotviet.server.constants.Status;
 import diotviet.server.entities.Order;
 import diotviet.server.entities.Transaction;
 import diotviet.server.repositories.TransactionRepository;
+import diotviet.server.structures.Dataset;
+import diotviet.server.structures.DataPoint;
+import diotviet.server.templates.Transaction.TransactionSearchRequest;
 import diotviet.server.utils.OtherUtils;
+import diotviet.server.views.Report.IncomeReportView;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,12 +137,30 @@ public class TransactionService {
     }
 
     /**
-     * Save all transaction
+     * Report
      *
-     * @param transactions
+     * @param request
+     * @return
      */
-    public void saveAll(List<Transaction> transactions) {
-        repository.saveAll(transactions);
+    public List<Dataset<LocalDate, Long>> report(TransactionSearchRequest request) {
+        // Prepare expected_income dataset
+        Dataset<LocalDate, Long> expectedIncome = Dataset.of("expected_income", "0", "blue");
+        // Prepare real_income_inside dataset
+        Dataset<LocalDate, Long> realIncomeInside = Dataset.of("real_income_inside", "1", "green");
+        // Prepare real_income_outside dataset
+        Dataset<LocalDate, Long> realIncomeOutside = Dataset.of("real_income_outside", "1", "purple");
+        // Prepare usage dataset
+        Dataset<LocalDate, Long> usage = Dataset.of("usage", "2", "red");
+
+        // Iterate through each income report's entry
+        for (IncomeReportView entry : repository.selectIncomeReportByCreatedAt(request.from(), request.to())) {
+            expectedIncome.add(DataPoint.of(entry.getDate(), entry.getExpectedIncome()));
+            realIncomeInside.add(DataPoint.of(entry.getDate(), entry.getRealIncomeInside()));
+            realIncomeOutside.add(DataPoint.of(entry.getDate(), entry.getRealIncomeOutside()));
+            usage.add(DataPoint.of(entry.getDate(), entry.getUsage()));
+        }
+
+        return List.of(expectedIncome, realIncomeInside, realIncomeOutside, usage);
     }
 
     // ****************************

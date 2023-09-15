@@ -37,10 +37,11 @@ export function useChartDefaultOptions(optionsRef: Ref<ChartOptions>): ComputedR
   const defaultOptions: ChartOptions = {
     responsive: true,
     interaction: {
-      intersect: false,
+      intersect: true,
     },
     scales: {
       y: {
+        stacked: true,
         title: {
           display: true,
           text: 'VND',
@@ -50,8 +51,11 @@ export function useChartDefaultOptions(optionsRef: Ref<ChartOptions>): ComputedR
         suggestedMax: 100000,
         ticks: {
           // forces step size to be 50 units
-          stepSize: 10000
+          stepSize: 50000
         }
+      },
+      x: {
+        stacked: true
       }
     }
   }
