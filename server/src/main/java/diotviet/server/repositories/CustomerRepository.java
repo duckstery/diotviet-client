@@ -3,6 +3,7 @@ package diotviet.server.repositories;
 import com.querydsl.core.types.Predicate;
 import diotviet.server.entities.Customer;
 import diotviet.server.traits.OptimisticLockRepository;
+import diotviet.server.views.Point;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,6 +13,7 @@ import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
 
@@ -79,6 +81,49 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
      */
     @EntityGraph(attributePaths = {"groups"})
     Customer findWithGroupById(Long id);
+
+    /**
+     * Select top Product that has (highest or lowest base on [asc]) income
+     *
+     * @param from
+     * @param to
+     * @param asc
+     * @return
+     */
+    @Query(value = "" +
+            "WITH customer_report as (\n" +
+            "    SELECT\n" +
+            "        name,\n" +
+            "        coalesce(total_income, 0) as total_income,\n" +
+            "        coalesce(ordered_quantity, 0) as ordered_quantity,\n" +
+            "        coalesce(round(total_income / ordered_quantity), 0) as average_income\n" +
+            "    FROM diotviet.customers c\n" +
+            "    LEFT JOIN (\n" +
+            "        SELECT\n" +
+            "            customer_id,\n" +
+            "            sum(amount) as total_income,\n" +
+            "            count(o.id) as ordered_quantity\n" +
+            "        FROM diotviet.transactions t\n" +
+            "        INNER JOIN diotviet.orders o\n" +
+            "            ON o.id = t.order_id\n" +
+            "            AND (cast(:from AS date) IS NULL OR (cast(o.created_at AS date) >= cast(:from AS date)))\n" +
+            "            AND (cast(:to AS date) IS NULL OR (cast(o.created_at AS date) <= cast(:to AS date)))\n" +
+            "        GROUP BY o.customer_id\n" +
+            "    ) as customer_income\n" +
+            "        ON c.id = customer_income.customer_id\n" +
+            ")\n" +
+            "(SELECT name as x, total_income as y FROM customer_report ORDER BY (total_income * :sortOrder) LIMIT :limit)\n" +
+            "UNION ALL\n" +
+            "(SELECT name as x, ordered_quantity as y FROM customer_report ORDER BY (ordered_quantity * :sortOrder) LIMIT :limit)\n" +
+            "UNION ALL\n" +
+            "(SELECT name as x, average_income as y FROM customer_report ORDER BY (average_income * :sortOrder) LIMIT :limit)"
+            , nativeQuery = true)
+    List<Point<String, Long>> selectTopReportByOrderCreatedAt(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("sortOrder") int sortOrder,
+            @Param("limit") int limit
+    );
 
     /**
      * Delete assoc between Group and Customer

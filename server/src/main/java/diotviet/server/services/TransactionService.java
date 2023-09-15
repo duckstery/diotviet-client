@@ -6,7 +6,7 @@ import diotviet.server.entities.Transaction;
 import diotviet.server.repositories.TransactionRepository;
 import diotviet.server.structures.DataPoint;
 import diotviet.server.structures.Dataset;
-import diotviet.server.templates.Transaction.TransactionReportRequest;
+import diotviet.server.templates.Report.DetailReportRequest;
 import diotviet.server.traits.ReportService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.views.Report.IncomeReportView;
@@ -144,7 +144,7 @@ public class TransactionService extends ReportService<IncomeReportView> {
      * @param request
      * @return
      */
-    public List<Dataset<String, Long>> report(TransactionReportRequest request) {
+    public List<Dataset<String, Long>> report(DetailReportRequest request) {
         // Prepare expected_income dataset
         Dataset<String, Long> expectedIncome = Dataset.of("expected_income", "0", "blue");
         // Prepare real_income_inside dataset

@@ -7,7 +7,7 @@ export default {
   // ****************************
   field: {
     new_order: 'New order',
-    order: 'Order',
+    order: 'Ordedascar',
     general_price: 'General price',
     order_item: 'Order',
     purchase: 'Purchase',
@@ -52,7 +52,7 @@ export default {
     confirm: 'Confirm',
     confirm_cancel: 'Cancel',
     store: 'Store',
-    product: 'Product',
+    product: 'Productdcasdc',
     transaction: 'Transaction',
     partner: 'Partner',
     staff: 'Staff',

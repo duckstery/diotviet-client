@@ -7,12 +7,11 @@ import diotviet.server.entities.Order;
 import diotviet.server.services.DocumentService;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.OrderService;
-import diotviet.server.structures.Dataset;
 import diotviet.server.templates.Document.PrintableTag;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.InitPrintResponse;
 import diotviet.server.templates.Order.*;
-import diotviet.server.templates.Transaction.TransactionReportRequest;
+import diotviet.server.templates.Report.DetailReportRequest;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.utils.PrintUtils;
@@ -242,7 +241,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping(value = "/report")
-    public ResponseEntity<?> report(OrderReportRequest request) {
+    public ResponseEntity<?> report(DetailReportRequest request) {
         return ok(orderService.report(request));
     }
 }

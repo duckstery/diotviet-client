@@ -175,6 +175,16 @@ export default {
     bar: 'Bar',
     line: 'Line',
     time: 'Time',
+    rank: 'Rank',
+    target: 'Target',
+    criteria: 'Criteria',
+    sort: 'Sort',
+    asc: 'Ascending',
+    desc: 'Descending',
+    top: 'Top',
+    top_number: 'Top {attr}',
+    parameter: 'Parameter',
+    graph: 'Graph',
 
     // ****************************
     // Report: Income
@@ -191,6 +201,13 @@ export default {
     processing_order_amount: "Processing order amount",
     resolved_order_amount: "Resolved order amount",
     aborted_order_amount: "Aborted order amount",
+
+    // ****************************
+    // Report: Product
+    // ****************************
+    total_income: 'Earned amount (VND)',
+    ordered_quantity: 'Ordered amount (item)',
+    average_income: 'Average earned amount (VND)',
 
     // ****************************
     // Role
@@ -342,6 +359,13 @@ export default {
     processing_order_amount_hint: "The number of orders being processed at a unit of time",
     resolved_order_amount_hint: "The number of orders resolved at a unit of time",
     aborted_order_amount_hint: "The number of orders aborted at a unit of time",
+
+    // ****************************
+    // Report: Product
+    // ****************************
+    total_income_hint: 'Total income earned by this item',
+    ordered_quantity_hint: 'Total item ordered',
+    average_income_hint: 'Average income earned by this item',
   },
 
   // ****************************

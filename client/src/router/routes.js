@@ -65,7 +65,8 @@ const routes = [
     children: [
       r('', 'Report', () => import('pages/Report/ReportPage.vue')),
       r('income', 'Report.Income', () => import('pages/Report/IncomePage.vue')),
-      r('order', 'Report.Order', () => import('pages/Report/ROrderPage.vue')),
+      r('order', 'Report.Order', () => import('pages/Report/ReportOrderPage.vue')),
+      r('rank', 'Report.Rank', () => import('pages/Report/RankPage.vue')),
     ]
   },
 

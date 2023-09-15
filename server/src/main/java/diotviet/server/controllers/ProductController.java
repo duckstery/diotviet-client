@@ -12,6 +12,7 @@ import diotviet.server.services.imports.ProductImportService;
 import diotviet.server.templates.Document.PrintableTag;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Product.*;
+import diotviet.server.templates.Report.RankReportRequest;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.utils.PrintUtils;
@@ -209,5 +210,16 @@ public class ProductController extends BaseController {
                 .contentLength(bytes.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new ByteArrayResource(bytes));
+    }
+
+    /**
+     * Report Product
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/report")
+    public ResponseEntity<?> report(RankReportRequest request) {
+        return ok(productService.report(request));
     }
 }

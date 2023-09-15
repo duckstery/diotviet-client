@@ -1,9 +1,10 @@
 package diotviet.server.structures;
 
+import diotviet.server.views.Point;
 import lombok.Data;
 
 @Data
-public class DataPoint<X, Y> {
+public class DataPoint<X, Y> implements Point<X, Y> {
     // ****************************
     // Properties
     // ****************************

@@ -2,6 +2,7 @@ package diotviet.server.repositories;
 
 import com.querydsl.core.types.Predicate;
 import diotviet.server.entities.Product;
+import diotviet.server.views.Point;
 import diotviet.server.views.Product.ProductDisplayView;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
 
@@ -91,6 +93,49 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
      */
     @EntityGraph(attributePaths = {"groups"})
     Product findWithGroupById(Long id);
+
+    /**
+     * Select top Product that has (highest or lowest base on [asc]) income
+     *
+     * @param from
+     * @param to
+     * @param asc
+     * @return
+     */
+    @Query(value = "" +
+            "WITH product_report as (\n" +
+            "    SELECT\n" +
+            "        title as name,\n" +
+            "        coalesce(total_income, 0) as total_income,\n" +
+            "        coalesce(ordered_quantity, 0) as ordered_quantity,\n" +
+            "        coalesce(round(total_income / ordered_quantity), 0) as average_income\n" +
+            "    FROM diotviet.products p\n" +
+            "    LEFT JOIN (\n" +
+            "        SELECT\n" +
+            "            product_id,\n" +
+            "            sum(actual_price) as total_income,\n" +
+            "            sum(i.quantity) as ordered_quantity\n" +
+            "        FROM diotviet.items i\n" +
+            "        INNER JOIN diotviet.orders o\n" +
+            "            ON i.order_id = o.id\n" +
+            "            AND (cast(:from AS date) IS NULL OR (cast(o.created_at AS date) >= cast(:from AS date)))\n" +
+            "            AND (cast(:to AS date) IS NULL OR (cast(o.created_at AS date) <= cast(:to AS date)))\n" +
+            "        GROUP BY i.product_id\n" +
+            "    ) as product_income\n" +
+            "        ON p.id = product_income.product_id\n" +
+            ")\n" +
+            "(SELECT name as x, total_income as y FROM product_report ORDER BY (total_income * :sortOrder) LIMIT :limit)\n" +
+            "UNION ALL\n" +
+            "(SELECT name as x, ordered_quantity as y FROM product_report ORDER BY (ordered_quantity * :sortOrder) LIMIT :limit)\n" +
+            "UNION ALL\n" +
+            "(SELECT name as x, average_income as y FROM product_report ORDER BY (average_income * :sortOrder) LIMIT :limit)"
+            , nativeQuery = true)
+    List<Point<String, Long>> selectTopReportByOrderCreatedAt(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("sortOrder") int sortOrder,
+            @Param("limit") int limit
+    );
 
     /**
      * Update Product isInBusiness flag

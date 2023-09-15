@@ -14,8 +14,8 @@ import diotviet.server.structures.Dataset;
 import diotviet.server.templates.Order.Interact.OrderItem;
 import diotviet.server.templates.Order.OrderInteractRequest;
 import diotviet.server.templates.Order.OrderPatchRequest;
-import diotviet.server.templates.Order.OrderReportRequest;
 import diotviet.server.templates.Order.OrderSearchRequest;
+import diotviet.server.templates.Report.DetailReportRequest;
 import diotviet.server.traits.ReportService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.OrderValidator;
@@ -204,7 +204,7 @@ public class OrderService extends ReportService<OrderReportView> {
      * @param request
      * @return
      */
-    public List<Dataset<String, Long>> report(OrderReportRequest request) {
+    public List<Dataset<String, Long>> report(DetailReportRequest request) {
         // Prepare expected_income dataset
         Dataset<String, Long> createdOrderAmount = Dataset.of("created_order_amount", "0", "purple");
         // Prepare real_income_inside dataset

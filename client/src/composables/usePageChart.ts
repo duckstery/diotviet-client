@@ -1,6 +1,5 @@
-import {ref, onMounted, computed, watch, ComputedRef, Ref} from 'vue'
-import {axios, constant, error} from "src/boot";
-import {dayjs} from "boot/dayjs";
+import {ref, computed, ComputedRef, Ref} from 'vue'
+import {constant} from "src/boot";
 import {ChartData, ChartOptions} from "chart.js";
 import {ChartDataset} from "chart.js/dist/types";
 import {useI18n} from "vue-i18n";
@@ -24,23 +23,13 @@ export type ExtendedChartDataset = ChartDataset & {
 }
 
 /**
- * Report filter
- */
-export type ReportFilter = {
-  from: string,
-  to: string,
-  displayMode: 'date' | 'month',
-}
-
-/**
  * Resource type
  */
-export type UsePageReportResources = {
+export type UsePageChartResources = {
   datasets: Ref<ExtendedChartDataset[]>,
   chartType: Ref<ChartType>,
   chartOptions: ComputedRef<ChartOptions>,
   chartData: ComputedRef<ChartData>,
-  filter: Ref<ReportFilter>
 }
 
 // *************************************************
@@ -48,13 +37,11 @@ export type UsePageReportResources = {
 // *************************************************
 
 /**
- * Setup Report page
+ * Setup Page Chart
  *
- * @param api
- * @param initType
  * @param initOption
  */
-export function usePageReport(api: string, initOption: ChartOptions = {}): UsePageReportResources {
+export function usePageChart(initOption: ChartOptions = {}): UsePageChartResources {
   // i18n
   const $t = useI18n().t
 
@@ -74,30 +61,13 @@ export function usePageReport(api: string, initOption: ChartOptions = {}): UsePa
 
   // Report datasets
   const datasets: Ref<ExtendedChartDataset[]> = ref([])
-  // Fetch
-  const fetch = () => axios.get(api, {params: filter.value})
-    .then(res => datasets.value = res.data.payload)
-    .catch(error.any)
-  // Fetch on mounted
-  onMounted(fetch)
-
-  // Get now
-  const now = dayjs()
-  // Filter
-  const filter: Ref<ReportFilter> = ref({
-    from: now.startOf('month').format('YYYY-MM-DD'),
-    to: now.format('YYYY-MM-DD'),
-    displayMode: 'date',
-  })
-  // Fetch when filter changed
-  watch(filter, () => fetch(), {deep: true})
 
   return {
     // Datasets
     datasets: datasets,
     // ChartJs properties
-    chartType: chartType, chartOptions: chartOptions, chartData: chartData,
-    // Filter
-    filter: filter
+    chartType: chartType,
+    chartOptions: chartOptions,
+    chartData: chartData,
   }
 }

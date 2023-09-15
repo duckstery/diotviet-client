@@ -1,5 +1,6 @@
 package diotviet.server.structures;
 
+import diotviet.server.views.Point;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -64,11 +65,30 @@ public class Dataset<X, Y> {
     }
 
     /**
-     * Add tuple to dataset
+     * Add DataPoint to dataset
      *
      * @param dataPoint
      */
     public void add(DataPoint<X, Y> dataPoint) {
         this.data.add(dataPoint);
+    }
+
+    /**
+     * Add Point to dataset
+     *
+     * @param dataPoint
+     */
+    public void add(Point<X, Y> dataPoint) {
+        this.data.add(DataPoint.of(dataPoint.getX(), dataPoint.getY()));
+    }
+
+
+    /**
+     * Get size of Dataset
+     *
+     * @return
+     */
+    public int size() {
+        return this.data.size();
     }
 }

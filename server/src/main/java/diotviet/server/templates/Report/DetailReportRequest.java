@@ -1,16 +1,17 @@
-package diotviet.server.templates.Order;
+package diotviet.server.templates.Report;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 /**
- * Request for Transaction search,
+ * Request for Transaction report
  *
  * @param from
  * @param to
+ * @param displayMode
  */
-public record OrderReportRequest(
+public record DetailReportRequest(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate from,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

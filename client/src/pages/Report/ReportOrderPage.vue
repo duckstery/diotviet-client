@@ -22,39 +22,47 @@ import FilterPanel from "components/Manage/FilterPanel.vue";
 import RadioFilter from "components/Manage/RadioFilter.vue";
 import RadioList from "components/General/Other/RadioList.vue";
 
-import {computed, onMounted, ref, watch} from "vue";
-import {axios, constant, error} from "src/boot";
 import {Chart as ChartJS, BarController} from 'chart.js'
 import {dayjs} from 'src/boot'
 import ReportHint from "components/Manage/Report/ReportHint.vue";
-import {usePageReport} from "src/composables/usePageReport";
+import {usePageDetailReport} from "src/composables/usePageDetailReport";
 import {useI18n} from "vue-i18n";
 
 ChartJS.register(BarController);
 
 export default {
-  name: 'ROrderPage',
+  name: 'ReportOrderPage',
 
   components: {ReportHint, RadioList, RadioFilter, FilterPanel, ReportFilter, Chart, Page},
 
   setup() {
-    return {
-      ...usePageReport('/order/report', {
-        scales: {
-          y: {
-            title: {
-              display: true,
-              text: useI18n().t('field.order'),
+    // Get now
+    const now = dayjs()
+    // Resources
+    const resources = usePageDetailReport(
+        '/order/report',
+        {
+          from: now.startOf('month').format('YYYY-MM-DD'),
+          to: now.format('YYYY-MM-DD'),
+          displayMode: 'date',
+        },
+        {
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: useI18n().t('field.order'),
+              },
+              suggestedMax: 50,
+              ticks: {
+                // forces step size to be 50 units
+                stepSize: 10
+              }
             },
-            suggestedMax: 50,
-            ticks: {
-              // forces step size to be 50 units
-              stepSize: 10
-            }
-          },
-        }
-      })
-    }
+          }
+        })
+
+    return {...resources}
   },
 
   computed: {

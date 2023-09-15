@@ -8,7 +8,7 @@
 
     :rows="items"
     :columns="headers"
-    :rows-per-page-options="[5]"
+    :rows-per-page-options="[rowPerPage]"
     :hide-bottom="items && items.length <= 5"
     :no-data-label="$t('message.table_empty_data')"
   >
@@ -59,6 +59,11 @@ export default {
         {code: 1, calcium: '14%', iron: '1%'},
       ])
     },
+    // Row per page
+    rowPerPage: {
+      type: Number,
+      default: 5
+    }
   },
 
   computed: {

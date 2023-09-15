@@ -169,7 +169,7 @@ public abstract class BusinessValidator<T> extends BaseValidator<T> {
         // Get Product with "largest" code
         Identifiable identifiable = provider.provide(format + "%");
         // Get number part from code
-        String alphanumeric = Objects.isNull(identifiable) ? "0" : identifiable.getCode().substring(2);
+        String alphanumeric = Objects.isNull(identifiable) ? "0" : identifiable.getCode().substring(format.length());
 
         // Generate format
         String f = "%s%0" + lengthOfNumber + "d";

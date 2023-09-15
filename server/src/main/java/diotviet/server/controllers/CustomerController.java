@@ -13,6 +13,7 @@ import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
 import diotviet.server.templates.Customer.CustomerSearchResponse;
 import diotviet.server.templates.EntityHeader;
+import diotviet.server.templates.Report.RankReportRequest;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Customer.CustomerSearchView;
@@ -178,5 +179,16 @@ public class CustomerController extends BaseController {
     @GetMapping(value = "/query")
     public ResponseEntity<?> simpleSearch(CustomerSearchRequest request) {
         return ok(customerService.query(request));
+    }
+
+    /**
+     * Report Customer
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/report")
+    public ResponseEntity<?> report(RankReportRequest request) {
+        return ok(customerService.report(request));
     }
 }

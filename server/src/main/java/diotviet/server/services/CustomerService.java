@@ -4,16 +4,16 @@ import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
 import diotviet.server.data.CustomerDAO;
 import diotviet.server.entities.Customer;
-import diotviet.server.entities.QCustomer;
 import diotviet.server.repositories.CustomerRepository;
+import diotviet.server.structures.Dataset;
 import diotviet.server.templates.Customer.CustomerInteractRequest;
 import diotviet.server.templates.Customer.CustomerSearchRequest;
+import diotviet.server.templates.Report.RankReportRequest;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.CustomerValidator;
 import diotviet.server.views.Customer.CustomerDetailView;
 import diotviet.server.views.Customer.CustomerSearchView;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import diotviet.server.views.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -147,5 +146,40 @@ public class CustomerService {
      */
     public List<CustomerSearchView> query(CustomerSearchRequest request) {
         return repository.findBy(dao.createFilter(request), q -> q.as(CustomerSearchView.class).all());
+    }
+
+    /**
+     * Report
+     *
+     * @param request
+     * @return
+     */
+    public List<Dataset<String, Long>> report(RankReportRequest request) {
+        // Prepare expected_income dataset
+        Dataset<String, Long> totalIncome = Dataset.of("total_income", "0", "blue");
+        // Prepare real_income_inside dataset
+        Dataset<String, Long> orderedQuantity = Dataset.of("ordered_quantity", "1", "yellow");
+        // Prepare real_income_outside dataset
+        Dataset<String, Long> averageIncome = Dataset.of("average_income", "2", "red");
+
+        // Get report by date
+        List<Point<String, Long>> report = repository.selectTopReportByOrderCreatedAt(request.from(), request.to(), request.sort(), request.top());
+
+        // Iterate through each income report's entry
+        for (Point<String, Long> entry : report) {
+            // Since we union all top [top] in one List, we need to check each Dataset's size is equal [top] before proceed to next Dataset
+            if (totalIncome.size() < request.top()) {
+                // Check if totalIncome Dataset has enough DataPoint
+                totalIncome.add(entry);
+            } else if (orderedQuantity.size() < request.top()) {
+                // Check if totalIncome Dataset has enough DataPoint
+                orderedQuantity.add(entry);
+            } else {
+                // Add the rest to averageIncome
+                averageIncome.add(entry);
+            }
+        }
+
+        return List.of(totalIncome, orderedQuantity, averageIncome);
     }
 }

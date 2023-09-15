@@ -7,6 +7,7 @@
   <!-- Resolved at range -->
   <DateFilter v-model:from="range.from" v-model:to="range.to" class="tw-mt-3"
               :title="$t('field.time')"/>
+
   <!-- Chart type -->
   <FilterPanel :title="$t('field.display_mode')" class="tw-mt-3">
     <RadioList :model-value="displayBy" :options="displayMode" @update:model-value="changeDisplayMode($event)"/>
@@ -37,8 +38,6 @@ export default {
       default: () => ({})
     },
     type: String,
-    categories: Array,
-    groups: Array
   },
 
   emits: ['request', 'update:model-value', 'update:type'],
