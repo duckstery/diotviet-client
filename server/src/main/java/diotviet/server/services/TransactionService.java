@@ -7,6 +7,7 @@ import diotviet.server.repositories.TransactionRepository;
 import diotviet.server.structures.DataPoint;
 import diotviet.server.structures.Dataset;
 import diotviet.server.templates.Transaction.TransactionSearchRequest;
+import diotviet.server.traits.ReportService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.views.Report.IncomeReportView;
 import diotviet.server.views.Report.impl.IncomeReportByMonth;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class TransactionService {
+public class TransactionService extends ReportService<IncomeReportView> {
 
     // ****************************
     // Properties
@@ -160,7 +161,7 @@ public class TransactionService {
 
         // Check if display mode is by month
         if (StringUtils.equals(request.displayMode(), "month")) {
-            report = groupReportByMonth(report);
+            report = groupReportByMonth(report, IncomeReportByMonth.class);
         }
 
         // Iterate through each income report's entry
@@ -191,46 +192,5 @@ public class TransactionService {
                 .setAmount(amount)
                 .setCreatedAt(OtherUtils.get(order.getResolvedAt(), LocalDateTime.now()))
                 .setOrder(order);
-    }
-
-
-    /**
-     * Group IncomeReportView by month YearMonth of LocalDate
-     *
-     * @param report
-     * @return
-     */
-    public List<IncomeReportView> groupReportByMonth(List<IncomeReportView> report) {
-        // Create holder
-        List<IncomeReportView> reportByMonth = new ArrayList<>();
-
-        // Current month
-        YearMonth current = null;
-        // Current IncomeReportByMonth
-        IncomeReportByMonth entryByMonth = null;
-
-        // Iterate through each
-        for (IncomeReportView entry : report) {
-            // Get unit as LocalDate
-            YearMonth time = YearMonth.parse(entry.getTime(), DateTimeFormatter.ISO_DATE);
-            // Check if current month is null or not equals
-            if (Objects.isNull(current) || !current.equals(time)) {
-                // Assign current month
-                current = time;
-                // Create new entry and add to list
-                reportByMonth.add(entryByMonth = new IncomeReportByMonth(current));
-            }
-
-            // Sum expectedIncome
-            entryByMonth.addExpectedIncome(entry.getExpectedIncome());
-            // Sum realIncomeInside
-            entryByMonth.addRealIncomeInside(entry.getRealIncomeInside());
-            // Sum realIncomeOutside
-            entryByMonth.addRealIncomeOutside(entry.getRealIncomeOutside());
-            // Sum usage
-            entryByMonth.addUsage(entry.getUsage());
-        }
-
-        return reportByMonth;
     }
 }

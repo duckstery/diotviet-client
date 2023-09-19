@@ -41,7 +41,7 @@ export default {
 
       return `background: ${background}; border: solid 3px ${borderColor}`
     }
-    
+
     return {getStyle: getStyle}
   }
 }

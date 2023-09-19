@@ -1,13 +1,6 @@
 package diotviet.server.views.Report;
 
-public interface IncomeReportView {
-    /**
-     * Get date
-     *
-     * @return
-     */
-    String getTime();
-
+public interface IncomeReportView extends ReportView {
     /**
      * Get expected income
      *
