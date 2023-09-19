@@ -1,14 +1,12 @@
 package diotviet.server.views.Report;
 
-import java.time.LocalDate;
-
 public interface IncomeReportView {
     /**
      * Get date
      *
      * @return
      */
-    LocalDate getDate();
+    String getTime();
 
     /**
      * Get expected income

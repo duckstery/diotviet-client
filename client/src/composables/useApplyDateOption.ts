@@ -23,9 +23,9 @@ export type UseApplyDateOptionResources = {
  */
 export function useApplyDateOption(fromModel: WritableComputedRef<any>, toModel: WritableComputedRef<any>): UseApplyDateOptionResources {
   // Backup
-  const backup: Date = {from: null, to: null}
+  const backup: Date = {from: fromModel.value, to: toModel.value}
   // Picked option
-  const option: Ref<Date> = ref('')
+  const option: Ref<Date> = ref({from: fromModel.value, to: toModel.value})
   // Watch for option changed
   watch(option, (value: Date) => {
     // Set model

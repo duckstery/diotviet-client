@@ -1,9 +1,9 @@
 <template>
   <FilterPanel :title="title" reloadable @reload="reload">
-    <q-radio v-model="optionProvider" size="xs" val="1" @click="invoke('predefined')">
+    <q-radio v-model="optionProvider" size="xs" val="1" class="tw-w-full" @click="invoke('predefined')">
       <PredefinedDatePicker v-model="predefinedOption" ref="predefined"/>
     </q-radio>
-    <q-radio v-model="optionProvider" size="xs" val="2" class="tw-mt-3" @click="invoke('custom')">
+    <q-radio v-model="optionProvider" size="xs" val="2" class="tw-w-full tw-mt-3" @click="invoke('custom')">
       <DatePicker v-model="customOption" ref="custom" range/>
     </q-radio>
   </FilterPanel>
@@ -43,12 +43,12 @@ export default {
     const toDate = useVModel(props, 'to', emit)
 
     // Option 1 (by predefined pick) value
-    const {option: predefinedOption, applyModel: applyPredefined} = useApplyDateOption(fromDate, toDate)
+    const {option: predefinedOption, applyModel: applyPredefined} = useApplyDateOption('month_now', fromDate, toDate)
     // Option 2 (by custom pick) value
     const {option: customOption, applyModel: applyCustom} = useApplyDateOption(fromDate, toDate)
 
     // Option provider
-    const optionProvider = ref('')
+    const optionProvider = ref('1')
     // Watch for provider changed
     watch(optionProvider, value => value === '1' ? applyPredefined() : applyCustom())
 

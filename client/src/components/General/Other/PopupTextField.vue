@@ -1,8 +1,8 @@
 <template>
   <TextField
-      readonly class="tw-cursor-pointer" input-class="tw-cursor-pointer"
-      :model-value="value" :label="label" :rules="rules" :debounce="debounce"
-      :icon="icon" :compact="compact" :require="required" :mask="mask"
+    readonly class="tw-cursor-pointer" input-class="tw-cursor-pointer"
+    :model-value="value" :label="label" :rules="rules" :debounce="debounce"
+    :icon="icon" :compact="compact" :require="required" :mask="mask"
   >
     <template #append>
       <q-icon :name="popupIcon"/>
@@ -10,9 +10,8 @@
     <template #default>
       <Tooltip :content="value"/>
       <q-popup-proxy
-          ref="proxy"
-          transition-show="scale" transition-hide="scale"
-          :cover="cover" :anchor="anchor" :self="self" :offset="offset"
+        ref="proxy" class="virtual-scrollbar" transition-show="scale" transition-hide="scale"
+        :cover="cover" :anchor="anchor" :self="self" :offset="offset"
       >
         <slot :hide="hide"/>
       </q-popup-proxy>

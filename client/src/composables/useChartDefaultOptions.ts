@@ -7,9 +7,10 @@ import _ from "lodash";
 /**
  * Setup ChartJs default options
  *
+ * @param typeRef
  * @param optionsRef
  */
-export function useChartDefaultOptions(optionsRef: Ref<ChartOptions>): ComputedRef<ChartOptions> {
+export function useChartDefaultOptions(typeRef: Ref<string>, optionsRef: Ref<ChartOptions>): ComputedRef<ChartOptions> {
   // Get Quasar Ref
   const $q = useQuasar()
   // Scheme related options
@@ -20,11 +21,13 @@ export function useChartDefaultOptions(optionsRef: Ref<ChartOptions>): ComputedR
     return {
       scales: {
         y: {
+          stacked: typeRef.value === 'bar',
           grid: {
             color: color
           },
         },
         x: {
+          stacked: typeRef.value === 'bar',
           grid: {
             color: color
           }
@@ -37,26 +40,23 @@ export function useChartDefaultOptions(optionsRef: Ref<ChartOptions>): ComputedR
   const defaultOptions: ChartOptions = {
     responsive: true,
     interaction: {
-      intersect: true,
+      intersect: false,
+      mode: 'index',
     },
     scales: {
       y: {
-        stacked: true,
         title: {
           display: true,
           text: 'VND',
         },
         min: 0,
         suggestedMin: 0,
-        suggestedMax: 100000,
+        suggestedMax: 1000000,
         ticks: {
           // forces step size to be 50 units
-          stepSize: 50000
+          stepSize: 100000
         }
       },
-      x: {
-        stacked: true
-      }
     }
   }
 

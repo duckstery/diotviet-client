@@ -14,6 +14,7 @@ public record TransactionSearchRequest(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate from,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        LocalDate to
+        LocalDate to,
+        String displayMode
 ) {
 }

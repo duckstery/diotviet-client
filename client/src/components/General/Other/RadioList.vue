@@ -1,7 +1,7 @@
 <template>
   <q-list>
     <q-item v-for="option in options" tag="label" dense>
-      <q-item-section avatar>
+      <q-item-section side>
         <q-radio :model-value="modelValue" @update:model-value="$emit('update:model-value', $event)"
                  :val="option.value" color="primary" dense/>
       </q-item-section>

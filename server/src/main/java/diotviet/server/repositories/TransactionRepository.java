@@ -36,7 +36,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>,
      * @return
      */
     @Query(value = "SELECT\n" +
-            "    cast(t.created_at AS date) AS date,\n" +
+            "    cast(t.created_at AS date) AS time,\n" +
             "    coalesce(expected_income, 0) as expectedIncome,\n" +
             "    sum(case when cast(t.created_at AS date) = cast(o.created_at AS date) THEN amount ELSE 0 END) AS realIncomeInside,\n" +
             "    sum(case when cast(t.created_at AS date) <> cast(o.created_at AS date) AND amount > 0 THEN amount ELSE 0 END) AS realIncomeOutside,\n" +
@@ -63,8 +63,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>,
             "    t.is_deleted = false \n" +
             "    AND (cast(:from AS date) IS NULL OR (cast(t.created_at AS date) >= cast(:from AS date)))\n" +
             "    AND (cast(:to AS date) IS NULL OR (cast(t.created_at AS date) <= cast(:to AS date)))\n" +
-            "GROUP BY date, expected_income\n" +
-            "ORDER BY date"
+            "GROUP BY time, expected_income\n" +
+            "ORDER BY time"
             , nativeQuery = true)
     List<IncomeReportView> selectIncomeReportByCreatedAt(@Param("from") LocalDate from, @Param("to") LocalDate to);
 }

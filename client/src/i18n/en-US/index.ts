@@ -152,6 +152,7 @@ export default {
     load: 'Load',
     income: 'Income',
     by_day: 'By day',
+    by_date: 'By date',
     by_week: 'By week',
     by_month: 'By month',
     by_quarter: 'By quarter',
@@ -303,7 +304,8 @@ export default {
     delete_document: 'Delete this document',
     least_document: 'You must have at least 1 document',
     print_unavailable: 'Printing is unavailable here',
-    printer_preparing: 'Please wait while printer is being prepared'
+    printer_preparing: 'Please wait while printer is being prepared',
+    date_range_to_big: 'Display by date? Interval between dates is too big. Display by date will make the graph hard-to-read.'
   },
 
   // ****************************

@@ -41,7 +41,7 @@ export default {
     multiple: Boolean,
   },
 
-  emits: ['update:model-value', 'finish'],
+  emits: ['update:model-value'],
 
   setup(props, {emit}) {
     // Convert modelValue to ref
@@ -64,8 +64,6 @@ export default {
       emit('update:model-value', tempModel.value)
       // Hide proxy
       callback()
-      // Notify that a value has been picked by DatePicker
-      nextTick(() => emit('finish'))
     }
     // On close
     const close = (callback) => {

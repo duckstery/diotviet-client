@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -40,9 +39,9 @@ public class TransactionController extends BaseController {
     @GetMapping(value = "/report")
     public ResponseEntity<?> report(TransactionSearchRequest request) {
         // Report and get datasets
-        List<Dataset<LocalDate, Long>> datasets = service.report(request);
+        List<Dataset<String, Long>> datasets = service.report(request);
         // Iterate through each dataset to set up metadata
-        for (Dataset<LocalDate, Long> dataset : datasets) {
+        for (Dataset<?, Long> dataset : datasets) {
             dataset.applyLocalizationWithSupplier(this::__);
         }
 

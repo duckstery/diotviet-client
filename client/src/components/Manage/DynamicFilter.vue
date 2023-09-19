@@ -9,7 +9,7 @@
 
     <q-scroll-area class="tw-h-[160px] tw-mt-3">
       <q-item v-for="item in satisfiedItems" tag="label" dense class="tw-pr-[20px]">
-        <q-item-section avatar>
+        <q-item-section side>
           <q-radio :model-value="modelValue" @update:model-value="$emit('update:model-value', $event)"
                    :val="item.id" color="primary" dense/>
         </q-item-section>

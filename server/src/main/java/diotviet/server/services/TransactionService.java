@@ -4,17 +4,20 @@ import diotviet.server.constants.Status;
 import diotviet.server.entities.Order;
 import diotviet.server.entities.Transaction;
 import diotviet.server.repositories.TransactionRepository;
-import diotviet.server.structures.Dataset;
 import diotviet.server.structures.DataPoint;
+import diotviet.server.structures.Dataset;
 import diotviet.server.templates.Transaction.TransactionSearchRequest;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.views.Report.IncomeReportView;
+import diotviet.server.views.Report.impl.IncomeReportByMonth;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -142,22 +145,30 @@ public class TransactionService {
      * @param request
      * @return
      */
-    public List<Dataset<LocalDate, Long>> report(TransactionSearchRequest request) {
+    public List<Dataset<String, Long>> report(TransactionSearchRequest request) {
         // Prepare expected_income dataset
-        Dataset<LocalDate, Long> expectedIncome = Dataset.of("expected_income", "0", "blue");
+        Dataset<String, Long> expectedIncome = Dataset.of("expected_income", "0", "blue");
         // Prepare real_income_inside dataset
-        Dataset<LocalDate, Long> realIncomeInside = Dataset.of("real_income_inside", "1", "green");
+        Dataset<String, Long> realIncomeInside = Dataset.of("real_income_inside", "1", "yellow");
         // Prepare real_income_outside dataset
-        Dataset<LocalDate, Long> realIncomeOutside = Dataset.of("real_income_outside", "1", "purple");
+        Dataset<String, Long> realIncomeOutside = Dataset.of("real_income_outside", "1", "purple");
         // Prepare usage dataset
-        Dataset<LocalDate, Long> usage = Dataset.of("usage", "2", "red");
+        Dataset<String, Long> usage = Dataset.of("usage", "2", "red");
+
+        // Get report by date
+        List<IncomeReportView> report = repository.selectIncomeReportByCreatedAt(request.from(), request.to());
+
+        // Check if display mode is by month
+        if (StringUtils.equals(request.displayMode(), "month")) {
+            report = groupReportByMonth(report);
+        }
 
         // Iterate through each income report's entry
-        for (IncomeReportView entry : repository.selectIncomeReportByCreatedAt(request.from(), request.to())) {
-            expectedIncome.add(DataPoint.of(entry.getDate(), entry.getExpectedIncome()));
-            realIncomeInside.add(DataPoint.of(entry.getDate(), entry.getRealIncomeInside()));
-            realIncomeOutside.add(DataPoint.of(entry.getDate(), entry.getRealIncomeOutside()));
-            usage.add(DataPoint.of(entry.getDate(), entry.getUsage()));
+        for (IncomeReportView entry : report) {
+            expectedIncome.add(DataPoint.of(entry.getTime(), entry.getExpectedIncome()));
+            realIncomeInside.add(DataPoint.of(entry.getTime(), entry.getRealIncomeInside()));
+            realIncomeOutside.add(DataPoint.of(entry.getTime(), entry.getRealIncomeOutside()));
+            usage.add(DataPoint.of(entry.getTime(), entry.getUsage()));
         }
 
         return List.of(expectedIncome, realIncomeInside, realIncomeOutside, usage);
@@ -180,5 +191,46 @@ public class TransactionService {
                 .setAmount(amount)
                 .setCreatedAt(OtherUtils.get(order.getResolvedAt(), LocalDateTime.now()))
                 .setOrder(order);
+    }
+
+
+    /**
+     * Group IncomeReportView by month YearMonth of LocalDate
+     *
+     * @param report
+     * @return
+     */
+    public List<IncomeReportView> groupReportByMonth(List<IncomeReportView> report) {
+        // Create holder
+        List<IncomeReportView> reportByMonth = new ArrayList<>();
+
+        // Current month
+        YearMonth current = null;
+        // Current IncomeReportByMonth
+        IncomeReportByMonth entryByMonth = null;
+
+        // Iterate through each
+        for (IncomeReportView entry : report) {
+            // Get unit as LocalDate
+            YearMonth time = YearMonth.parse(entry.getTime(), DateTimeFormatter.ISO_DATE);
+            // Check if current month is null or not equals
+            if (Objects.isNull(current) || !current.equals(time)) {
+                // Assign current month
+                current = time;
+                // Create new entry and add to list
+                reportByMonth.add(entryByMonth = new IncomeReportByMonth(current));
+            }
+
+            // Sum expectedIncome
+            entryByMonth.addExpectedIncome(entry.getExpectedIncome());
+            // Sum realIncomeInside
+            entryByMonth.addRealIncomeInside(entry.getRealIncomeInside());
+            // Sum realIncomeOutside
+            entryByMonth.addRealIncomeOutside(entry.getRealIncomeOutside());
+            // Sum usage
+            entryByMonth.addUsage(entry.getUsage());
+        }
+
+        return reportByMonth;
     }
 }

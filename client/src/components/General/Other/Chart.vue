@@ -50,14 +50,14 @@ export default {
     // Export ChartJs instance
     expose({instance: computed(() => chartRef.value.chart)})
     // Force reload ChartJs if type is changed
-    watch(toRef(props, 'type'), value => {
+    watch(toRef(props, 'type'), () => {
       isReady.value = false
       nextTick(() => isReady.value = true)
     })
 
     return {
       isReady: isReady,
-      chartOptions: useChartDefaultOptions(toRef(props, 'options')),
+      chartOptions: useChartDefaultOptions(toRef(props, 'type'), toRef(props, 'options')),
       chartData: useChartDefaultData(toRef(props, 'data'))
     }
   }

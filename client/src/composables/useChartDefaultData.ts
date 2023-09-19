@@ -1,6 +1,5 @@
 import {computed, Ref, ComputedRef} from "vue";
 import {ChartData} from "chart.js";
-import {constant, util} from "src/boot";
 // @ts-ignore
 import _ from "lodash";
 import {
