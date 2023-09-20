@@ -176,6 +176,26 @@ export default {
     line: 'Line',
     time: 'Time',
 
+    // ****************************
+    // Report: Income
+    // ****************************
+    expected_income: "Expected income",
+    real_income_inside: "Real in-day orders income",
+    real_income_outside: "Real out-day orders income",
+    usage: "Usage amount",
+
+    // ****************************
+    // Report: Order
+    // ****************************
+    created_order_amount: "Created order amount",
+    processing_order_amount: "Processing order amount",
+    resolved_order_amount: "Resolved order amount",
+    aborted_order_amount: "Aborted order amount",
+
+    // ****************************
+    // Role
+    // ****************************
+
     role_1: 'Admin',
     role_2: 'Supervisor',
     role_3: 'Staff',
@@ -305,7 +325,23 @@ export default {
     least_document: 'You must have at least 1 document',
     print_unavailable: 'Printing is unavailable here',
     printer_preparing: 'Please wait while printer is being prepared',
-    date_range_to_big: 'Display by date? Interval between dates is too big. Display by date will make the graph hard-to-read.'
+    date_range_to_big: 'Display by date? Interval between dates is too big. Display by date will make the graph hard-to-read.',
+
+    // ****************************
+    // Report: Income
+    // ****************************
+    expected_income_hint: "The expected amount earned from orders at a unit of time",
+    real_income_inside_hint: "The actual amount earned from orders that at a unit of time",
+    real_income_outside_hint: "The actual amount earned from order that outside unit of time",
+    usage_hint: "The amount used at a unit of time",
+
+    // ****************************
+    // Report: Order
+    // ****************************
+    created_order_amount_hint: "The number of orders created at a unit of time",
+    processing_order_amount_hint: "The number of orders being processed at a unit of time",
+    resolved_order_amount_hint: "The number of orders resolved at a unit of time",
+    aborted_order_amount_hint: "The number of orders aborted at a unit of time",
   },
 
   // ****************************

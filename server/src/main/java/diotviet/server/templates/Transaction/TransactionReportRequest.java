@@ -10,7 +10,7 @@ import java.time.LocalDate;
  * @param from
  * @param to
  */
-public record TransactionSearchRequest(
+public record TransactionReportRequest(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate from,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

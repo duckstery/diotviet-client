@@ -66,7 +66,7 @@ public class ProductValidator extends BusinessValidator<Product> {
             groupValidator.assignGroups(product, request.groups());
         }
         // Check code
-        checkCode(product, "MS", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
+        checkCode(product, "MKH", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
 
         return product;
     }

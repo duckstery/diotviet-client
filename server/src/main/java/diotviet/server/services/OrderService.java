@@ -9,15 +9,22 @@ import diotviet.server.entities.Order;
 import diotviet.server.repositories.ItemRepository;
 import diotviet.server.repositories.OrderRepository;
 import diotviet.server.repositories.ProductRepository;
+import diotviet.server.structures.DataPoint;
+import diotviet.server.structures.Dataset;
 import diotviet.server.templates.Order.Interact.OrderItem;
 import diotviet.server.templates.Order.OrderInteractRequest;
 import diotviet.server.templates.Order.OrderPatchRequest;
+import diotviet.server.templates.Order.OrderReportRequest;
 import diotviet.server.templates.Order.OrderSearchRequest;
+import diotviet.server.traits.ReportService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.OrderValidator;
 import diotviet.server.views.Order.OrderDetailView;
 import diotviet.server.views.Order.OrderSearchView;
 import diotviet.server.views.Print.Order.OrderOrderPrintView;
+import diotviet.server.views.Report.OrderReportView;
+import diotviet.server.views.Report.impl.OrderReportByMonth;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class OrderService {
+public class OrderService extends ReportService<OrderReportView> {
 
     // ****************************
     // Properties
@@ -189,6 +196,41 @@ public class OrderService {
                 .stream()
                 .map(this::calculateCurrentPaymentAmount)
                 .toList();
+    }
+
+    /**
+     * Report
+     *
+     * @param request
+     * @return
+     */
+    public List<Dataset<String, Long>> report(OrderReportRequest request) {
+        // Prepare expected_income dataset
+        Dataset<String, Long> createdOrderAmount = Dataset.of("created_order_amount", "0", "purple");
+        // Prepare real_income_inside dataset
+        Dataset<String, Long> processingOrderAmount = Dataset.of("processing_order_amount", "1", "yellow");
+        // Prepare real_income_outside dataset
+        Dataset<String, Long> resolvedOrderAmount = Dataset.of("resolved_order_amount", "2", "green");
+        // Prepare usage dataset
+        Dataset<String, Long> abortedOrderAmount = Dataset.of("aborted_order_amount", "3", "red");
+
+        // Get report by date
+        List<OrderReportView> report = repository.selectOrderReportByCreatedAt(request.from(), request.to());
+
+        // Check if display mode is by month
+        if (StringUtils.equals(request.displayMode(), "month")) {
+            report = groupReportByMonth(report, OrderReportByMonth.class);
+        }
+
+        // Iterate through each income report's entry
+        for (OrderReportView entry : report) {
+            createdOrderAmount.add(DataPoint.of(entry.getTime(), entry.getCreatedOrderAmount()));
+            processingOrderAmount.add(DataPoint.of(entry.getTime(), entry.getProcessingOrderAmount()));
+            resolvedOrderAmount.add(DataPoint.of(entry.getTime(), entry.getResolvedOrderAmount()));
+            abortedOrderAmount.add(DataPoint.of(entry.getTime(), entry.getAbortedOrderAmount()));
+        }
+
+        return List.of(createdOrderAmount, processingOrderAmount, resolvedOrderAmount, abortedOrderAmount);
     }
 //
 //    /**

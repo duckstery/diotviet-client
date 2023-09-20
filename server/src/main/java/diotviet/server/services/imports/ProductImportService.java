@@ -77,7 +77,7 @@ public class ProductImportService extends BaseImportService<Product> {
     @Override
     public List<Product> prep() {
         // Init code
-        initializeCode("MS", productRepository::findFirstByCodeLikeOrderByCodeDesc);
+        initializeCode("MKH", productRepository::findFirstByCodeLikeOrderByCodeDesc);
         // Cache category
         categoryMap = new HashMap<>();
         for (Category category : categoryService.getCategories(Type.PRODUCT)) {

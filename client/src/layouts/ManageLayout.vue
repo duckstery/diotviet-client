@@ -56,6 +56,7 @@ export default {
       ],
       'report': [
         {key: 'income', icon: 'fa-money-bill-trend-up', to: '/report/income'},
+        {key: 'order', icon: 'fa-square-poll-vertical', to: '/report/order'},
       ]
     }
   }),

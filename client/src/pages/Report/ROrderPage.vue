@@ -21,21 +21,39 @@ import ReportFilter from "components/Manage/Report/ReportFilter.vue";
 import FilterPanel from "components/Manage/FilterPanel.vue";
 import RadioFilter from "components/Manage/RadioFilter.vue";
 import RadioList from "components/General/Other/RadioList.vue";
-import ReportHint from "components/Manage/Report/ReportHint.vue";
 
-import {usePageReport} from "src/composables/usePageReport";
+import {computed, onMounted, ref, watch} from "vue";
+import {axios, constant, error} from "src/boot";
 import {Chart as ChartJS, BarController} from 'chart.js'
+import {dayjs} from 'src/boot'
+import ReportHint from "components/Manage/Report/ReportHint.vue";
+import {usePageReport} from "src/composables/usePageReport";
+import {useI18n} from "vue-i18n";
 
 ChartJS.register(BarController);
 
 export default {
-  name: 'IncomePage',
+  name: 'ROrderPage',
 
   components: {ReportHint, RadioList, RadioFilter, FilterPanel, ReportFilter, Chart, Page},
 
   setup() {
     return {
-      ...usePageReport('/transaction/report', ),
+      ...usePageReport('/order/report', {
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: useI18n().t('field.order'),
+            },
+            suggestedMax: 50,
+            ticks: {
+              // forces step size to be 50 units
+              stepSize: 10
+            }
+          },
+        }
+      })
     }
   },
 
@@ -44,7 +62,7 @@ export default {
     breadcrumbs() {
       return [
         {label: this.$t('field.report'), to: '/report', icon: 'fa-chart-line'},
-        {label: this.$t('field.income'), to: '/report/income', icon: 'fa-money-bill-trend-up'},
+        {label: this.$t('field.income'), to: '/report/income', icon: 'fa-square-poll-vertical'},
       ]
     },
   },

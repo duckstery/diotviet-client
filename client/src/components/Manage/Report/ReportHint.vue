@@ -8,10 +8,10 @@
             <span class="tw-w-[40px] tw-h-[15px] tw-block tw-mt-1" :style="getStyle(dataset.color)"/>
           </q-item-section>
           <q-item-section class="tw-max-w-[200px]">
-            <div class="tw-ml-3">{{ dataset.label }}:</div>
+            <div class="tw-ml-3">{{ $t(`field.${dataset.key}`) }}:</div>
           </q-item-section>
           <q-item-section>
-            <div class="tw-ml-3"> {{ dataset.hint }}</div>
+            <div class="tw-ml-3"> {{ $t(`message.${dataset.hint}`) }}</div>
           </q-item-section>
         </q-item>
       </q-list>

@@ -109,7 +109,7 @@ public class OrderImportService extends BaseImportService<Order> {
                     // Then, save Order before fetching new Order
                     orderRepository.save(this.order);
                     // Resolve Transaction
-                    transactionService.resolve(order, null);
+                    transactionService.resolve(this.order, null);
                 }
 
                 // Cache code
@@ -122,7 +122,7 @@ public class OrderImportService extends BaseImportService<Order> {
             }
 
             // Convert row to Item and add to Order
-            this.order.getItems().add(convertToItem(row, order));
+            this.order.getItems().add(convertToItem(row, this.order));
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
             e.printStackTrace();

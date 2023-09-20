@@ -19,11 +19,11 @@ import DatePicker from "components/General/Other/DatePicker.vue";
 import DateFilter from "components/Manage/DateFilter.vue";
 import RadioFilter from "components/Manage/RadioFilter.vue";
 import RadioList from "components/General/Other/RadioList.vue";
+import CheckboxFilter from "components/Manage/CheckboxFilter.vue";
 
 import {computed, reactive, ref, watch} from "vue";
 import {useI18n} from "vue-i18n";
 import {dayjs, util} from "src/boot";
-import CheckboxFilter from "components/Manage/CheckboxFilter.vue";
 import {useVModel} from "@vueuse/core";
 
 export default {
@@ -41,7 +41,7 @@ export default {
     groups: Array
   },
 
-  emits: ['request', 'update:model-value', 'control'],
+  emits: ['request', 'update:model-value', 'update:type'],
 
   setup(props, {emit}) {
     // i18n

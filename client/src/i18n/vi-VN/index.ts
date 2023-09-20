@@ -140,6 +140,12 @@ export default {
     setup: 'Setup',
     component_tags: 'Component tags',
 
+    expected_income: "Expected incomedsac",
+    real_income_inside: "Real in-day orders insadcsacome",
+    real_income_outside: "Real out-day orders asdcsaincome",
+    usage: "Usage amasdcsount",
+
+
     role_1: 'Admin',
     role_2: 'Supervisor',
     role_3: 'Staff',

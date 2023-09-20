@@ -69,7 +69,7 @@ public class OrderValidator extends BusinessValidator<Order> {
         // Make sure code will always be null, so it'll only be set in the next statement
         order.setCode(null);
         // Generate code
-        checkCode(order, "DH", 6, null, repository::findFirstByCodeLikeOrderByCodeDesc);
+        checkCode(order, "MDH", 6, null, repository::findFirstByCodeLikeOrderByCodeDesc);
 
         return order;
     }

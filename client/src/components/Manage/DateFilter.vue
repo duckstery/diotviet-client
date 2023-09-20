@@ -43,7 +43,7 @@ export default {
     const toDate = useVModel(props, 'to', emit)
 
     // Option 1 (by predefined pick) value
-    const {option: predefinedOption, applyModel: applyPredefined} = useApplyDateOption('month_now', fromDate, toDate)
+    const {option: predefinedOption, applyModel: applyPredefined} = useApplyDateOption(fromDate, toDate)
     // Option 2 (by custom pick) value
     const {option: customOption, applyModel: applyCustom} = useApplyDateOption(fromDate, toDate)
 

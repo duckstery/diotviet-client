@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class IncomeReportByMonth implements IncomeReportView {
 
     // ****************************
-    // Public API
+    // Properties
     // ****************************
 
     /**
@@ -41,7 +41,7 @@ public class IncomeReportByMonth implements IncomeReportView {
     /**
      * Constructor
      *
-     * @param time
+     * @param yearMonth
      */
     public IncomeReportByMonth(YearMonth yearMonth) {
         this.time = yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"));

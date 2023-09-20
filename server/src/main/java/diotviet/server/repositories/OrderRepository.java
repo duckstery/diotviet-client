@@ -4,6 +4,7 @@ import com.querydsl.core.types.Predicate;
 import diotviet.server.constants.Status;
 import diotviet.server.entities.Order;
 import diotviet.server.traits.OptimisticLockRepository;
+import diotviet.server.views.Report.OrderReportView;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,6 +14,7 @@ import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -89,6 +91,29 @@ public interface OrderRepository extends JpaRepository<Order, Long>, QuerydslPre
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Order o set o.status = :status, o.version = o.version + 1 WHERE o.id IN :ids")
     void updateStatusByIds(@Param("status") Status status, @Param("ids") Long[] ids);
+
+    /**
+     * Select earned amount
+     *
+     * @param from
+     * @param to
+     * @return
+     */
+    @Query(value = "" +
+            "SELECT\n" +
+            "    cast(created_at AS date) as time,\n" +
+            "    count(*) AS createdOrderAmount,\n" +
+            "    count(*) FILTER (WHERE status = 0 OR status = 1) AS processingOrderAmount,\n" +
+            "    count(*) FILTER (WHERE status = 2) AS resolvedOrderAmount,\n" +
+            "    count(*) FILTER (WHERE status = 3) AS abortedOrderAmount\n" +
+            "FROM diotviet.orders o\n" +
+            "WHERE\n" +
+            "    (cast(:from AS date) IS NULL OR (cast(o.created_at AS date) >= cast(:from AS date)))\n" +
+            "    AND (cast(:to AS date) IS NULL OR (cast(o.created_at AS date) <= cast(:to AS date)))\n" +
+            "GROUP BY time\n" +
+            "ORDER BY time"
+            , nativeQuery = true)
+    List<OrderReportView> selectOrderReportByCreatedAt(@Param("from") LocalDate from, @Param("to") LocalDate to);
 
     //
 //    @Override

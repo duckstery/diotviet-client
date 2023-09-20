@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 @Data
 public class Dataset<X, Y> {
@@ -17,11 +16,6 @@ public class Dataset<X, Y> {
      * Dataset's key
      */
     private String key;
-
-    /**
-     * Dataset's label
-     */
-    private String label;
 
     /**
      * Dataset's hint
@@ -61,6 +55,7 @@ public class Dataset<X, Y> {
         Dataset<X, Y> dataset = new Dataset<>();
 
         dataset.setKey(key);
+        dataset.setHint(key + "_hint");
         dataset.setStack(stack);
         dataset.setColor(color);
         dataset.setData(new ArrayList<>());
@@ -75,10 +70,5 @@ public class Dataset<X, Y> {
      */
     public void add(DataPoint<X, Y> dataPoint) {
         this.data.add(dataPoint);
-    }
-
-    public void applyLocalizationWithSupplier(Function<String, String> supplier) {
-        this.label = supplier.apply(this.key);
-        this.hint = supplier.apply(this.key + "_hint");
     }
 }
