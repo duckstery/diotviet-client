@@ -185,6 +185,11 @@ export default {
     top_number: 'Top {attr}',
     parameter: 'Parameter',
     graph: 'Graph',
+    process_order: 'Process order',
+    create_transaction: 'Create transaction',
+    amount: 'Amount',
+    collect: 'Collect',
+    spend: 'Spend',
 
     // ****************************
     // Report: Income

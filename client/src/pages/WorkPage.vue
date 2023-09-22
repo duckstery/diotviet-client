@@ -21,17 +21,17 @@ import OrderPanel from "components/Work/OrderPanel.vue";
 import ItemPanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
 
-import {computed, defineComponent, ref, unref} from 'vue'
+import {computed, defineComponent, unref} from 'vue'
 import {useMounted, templateRef} from "@vueuse/core";
 import {useQuasar} from 'quasar';
 import {useOrderStore} from "stores/order";
 import {axios, error, util, notify} from "src/boot";
 import {useI18n} from "vue-i18n";
-import _ from "lodash";
 import {usePrinter} from "src/composables/usePrinter";
 import {useAdvanceStorage} from "src/composables/useAdvanceStorage";
 import {useProductStore} from "stores/product";
 import {storeToRefs} from "pinia";
+import _ from "lodash";
 
 export default defineComponent({
   name: 'WorkPage',

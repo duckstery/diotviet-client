@@ -1,20 +1,22 @@
 <template>
   <CustomerQuery/>
-  <q-space/>
   <Button
     color="secondary"
-    class="tw-p-2"
+    class="tw-p-2 tw-ml-3"
     icon="receipt"
-    :label="$t('field.order')"
-    :tooltip="$t('field.order')"
+    :tooltip="$t('field.process_order')"
     @click="onProcess"
   />
+  <Button
+      color="info"
+      class="tw-p-2 tw-ml-3"
+      icon="fa-solid fa-hand-holding-dollar"
+      :tooltip="$t('field.create_transaction')"
+      @click="onCreateStream"
+  />
+
   <q-space/>
 
-  <Button icon="list" class="tw-w-[41px]" flat :tooltip="$t('field.categorize')"
-          @click="onCategorize"/>
-  <Button icon="filter_alt" class="tw-w-[41px]" flat :tooltip="$t('field.filter')"
-          @click="onFilter"/>
   <Button :icon="displayMode.icon" class="tw-w-[41px]" flat :tooltip="displayMode.tooltip"
           @click="$emit('update:isVisualizing', !isVisualizing)"/>
 </template>
@@ -24,6 +26,7 @@ import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import CustomerQuery from "components/Work/CustomerQuery.vue";
 import {useOrderProcessor} from "src/composables/useOrderProcessor";
+import {useTransactionEditor} from "src/composables/useTransactionEditor";
 
 export default {
   name: 'SamplePanelToolbar',
@@ -37,7 +40,8 @@ export default {
 
   setup() {
     return {
-      onProcess: useOrderProcessor(null)
+      onProcess: useOrderProcessor(null),
+      onCreateStream: useTransactionEditor()
     }
   },
 
@@ -55,21 +59,5 @@ export default {
         }
     },
   },
-
-  methods: {
-    /**
-     * On categorize sample item event handler
-     */
-    onCategorize() {
-
-    },
-
-    /**
-     * On filter sample item event handler
-     */
-    onFilter() {
-
-    },
-  }
 }
 </script>

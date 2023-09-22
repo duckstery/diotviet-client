@@ -46,11 +46,6 @@ export default {
         icon: 'fa-store',
         to: '/work'
       },
-      {
-        key: 'outstream',
-        icon: 'fa-hand-holding-dollar',
-        to: '/outstream'
-      },
       {},
       {
         key: 'product',

@@ -7,14 +7,17 @@ import diotviet.server.repositories.TransactionRepository;
 import diotviet.server.structures.DataPoint;
 import diotviet.server.structures.Dataset;
 import diotviet.server.templates.Report.DetailReportRequest;
+import diotviet.server.templates.Transaction.TransactionInteractRequest;
 import diotviet.server.traits.ReportService;
 import diotviet.server.utils.OtherUtils;
+import diotviet.server.validators.TransactionValidator;
 import diotviet.server.views.Report.IncomeReportView;
 import diotviet.server.views.Report.impl.IncomeReportByMonth;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +36,12 @@ public class TransactionService extends ReportService<IncomeReportView> {
      */
     @Autowired
     private TransactionRepository repository;
+    /**
+     * Transaction validator
+     */
+    @Autowired
+    private TransactionValidator validator;
+
 
     // ****************************
     // Public API
@@ -136,6 +145,17 @@ public class TransactionService extends ReportService<IncomeReportView> {
         return order.getTransactions().stream()
                 .map(Transaction::getAmount)
                 .reduce(0L, Long::sum);
+    }
+
+    /**
+     * Store item
+     *
+     * @param request
+     */
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    public void store(TransactionInteractRequest request) {
+        // Common validate for create and update, then save it
+        repository.save(validator.validateAndExtract(request));
     }
 
     /**
