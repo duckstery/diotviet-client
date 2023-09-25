@@ -18,6 +18,7 @@ import PredefinedDatePicker from "components/Manage/PredefinedDatePicker.vue";
 import {ref, watch} from "vue";
 import {templateRef, useVModel} from "@vueuse/core";
 import {useApplyDateOption} from "src/composables/useApplyDateOption";
+import {util} from "src/boot";
 
 export default {
   name: "DateFilter",
@@ -48,7 +49,7 @@ export default {
     const {option: customOption, applyModel: applyCustom} = useApplyDateOption(fromDate, toDate)
 
     // Option provider
-    const optionProvider = ref('1')
+    const optionProvider = ref(util.isUnset(predefinedOption.value) && util.isUnset(customOption.value) ? null : '1')
     // Watch for provider changed
     watch(optionProvider, value => value === '1' ? applyPredefined() : applyCustom())
 

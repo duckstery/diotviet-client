@@ -41,7 +41,7 @@ export default {
     multiple: Boolean,
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 
   setup(props, {emit}) {
     // Convert modelValue to ref
@@ -61,7 +61,7 @@ export default {
     // On confirm
     const confirm = (callback) => {
       // Emit modelValue
-      emit('update:model-value', tempModel.value)
+      emit('update:modelValue', tempModel.value)
       // Hide proxy
       callback()
     }

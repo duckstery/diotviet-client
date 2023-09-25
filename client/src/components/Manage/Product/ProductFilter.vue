@@ -41,34 +41,11 @@ export default {
     groups: Array
   },
 
-  computed: {
-    // Get price range
-    priceRanges() {
-      return [
-        {min: '', max: ''},
-        {min: '0', max: '10000'},
-        {min: '10000', max: '100000'},
-        {min: '100000', max: '1000000'}
-      ]
-    },
-    // Get current price range
-    currentPriceRange() {
-      return `${this.modelValue.minPrice}-${this.modelValue.maxPrice}`
-    },
-  },
-
-  emits: ['request', 'update:model-value', 'control'],
+  emits: ['request', 'update:modelValue', 'control'],
 
   setup(props, context) {
     // Filter
-    const filter = reactive({
-      categories: [],
-      group: null,
-      minPrice: '',
-      maxPrice: '',
-      canBeAccumulated: null,
-      isInBusiness: null
-    })
+    const filter = reactive(props.modelValue)
     // Setup filter request
     useFilterRequest(filter, context)
 

@@ -52,7 +52,7 @@ export default {
     modelValue: Object,
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 
   setup() {
     // Resources

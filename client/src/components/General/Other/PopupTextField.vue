@@ -83,7 +83,7 @@ export default {
     }
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 
   methods: {
     // Hide proxy

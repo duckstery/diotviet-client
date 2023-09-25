@@ -190,6 +190,7 @@ export default {
     amount: 'Amount',
     collect: 'Collect',
     spend: 'Spend',
+    other: 'Other',
 
     // ****************************
     // Report: Income

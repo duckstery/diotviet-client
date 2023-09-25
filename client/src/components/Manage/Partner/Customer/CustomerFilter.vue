@@ -5,7 +5,7 @@
 
   <!-- Create at filter -->
   <DateFilter v-model:from="filter.createAtFrom" v-model:to="filter.createAtTo" class="tw-mt-3"
-              :title="$t('field.created_at')"/>
+               :title="$t('field.created_at')"/>
 
   <!-- Birthday filter -->
   <FilterPanel :title="$t('field.birthday')" class="tw-mt-3" reloadable @reload="reloadBirthday">
@@ -15,7 +15,7 @@
 
   <!-- Last transaction filter -->
   <DateFilter v-model:from="filter.lastTransactionAtFrom" v-model:to="filter.lastTransactionAtTo" class="tw-mt-3"
-              :title="$t('field.last_transaction')"/>
+               :title="$t('field.last_transaction')"/>
 
   <!-- Gender -->
   <RadioFilter v-model="filter.isMale" class="tw-mt-3" :title="$t('field.gender')"
@@ -43,20 +43,11 @@ export default {
     groups: Array
   },
 
-  emits: ['request', 'update:model-value', 'control'],
+  emits: ['request', 'update:modelValue', 'control'],
 
   setup(props, context) {
     // Filter
-    const filter = reactive({
-      group: null,
-      createAtFrom: null,
-      createAtTo: null,
-      birthdayFrom: null,
-      birthdayTo: null,
-      lastTransactionAtFrom: null,
-      lastTransactionAtTo: null,
-      isMale: null
-    })
+    const filter = reactive(props.modelValue)
     // Setup filter request
     useFilterRequest(filter, context)
 

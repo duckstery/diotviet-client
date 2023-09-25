@@ -30,10 +30,10 @@ export default {
   components: {RadioList, PopupTextField, Button},
 
   props: {
-    modelValue: Object | String
+    modelValue: Object | String,
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 
   setup(props, {emit}) {
     // i18n
@@ -56,7 +56,7 @@ export default {
     ]))
 
     // Picked option
-    const pickedOption = ref('month_now')
+    const pickedOption = ref(util.isUnset(util.nullIfEmpty(props.modelValue)) ? '' : 'month_now')
     // On picking an option
     const onPick = (value) => pickedOption.value = value
     // Watch for option changed

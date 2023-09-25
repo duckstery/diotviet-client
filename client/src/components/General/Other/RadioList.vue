@@ -2,7 +2,7 @@
   <q-list>
     <q-item v-for="option in options" tag="label" dense>
       <q-item-section side>
-        <q-radio :model-value="modelValue" @update:model-value="$emit('update:model-value', $event)"
+        <q-radio :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)"
                  :val="option.value" color="primary" dense/>
       </q-item-section>
       <q-item-section>
@@ -31,6 +31,6 @@ export default {
     },
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 }
 </script>

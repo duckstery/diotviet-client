@@ -1,6 +1,6 @@
 <template>
   <FilterPanel :title="title">
-    <RadioList :options="options" :model-value="modelValue" @update:model-value="$emit('update:model-value', $event)"/>
+    <RadioList :options="options" :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)"/>
   </FilterPanel>
 </template>
 
@@ -32,15 +32,15 @@ export default {
     },
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 
   computed: {
     // RadioFilter options
     options() {
       return [
         {value: null, label: this.$t('field.all')},
-        {value: true, label: this.$t('field.true')},
-        {value: false, label: this.$t('field.false')}
+        {value: true, label: this.trueLabel ?? this.$t('field.true')},
+        {value: false, label: this.falseLabel ?? this.$t('field.false')}
       ]
     }
   }

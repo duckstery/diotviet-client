@@ -39,7 +39,8 @@ const routes = [
     children: [
       r('', 'Transaction', () => import('pages/Transaction/TransactionPage.vue')),
       r('order', 'Transaction.Order', () => import('pages/Transaction/OrderPage.vue')),
-      r('receipt', 'Transaction.Receipt', () => import('pages/Transaction/ReceiptPage.vue')),
+      r('other', 'Transaction.Other', () => import('pages/Transaction/OtherPage.vue')),
+      r('history', 'Transaction.History', () => import('pages/Transaction/ReceiptPage.vue')),
     ]
   },
   {

@@ -2,11 +2,10 @@
   <Page :breadcrumbs="breadcrumbs">
     <div class="col-12 col-md-2 tw-pr-3">
       <!-- Title -->
-      <div class="tw-text-3xl tw-font-semibold">{{ $t('field.order') }}</div>
+      <div class="tw-text-3xl tw-font-semibold">{{ $t('field.transaction') }}</div>
 
       <!-- Filter -->
-      <OrderFilter v-model="filter" :groups="groups"
-                   @request="onSearch" @control="onGroupControl"/>
+      <TransactionFilter v-model="filter" @request="onSearch"/>
     </div>
     <div class="col-12 col-md-10">
       <!-- Data table -->
@@ -14,7 +13,7 @@
                  :operations="operations"
                  @search="onSearch" @request="onRequest">
         <template #default="props">
-          <OrderDetail v-bind="props" @request="onRequest"/>
+<!--          <OrderDetail v-bind="props" @request="onRequest"/>-->
         </template>
       </DataTable>
     </div>
@@ -23,49 +22,42 @@
 
 <script>
 import DataTable from "components/Manage/DataTable.vue";
-import OrderFilter from "components/Manage/Transaction/Order/OrderFilter.vue";
 import Page from "components/General/Layout/Page.vue";
-import OrderDetail from "components/Manage/Transaction/Order/OrderDetail.vue";
+import TransactionEditor from "components/Manage/Transaction/TransactionEditor.vue";
+import TransactionFilter from "components/Manage/Transaction/TransactionFilter.vue";
 
 import {ref} from "vue";
 import {usePageSearch} from "src/composables/usePageSearch";
 import {usePageRequest} from "src/composables/usePageRequest";
-import {useGroupControl} from "src/composables/useGroupControl";
-import {useRouter} from "vue-router";
-import {usePrinter} from "src/composables/usePrinter";
+import {useKeyEnforcer} from "src/composables/useKeyEnforcer";
 
 export default {
-  name: 'OrderPage',
+  name: 'Other',
 
-  components: {OrderDetail, OrderFilter, Page, DataTable},
+  components: {TransactionFilter, Page, DataTable},
 
   setup() {
-    // Setup printer
-    usePrinter('/order/init/print')
+    // Use key enforcer
+    useKeyEnforcer('transaction')
 
-    // Use router
-    const router = useRouter()
     // Loading flag
     const loading = ref(false)
     // Page search functionality
     const pageSearch = usePageSearch({
-      group: null,
-      status: [],
+      type: null,
       createAtFrom: null,
       createAtTo: null,
-      resolvedAtFrom: null,
-      resolvedAtTo: null,
       priceFrom: null,
       priceTo: null,
     })
     // Page request functionality
     const pageRequest = usePageRequest(
-      () => router.push('/work'),
+      TransactionEditor,
       null,
       pageSearch.searchWithPreviousData
     )
 
-    return {loading, ...pageSearch, ...pageRequest, ...useGroupControl(pageSearch.groups)}
+    return {loading, ...pageSearch, ...pageRequest}
   },
 
   computed: {
@@ -73,7 +65,7 @@ export default {
     breadcrumbs() {
       return [
         {label: this.$t('field.transaction'), to: '/transaction', icon: 'fa-arrow-right-arrow-left'},
-        {label: this.$t('field.order'), to: '/transaction/order', icon: 'fa-inbox'},
+        {label: this.$t('field.other'), to: '/transaction/other', icon: 'fa-arrow-right-arrow-left'},
       ]
     },
     // Operations

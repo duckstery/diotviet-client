@@ -1,4 +1,5 @@
 import {Ref, ref, watch, WritableComputedRef} from "vue";
+import {util} from "src/boot";
 
 // *************************************************
 // Typed
@@ -22,10 +23,12 @@ export type UseApplyDateOptionResources = {
  * @param toModel
  */
 export function useApplyDateOption(fromModel: WritableComputedRef<any>, toModel: WritableComputedRef<any>): UseApplyDateOptionResources {
+  // Lazy method
+  const isEmpty = (value: any) => util.isUnset(util.nullIfEmpty(value))
   // Backup
   const backup: Date = {from: fromModel.value, to: toModel.value}
   // Picked option
-  const option: Ref<Date> = ref({from: fromModel.value, to: toModel.value})
+  const option: Ref<Date> = ref(isEmpty(fromModel.value) && isEmpty(toModel.value) ? null : {from: fromModel.value, to: toModel.value})
   // Watch for option changed
   watch(option, (value: Date) => {
     // Set model

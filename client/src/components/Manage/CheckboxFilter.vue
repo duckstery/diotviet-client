@@ -3,7 +3,7 @@
     <q-scroll-area class="tw-h-[100px]">
       <q-item v-for="item in items" tag="label" dense>
         <q-item-section avatar>
-          <q-checkbox :model-value="modelValue" @update:model-value="$emit('update:model-value', $event)"
+          <q-checkbox :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)"
                       :val="item.id" color="primary" dense/>
         </q-item-section>
         <q-item-section>
@@ -32,6 +32,6 @@ export default {
     items: Array
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 }
 </script>

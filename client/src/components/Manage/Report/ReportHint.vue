@@ -30,7 +30,7 @@ export default {
     datasets: Array,
   },
 
-  emits: ['request', 'update:model-value', 'control'],
+  emits: ['request', 'update:modelValue', 'control'],
 
   setup() {
     // Get style

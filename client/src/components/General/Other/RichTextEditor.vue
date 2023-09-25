@@ -42,7 +42,7 @@ export default {
     }
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 
   data: () => ({
     instance: null,
@@ -56,7 +56,7 @@ export default {
         return this.modelValue
       },
       set(value) {
-        this.$emit('update:model-value', value)
+        this.$emit('update:modelValue', value)
       }
     },
     // Init configuration

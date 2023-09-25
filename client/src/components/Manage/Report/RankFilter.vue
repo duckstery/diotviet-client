@@ -36,7 +36,7 @@ export default {
     target: String,
   },
 
-  emits: ['update:model-value', 'update:target'],
+  emits: ['update:modelValue', 'update:target'],
 
   setup(props, {emit}) {
     // i18n

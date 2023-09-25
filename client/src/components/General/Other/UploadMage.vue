@@ -11,7 +11,7 @@
     accept="image/png,image/jpg,image/jpeg"
 
     @rejected="onRejected"
-    @update:model-value="$emit('update:model-value', $event)"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
     <template v-slot:file="{ index, file }">
       <div class="tw-rounded-md tw-border-solid tw-border tw-m-2 tw-border-neutral-500 tw-max-w-[130px] tw-max-h-[130px]">
@@ -64,7 +64,7 @@ export default {
     nativeNotify: Boolean
   },
 
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
 
   methods: {
     /**

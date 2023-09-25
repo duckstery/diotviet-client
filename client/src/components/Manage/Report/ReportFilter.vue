@@ -40,7 +40,7 @@ export default {
     type: String,
   },
 
-  emits: ['request', 'update:model-value', 'update:type'],
+  emits: ['request', 'update:modelValue', 'update:type'],
 
   setup(props, {emit}) {
     // i18n
@@ -58,7 +58,7 @@ export default {
         displayBy.value = 'month'
       }
       // Emit model
-      emit('update:model-value', {...range, displayMode: displayBy.value})
+      emit('update:modelValue', {...range, displayMode: displayBy.value})
     })
 
     // Display by
@@ -72,12 +72,12 @@ export default {
             .onOk(() => {
               // Emit model
               displayBy.value = value
-              emit('update:model-value', {...range, displayMode: value})
+              emit('update:modelValue', {...range, displayMode: value})
             })
       } else {
         // Emit model
         displayBy.value = value
-        emit('update:model-value', {...range, displayMode: value})
+        emit('update:modelValue', {...range, displayMode: value})
       }
     }
 

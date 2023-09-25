@@ -17,7 +17,7 @@
     outlined
     options-dense
 
-    @update:model-value="$emit('update:model-value', $event)"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
     <template v-if="icon" #prepend>
       <q-icon :name="icon"/>
@@ -67,7 +67,7 @@ export default {
     },
   },
 
-  emits: ['update:model-value']
+  emits: ['update:modelValue']
 }
 </script>
 
