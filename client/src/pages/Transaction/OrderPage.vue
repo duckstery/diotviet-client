@@ -1,14 +1,14 @@
 <template>
-  <Page :breadcrumbs="breadcrumbs">
-    <div class="col-12 col-md-2 tw-pr-3">
+  <Page :breadcrumbs="breadcrumbs" :split="[2, 10]">
+    <template #left>
       <!-- Title -->
       <div class="tw-text-3xl tw-font-semibold">{{ $t('field.order') }}</div>
 
       <!-- Filter -->
       <OrderFilter v-model="filter" :groups="groups"
                    @request="onSearch" @control="onGroupControl"/>
-    </div>
-    <div class="col-12 col-md-10">
+    </template>
+    <template #right>
       <!-- Data table -->
       <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
                  :operations="operations"
@@ -17,7 +17,7 @@
           <OrderDetail v-bind="props" @request="onRequest"/>
         </template>
       </DataTable>
-    </div>
+    </template>
   </Page>
 </template>
 

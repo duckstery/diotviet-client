@@ -7,7 +7,7 @@
         </div>
         <div class="col-6">
           <ItemPanel :items="items" ref="itemPanel" @order="onOpe('order')" @purchase="onOpe('purchase')"/>
-          <StatisticPanel class="tw-mt-5 tw-flex-grow"
+          <StatisticPanel class="tw-mt-3.5 tw-flex-grow"
                           :max-height="statisticPanelHeight" :style="`height: ${statisticPanelHeight}px`"/>
         </div>
       </div>

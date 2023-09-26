@@ -40,7 +40,7 @@ const routes = [
       r('', 'Transaction', () => import('pages/Transaction/TransactionPage.vue')),
       r('order', 'Transaction.Order', () => import('pages/Transaction/OrderPage.vue')),
       r('other', 'Transaction.Other', () => import('pages/Transaction/OtherPage.vue')),
-      r('history', 'Transaction.History', () => import('pages/Transaction/ReceiptPage.vue')),
+      r('history', 'Transaction.History', () => import('pages/Transaction/TransactionHistoryPage.vue')),
     ]
   },
   {

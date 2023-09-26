@@ -1,13 +1,13 @@
 <template>
-  <Page :breadcrumbs="breadcrumbs">
-    <div class="col-12 col-md-2 tw-pr-3">
+  <Page :breadcrumbs="breadcrumbs" :split="[2, 10]">
+    <template #left>
       <!-- Title -->
       <div class="tw-text-3xl tw-font-semibold">{{ $t(`field.${target}`) }}</div>
       <RankFilter v-model="filter" v-model:target="target"/>
-    </div>
-    <div class="col-12 col-md-10">
+    </template>
+    <template #right>
       <ReportRank :charts="charts" :datasets="datasets"/>
-    </div>
+    </template>
   </Page>
 </template>
 
