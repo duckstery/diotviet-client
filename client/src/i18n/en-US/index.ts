@@ -302,6 +302,14 @@ export default {
     item_totalPrice: 'Total price',
     item_note: 'Note',
     item_quantity: 'Quantity',
+
+    // ****************************
+    // Entity: Transaction
+    // ****************************
+    transaction_id: 'Transaction id',
+    transaction_type: 'Type',
+    transaction_amount: 'Amount',
+    transaction_createdAt: 'Created at'
   },
 
   // ****************************

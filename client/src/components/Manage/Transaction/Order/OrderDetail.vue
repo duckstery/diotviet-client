@@ -55,7 +55,7 @@
         <div class="tw-mt-3 col-12 col-lg-4 tw-px-1.5">
           <Skeleton v-model="isReady" height="300px">
             <DisplayField
-              :modelValue="this.detail.note"
+              :modelValue="detail.note"
               textarea
               horizontal
               :src="'/images/note.png'"

@@ -1,6 +1,7 @@
 package diotviet.server.entities;
 
 import com.querydsl.core.annotations.QueryEntity;
+import diotviet.server.annotations.InitIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,6 +35,7 @@ public class Transaction {
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "order_id")
+    @InitIgnore
     private Order order;
 
     /**
@@ -53,6 +55,7 @@ public class Transaction {
      * Reason of removal
      */
     @Column
+    @InitIgnore
     private String reason;
 
     /**
@@ -61,5 +64,6 @@ public class Transaction {
     @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @InitIgnore
     private Boolean isDeleted = Boolean.FALSE;
 }

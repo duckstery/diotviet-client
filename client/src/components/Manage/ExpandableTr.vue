@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import {scroll} from "quasar"
 
 export default {
   name: "ExpandableTr",

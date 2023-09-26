@@ -55,6 +55,10 @@ export interface Constant {
    */
   chartTypes(): { value: string, label: string }[]
   /**
+   * Transaction types
+   */
+  transactionTypes(): { id: number, name: string, icon: string, color: string }[]
+  /**
    * Map png to icon
    *
    * @param key
@@ -197,6 +201,18 @@ const constant: Constant = {
     return [
       {value: 'bar', label: $t('field.bar')},
       {value: 'line', label: $t('field.line')}
+    ]
+  },
+
+  /**
+   * Transaction types
+   *
+   * @return {Array}
+   */
+  transactionTypes() {
+    return [
+      {id: 0, name: $t('field.spend'), icon: 'fa-solid fa-minus', color: 'negative'},
+      {id: 1, name: $t('field.collect'), icon: 'fa-solid fa-plus', color: 'positive'}
     ]
   },
 

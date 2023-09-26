@@ -1,6 +1,9 @@
 package diotviet.server.services;
 
+import com.querydsl.core.BooleanBuilder;
+import diotviet.server.constants.PageConstants;
 import diotviet.server.constants.Status;
+import diotviet.server.data.TransactionDAO;
 import diotviet.server.entities.Order;
 import diotviet.server.entities.Transaction;
 import diotviet.server.repositories.TransactionRepository;
@@ -8,14 +11,22 @@ import diotviet.server.structures.DataPoint;
 import diotviet.server.structures.Dataset;
 import diotviet.server.templates.Report.DetailReportRequest;
 import diotviet.server.templates.Transaction.TransactionInteractRequest;
+import diotviet.server.templates.Transaction.TransactionSearchRequest;
 import diotviet.server.traits.ReportService;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.TransactionValidator;
+import diotviet.server.views.Order.OrderDetailView;
 import diotviet.server.views.Report.IncomeReportView;
 import diotviet.server.views.Report.impl.IncomeReportByMonth;
+import diotviet.server.views.Transaction.TransactionDetailView;
+import diotviet.server.views.Transaction.TransactionSearchView;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,11 +52,46 @@ public class TransactionService extends ReportService<IncomeReportView> {
      */
     @Autowired
     private TransactionValidator validator;
+    /**
+     * Transaction DAO
+     */
+    @Autowired
+    private TransactionDAO dao;
 
 
     // ****************************
     // Public API
     // ****************************
+
+    /**
+     * Get list (paginate) of Transaction
+     *
+     * @param request
+     * @return
+     */
+    public Page<TransactionSearchView> paginate(TransactionSearchRequest request) {
+        // Create filter
+        BooleanBuilder filter = dao.createFilter(request);
+        // Create pageable
+        Pageable pageable = PageRequest.of(
+                OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
+                OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
+                Sort.by("id")
+        );
+
+        // Query for Order's data
+        return repository.findBy(filter, q -> q.as(TransactionSearchView.class).page(pageable));
+    }
+
+    /**
+     * Get Transaction by id
+     *
+     * @param id
+     * @return
+     */
+    public TransactionDetailView findById(Long id) {
+        return validator.isExist(repository.findById(id, TransactionDetailView.class));
+    }
 
     /**
      * Process order <br>

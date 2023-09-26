@@ -8,7 +8,7 @@
       </q-card-section>
       <q-card-section>
         <div class="row">
-          <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
+          <div class="tw-mt-3 col-12 tw-pr-5">
             <InputField
                 src="/images/setup.png"
                 bottom

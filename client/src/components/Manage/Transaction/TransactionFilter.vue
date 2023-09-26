@@ -1,6 +1,6 @@
 <template>
   <!-- Type -->
-  <RadioFilter v-model="filter.isMale" class="tw-mt-3" :title="$t('field.type')"
+  <RadioFilter v-model="filter.type" class="tw-mt-3" :title="$t('field.type')"
                :true-label="$t('field.collect')" :false-label="$t('field.spend')"/>
 
   <!-- Create at filter -->

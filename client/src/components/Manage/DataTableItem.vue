@@ -10,6 +10,7 @@
       :props="props"
     >
       <CustomerGender v-if="col.name === 'isMale' || col.name === 'gender'" :value="col.value" short/>
+      <TransactionType v-else-if="col.name === 'type'" :value="col.value" short/>
       <BooleanOption v-else-if="typeof col.value === 'boolean'" :value="col.value" short/>
       <OrderStatus v-else-if="col.name === 'status'" :value="col.value" short/>
       <span v-else class="tw-text-sm">{{ col.value }}</span>
@@ -21,10 +22,11 @@
 import OrderStatus from "components/Manage/Constant/OrderStatus.vue";
 import CustomerGender from "components/Manage/Constant/CustomerGender.vue";
 import BooleanOption from "components/Manage/Constant/BooleanOption.vue";
+import TransactionType from "components/Manage/Constant/TransactionType.vue";
 
 export default {
   name: 'DataTableItem',
-  components: {BooleanOption, CustomerGender, OrderStatus},
+  components: {TransactionType, BooleanOption, CustomerGender, OrderStatus},
 
   props: {
     props: {

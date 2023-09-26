@@ -118,7 +118,7 @@ export function usePageSearch<T>(initFilter: T): UsePageSearchResources<T> {
     // Add formatter for actualPrice
     if (Array.isArray(headers.value)) {
       headers.value.forEach((header: QTableLocalHeader) => {
-        if (['actualPrice', 'paymentAmount'].includes(header.name)) {
+        if (['actualPrice', 'paymentAmount', 'amount'].includes(header.name)) {
           header.format = util.formatMoney
         }
       })

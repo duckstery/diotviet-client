@@ -3,6 +3,7 @@ package diotviet.server.repositories;
 import diotviet.server.entities.Order;
 import diotviet.server.entities.Transaction;
 import diotviet.server.views.Report.IncomeReportView;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,17 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long>, QuerydslPredicateExecutor<Transaction> {
+    /**
+     * Find by id
+     *
+     * @param id
+     * @param classType
+     * @param <T>
+     * @return
+     */
+    @EntityGraph("order_detail")
+    <T> T findById(Long id, Class<T> classType);
+
     /**
      * Filter id of Orders that have Transaction
      *

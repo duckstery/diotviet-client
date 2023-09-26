@@ -56,7 +56,7 @@
 
       <q-space/>
 
-      <ImEx @request="request"/>
+      <ImEx v-if="!noImEx" @request="request"/>
       <!-- Columns visibility controls -->
       <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
                       stretch color="positive" class="tw-ml-2" no-caps
@@ -144,7 +144,9 @@ export default {
     operations: {
       type: Array,
       default: () => ([])
-    }
+    },
+    // No importer and exporter
+    noImEx: Boolean
   },
 
   data: () => ({

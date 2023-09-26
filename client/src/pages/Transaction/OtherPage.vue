@@ -10,10 +10,10 @@
     <div class="col-12 col-md-10">
       <!-- Data table -->
       <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
-                 :operations="operations"
+                 :operations="operations" no-im-ex
                  @search="onSearch" @request="onRequest">
         <template #default="props">
-<!--          <OrderDetail v-bind="props" @request="onRequest"/>-->
+          <TransactionDetail v-bind="props"/>
         </template>
       </DataTable>
     </div>
@@ -25,16 +25,18 @@ import DataTable from "components/Manage/DataTable.vue";
 import Page from "components/General/Layout/Page.vue";
 import TransactionEditor from "components/Manage/Transaction/TransactionEditor.vue";
 import TransactionFilter from "components/Manage/Transaction/TransactionFilter.vue";
+import TransactionDetail from "components/Manage/Transaction/TransactionDetail.vue";
 
 import {ref} from "vue";
 import {usePageSearch} from "src/composables/usePageSearch";
 import {usePageRequest} from "src/composables/usePageRequest";
 import {useKeyEnforcer} from "src/composables/useKeyEnforcer";
+import {watchOnce} from "@vueuse/core";
 
 export default {
   name: 'Other',
 
-  components: {TransactionFilter, Page, DataTable},
+  components: {TransactionDetail, TransactionFilter, Page, DataTable},
 
   setup() {
     // Use key enforcer
@@ -50,6 +52,13 @@ export default {
       priceFrom: null,
       priceTo: null,
     })
+    // Watch once to extend headers
+    watchOnce(pageSearch.headers, () => {
+      pageSearch.headers.value.splice(1, 0, {
+        name: "type", label: "transaction_type", field: "type", isInitDisplay: true
+      })
+    })
+
     // Page request functionality
     const pageRequest = usePageRequest(
       TransactionEditor,
@@ -57,7 +66,11 @@ export default {
       pageSearch.searchWithPreviousData
     )
 
-    return {loading, ...pageSearch, ...pageRequest}
+    return {
+      loading,
+      ...pageSearch,
+      ...pageRequest,
+    }
   },
 
   computed: {
@@ -66,13 +79,6 @@ export default {
       return [
         {label: this.$t('field.transaction'), to: '/transaction', icon: 'fa-arrow-right-arrow-left'},
         {label: this.$t('field.other'), to: '/transaction/other', icon: 'fa-arrow-right-arrow-left'},
-      ]
-    },
-    // Operations
-    operations() {
-      return [
-        {key: 'resolve', event: 'patch', target: 'status', option: 2, icon: 'fa-circle-check', color: 'positive'},
-        {key: 'abort', event: 'patch', target: 'status', option: 3, icon: 'fa-circle-stop', color: 'negative', reasonable: true}
       ]
     }
   },

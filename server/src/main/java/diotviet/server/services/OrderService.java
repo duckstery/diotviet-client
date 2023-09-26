@@ -80,7 +80,7 @@ public class OrderService extends ReportService<OrderReportView> {
     // ****************************
 
     /**
-     * Get list (paginate) of Product
+     * Get list (paginate) of Order
      *
      * @param request
      * @return
