@@ -11,6 +11,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
+@NamedEntityGraph(
+        name = "transaction_history",
+        attributeNodes = {@NamedAttributeNode(value = "order", subgraph = "order_customer")},
+        subgraphs = {@NamedSubgraph(name = "order_customer", attributeNodes = {@NamedAttributeNode("customer")})}
+)
 @Entity
 @Table(name = "transactions")
 @Data

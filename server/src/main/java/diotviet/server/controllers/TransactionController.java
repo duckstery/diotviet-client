@@ -2,6 +2,7 @@ package diotviet.server.controllers;
 
 import diotviet.server.entities.Transaction;
 import diotviet.server.services.TransactionService;
+import diotviet.server.templates.DetailHistoryRequest;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Report.DetailReportRequest;
 import diotviet.server.templates.Transaction.TransactionInitResponse;
@@ -104,5 +105,16 @@ public class TransactionController extends BaseController {
     @GetMapping(value = "/report")
     public ResponseEntity<?> report(DetailReportRequest request) {
         return ok(service.report(request));
+    }
+
+    /**
+     * Get Transaction history
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/history")
+    public ResponseEntity<?> history(DetailHistoryRequest request) {
+        return ok(service.history(request));
     }
 }

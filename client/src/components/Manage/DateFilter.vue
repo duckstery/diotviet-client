@@ -59,13 +59,21 @@ export default {
       custom: templateRef('custom')
     }
 
+    // Backup
+    const backup = {
+      fromDate: fromDate.value,
+      toDate: toDate.value,
+      optionProvider: optionProvider.value,
+      predefinedOption: predefinedOption.value,
+      customOption: customOption.value
+    }
     // Reload data
     const reload = () => {
-      fromDate.value = null
-      toDate.value = null
-      optionProvider.value = ''
-      predefinedOption.value = null
-      customOption.value = null
+      fromDate.value = backup.fromDate
+      toDate.value = backup.toDate
+      optionProvider.value = backup.optionProvider
+      predefinedOption.value = backup.predefinedOption
+      customOption.value = backup.customOption
     }
 
     return {

@@ -3,6 +3,10 @@ package diotviet.server.repositories;
 import diotviet.server.entities.Order;
 import diotviet.server.entities.Transaction;
 import diotviet.server.views.Report.IncomeReportView;
+import diotviet.server.views.Transaction.TransactionHistoryView;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -79,4 +84,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>,
             "ORDER BY time"
             , nativeQuery = true)
     List<IncomeReportView> selectIncomeReportByCreatedAt(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
+    /**
+     * Get Transaction history
+     *
+     * @param from
+     * @param to
+     * @return
+     */
+    @EntityGraph("transaction_history")
+    Slice<TransactionHistoryView> findAllByCreatedAtBetweenAndIsDeletedIsFalse(
+            LocalDateTime from,
+            LocalDateTime to,
+            Pageable pageable
+    );
 }

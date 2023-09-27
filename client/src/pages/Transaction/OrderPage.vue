@@ -10,8 +10,8 @@
     </template>
     <template #right>
       <!-- Data table -->
-      <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
-                 :operations="operations"
+      <DataTable v-model:pagination="pagination" ref="table"
+                 :headers="headers" :items="items" :loading="loading" :operations="operations"
                  @search="onSearch" @request="onRequest">
         <template #default="props">
           <OrderDetail v-bind="props" @request="onRequest"/>
@@ -27,12 +27,13 @@ import OrderFilter from "components/Manage/Transaction/Order/OrderFilter.vue";
 import Page from "components/General/Layout/Page.vue";
 import OrderDetail from "components/Manage/Transaction/Order/OrderDetail.vue";
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {usePageSearch} from "src/composables/usePageSearch";
 import {usePageRequest} from "src/composables/usePageRequest";
 import {useGroupControl} from "src/composables/useGroupControl";
 import {useRouter} from "vue-router";
 import {usePrinter} from "src/composables/usePrinter";
+import {templateRef} from "@vueuse/core";
 
 export default {
   name: 'OrderPage',
@@ -47,6 +48,12 @@ export default {
     const router = useRouter()
     // Loading flag
     const loading = ref(false)
+
+    // Get DataTable template ref
+    const dataTable = templateRef('table')
+    // After pageSearch init callback
+    onMounted(() => dataTable.value.setQuery(router.currentRoute.value.query.q ?? ''))
+
     // Page search functionality
     const pageSearch = usePageSearch({
       group: null,
@@ -57,7 +64,7 @@ export default {
       resolvedAtTo: null,
       priceFrom: null,
       priceTo: null,
-    })
+    }, {search: router.currentRoute.value.query.q})
     // Page request functionality
     const pageRequest = usePageRequest(
       () => router.push('/work'),

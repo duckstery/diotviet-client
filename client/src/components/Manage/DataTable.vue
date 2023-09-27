@@ -234,6 +234,15 @@ export default {
 
   methods: {
     /**
+     * Set query
+     *
+     * @param search
+     */
+    setQuery(search) {
+      this.search = search
+    },
+
+    /**
      * Request
      */
     request(mode, data) {

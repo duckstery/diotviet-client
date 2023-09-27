@@ -51,10 +51,11 @@ export type UsePageSearchResources<T> = {
 /**
  * Setup page search for pages of type Manage
  *
- * @param {object} initFilter
- * @returns {object}
+ * @param initFilter
+ * @param initFetchParams
+ * @returns
  */
-export function usePageSearch<T>(initFilter: T): UsePageSearchResources<T> {
+export function usePageSearch<T>(initFilter: T, initFetchParams?: (T & {search: string})): UsePageSearchResources<T> {
   // Get key
   const key = useRouteKey()
   // General
@@ -74,7 +75,7 @@ export function usePageSearch<T>(initFilter: T): UsePageSearchResources<T> {
 
   // On mounted, call API to get data for table
   onMounted(() =>
-    axios.get(`/${key}/index`)
+    axios.get(`/${key}/index`, {params: initFetchParams})
       .then(res => {
         applyCommon(res)
         applyItems(res)

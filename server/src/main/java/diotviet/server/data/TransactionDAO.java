@@ -46,10 +46,14 @@ public class TransactionDAO {
                 query.and(transaction.amount.abs().loe(request.priceTo()));
             }
         } else {
-            // This means find Transaction of type Collect (amount >= 0)
+            // This means find Transaction of type Collect (amount >= 0) or Spend (amount < 0)
             // Get sign
             Long sign = request.type() ? 1L : -1L;
-            query.and(transaction.amount.multiply(sign).gt(0));
+            if (sign == 1L) {
+                query.and(transaction.amount.multiply(sign).goe(0));
+            } else {
+                query.and(transaction.amount.multiply(sign).gt(0));
+            }
 
             // Filter by min price
             if (Objects.nonNull(request.priceFrom())) {

@@ -9,6 +9,7 @@ import diotviet.server.entities.Transaction;
 import diotviet.server.repositories.TransactionRepository;
 import diotviet.server.structures.DataPoint;
 import diotviet.server.structures.Dataset;
+import diotviet.server.templates.DetailHistoryRequest;
 import diotviet.server.templates.Report.DetailReportRequest;
 import diotviet.server.templates.Transaction.TransactionInteractRequest;
 import diotviet.server.templates.Transaction.TransactionSearchRequest;
@@ -19,18 +20,17 @@ import diotviet.server.views.Order.OrderDetailView;
 import diotviet.server.views.Report.IncomeReportView;
 import diotviet.server.views.Report.impl.IncomeReportByMonth;
 import diotviet.server.views.Transaction.TransactionDetailView;
+import diotviet.server.views.Transaction.TransactionHistoryView;
 import diotviet.server.views.Transaction.TransactionSearchView;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -237,6 +237,27 @@ public class TransactionService extends ReportService<IncomeReportView> {
         }
 
         return List.of(expectedIncome, realIncomeInside, realIncomeOutside, usage);
+    }
+
+    /**
+     * Get history
+     *
+     * @param request
+     * @return
+     */
+    public Slice<TransactionHistoryView> history(DetailHistoryRequest request) {
+        // Create pageable
+        Pageable pageable = PageRequest.of(
+                OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
+                OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        return repository.findAllByCreatedAtBetweenAndIsDeletedIsFalse(
+                request.from().atStartOfDay(),
+                request.to().atTime(LocalTime.MAX),
+                pageable
+        );
     }
 
     // ****************************

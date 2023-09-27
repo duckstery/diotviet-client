@@ -4,6 +4,7 @@ import diotviet.server.entities.Customer;
 import diotviet.server.entities.QProduct;
 import diotviet.server.repositories.CustomerRepository;
 import diotviet.server.repositories.ProductRepository;
+import diotviet.server.repositories.TransactionRepository;
 import diotviet.server.templates.GeneralResponse;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -27,7 +30,7 @@ public class FallbackController extends BaseController {
     private StorageUtils storageUtils;
 
     @Autowired
-    private CustomerRepository repository;
+    private TransactionRepository repository;
 
     @GetMapping("")
     public String index() {
@@ -45,8 +48,8 @@ public class FallbackController extends BaseController {
     }
 
     @GetMapping("/ping")
-    public ResponseEntity<GeneralResponse> ping() throws Exception {
-        System.out.println(QProduct.product.getClass());
+    public ResponseEntity<GeneralResponse> ping(@RequestParam("from") LocalDate from, @RequestParam("to") LocalDate to) {
+
         return ok(null);
     }
 }
