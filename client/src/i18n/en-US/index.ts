@@ -196,6 +196,7 @@ export default {
     end: 'End',
     continue: 'Continue',
     to_top: 'To Top',
+    anchor: 'Anchor',
 
     // ****************************
     // Month

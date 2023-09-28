@@ -249,7 +249,7 @@ public class TransactionService extends ReportService<IncomeReportView> {
         // Create pageable
         Pageable pageable = PageRequest.of(
                 OtherUtils.get(request.page(), PageConstants.INIT_PAGE),
-                OtherUtils.get(request.itemsPerPage(), PageConstants.INIT_ITEMS_PER_PAGE),
+                OtherUtils.get(request.itemsPerPage(), 20),
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
 

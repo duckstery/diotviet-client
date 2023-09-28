@@ -1,16 +1,17 @@
 <template>
-  <q-timeline :layout="layout">
-    <template v-for="group in entriesByDate" :key="group.date">
-      <q-timeline-entry v-if="group.heading" heading>
-        <Anchor :alias="`e${group.yearMonth}`" :content="printYearMonth(group.yearMonth)"/>
+  <q-timeline v-bind="$attrs" :layout="layout">
+    <template v-for="entriesByMonth in entriesByYearMonth" :key="entriesByMonth.key">
+      <q-timeline-entry heading>
+        <Anchor :alias="`e${entriesByMonth.key}`" :content="entriesByMonth.label"/>
       </q-timeline-entry>
-      <q-timeline-entry color="primary" icon="fa-solid fa-location-dot">
+
+      <q-timeline-entry v-for="group in entriesByMonth.groups" color="primary" icon="fa-solid fa-location-dot">
         <template #title>
           <hr class="tw-border-dashed tw-line-height tw-leading-none text-primary">
         </template>
 
         <template #subtitle>
-          <Anchor :alias="`e${group.date}`" :content="group.date" reverse size="xs"/>
+          <Anchor :alias="`e${group.key}`" :content="group.key" reverse size="xs"/>
         </template>
 
         <template #default>
@@ -62,23 +63,29 @@
       </template>
     </q-timeline-entry>
   </q-timeline>
+
+  <StickyPanel v-model="anchor" :label="$t('field.anchor')" icon="fa-solid fa-link">
+    <q-tree selected="" node-key="key" children-key="groups" no-connectors default-expand-all
+            :nodes="entriesByYearMonth" @update:selected="onSelect"/>
+  </StickyPanel>
 </template>
 
 <script>
 import Button from "components/General/Other/Button.vue";
 import SimpleDisplayField from "components/General/Other/SimpleDisplayField.vue";
+import Anchor from "components/General/Other/Anchor.vue";
+import StickyPanel from "components/General/Other/StickyPanel.vue";
 
-import {computed, toRef} from "vue";
+import {computed, ref, toRef} from "vue";
 import {useI18n} from "vue-i18n";
 import {useRouter} from "vue-router";
 import {useTimeline} from "src/composables/useTimeline";
 import {util, dayjs} from "src/boot";
-import Anchor from "components/General/Other/Anchor.vue";
 
 export default {
   name: "Timeline",
 
-  components: {Anchor, SimpleDisplayField, Button},
+  components: {StickyPanel, Anchor, SimpleDisplayField, Button},
 
   props: {
     // Timeline's entries. Accept Spring page object
@@ -103,21 +110,24 @@ export default {
 
     // Print
     const printAmount = (value, isEstimating) => util.formatMoney(value) + (isEstimating ? ` (${$t('field.estimate')})` : '')
-    const printYearMonth = (yearMonth) => {
+
+    // Use timeline resources
+    const useTimelineResources = useTimeline(toRef(props, 'value'))
+    // Set printYearMonth
+    useTimelineResources.setPrintYearMonth((yearMonth) => {
       // Parse yearMonth to dayjs
       const instance = dayjs(yearMonth, 'YYYY-MM')
 
       return $t(`field.month_${instance.get('month') + 1}`) + ', ' + instance.get('year')
-    }
-
-    // Use timeline resources
-    const useTimelineResources = useTimeline(toRef(props, 'value'))
+    })
 
     return {
+      // Anchor panel
+      anchor: ref(false),
       // Timeline's resources
       ...useTimelineResources,
       // Methods
-      goToOrder: goToOrder, printAmount: printAmount, printYearMonth: printYearMonth,
+      goToOrder: goToOrder, printAmount: printAmount, onSelect: (value) => router.push({hash: `#e${value}`}),
       // Translated text
       text: computed(() => ({
         collect: $t('field.collect'),
@@ -142,10 +152,12 @@ export default {
 :deep(.q-timeline__subtitle) {
   width: 13%;
 }
+
 .list-enter-active,
 .list-leave-active {
   transition: all 0.5s ease;
 }
+
 .list-enter-from,
 .list-leave-to {
   opacity: 0;

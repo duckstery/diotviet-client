@@ -1,4 +1,4 @@
-import {computed, ComputedRef, nextTick, onUnmounted, shallowReactive, toRaw, watch} from "vue";
+import {computed, ComputedRef, nextTick, onUnmounted, ref, shallowReactive, toRaw, watch} from "vue";
 import {Ref, ShallowReactive} from "@vue/reactivity";
 
 // *************************************************
@@ -15,15 +15,18 @@ export type Entry = {
   isCollect: boolean
 }
 
-export type EntryGroup = {
-  date: string,
-  yearMonth: string,
-  heading?: string,
-  entries: Entry[],
+export type EntryGroupAlias = { key: string, label: string }
+
+export type EntryGroup = EntryGroupAlias & { entries: Entry[] }
+
+export type EntryByDate = EntryGroup & {
+  icon: string,
   collectedAmount: number,
   spentAmount: number,
   isEstimating: boolean
 }
+
+export type EntryByYearMonth = EntryGroupAlias & { groups: EntryByDate[] }
 
 export type PagedTimeline = {
   pages: Entry[][],
@@ -61,7 +64,8 @@ export type TimelineSlice = {
 
 export type UseTimelineResources = {
   timeline: ShallowReactive<PagedTimeline>,
-  entriesByDate: ComputedRef<EntryGroup[]>,
+  entriesByYearMonth: ComputedRef<EntryByYearMonth[]>,
+  setPrintYearMonth: (callback: string) => void,
   flush: () => void
 }
 
@@ -75,6 +79,8 @@ export type UseTimelineResources = {
  * @param dataRef
  */
 export function useTimeline(dataRef: Ref<TimelineSlice>): UseTimelineResources {
+  // Print year month
+  const printYearMonth = ref((value) => value)
   // Local timeline data
   const timeline: ShallowReactive<PagedTimeline> = shallowReactive({
     pages: [],
@@ -102,60 +108,56 @@ export function useTimeline(dataRef: Ref<TimelineSlice>): UseTimelineResources {
     })
   })
 
-  // Group entries
-  const entriesByDate: ComputedRef<EntryGroup[]> = computed(() => {
-    // Index map
-    const indexByDate: Map<string, number> = new Map()
+  // Group entries by yearMonth
+  const entriesByYearMonth: ComputedRef<EntryByYearMonth[]> = computed(() => {
     // Create output
-    const groups: EntryGroup[] = []
+    const entriesByYearMonth: EntryByYearMonth[] = []
     // Current yearMonth
-    let yearMonth = ''
+    let yearMonthGroup: EntryByYearMonth = {key: null}
+    // Current date
+    let dateGroup: EntryByDate = {key: null}
 
     // Iterate through each page
     timeline.current >= 0 && timeline.pages.forEach(page => {
       // Iterate through each entry in page
       page.forEach(entry => {
-        // Check if entry's group (determine by date) is not existing
-        if (!indexByDate.has(entry.date)) {
-          // IsHeading flag
-          let heading = false
-          // Check if entry is also a heading
-          if (yearMonth !== entry.yearMonth) {
-            // Mark this yearMonth
-            yearMonth = entry.yearMonth
-            // Add yearMonth heading
-            heading = true
-          }
+        // Check if entry.yearMonth is a new Group
+        if (yearMonthGroup.key !== entry.yearMonth) {
+          // Get label
+          const label = typeof printYearMonth.value === 'function' ? printYearMonth.value(entry.yearMonth) : entry.yearMonth
+          // Create new yearMonthGroup
+          yearMonthGroup = {key: entry.yearMonth, label: label, groups: []}
+          // Add yearMonthGroup to output
+          entriesByYearMonth.push(yearMonthGroup)
+        }
 
-          // Add new group to output
-          let newIndex = groups.push({
-            yearMonth: entry.yearMonth,
-            date: entry.date,
-            entries: [],
+        // Check if entry.date is a new group
+        if (dateGroup.key !== entry.date) {
+          // Create new dateGroup
+          dateGroup = {
+            icon: 'fa-solid fa-calendar-day',
+            key: entry.date,
+            label: entry.date,
             collectedAmount: 0,
             spentAmount: 0,
             isEstimating: false,
-            heading: heading
-          }) - 1
-          // Set to index map
-          indexByDate.set(entry.date, newIndex)
+            entries: []
+          }
+          // Add dateGroup to yearMonthGroup
+          yearMonthGroup.groups.push(dateGroup)
         }
 
-        // Get the index of group that entry belongs to
-        let index = indexByDate.get(entry.date)
-        // Push entry to group's entries
-        groups[index].entries.push(entry)
+        // Add entry to dateGroup
+        dateGroup.entries.push(entry)
         // Apply amount
-        groups[index][entry.isCollect ? 'collectedAmount' : 'spentAmount'] += entry.amount
+        dateGroup[entry.isCollect ? 'collectedAmount' : 'spentAmount'] += entry.amount
       })
     })
 
     // Mark last group as estimating
-    if (groups.length > 0 && !timeline.last) {
-      groups[groups.length - 1].isEstimating = true
-    }
+    dateGroup.isEstimating = !timeline.last
 
-    return groups
+    return entriesByYearMonth
   })
 
   // Flush all data
@@ -169,7 +171,8 @@ export function useTimeline(dataRef: Ref<TimelineSlice>): UseTimelineResources {
 
   return {
     timeline: timeline,
-    entriesByDate: entriesByDate,
+    entriesByYearMonth: entriesByYearMonth,
+    setPrintYearMonth: (callback) => printYearMonth.value = callback,
     flush: flush
   }
 }

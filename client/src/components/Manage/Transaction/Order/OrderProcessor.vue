@@ -12,20 +12,22 @@
           {{ $t('message.no_recent_searches') }}
         </div>
         <q-virtual-scroll
-          v-else
-          :items="search.data"
-          #default="{ item, index }"
-          class="tw-max-h-[492px] virtual-scrollbar"
-        >
-          <div v-if="item.isLabel" class="text-primary tw-text-lg tw-font-bold tw-mt-3 tw-h-[32px]">{{item.label }}</div>
-          <q-item
             v-else
-            :key="index"
-            :active="active.id === item.id"
-            :active-class="`text-brand ` + ($q.dark.isActive ? '!tw-bg-emerald-700' : '!tw-bg-emerald-300')"
-            clickable
-            class="bg-brand-soft tw-group tw-my-2 tw-shadow tw-rounded tw-cursor-pointer hover:!tw-bg-blue-600 hover:!tw-text-white hover:!tw-border-none"
-            @click="setActiveOrder(item)"
+            :items="search.data"
+            #default="{ item, index }"
+            class="tw-max-h-[492px] virtual-scrollbar"
+        >
+          <div v-if="item.isLabel" class="text-primary tw-text-lg tw-font-bold tw-mt-3 tw-h-[32px]">
+            {{ item.label }}
+          </div>
+          <q-item
+              v-else
+              :key="index"
+              :active="active.id === item.id"
+              :active-class="`text-brand ` + ($q.dark.isActive ? '!tw-bg-emerald-700' : '!tw-bg-emerald-300')"
+              clickable
+              class="bg-brand-soft tw-group tw-my-2 tw-shadow tw-rounded tw-cursor-pointer hover:!tw-bg-blue-600 hover:!tw-text-white hover:!tw-border-none"
+              @click="setActiveOrder(item)"
           >
             <q-item-section class="col-2 tw-font-bold">
               <q-item-label>{{ item.code }}</q-item-label>
@@ -119,8 +121,8 @@ export default {
     const isGroupByStatus = ref(env.init("isGroupByStatus", false))
     // Initial group for simple search
     const grouper = computed(() => isGroupByStatus.value
-      ? useSimpleGrouper('status', true, constant.statusCodeToString)
-      : useSimpleGrouper('createdAt', false, util.dateOnly, util.dateOnly))
+        ? useSimpleGrouper('status', true, constant.statusCodeToString)
+        : useSimpleGrouper('createdAt', false, util.dateOnly, util.dateOnly))
     // Filter icon
     const getFilterIcon = computed(() => isGroupByStatus.value ? 'fa-solid fa-circle' : 'fa-solid fa-calendar-days')
     // Filter tooltip
