@@ -1,6 +1,6 @@
 <template>
   <q-page class="bg-grey-3">
-    <div class="bg-grey-3 tw-p-5 tw-pr-20" :style="style">
+    <div :class="classes" :style="style">
       <!-- Breadcrumbs -->
       <Breadcrumbs v-if="breadcrumbs" :items="breadcrumbs" ref="breadcrumbs" class="tw-mb-5"/>
       <div class="row" :style="`min-height: ${contentHeight}px`">
@@ -51,6 +51,13 @@ export default {
         minHeight: `${this.globalVars.minHeight}px`
       }
     },
+    classes() {
+      return {
+        'bg-grey-3': true,
+        'tw-p-5': true,
+        'tw-pr-20': this.$q.screen.gt.sm
+      }
+    },
     // Remaining space below breadcrumbs
     contentHeight() {
       // Calculate content height
@@ -68,7 +75,7 @@ export default {
       // Classes
       const classes = {
         'col-12': true,
-        'tw-pr-3': this.$q.screen.gt[this.breakpoint],
+        'tw-pr-3': this.$q.screen[this.breakpoint] || this.$q.screen.gt[this.breakpoint],
       }
 
       // Get split left column offset (0-12)

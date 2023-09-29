@@ -1,19 +1,34 @@
 <template>
   <q-drawer
-    v-model="drawer"
-    show-if-above
+      v-bind="$attrs"
+      show-if-above
 
-    :mini="miniState"
-    @mouseover="miniState = false"
-    @mouseout="miniState = true"
-    persistent
+      :mini="miniState"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
+      persistent
 
-    side="right"
-    overlay
-    :width="200"
-    :breakpoint="500"
-    bordered
+      side="right"
+      overlay
+      :width="200"
+      :breakpoint="$q.screen.sizes.md - 1"
+      bordered
   >
+    <q-img v-if="$q.screen.lt.md" :src="imageSrc" style="height: 150px; z-index: 1">
+      <div class="absolute tw-w-full bg-transparent">
+        <q-avatar size="56px" class="q-mb-sm">
+          <IconMage src="/images/man.png" color="white" size="56px"/>
+        </q-avatar>
+        <div class=" text-weight-bold">{{ name }}</div>
+        <div>{{ $t(`field.role_${privilege}`) }}</div>
+
+        <Button flat icon="fa-solid fa-arrow-left-long" color="white" class="tw-mr-3 tw-mt-3 absolute-top-right"
+                :tooltip="$t('field.close')" @click="$emit('close')"/>
+        <Button flat icon="fa-solid fa-right-from-bracket" color="white" class="tw-mr-3 absolute-bottom-right"
+                :tooltip="$t('field.logout')" @click="$emit('logout')"/>
+      </div>
+    </q-img>
+
     <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
       <q-list padding>
         <template v-for="link in links">
@@ -34,11 +49,20 @@
 </template>
 
 <script>
+import IconMage from "components/General/Other/IconMage.vue";
+import Button from "components/General/Other/Button.vue";
+
+import {mapState} from "pinia";
+import {useAuthStore} from "stores/auth";
+
 export default {
   name: "NavigateDrawer",
 
+  components: {Button, IconMage},
+
+  emits: ['close', 'logout'],
+
   data: () => ({
-    drawer: true,
     miniState: true,
     links: [
       {
@@ -70,5 +94,12 @@ export default {
       },
     ]
   }),
+
+  computed: {
+    ...mapState(useAuthStore, ['name', 'privilege']),
+    imageSrc() {
+      return `https://picsum.photos/500/300?t=${Math.random()}`
+    }
+  }
 }
 </script>

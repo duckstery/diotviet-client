@@ -13,15 +13,15 @@
             </div>
 
             <q-btn
-              to="/"
-              no-caps
-              unelevated
-              color="white"
-              label="Go Back"
-              text-color="blue"
-              class="tw-mt-10 tw-mb-5"
-              icon="fa-solid fa-arrow-left-long"
-              @click="$router.go(-1)"
+                to="/"
+                no-caps
+                unelevated
+                color="white"
+                label="Go Back"
+                text-color="blue"
+                class="tw-mt-10 tw-mb-5"
+                icon="fa-solid fa-arrow-left-long"
+                @click="$router.go(-1)"
             />
           </q-card-section>
         </q-card>
@@ -41,7 +41,13 @@ export default {
     },
     // Message status
     message() {
-      return this.$t(`error.status_${this.status}`)
+      if (this.$util.isUnset(this.$route.query['error'])) return this.$t(`error.status_${this.status}`)
+
+      // Get message
+      const message = this.$t(`error.${this.$route.query['error']}`)
+      return (message === `error.${this.$route.query['error']}`)
+          ? this.$t(`error.status_${this.status}`)
+          : message
     }
   },
 }

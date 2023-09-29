@@ -197,6 +197,7 @@ export default {
     continue: 'Continue',
     to_top: 'To Top',
     anchor: 'Anchor',
+    close: 'Close',
 
     // ****************************
     // Month
@@ -411,5 +412,6 @@ export default {
     limit_exceeded: 'Total size has exceeded maximum limit',
     status_403: 'You are not authorized to enter this page. Please go back.',
     status_404: 'Oops. Nothing here...',
+    forbidden_device: 'This type of device is not allowed to open this page.',
   }
 }

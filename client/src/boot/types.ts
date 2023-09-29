@@ -7,6 +7,7 @@ import {LocalAxios} from "boot/axios";
 import {Auth} from "boot/auth";
 import {ErrorHandler} from "boot/error";
 import {ConfigType, Dayjs} from "dayjs";
+import {RouteLocationNormalizedLoaded, Router} from "vue-router";
 
 // @ts-ignore
 declare module '@vue/runtime-core' {
@@ -63,5 +64,13 @@ declare module '@vue/runtime-core' {
      * Utilities
      */
     $util: Util
+    /**
+     * Current route
+     */
+    $route: RouteLocationNormalizedLoaded
+    /**
+     * Vue router
+     */
+    $router: Router
   }
 }

@@ -2,7 +2,7 @@
   <q-select
     dense outlined use-input input-debounce="500" behavior="menu" icon="fa-solid fa-search"
     class="tw-w-1/4 tw-max-w-lg tw-ml-4"
-    popup-content-class="virtual-scrollbar" ref="select" color="brand" bg-color="brand"
+    popup-content-class="virtual-scrollbar tw-w-[500px]" ref="select" color="brand" bg-color="brand"
     :model-value="modelValue"
     :label="$t('field.search_product')" :options="items"
     @update:model-value="onSelect" @filter="onFilter"

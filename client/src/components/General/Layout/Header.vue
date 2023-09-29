@@ -21,10 +21,14 @@
           <q-item-label caption class="text-grey-13">{{ roleDisplayText }}</q-item-label>
         </q-item-section>
       </q-item>
+
+      <!-- Logout -->
+      <Button v-if="$q.screen.lt.md" flat icon="fa-solid fa-ellipsis" color="white" :tooltip="$t('field.more')"
+              class="tw-ml-3" @click="drawer = true"/>
     </q-toolbar>
   </q-header>
 
-  <NavigateDrawer/>
+  <NavigateDrawer v-model="drawer" @logout="onLogout" @close="drawer = false"/>
 </template>
 
 <script>
@@ -40,6 +44,10 @@ export default {
   name: "Header",
 
   components: {IconMage, Setting, Button, NavigateDrawer},
+
+  data: () => ({
+    drawer: false,
+  }),
 
   computed: {
     // Get role display text
