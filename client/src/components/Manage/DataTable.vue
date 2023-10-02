@@ -24,13 +24,14 @@
     @request="onSearchRequest"
   >
     <template #top>
-      <TextField v-model="search" label="Search" icon="search" @keydown.enter="onSearchRequest(null)"/>
+      <TextField v-model="search" label="Search" icon="search"
+                 :class="searchTextFieldClasses" @keydown.enter="onSearchRequest(null)"/>
 
-      <q-space/>
+      <q-space v-if="$q.screen.gt.sm"/>
 
       <!-- Business operations -->
       <DropdownButton :label="$t('field.operation')" icon="fa-solid fa-ellipsis-vertical"
-                      stretch color="positive" class="tw-ml-2" no-caps :disable="!isSelecting">
+                      stretch color="positive" :class="headerButtonsClasses" no-caps :disable="!isSelecting">
         <q-list>
           <template v-for="operation in dropdownOperations">
             <q-item v-if="operation.key" clickable v-close-popup
@@ -50,16 +51,16 @@
 
       <!-- Row controls -->
       <Button :label="$t('field.add')" icon="fa-solid fa-plus"
-              stretch color="positive" class="tw-ml-2" no-caps @click="request('create')"/>
+              stretch color="positive" :class="headerButtonsClasses" no-caps @click="request('create')"/>
       <Button :label="$t('field.collapse')" icon="fa-solid fa-down-left-and-up-right-to-center" @click="onCollapse"
-              stretch color="positive" class="tw-ml-2" no-caps/>
+              stretch color="positive" :class="headerButtonsClasses" no-caps/>
 
-      <q-space/>
+      <q-space v-if="$q.screen.gt.sm"/>
 
-      <ImEx v-if="!noImEx" @request="request"/>
+      <ImEx v-if="!noImEx && $q.screen.gt.sm" @request="request"/>
       <!-- Columns visibility controls -->
       <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
-                      stretch color="positive" class="tw-ml-2" no-caps
+                      stretch color="positive" :class="headerButtonsClasses" no-caps
       >
         <div class="row">
           <div v-for="header in localizedHeaders" class="col-6">
@@ -211,6 +212,20 @@ export default {
 
       return {ids, versions}
     },
+    // Search text field classes
+    searchTextFieldClasses() {
+      return {
+        'tw-w-full': this.$q.screen.lt.md
+      }
+    },
+    // Header buttons classes
+    headerButtonsClasses() {
+      return {
+        'tw-ml-2': this.$q.screen.gt.sm,
+        'tw-mt-2': this.$q.screen.lt.md,
+        'tw-mr-2': this.$q.screen.lt.md
+      }
+    }
   },
 
   watch: {

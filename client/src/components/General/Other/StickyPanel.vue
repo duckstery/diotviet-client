@@ -1,9 +1,9 @@
 <template>
   <q-page-sticky :position="position" :offset="location">
     <q-fab
-        v-if="$q.screen.lt.md" v-bind="$attrs" v-touch-pan.prevent.mouse="movePanel"
-        direction="up" color="primary" vertical-actions-align="left"
-        :header-class="headerClass" :icon="icon" :disable="disable"
+      v-if="$q.screen.lt.md" v-bind="$attrs" v-touch-pan.prevent.mouse="movePanel"
+      direction="up" color="primary" vertical-actions-align="left"
+      :header-class="headerClass" :icon="icon" :disable="disable"
     >
       <q-card class="tw-overflow-y-auto virtual-scrollbar"
               :style="`width: ${width}px; max-height: ${contentMaxHeight}px`">
@@ -13,9 +13,9 @@
       </q-card>
     </q-fab>
     <q-expansion-item
-        v-else v-bind="$attrs" v-touch-pan.prevent.mouse="movePanel"
-        class="shadow-1 overflow-hidden" :header-class="headerClass"
-        :icon="icon" :label="label" :style="`border-radius: 20px; width: ${width}px`"
+      v-else v-bind="$attrs" v-touch-pan.prevent.mouse="movePanel"
+      class="shadow-1 overflow-hidden" :header-class="headerClass"
+      :icon="icon" :label="label" :style="`border-radius: 20px; width: ${width}px`"
     >
       <q-card class="tw-overflow-y-auto virtual-scrollbar"
               :style="`width: ${width}px; max-height: ${contentMaxHeight}px`">

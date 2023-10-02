@@ -1,15 +1,17 @@
 <template>
   <PopupTextField :value="pickedOption === '' ? '' : $t(`field.${pickedOption}`)">
     <template #default="{hide}">
-      <div class="tw-flex tw-space-x-1 tw-px-1 tw-py-4">
-        <template v-for="(col, index) in structure" :key="col.key">
-          <div>
-            <div class="tw-shrink-0 tw-font-semibold tw-mb-2 tw-text-center">{{ $t(`field.by_${col.key}`) }}</div>
-            <RadioList :model-value="pickedOption" :options="col.options" @update:model-value="onPick($event, hide)"/>
-          </div>
-          <q-separator v-if="index < 4" vertical inset/>
-        </template>
-      </div>
+      <q-card>
+        <q-card-section class="tw-flex tw-space-x-1 tw-px-1 tw-py-4">
+          <template v-for="(col, index) in structure" :key="col.key">
+            <div>
+              <div class="tw-shrink-0 tw-font-semibold tw-mb-2 tw-text-center">{{ $t(`field.by_${col.key}`) }}</div>
+              <RadioList :model-value="pickedOption" :options="col.options" @update:model-value="onPick($event, hide)"/>
+            </div>
+            <q-separator v-if="index < 4" vertical inset/>
+          </template>
+        </q-card-section>
+      </q-card>
     </template>
   </PopupTextField>
 </template>
@@ -39,10 +41,20 @@ export default {
     // i18n
     const $t = useI18n().t
 
+    // Backup modelValue
+    const backup = util.isUnset(util.nullIfEmpty(props.modelValue)) ? '' : props.modelValue
     // Model
     const model = useVModel(props, 'modelValue', emit)
-    // If model turn to null, it means that it should be reloaded
-    watch(model, value => value === null && (pickedOption.value = ''))
+    // Watch model to reload component
+    watch(model, value => {
+      if (value === null) {
+        // If model turn to null, reload pickedOption to ''
+        pickedOption.value = ''
+      } else if (value.from === backup.from && value.to === backup.to) {
+        // Else, reload pickedOption to 'month_now'
+        pickedOption.value = 'month_now'
+      }
+    })
 
     // Convert string to a radio option
     const toRadio = (value) => ({value: value, label: $t(`field.${value}`)})
@@ -58,7 +70,10 @@ export default {
     // Picked option
     const pickedOption = ref(util.isUnset(util.nullIfEmpty(props.modelValue)) ? '' : 'month_now')
     // On picking an option
-    const onPick = (value) => pickedOption.value = value
+    const onPick = (value, callback) => {
+      pickedOption.value = value
+      typeof callback === 'function' && callback()
+    }
     // Watch for option changed
     watch(pickedOption, value => {
       // Check if value is unset or empty

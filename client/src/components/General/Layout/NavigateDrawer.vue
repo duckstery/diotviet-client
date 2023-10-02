@@ -1,18 +1,19 @@
 <template>
   <q-drawer
-      v-bind="$attrs"
-      show-if-above
+    v-bind="$attrs"
 
-      :mini="miniState"
-      @mouseover="miniState = false"
-      @mouseout="miniState = true"
-      persistent
+    overlay
+    bordered
+    side="right"
+    show-if-above
 
-      side="right"
-      overlay
-      :width="200"
-      :breakpoint="$q.screen.sizes.md - 1"
-      bordered
+    :width="200"
+    :mini="miniState"
+    :persistent="$q.screen.gt.sm"
+    :breakpoint="$q.screen.sizes.md - 1"
+
+    @mouseover="miniState = false"
+    @mouseout="miniState = true"
   >
     <q-img v-if="$q.screen.lt.md" :src="imageSrc" style="height: 150px; z-index: 1">
       <div class="absolute tw-w-full bg-transparent">
@@ -64,41 +65,50 @@ export default {
 
   data: () => ({
     miniState: true,
-    links: [
-      {
-        key: 'store',
-        icon: 'fa-store',
-        to: '/work'
-      },
-      {},
-      {
-        key: 'product',
-        icon: 'fa-box',
-        to: '/product'
-      },
-      {
-        key: 'transaction',
-        icon: 'fa-arrow-right-arrow-left',
-        to: '/transaction'
-      },
-      {
-        key: 'partner',
-        icon: 'fa-handshake',
-        to: '/partner'
-      },
-      {},
-      {
-        key: 'report',
-        icon: 'fa-chart-line',
-        to: '/report'
-      },
-    ]
   }),
 
   computed: {
     ...mapState(useAuthStore, ['name', 'privilege']),
     imageSrc() {
       return `https://picsum.photos/500/300?t=${Math.random()}`
+    },
+    // Default
+    links() {
+      const links = this.$q.screen.lt.md ? [] : [
+        {
+          key: 'store',
+          icon: 'fa-store',
+          to: '/work'
+        },
+        {},
+      ]
+
+      // Push common links
+      links.push(
+        {
+          key: 'product',
+          icon: 'fa-box',
+          to: '/product'
+        },
+        {
+          key: 'transaction',
+          icon: 'fa-arrow-right-arrow-left',
+          to: '/transaction'
+        },
+        {
+          key: 'partner',
+          icon: 'fa-handshake',
+          to: '/partner'
+        },
+        {},
+        {
+          key: 'report',
+          icon: 'fa-chart-line',
+          to: '/report'
+        }
+      )
+
+      return links
     }
   }
 }

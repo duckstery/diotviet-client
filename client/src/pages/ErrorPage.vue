@@ -13,15 +13,15 @@
             </div>
 
             <q-btn
-                to="/"
-                no-caps
-                unelevated
-                color="white"
-                label="Go Back"
-                text-color="blue"
-                class="tw-mt-10 tw-mb-5"
-                icon="fa-solid fa-arrow-left-long"
-                @click="$router.go(-1)"
+              to="/"
+              no-caps
+              unelevated
+              color="white"
+              label="Go Back"
+              text-color="blue"
+              class="tw-mt-10 tw-mb-5"
+              icon="fa-solid fa-arrow-left-long"
+              @click="goBack"
             />
           </q-card-section>
         </q-card>
@@ -46,9 +46,16 @@ export default {
       // Get message
       const message = this.$t(`error.${this.$route.query['error']}`)
       return (message === `error.${this.$route.query['error']}`)
-          ? this.$t(`error.status_${this.status}`)
-          : message
+        ? this.$t(`error.status_${this.status}`)
+        : message
     }
   },
+
+  methods: {
+    goBack() {
+      const error = this.$route.query['error']
+      this.$router.go(error === 'forbidden_device' ? -2 : -1)
+    }
+  }
 }
 </script>

@@ -1,55 +1,62 @@
 <template>
   <Button v-bind="$attrs" icon="settings" color="white" :tooltip="$t('field.settings')">
-    <q-popup-proxy class="tw-pb-3">
-      <!--  -->
-      <q-banner class="tw-mt-1">
-        <template v-slot:avatar>
-          <IconMage src="/images/translation.png"/>
-        </template>
-        <div class="tw-font-medium">{{ $t('field.language') }}</div>
-      </q-banner>
-      <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
-        <Button src="/images/en_US.png" color="primary" :flat="!isEnglish" stretch :label="$t('field.en')"
-                class="tw-w-[140px]" @click="onChangeEnv('language', 'en')"/>
-        <Button src="/images/vi_VN.png" color="primary" :flat="isEnglish" stretch :label="$t('field.vi')"
-                class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('language', 'vi')"/>
-      </div>
+    <q-popup-proxy>
+      <q-card>
+        <q-card-section class="tw-p-0 tw-pb-3 tw-h-full">
+          <!-- Locale -->
+          <q-banner class="tw-mt-1">
+            <template v-slot:avatar>
+              <IconMage src="/images/translation.png"/>
+            </template>
+            <div class="tw-font-medium">{{ $t('field.language') }}</div>
+          </q-banner>
+          <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
+            <Button src="/images/en_US.png" color="primary" :flat="!isEnglish" stretch :label="$t('field.en')"
+                    class="tw-w-[140px]" @click="onChangeEnv('language', 'en')"/>
+            <Button src="/images/vi_VN.png" color="primary" :flat="isEnglish" stretch :label="$t('field.vi')"
+                    class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('language', 'vi')"/>
+          </div>
 
-      <q-banner class="tw-mt-1">
-        <template v-slot:avatar>
-          <IconMage src="/images/dark-mode.png"/>
-        </template>
-        <div class="tw-font-medium">{{ $t('field.display_mode') }}</div>
-      </q-banner>
-      <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
-        <Button src="/images/light.png" color="primary" :flat="!isLight" stretch :label="$t('field.light_mode')"
-                class="tw-w-[140px]" @click="onChangeEnv('display', 'light')"/>
-        <Button src="/images/dark.png" color="primary" :flat="isLight" stretch :label="$t('field.dark_mode')"
-                class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('display', 'dark')"/>
-      </div>
+          <!-- Display mode -->
+          <q-banner class="tw-mt-1">
+            <template v-slot:avatar>
+              <IconMage src="/images/dark-mode.png"/>
+            </template>
+            <div class="tw-font-medium">{{ $t('field.display_mode') }}</div>
+          </q-banner>
+          <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
+            <Button src="/images/light.png" color="primary" :flat="!isLight" stretch :label="$t('field.light_mode')"
+                    class="tw-w-[140px]" @click="onChangeEnv('display', 'light')"/>
+            <Button src="/images/dark.png" color="primary" :flat="isLight" stretch :label="$t('field.dark_mode')"
+                    class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('display', 'dark')"/>
+          </div>
 
-      <q-banner class="tw-mt-1">
-        <template v-slot:avatar>
-          <IconMage src="/images/optimize.png"/>
-        </template>
-        <div class="tw-font-medium">{{ $t('field.optimize') }}</div>
-      </q-banner>
-      <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
-        <Button src="/images/visual.png" color="primary" :flat="!isOptimizeVisual" stretch :label="$t('field.visual')"
-                class="tw-w-[140px]" @click="onChangeEnv('optimize', 'visual')"/>
-        <Button src="/images/speed.png" color="primary" :flat="isOptimizeVisual" stretch :label="$t('field.speed')"
-                class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('optimize', 'speed')"/>
-      </div>
-      <q-banner class="tw-mt-1">
-        <template v-slot:avatar>
-          <IconMage src="/images/print.png"/>
-        </template>
-        <div class="tw-font-medium">{{ $t('field.print') }}</div>
-      </q-banner>
-      <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
-        <Button src="/images/setup.png" color="primary" stretch flat :label="$t('field.setup')"
-                class="tw-w-full" @click="onSetup('print')"/>
-      </div>
+          <!-- Optimize -->
+          <q-banner class="tw-mt-1">
+            <template v-slot:avatar>
+              <IconMage src="/images/optimize.png"/>
+            </template>
+            <div class="tw-font-medium">{{ $t('field.optimize') }}</div>
+          </q-banner>
+          <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
+            <Button src="/images/visual.png" color="primary" :flat="!isOptimizeVisual" stretch
+                    :label="$t('field.visual')"
+                    class="tw-w-[140px]" @click="onChangeEnv('optimize', 'visual')"/>
+            <Button src="/images/speed.png" color="primary" :flat="isOptimizeVisual" stretch :label="$t('field.speed')"
+                    class="tw-w-[140px] tw-ml-2" @click="onChangeEnv('optimize', 'speed')"/>
+          </div>
+          <q-banner class="tw-mt-1">
+            <template v-slot:avatar>
+              <IconMage src="/images/print.png"/>
+            </template>
+            <div class="tw-font-medium">{{ $t('field.print') }}</div>
+          </q-banner>
+          <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md">
+            <Button src="/images/setup.png" color="primary" stretch flat :label="$t('field.setup')"
+                    class="tw-w-full" @click="onSetup('print')"/>
+          </div>
+        </q-card-section>
+      </q-card>
     </q-popup-proxy>
   </Button>
 </template>

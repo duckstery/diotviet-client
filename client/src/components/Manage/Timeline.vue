@@ -22,21 +22,21 @@
 
           <q-timeline :layout="layout" class="tw-mt-4">
             <q-timeline-entry
-                v-for="entry in group.entries"
-                :key="entry.time"
-                :title="$util.formatMoney(entry.amount)"
-                :subtitle="entry.time.substring(0, 8)"
-                :icon="`fa-solid ${entry.isCollect ? 'fa-plus' : 'fa-minus'}`"
-                :color="entry.isCollect ? 'positive' : 'negative'"
+              v-for="entry in group.entries"
+              :key="entry.time"
+              :title="$util.formatMoney(entry.amount)"
+              :subtitle="entry.time.substring(0, 8)"
+              :icon="`fa-solid ${entry.isCollect ? 'fa-plus' : 'fa-minus'}`"
+              :color="entry.isCollect ? 'positive' : 'negative'"
             >
               <template v-if="!$util.isUnset(entry.order)">
                 <SimpleDisplayField
-                    icon="fa-solid fa-receipt" label-class="tw-w-[128px]" dense
-                    :label="text.order"
+                  icon="fa-solid fa-receipt" label-class="tw-w-[128px]" dense
+                  :label="text.order"
                 >
                   <div
-                      class="text-primary tw-cursor-pointer hover:!tw-underline tw-underline-offset-2"
-                      @click="goToOrder(entry.order.code)"
+                    class="text-primary tw-cursor-pointer hover:!tw-underline tw-underline-offset-2"
+                    @click="goToOrder(entry.order.code)"
                   >
                     {{ entry.order.code }}
                   </div>

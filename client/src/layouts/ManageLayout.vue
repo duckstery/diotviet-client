@@ -1,21 +1,15 @@
 <template>
   <q-layout view="hHh Lpr fFf"> <!-- Be sure to play with the Layout demo on docs -->
     <Header>
-      <q-tabs
-        dense
-        no-caps
-        inline-label
-        mobile-arrows
-        class="tw-ml-4"
-      >
-        <q-route-tab
-          v-for="tab in activeTabs"
-          exact
-          :to="tab.to"
-          :icon="`fa-solid ${tab.icon}`"
-          :label="$t(`field.${tab.key}`)"
-        />
-      </q-tabs>
+      <template v-if="$q.screen.lt.md">
+        <!-- Menu -->
+        <Button flat icon="fa-solid fa-list" color="white" class="tw-ml-3" @click="drawer = true"/>
+        <MenuDrawer v-model="drawer" :links="activeTabs"/>
+      </template>
+
+      <template v-else>
+        <MenuTabs :tabs="activeTabs" class="tw-ml-4"/>
+      </template>
     </Header>
 
     <q-page-container>
@@ -27,15 +21,19 @@
 </template>
 
 <script>
+import MenuTabs from "components/Manage/MenuTabs.vue";
+import MenuDrawer from "components/Manage/MenuDrawer.vue";
+import Button from "components/General/Other/Button.vue";
 import Header from "components/General/Layout/Header.vue";
 import Footer from "components/General/Layout/Footer.vue";
 
 export default {
   name: 'ManageLayout',
 
-  components: {Header, Footer},
+  components: {MenuTabs, MenuDrawer, Button, Header, Footer},
 
   data: () => ({
+    drawer: false,
     tabs: {
       'product': [
         {key: 'list', icon: 'fa-grip', to: '/product'}

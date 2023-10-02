@@ -192,7 +192,6 @@ export default {
     spend: 'Spend',
     other: 'Other',
     estimate: 'Estimate',
-    more: 'More',
     end: 'End',
     continue: 'Continue',
     to_top: 'To Top',
