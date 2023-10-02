@@ -9,11 +9,7 @@
       <!-- Setting -->
       <Setting flat class="tw-ml-3"/>
       <template v-if="$q.screen.gt.sm">
-        <!-- Logout -->
-        <Button flat icon="fa-solid fa-right-from-bracket" color="white" :tooltip="$t('field.logout')"
-                class="tw-ml-3" @click="onLogout"/>
-
-        <q-item clickable class="tw-h-[32px] tw-p-0 tw-px-3 tw-rounded-lg tw-ml-3">
+        <q-item clickable class="tw-w-[121px] tw-h-[32px] tw-p-0 tw-px-3 tw-rounded-lg tw-ml-3">
           <q-item-section side>
             <IconMage src="/images/man.png" color="white"/>
           </q-item-section>
@@ -21,6 +17,16 @@
             <q-item-label class="tw-font-medium">{{ getUserName }}</q-item-label>
             <q-item-label caption class="text-grey-13">{{ roleDisplayText }}</q-item-label>
           </q-item-section>
+          <q-menu>
+            <q-list>
+              <q-item clickable v-close-popup @click="onLogout">
+                <q-item-section avatar>
+                  <q-icon color="primary" name="fa-solid fa-right-from-bracket"/>
+                </q-item-section>
+                <q-item-section>{{ $t('field.logout') }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
         </q-item>
       </template>
 

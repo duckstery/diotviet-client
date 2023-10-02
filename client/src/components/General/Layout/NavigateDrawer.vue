@@ -16,7 +16,7 @@
     @mouseout="miniState = true"
   >
     <q-img v-if="$q.screen.lt.md" :src="imageSrc" style="height: 150px; z-index: 1">
-      <div class="absolute tw-w-full bg-transparent">
+      <div class="absolute tw-w-full tw-h-full">
         <q-avatar size="56px" class="q-mb-sm">
           <IconMage src="/images/man.png" color="white" size="56px"/>
         </q-avatar>
@@ -25,7 +25,7 @@
 
         <Button flat icon="fa-solid fa-arrow-left-long" color="white" class="tw-mr-3 tw-mt-3 absolute-top-right"
                 :tooltip="$t('field.close')" @click="$emit('close')"/>
-        <Button flat icon="fa-solid fa-right-from-bracket" color="white" class="tw-mr-3 absolute-bottom-right"
+        <Button flat icon="fa-solid fa-right-from-bracket" color="white" class="tw-mr-3 tw-mb-3 absolute-bottom-right"
                 :tooltip="$t('field.logout')" @click="$emit('logout')"/>
       </div>
     </q-img>

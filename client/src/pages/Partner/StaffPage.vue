@@ -1,6 +1,8 @@
 <template>
   <Page :breadcrumbs="breadcrumbs">
-
+    <q-banner inline-actions rounded class="bg-orange text-white">
+      {{$t('message.developing')}}
+    </q-banner>
   </Page>
 </template>
 

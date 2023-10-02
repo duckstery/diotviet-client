@@ -379,6 +379,7 @@ export default {
     print_unavailable: 'Printing is unavailable here',
     printer_preparing: 'Please wait while printer is being prepared',
     date_range_to_big: 'Display by date? Interval between dates is too big. Display by date will make the graph hard-to-read.',
+    developing: 'Under development!',
 
     // ****************************
     // Report: Income
