@@ -68,8 +68,8 @@ public class UserService implements UserDetailsService {
      *
      * @return
      */
-    public boolean existsByEmail(String email) {
-        return repository.existsByEmail(email);
+    public boolean existsByUsername(String username) {
+        return repository.existsByUsername(username);
     }
 
     /**
@@ -124,7 +124,7 @@ public class UserService implements UserDetailsService {
         // Get claims
         Map<String, Claim> claims = jwt.getClaims();
         // Load user
-        User user = (User) loadUserByUsername(claims.get("email").asString());
+        User user = (User) loadUserByUsername(claims.get("username").asString());
 
         // Check if token exists in user's valid tokens
         if (user.getValidTokens().stream().noneMatch(accessToken -> accessToken.match(jwt.getToken()))) {
@@ -149,7 +149,7 @@ public class UserService implements UserDetailsService {
     // ****************************
 
     /**
-     * Load user by email to be precise
+     * Load user by username
      *
      * @param username the username identifying the user whose data is required.
      * @return
@@ -157,7 +157,7 @@ public class UserService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByEmail(username)
+        return repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
     }
 }

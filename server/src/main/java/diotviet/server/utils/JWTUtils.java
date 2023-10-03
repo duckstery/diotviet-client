@@ -72,7 +72,7 @@ public class JWTUtils {
                 .withJWTId(UUID.randomUUID().toString())
                 .withSubject(userPrincipal.getName())
                 .withClaim("id", userPrincipal.getId())
-                .withClaim("email", userPrincipal.getEmail())
+                .withClaim("username", userPrincipal.getUsername())
                 .withClaim("role", userPrincipal.getRole().toString())
                 .sign(algorithm);
     }

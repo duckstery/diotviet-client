@@ -14,9 +14,9 @@
     <q-card-section>
       <div class="text-h6 text-brand brand tw-w-fit tw-mx-auto">{{ $t('field.welcome') }}</div>
 
-      <TextField v-model="credential.email" :label="$t('field.username')" class="tw-mt-4">
+      <TextField v-model="credential.username" :label="$t('field.username')" class="tw-mt-4">
         <template #before>
-          <IconMage src="/images/mail.png"/>
+          <IconMage src="/images/user.png"/>
         </template>
       </TextField>
       <TextField v-model="credential.password" :label="$t('field.password')" class="tw-mt-4" type="password">
@@ -63,7 +63,7 @@ export default {
 
   data: () => ({
     credential: {
-      email: "ahihi@gmail.com",
+      username: "ahihi@gmail.com",
       password: "123456",
     },
     remember: true,

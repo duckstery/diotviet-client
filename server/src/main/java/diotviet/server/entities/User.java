@@ -44,10 +44,10 @@ public class User implements UserDetails {
     @Column(length = 30)
     private String name;
     /**
-     * Email
+     * Username
      */
     @Column(length = 50, nullable = false)
-    private String email;
+    private String username;
 
     /**
      * Password
@@ -132,11 +132,6 @@ public class User implements UserDetails {
             case STAFF -> new Role[]{Role.STAFF};
             default -> new Role[]{Role.GUEST};
         }).map(Role::toString).toArray(String[]::new));
-    }
-
-    @Override
-    public String getUsername() {
-        return getEmail();
     }
 
     @Override

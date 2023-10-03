@@ -242,6 +242,7 @@ const constant: Constant = {
       'open_folder': 'fa-solid fa-folder-open',
       'optimize': 'fa-solid fa-gauge',
       'original_price': 'fa-solid fa-coins',
+      'user': 'fa-solid fa-user',
       'pass': 'fa-solid fa-lock',
       'payment_amount': 'fa-solid fa-hand-holding-dollar',
       'provisional_amount': 'fa-solid fa-hand-holding-dollar',
@@ -271,6 +272,7 @@ const constant: Constant = {
       'setup': 'fa-solid fa-gear',
       'amount': 'fa-solid fa-hand-holding-dollar',
       'reason': 'fa-solid fa-lightbulb',
+      'role': 'fa-solid fa-shield',
     }[key]
   },
 }

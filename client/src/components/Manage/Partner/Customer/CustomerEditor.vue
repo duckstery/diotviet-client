@@ -124,7 +124,6 @@ import {required, numeric, email, maxLength} from '@vuelidate/validators'
 
 import InputField from "components/General/Other/InputField.vue";
 import Button from "components/General/Other/Button.vue";
-import DisplayField from "components/General/Other/DisplayField.vue";
 import TextField from "components/General/Other/TextField.vue";
 import UploadMage from "components/General/Other/UploadMage.vue";
 import RichTextField from "components/General/Other/RichTextField.vue";
@@ -132,7 +131,7 @@ import DatePicker from "components/General/Other/DatePicker.vue";
 
 export default {
   name: 'CustomerEditor',
-  components: {DatePicker, RichTextField, UploadMage, TextField, InputField, DisplayField, Button},
+  components: {DatePicker, RichTextField, UploadMage, TextField, InputField, Button},
   props: {
     // Editor mode: 'create', 'update', 'copy'
     mode: String,

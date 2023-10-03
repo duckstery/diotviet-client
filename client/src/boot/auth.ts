@@ -2,6 +2,7 @@ import {boot} from 'quasar/wrappers'
 import {Cookies, date} from "quasar"
 import {axios} from "./axios"
 import {useAuthStore} from "stores/auth"
+import {HttpStatusCode} from "axios";
 
 // *************************************************
 // Typed
@@ -32,6 +33,10 @@ export interface Auth {
    * Logout
    */
   logout(): Promise<string | void>
+  /**
+   * Reset session
+   */
+  reset(): void
 }
 
 // User data
@@ -129,15 +134,22 @@ const auth: Auth = {
   logout(): Promise<string | void> {
     return axios.get(`${process.env.API_BASE_URL}/api/auth/logout`)
       .then(res => {
-        // Clear cookie
-        Cookies.remove(tokenKey)
-        // Reset store
-        store.reset()
-
+        // Reset Auth
+        this.reset()
         // Resolve promise
         return res.data.message
       })
       .catch(err => Promise.reject(err.response.data.message))
+  },
+
+  /**
+   * Reset
+   */
+  reset(): void {
+    // Clear cookie
+    Cookies.remove(tokenKey)
+    // Reset store
+    store.reset()
   }
 }
 
@@ -184,11 +196,29 @@ export default boot(({app, router}) => {
     return config
   })
 
+  // Check if response return a 401, then reset Auth and redirect to LoginPage
+  axios.interceptors.response.use(null, function (error) {
+    try {
+      if (error.response.status === HttpStatusCode.Unauthorized) {
+        // Reset auth
+        auth.reset()
+        // Redirect to LoginPage
+        router.push({name: 'Login'})
+      }
+    } catch (e) {
+      if (process.env.DEV) {
+        console.warn(e)
+      }
+    }
+
+    throw error
+  })
+
   // Register middleware to check if user is authenticated
   router.beforeEach((to, from, next) => {
     // Check if "from" name is undefined
     if (from.name === undefined) {
-      // Since this is the first time accessing the page, init store (pinia)
+      // Since this is the first time accessing the page, init store (Pinia)
       auth.subscribe(Cookies.get(tokenKey))
     }
 
@@ -211,7 +241,7 @@ export default boot(({app, router}) => {
   router.beforeEach((to, from, next) => {
     // Get path privilege (the privilege need to have to access this path)
     // @ts-ignore
-    const pathPrivilege: number = to.meta.privilege ?? 4;
+    const pathPrivilege: number = to.meta.privilege ?? 3;
 
     // The lower the privilege, the higher the role
     if (store.getPrivilege <= pathPrivilege) {

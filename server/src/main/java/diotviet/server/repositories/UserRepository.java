@@ -10,19 +10,19 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     /**
-     * Find User by email
+     * Find User by username
      *
-     * @param email
+     * @param username
      * @return
      */
     @EntityGraph(attributePaths = {"validTokens"})
-    Optional<User> findByEmail(String email);
+    Optional<User> findByUsername(String username);
 
     /**
-     * Check if an User is exists by email
+     * Check if User is existing by username
      *
-     * @param email
+     * @param username
      * @return
      */
-    Boolean existsByEmail(String email);
+    Boolean existsByUsername(String username);
 }

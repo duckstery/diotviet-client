@@ -58,7 +58,7 @@ public class UserController extends BaseController {
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         // Authenticate user's credential
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+                new UsernamePasswordAuthenticationToken(request.username(), request.password())
         );
         // Set authenticated information to context
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -92,14 +92,14 @@ public class UserController extends BaseController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody SignupRequest request) {
         // Check if user is existed
-        if (service.existsByEmail(request.email())) {
+        if (service.existsByUsername(request.username())) {
             return ResponseEntity.badRequest().body("ahihi");
         }
-System.out.println(request);
+
         // Create new User
         User user = new User()
                 .setName(request.name())
-                .setEmail(request.email())
+                .setUsername(request.username())
                 .setPassword(encoder.encode(request.password()))
                 .setRole(request.role());
 
