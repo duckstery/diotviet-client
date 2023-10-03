@@ -197,6 +197,9 @@ export default {
     to_top: 'To Top',
     anchor: 'Anchor',
     close: 'Close',
+    activated: 'Activated',
+    deactivated: 'Deactivated',
+    role: 'Role',
 
     // ****************************
     // Month
@@ -241,7 +244,8 @@ export default {
     // Role
     // ****************************
 
-    role_1: 'Admin',
+    role_0: 'Admin',
+    role_1: 'Owner',
     role_2: 'Supervisor',
     role_3: 'Staff',
     role_4: 'Guest',
@@ -292,6 +296,23 @@ export default {
     customer_createdAt: 'Created at',
     customer_lastTransactionAt: 'Last transaction',
     customer_lastOrderAt: 'Last order at',
+
+    // ****************************
+    // Entity: Staff
+    // ****************************
+    staff_id: 'ID',
+    staff_code: 'Staff code',
+    staff_name: 'Staff name',
+    staff_user: 'Staff role',
+    staff_phoneNumber: 'Phone number',
+    staff_email: 'Email',
+    staff_address: 'Address',
+    staff_birthday: 'Birthday',
+    staff_isMale: 'Gender',
+    staff_isDeactivated: 'Status',
+    staff_point: 'Point',
+    staff_createdBy: 'Created by',
+    staff_createdAt: 'Created at',
 
     // ****************************
     // Entity: Order

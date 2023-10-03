@@ -1,6 +1,6 @@
 <template>
   <FilterPanel :title="title">
-    <q-scroll-area class="tw-h-[100px]">
+    <q-scroll-area :style="`height: ${height}px`">
       <q-item v-for="item in items" tag="label" dense>
         <q-item-section avatar>
           <q-checkbox :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)"
@@ -29,7 +29,12 @@ export default {
     // Title
     title: String,
     // Items
-    items: Array
+    items: Array,
+    // Height
+    height: {
+      type: Number,
+      default: 100
+    }
   },
 
   emits: ['update:modelValue'],

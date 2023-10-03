@@ -7,6 +7,7 @@ import {Color} from "chart.js";
 // *************************************************
 
 export interface Constant {
+  roles(): { id: number, name: string }[]
   /**
    * Get predefined types
    */
@@ -75,9 +76,20 @@ let $t: $T<string>;
 
 const constant: Constant = {
   /**
+   * Predefined roles
+   */
+  roles() {
+    return [
+      {id: 0, name: $t('field.role_0')},
+      {id: 1, name: $t('field.role_1')},
+      {id: 2, name: $t('field.role_2')},
+      {id: 3, name: $t('field.role_3')},
+      {id: 4, name: $t('field.role_4')},
+    ]
+  },
+
+  /**
    * Predefined types
-   *
-   * @returns {array}
    */
   types() {
     return [
@@ -91,10 +103,9 @@ const constant: Constant = {
   /**
    * Get predefined types by key
    *
-   * @param {string} key
-   * @return {object}
+   * @param key
    */
-  typeByKey(key) {
+  typeByKey(key: string) {
     // Generate map
     const map: { [key: string]: number } = {
       product: 0,
@@ -107,8 +118,6 @@ const constant: Constant = {
 
   /**
    * Predefined statuses
-   *
-   * @returns {array}
    */
   statuses() {
     return [
@@ -128,34 +137,30 @@ const constant: Constant = {
   /**
    * Convert status code to string
    *
-   * @param {number|string} code
-   * @return {string}
+   * @param code
    */
-  statusCodeToString(code) {
+  statusCodeToString(code: string | number) {
     return constant.statuses()[typeof code === "string" ? parseInt(code) : code].name
   },
 
   /**
    * Check if status is resolved
    */
-  isStatusResolved(code) {
+  isStatusResolved(code: number) {
     return code === 2
   },
 
   /**
    * Check if status is aborted
    *
-   * @param {number} code
-   * @return {boolean}
+   * @param code
    */
-  isStatusAborted(code) {
+  isStatusAborted(code: number) {
     return code === 3
   },
 
   /**
    * Predefined genders
-   *
-   * @return {Array}
    */
   genders() {
     return [
@@ -166,8 +171,6 @@ const constant: Constant = {
 
   /**
    * Predefined booleans
-   *
-   * @return {Array}
    */
   booleans() {
     return [
@@ -206,8 +209,6 @@ const constant: Constant = {
 
   /**
    * Transaction types
-   *
-   * @return {Array}
    */
   transactionTypes() {
     return [

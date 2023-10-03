@@ -1,5 +1,6 @@
 package diotviet.server.exceptions;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import diotviet.server.templates.GeneralResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -123,6 +125,25 @@ public class GlobalExceptionHandler {
         GeneralResponse responseBody = commonExceptionTranslate(ex, ex.getKey());
         // Common handle logic
         commonLog(ex, response, HttpStatus.BAD_REQUEST.value(), responseBody);
+    }
+
+
+    @ExceptionHandler(TokenExpiredException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public void handleTokenExpired(HttpServletRequest request, HttpServletResponse response, TokenExpiredException ex) throws IOException {
+        // Create body
+        GeneralResponse responseBody = commonExceptionTranslate(ex, "unauthorized");
+        // Common handle logic
+        commonLog(ex, response, HttpStatus.UNAUTHORIZED.value(), responseBody);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public void handleAccessDenied(HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex) throws IOException {
+        // Create body
+        GeneralResponse responseBody = commonExceptionTranslate(ex, "forbidden");
+        // Common handle logic
+        commonLog(ex, response, HttpStatus.FORBIDDEN.value(), responseBody);
     }
 
     // ****************************

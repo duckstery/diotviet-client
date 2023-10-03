@@ -89,13 +89,13 @@ public class UserController extends BaseController {
      * @param request
      * @return
      */
-    @GetMapping("/register")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody SignupRequest request) {
         // Check if user is existed
         if (service.existsByEmail(request.email())) {
             return ResponseEntity.badRequest().body("ahihi");
         }
-
+System.out.println(request);
         // Create new User
         User user = new User()
                 .setName(request.name())

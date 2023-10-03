@@ -9,6 +9,8 @@ import diotviet.server.repositories.AccessTokenRepository;
 import diotviet.server.repositories.UserRepository;
 import diotviet.server.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,15 +27,27 @@ public class UserService implements UserDetailsService {
     // Properties
     // ****************************
 
+    /**
+     * User repository
+     */
     @Autowired
     private UserRepository repository;
+    /**
+     * Access token repository
+     */
     @Autowired
     private AccessTokenRepository accessTokenRepository;
+
     /**
      * JWT Utility
      */
     @Autowired
     JWTUtils jwtUtils;
+    /**
+     * I18N
+     */
+    @Autowired
+    private MessageSource messageSource;
 
     // ****************************
     // Public API
@@ -114,7 +128,10 @@ public class UserService implements UserDetailsService {
 
         // Check if token exists in user's valid tokens
         if (user.getValidTokens().stream().noneMatch(accessToken -> accessToken.match(jwt.getToken()))) {
-            throw new TokenExpiredException("Token is expired", jwt.getExpiresAtAsInstant());
+            // Get message
+            String message = messageSource.getMessage("token_expired", null, LocaleContextHolder.getLocale());
+
+            throw new TokenExpiredException(message, jwt.getExpiresAtAsInstant());
         }
 
         // Set active token

@@ -59,8 +59,8 @@ public class User implements UserDetails {
     /**
      * Role
      */
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Enumerated
+    @Column(columnDefinition = "smallint")
     private Role role;
 
     /**
@@ -87,6 +87,15 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private String activeToken;
+
+    /**
+     * Staff
+     */
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Staff staff;
 
     // ****************************
     // Public API
@@ -117,10 +126,11 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList(Arrays.stream(switch (role) {
-            case ROLE_ADMIN -> new Role[]{Role.ROLE_ADMIN, Role.ROLE_SUPER, Role.ROLE_STAFF};
-            case ROLE_SUPER -> new Role[]{Role.ROLE_SUPER, Role.ROLE_STAFF};
-            case ROLE_STAFF -> new Role[]{Role.ROLE_STAFF};
-            default -> new Role[]{Role.ROLE_GUEST};
+            case ADMIN -> new Role[]{Role.ADMIN, Role.OWNER, Role.SUPER, Role.STAFF, Role.GUEST};
+            case OWNER -> new Role[]{Role.OWNER, Role.SUPER, Role.STAFF};
+            case SUPER -> new Role[]{Role.SUPER, Role.STAFF};
+            case STAFF -> new Role[]{Role.STAFF};
+            default -> new Role[]{Role.GUEST};
         }).map(Role::toString).toArray(String[]::new));
     }
 

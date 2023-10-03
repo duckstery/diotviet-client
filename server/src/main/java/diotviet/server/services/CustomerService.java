@@ -43,7 +43,7 @@ public class CustomerService {
     @Autowired
     private CustomerDAO dao;
     /**
-     * Product validator
+     * Customer validator
      */
     @Autowired
     private CustomerValidator validator;
@@ -59,7 +59,7 @@ public class CustomerService {
     // ****************************
 
     /**
-     * Get list (paginate) of Product
+     * Get list (paginate) of Customer
      *
      * @param request
      * @return
@@ -79,7 +79,7 @@ public class CustomerService {
     }
 
     /**
-     * Get Product by id
+     * Get Customer by id
      *
      * @param id
      * @return
