@@ -3,8 +3,8 @@
     <template #default="{hide}">
       <q-card>
         <q-date
-            :model-value="tempModel" :range="range" :multiple="multiple"
-            mask="YYYY-MM-DD" navigation-min-year-month="2000/01" minimal
+            :model-value="tempModel" :range="range" :multiple="multiple" :navigation-min-year-month="minYearMonth"
+            mask="YYYY-MM-DD" minimal
             @update:model-value="update($event)"
         />
         <q-card-actions align="right" class="tw-pt-0">
@@ -39,6 +39,11 @@ export default {
     range: Boolean,
     // Multiple
     multiple: Boolean,
+    // Min yearMonth
+    minYearMonth: {
+      type: String,
+      default: '1950/01'
+    }
   },
 
   emits: ['update:modelValue'],

@@ -15,7 +15,7 @@
               src="/images/setup.png"
               :label="$t('field.type')"
             >
-              <TransactionType :value="detail.type" class="tw-my-auto tw-pt-3 tw-ml-3"/>
+              <ConstantField :value="detail.type" target="type" class="tw-my-auto tw-pt-3 tw-ml-3"/>
             </DisplayField>
           </Skeleton>
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
@@ -53,15 +53,15 @@
 <script>
 import DisplayField from "components/General/Other/DisplayField.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
-import TransactionType from "components/Manage/Constant/TransactionType.vue";
 
 import {toRefs} from "vue";
 import {usePageRowDetail} from "src/composables/usePageRowDetail";
+import ConstantField from "components/General/Other/ConstantField.vue";
 
 export default {
   name: 'TransactionDetail',
 
-  components: {TransactionType, Skeleton, DisplayField},
+  components: {ConstantField, Skeleton, DisplayField},
 
   props: {
     // Product props

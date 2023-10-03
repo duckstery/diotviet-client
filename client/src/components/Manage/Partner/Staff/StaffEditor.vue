@@ -10,7 +10,7 @@
         <div class="row">
           <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
             <InputField
-              v-for="key in ['code', 'name', 'groups']"
+              v-for="key in ['code', 'name', 'role']"
               :src="`/images/${key}.png`"
               :label="$t(`field.${key}`)"
               :vuelidate="v$.input[key]"
@@ -23,10 +23,8 @@
                 />
                 <q-select
                   v-else v-bind="props" v-model="input[key]"
-                  dense
-                  map-options emit-value use-chips
-                  :options="groups" option-label="name" option-value="id"
-                  multiple
+                  dense map-options emit-value use-chips option-label="name" option-value="id"
+                  :options="$constant.roles()"
                 />
               </template>
             </InputField>
@@ -117,22 +115,21 @@
 </template>
 
 <script>
-import {useDialogPluginComponent} from 'quasar'
-import {reactive} from 'vue'
-import {useDialogEditor} from "src/composables/useDialogEditor";
-import {required, numeric, email, maxLength} from '@vuelidate/validators'
-
 import InputField from "components/General/Other/InputField.vue";
 import Button from "components/General/Other/Button.vue";
-import DisplayField from "components/General/Other/DisplayField.vue";
 import TextField from "components/General/Other/TextField.vue";
 import UploadMage from "components/General/Other/UploadMage.vue";
 import RichTextField from "components/General/Other/RichTextField.vue";
 import DatePicker from "components/General/Other/DatePicker.vue";
 
+import {useDialogPluginComponent} from 'quasar'
+import {reactive} from 'vue'
+import {useDialogEditor} from "src/composables/useDialogEditor";
+import {required, numeric, email, maxLength} from '@vuelidate/validators'
+
 export default {
   name: 'StaffEditor',
-  components: {DatePicker, RichTextField, UploadMage, TextField, InputField, DisplayField, Button},
+  components: {DatePicker, RichTextField, UploadMage, TextField, InputField, Button},
   props: {
     // Editor mode: 'create', 'update', 'copy'
     mode: String,
@@ -145,7 +142,7 @@ export default {
         id: null,
         code: null,
         name: null,
-        groups: [],
+        role: null,
         gender: true,
         birthday: null,
         address: null,
@@ -206,7 +203,7 @@ export default {
       input: {
         code: {},
         name: {required},
-        groups: {},
+        role: {required},
         isMale: {required},
         birthday: {},
         address: {},

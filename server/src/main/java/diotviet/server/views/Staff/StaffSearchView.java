@@ -96,12 +96,4 @@ public interface StaffSearchView {
      */
     @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.createdAt, \"dd-MM-yyyy HH:mm:ss\")}")
     String getCreatedAt();
-
-    /**
-     * Get last order date time
-     *
-     * @return
-     */
-    @Value("#{T(diotviet.server.utils.OtherUtils).formatDateTime(target.lastOrderAt, \"dd-MM-yyyy HH:mm:ss\")}")
-    String getLastOrderAt();
 }

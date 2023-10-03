@@ -2,8 +2,11 @@ package diotviet.server.services;
 
 import com.querydsl.core.BooleanBuilder;
 import diotviet.server.constants.PageConstants;
+import diotviet.server.constants.Role;
 import diotviet.server.data.StaffDAO;
+import diotviet.server.entities.Staff;
 import diotviet.server.repositories.StaffRepository;
+import diotviet.server.templates.Staff.StaffInteractRequest;
 import diotviet.server.templates.Staff.StaffSearchRequest;
 import diotviet.server.utils.OtherUtils;
 import diotviet.server.validators.StaffValidator;
@@ -15,6 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class StaffService {
@@ -39,6 +46,11 @@ public class StaffService {
     @Autowired
     private StaffValidator validator;
 
+    /**
+     * User service
+     */
+    @Autowired
+    private UserService userService;
     /**
      * Image service
      */
@@ -79,30 +91,32 @@ public class StaffService {
         return validator.isExist(repository.findByIdAndIsDeletedFalse(id, StaffDetailView.class));
     }
 
-//    /**
-//     * Store item
-//     *
-//     * @param request
-//     */
-//    @Transactional(rollbackFor = {Exception.class, Throwable.class})
-//    public Staff store(StaffInteractRequest request) {
-//        // Common validate for create and update
-//        Staff customer = validator.validateAndExtract(request);
-//        // Set createdBy
-//        customer.setCreatedBy(UserService.getRequester());
-//        // Pull Images and set Images, this step will make sure assoc between Staff and Images won't be deleted accidentally
-//        customer.setImages(imageService.pull("customer", customer.getId()));
-//        // Save customer
-//        customer = repository.save(customer);
-//
-//        // Check if there is file to upload
-//        if (Objects.nonNull(request.file())) {
-//            // Save file and bind file to Staff
-//            imageService.uploadAndSave(customer, List.of(request.file()));
-//        }
-//
-//        return customer;
-//    }
+    /**
+     * Store item
+     *
+     * @param request
+     */
+    @Transactional(rollbackFor = {Exception.class, Throwable.class})
+    public Staff store(StaffInteractRequest request) {
+        // Common validate for create and update
+        Staff staff = validator.validateAndExtract(request);
+        // Register an account for Staff
+        staff.setUser(userService.register(staff.getName(), staff.getPhoneNumber(), Role.fromCode(request.role())));
+        // Set createdBy
+        staff.setCreatedBy(UserService.getRequester());
+        // Pull Images and set Images, this step will make sure assoc between Staff and Images won't be deleted accidentally
+        staff.setImages(imageService.pull("staff", staff.getId()));
+        // Save staff
+        staff = repository.save(staff);
+
+        // Check if there is file to upload
+        if (Objects.nonNull(request.file())) {
+            // Save file and bind file to Staff
+            imageService.uploadAndSave(staff, List.of(request.file()));
+        }
+
+        return staff;
+    }
 //
 //    /**
 //     * Delete multiple item with ids
@@ -116,7 +130,7 @@ public class StaffService {
 //        // Delete and get image path (this is physical resource, not database resource)
 //        repository.softDeleteByIds(ids);
 //        // Delete Image
-//        imageService.delete("customer", ids);
+//        imageService.delete("staff", ids);
 //    }
 //
 //

@@ -4,7 +4,6 @@ import diotviet.server.entities.Staff;
 import diotviet.server.repositories.StaffRepository;
 import diotviet.server.templates.Staff.StaffInteractRequest;
 import diotviet.server.traits.BusinessValidator;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,11 +22,6 @@ public class StaffValidator extends BusinessValidator<Staff> {
      */
     @Autowired
     private StaffRepository repository;
-    /**
-     * Group validator
-     */
-    @Autowired
-    private GroupValidator groupValidator;
 
     // ****************************
     // Public API
@@ -43,34 +37,34 @@ public class StaffValidator extends BusinessValidator<Staff> {
         // Primary validation
         validate(request);
         // Convert request to Staff
-        Staff customer = Objects.isNull(request.id())
-                ? map(request, Staff.class)
-                : directMap(request, repository.findWithGroupById(request.id()));
+        Staff staff = map(request, Staff.class);
+        // Check phone number
+        checkPhoneNumber(staff);
         // Optimistic lock check
-        checkOptimisticLock(customer, repository);
+        checkOptimisticLock(staff, repository);
         // Check and get the valid code
-        checkCode(customer, "KH", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
+        checkCode(staff, "NV", repository::findFirstByCodeAndIsDeletedFalse, repository::findFirstByCodeLikeOrderByCodeDesc);
         // Preserve LocalDate type data
-        checkDateData(customer);
+        checkDateData(staff);
 
-        return customer;
+        return staff;
     }
 
     /**
-     * Check if customer is valid by id
+     * Check if staff is valid by id
      *
      * @param id
      * @return
      */
     public Staff isValid(Long id) {
         // Get Staff that is not deleted by id
-        Staff customer = repository.findByIdAndIsDeletedFalse(id, Staff.class);
-        // Check if customer is not exist
-        if (Objects.isNull(customer)) {
-            interrupt("inconsistent_data", "customer");
+        Staff staff = repository.findByIdAndIsDeletedFalse(id, Staff.class);
+        // Check if staff is not exist
+        if (Objects.isNull(staff)) {
+            interrupt("inconsistent_data", "staff");
         }
 
-        return customer;
+        return staff;
     }
 
     // ****************************
@@ -84,27 +78,39 @@ public class StaffValidator extends BusinessValidator<Staff> {
      */
     private void validate(StaffInteractRequest request) {
         assertStringRequired(request, "name", 50);
+        assertStringRequired(request, "phoneNumber", 15);
+        assertNumb(request, "role", true, 0, 4);
         assertStringNonRequired(request, "code", 0, 10);
-        assertStringNonRequired(request, "phoneNumber", 0, 15);
         assertStringNonRequired(request, "address", 0, 11);
+    }
+
+    /**
+     * Check if phone number is used
+     *
+     * @param staff
+     */
+    private void checkPhoneNumber(Staff staff) {
+        if (repository.existsByPhoneNumber(staff.getPhoneNumber())) {
+            interrupt("exists_by", "staff", "phoneNumber");
+        }
     }
 
     /**
      * Check and preserve LocalDate data
      *
-     * @param customer
+     * @param staff
      */
-    private void checkDateData(Staff customer) {
+    private void checkDateData(Staff staff) {
         // Check if Staff is not exist, so nothing need to be preserved
-        Optional<Staff> readonly = repository.findById(customer.getId());
+        Optional<Staff> readonly = repository.findById(staff.getId());
         if (readonly.isEmpty()) {
             return;
         }
 
-        // Get original customer to preserve LocalDate data
+        // Get original staff to preserve LocalDate data
         Staff original = readonly.get();
 
-        // Set data for modified customer
-        customer.setCreatedAt(original.getCreatedAt());
+        // Set data for modified staff
+        staff.setCreatedAt(original.getCreatedAt());
     }
 }

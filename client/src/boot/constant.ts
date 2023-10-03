@@ -60,6 +60,10 @@ export interface Constant {
    */
   transactionTypes(): { id: number, name: string, icon: string, color: string }[]
   /**
+   * Get predefined staff's statuses
+   */
+  staffStatuses(): { id: number, name: string, icon: string, color: string }[]
+  /**
    * Map png to icon
    *
    * @param key
@@ -214,6 +218,16 @@ const constant: Constant = {
     return [
       {id: 0, name: $t('field.spend'), icon: 'fa-solid fa-minus', color: 'negative'},
       {id: 1, name: $t('field.collect'), icon: 'fa-solid fa-plus', color: 'positive'}
+    ]
+  },
+
+  /**
+   * Get predefined staff's statuses
+   */
+  staffStatuses() {
+    return [
+      {id: 0, name: $t('field.activated'), icon: 'fa-solid fa-diamond', color: 'positive'},
+      {id: 1, name: $t('field.deactivated'), icon: 'fa-solid fa-power-off', color: 'negative'}
     ]
   },
 

@@ -1,5 +1,6 @@
 package diotviet.server.templates.Staff;
 
+import diotviet.server.constants.Role;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -22,6 +23,7 @@ public record StaffInteractRequest(
         Long id,
         String code,
         String name,
+        Integer role,
         String address,
         String phoneNumber,
         String email,

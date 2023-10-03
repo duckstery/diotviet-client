@@ -73,12 +73,12 @@ public interface StaffRepository extends JpaRepository<Staff, Long>, QuerydslPre
     Staff findFirstByCodeLikeOrderByCodeDesc(String code);
 
     /**
-     * Find with Group by id
+     * Check if Staff exists by phoneNumber
      *
+     * @param phoneNumber
      * @return
      */
-    @EntityGraph(attributePaths = {"groups"})
-    Staff findWithGroupById(Long id);
+    Boolean existsByPhoneNumber(String phoneNumber);
 
     /**
      * Delete Staff by ID (this operation won't delete assoc, need to delete assoc first)

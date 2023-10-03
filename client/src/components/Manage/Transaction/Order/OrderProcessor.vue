@@ -36,7 +36,7 @@
               </q-item-label>
             </q-item-section>
             <q-item-section class="col-1">
-              <OrderStatus short :value="item.status"/>
+              <ConstantField short :value="item.status" target="status"/>
             </q-item-section>
             <q-item-section>
               <q-item-label lines="1">{{ item.customer }}</q-item-label>
@@ -79,7 +79,7 @@
 <script>
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
-import OrderStatus from "components/Manage/Constant/OrderStatus.vue";
+import ConstantField from "components/General/Other/ConstantField.vue";
 import InputField from "components/General/Other/InputField.vue";
 import OrderProcessorAction from "components/Manage/Transaction/Order/OrderProcessorAction.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
@@ -96,7 +96,7 @@ import {watchOnce} from "@vueuse/core";
 
 export default {
   name: 'OrderEditor',
-  components: {Skeleton, OrderProcessorAction, InputField, OrderStatus, Button, TextField},
+  components: {ConstantField, Skeleton, OrderProcessorAction, InputField, Button, TextField},
 
   props: {
     // Selected id

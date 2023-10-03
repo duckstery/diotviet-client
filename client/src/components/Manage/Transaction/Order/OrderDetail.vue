@@ -38,7 +38,7 @@
               src="/images/info.png"
               :label="$t('field.status')"
             >
-              <OrderStatus :value="detail.status" class="tw-my-auto tw-pt-3 tw-ml-3"/>
+              <ConstantField :value="detail.status" target="status" class="tw-my-auto tw-pt-3 tw-ml-3"/>
             </DisplayField>
           </Skeleton>
           <template v-for="key in ['point', 'createdBy', 'createdAt', 'resolvedAt']">
@@ -118,8 +118,8 @@
 import DisplayField from "components/General/Other/DisplayField.vue";
 import Button from "components/General/Other/Button.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
-import OrderStatus from "components/Manage/Constant/OrderStatus.vue";
 import MarkupTable from "components/Manage/MarkupTable.vue";
+import ConstantField from "components/General/Other/ConstantField.vue";
 
 import {toRefs} from "vue";
 import {usePageRowDetail} from "src/composables/usePageRowDetail";
@@ -131,7 +131,7 @@ import {error} from "src/boot";
 export default {
   name: 'OrderDetail',
 
-  components: {MarkupTable, OrderStatus, Skeleton, Button, DisplayField},
+  components: {ConstantField, MarkupTable, Skeleton, Button, DisplayField},
 
   props: {
     // Product props

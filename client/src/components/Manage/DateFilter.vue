@@ -4,7 +4,7 @@
       <PredefinedDatePicker v-model="predefinedOption" ref="predefined"/>
     </q-radio>
     <q-radio v-model="optionProvider" size="xs" val="2" class="tw-w-full tw-mt-3" @click="invoke('custom')">
-      <DatePicker v-model="customOption" ref="custom" range/>
+      <DatePicker v-model="customOption" ref="custom" range min-year-month="2000/01"/>
     </q-radio>
   </FilterPanel>
 </template>

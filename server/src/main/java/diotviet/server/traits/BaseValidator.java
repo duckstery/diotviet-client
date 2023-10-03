@@ -163,11 +163,7 @@ public abstract class BaseValidator<T> {
 
         try {
             // Cast object to String
-            Long value = Long.parseLong(OtherUtils.invokeGetter(object, attribute).toString());
-
-            if (Objects.isNull(value)) {
-                return;
-            }
+            long value = Long.parseLong(OtherUtils.invokeGetter(object, attribute).toString());
 
             // Assert if string length is less than min
             if (value < min || value > max) {

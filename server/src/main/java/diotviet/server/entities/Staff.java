@@ -54,7 +54,7 @@ public class Staff implements Identifiable, Lockable {
     /**
      * User account
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

@@ -3,6 +3,7 @@ package diotviet.server.services;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import diotviet.server.constants.Role;
 import diotviet.server.entities.AccessToken;
 import diotviet.server.entities.User;
 import diotviet.server.repositories.AccessTokenRepository;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -49,10 +51,14 @@ public class UserService implements UserDetailsService {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Password encoder
+     */
+    PasswordEncoder encoder;
+
     // ****************************
     // Public API
     // ****************************
-
 
     /**
      * Get requester name
@@ -61,6 +67,15 @@ public class UserService implements UserDetailsService {
      */
     public static String getRequester() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName();
+    }
+
+    /**
+     * Set password encoder
+     *
+     * @param passwordEncoder
+     */
+    public PasswordEncoder setPasswordEncoder(PasswordEncoder encoder) {
+        return (this.encoder = encoder);
     }
 
     /**
@@ -138,6 +153,21 @@ public class UserService implements UserDetailsService {
         user.setActiveToken(jwt.getToken());
 
         return user;
+    }
+
+    /**
+     * Register an User
+     *
+     * @param username
+     * @return
+     */
+    public User register(String name, String username, Role role) {
+
+        return new User()
+                .setName(name)
+                .setUsername(username)
+                .setPassword(encoder.encode("123456"))
+                .setRole(role);
     }
 
     // ****************************

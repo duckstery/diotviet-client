@@ -40,7 +40,7 @@
               :src="`/images/gender.png`"
               :label="$t(`field.gender`)"
             >
-              <CustomerGender :value="detail.isMale" class="tw-my-auto tw-pt-3 tw-ml-3"/>
+              <ConstantField :value="detail.isMale" target="gender" class="tw-my-auto tw-pt-3 tw-ml-3"/>
             </DisplayField>
           </Skeleton>
 
@@ -105,7 +105,8 @@ import DisplayField from "components/General/Other/DisplayField.vue";
 import Button from "components/General/Other/Button.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
 import LabelField from "components/General/Other/LabelField.vue";
-import CustomerGender from "components/Manage/Constant/CustomerGender.vue";
+import ConstantField from "components/General/Other/ConstantField.vue";
+
 import {toRefs} from "vue";
 import {usePageRowDetail} from "src/composables/usePageRowDetail";
 import {useInteractiveField} from "src/composables/useInteractiveField";
@@ -113,7 +114,7 @@ import {useInteractiveField} from "src/composables/useInteractiveField";
 export default {
   name: 'CustomerDetail',
 
-  components: {CustomerGender, LabelField, Skeleton, Button, DisplayField},
+  components: {ConstantField, LabelField, Skeleton, Button, DisplayField},
 
   props: {
     // Customer props

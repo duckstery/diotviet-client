@@ -9,24 +9,18 @@
       :key="col.name"
       :props="props"
     >
-      <CustomerGender v-if="col.name === 'isMale' || col.name === 'gender'" :value="col.value" short/>
-      <TransactionType v-else-if="col.name === 'type'" :value="col.value" short/>
-      <BooleanOption v-else-if="typeof col.value === 'boolean'" :value="col.value" short/>
-      <OrderStatus v-else-if="col.name === 'status'" :value="col.value" short/>
+      <ConstantField v-if="typeof col.value === 'boolean' || col.name === 'status'" :value="col.value" :target="col.name" short/>
       <span v-else class="tw-text-sm">{{ col.value }}</span>
     </q-td>
   </q-tr>
 </template>
 
 <script>
-import OrderStatus from "components/Manage/Constant/OrderStatus.vue";
-import CustomerGender from "components/Manage/Constant/CustomerGender.vue";
-import BooleanOption from "components/Manage/Constant/BooleanOption.vue";
-import TransactionType from "components/Manage/Constant/TransactionType.vue";
+import ConstantField from "components/General/Other/ConstantField.vue";
 
 export default {
   name: 'DataTableItem',
-  components: {TransactionType, BooleanOption, CustomerGender, OrderStatus},
+  components: {ConstantField},
 
   props: {
     props: {

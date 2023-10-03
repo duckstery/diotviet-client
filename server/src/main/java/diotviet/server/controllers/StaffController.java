@@ -7,6 +7,7 @@ import diotviet.server.services.GroupService;
 import diotviet.server.services.StaffService;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Staff.StaffInitResponse;
+import diotviet.server.templates.Staff.StaffInteractRequest;
 import diotviet.server.templates.Staff.StaffSearchRequest;
 import diotviet.server.templates.Staff.StaffSearchResponse;
 import diotviet.server.traits.BaseController;
@@ -14,9 +15,11 @@ import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Staff.StaffSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -92,19 +95,19 @@ public class StaffController extends BaseController {
 //    public ResponseEntity<?> show(@PathVariable Long id) {
 //        return ok(staffService.findById(id));
 //    }
-//
-//    /**
-//     * Store (Create) item
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<?> store(StaffInteractRequest request) {
-//        // Store item
-//        return ok(staffService.store(request));
-//    }
-//
+
+    /**
+     * Store (Create) item
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> store(StaffInteractRequest request) {
+        // Store item
+        return ok(staffService.store(request));
+    }
+
 //    /**
 //     * Delete item
 //     *

@@ -1,10 +1,11 @@
 package diotviet.server.controllers;
 
+import diotviet.server.constants.Role;
 import diotviet.server.entities.AccessToken;
 import diotviet.server.entities.User;
+import diotviet.server.services.UserService;
 import diotviet.server.templates.User.LoginRequest;
 import diotviet.server.templates.User.SignupRequest;
-import diotviet.server.services.UserService;
 import diotviet.server.traits.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,12 +37,6 @@ public class UserController extends BaseController {
      */
     @Autowired
     AuthenticationManager authenticationManager;
-
-    /**
-     * Password encoder
-     */
-    @Autowired
-    PasswordEncoder encoder;
 
     // ****************************
     // Public API
@@ -96,13 +90,9 @@ public class UserController extends BaseController {
             return ResponseEntity.badRequest().body("ahihi");
         }
 
-        // Create new User
-        User user = new User()
-                .setName(request.name())
-                .setUsername(request.username())
-                .setPassword(encoder.encode(request.password()))
-                .setRole(request.role());
-
+        // Create a Guest type User
+        User user = service.register(request.name(), request.username(), Role.GUEST);
+        // Save
         service.save(user);
 
         return ok(user);
