@@ -1,7 +1,7 @@
 <template>
   <div v-if="false" v-bind="$attrs"/>
   <!-- Business operations -->
-  <DropdownButton :label="$t('field.import')" icon="fa-solid fa-file-import"
+  <DropdownButton v-if="!noImport" :label="$t('field.import')" icon="fa-solid fa-file-import"
                   stretch color="positive" class="tw-ml-2" no-caps>
     <q-list>
       <q-item clickable v-close-popup @click="onImport(false)">
@@ -30,7 +30,9 @@ export default {
 
   props: {
     // Enable legacy import
-    legacy: Boolean
+    legacy: Boolean,
+    // Disable import
+    noImport: Boolean
   },
 
   emits: ['request'],

@@ -158,13 +158,13 @@ public class CustomerController extends BaseController {
      *
      * @return
      */
-    @GetMapping(value = "/export")
-    public ResponseEntity<?> exportCSV() {
+    @PostMapping(value = "/export")
+    public ResponseEntity<?> exportCSV(CustomerSearchRequest request) {
         // Export Bean to CSV
-        byte[] bytes = export(customerService.export());
+        byte[] bytes = export(customerService.export(request));
 
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=ahihi.imports")
+                .header("Content-Disposition", "attachment; filename=customers.csv")
                 .contentLength(bytes.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new ByteArrayResource(bytes));

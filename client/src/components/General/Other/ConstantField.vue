@@ -19,7 +19,7 @@ export default {
 
   props: {
     // Value
-    value: Boolean,
+    value: Boolean|Number,
     // Short mode
     short: Boolean,
     // Target

@@ -32,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -232,15 +233,18 @@ public class OrderService extends ReportService<OrderReportView> {
 
         return List.of(createdOrderAmount, processingOrderAmount, resolvedOrderAmount, abortedOrderAmount);
     }
-//
-//    /**
-//     * Get all Order for export
-//     *
-//     * @return
-//     */
-//    public List<Order> export() {
-//        return repository.findAll();
-//    }
+
+    /**
+     * Get all Order for export
+     *
+     * @return
+     */
+    public List<Order> export(OrderSearchRequest request) {
+        // Create filter
+        BooleanBuilder filter = dao.createFilter(request);
+
+        return repository.findBy(filter, FluentQuery.FetchableFluentQuery::all);
+    }
 
     // ****************************
     // Private

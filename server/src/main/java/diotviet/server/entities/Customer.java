@@ -53,7 +53,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      * Code
      */
     @Column(length = 10)
-    @CsvBindByName
+    @CsvBindByName(column = "customerCode")
     private String code;
 
     /**
@@ -61,7 +61,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    @CsvCustomBindByName(converter = NameableField.class)
+    @CsvCustomBindByName(column = "customerCategory", converter = NameableField.class)
     @InitIgnore
     @ToString.Exclude
     private Category category;
@@ -76,7 +76,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
             inverseJoinColumns = {@JoinColumn(name = "group_id")}
     )
     @InitIgnore
-    @CsvCustomBindByName(converter = NameableSetField.class)
+    @CsvCustomBindByName(column = "customerGroups", converter = NameableSetField.class)
     @ToString.Exclude
     private Set<Group> groups;
 
@@ -84,14 +84,14 @@ public class Customer implements Identifiable, Lockable, Organizable {
      * Name
      */
     @Column(length = 50)
-    @CsvBindByName
+    @CsvBindByName(column = "customerName")
     private String name;
 
     /**
      * Phone number
      */
     @Column(length = 15)
-    @CsvBindByName
+    @CsvBindByName(column = "customerPhoneNumber")
     private String phoneNumber;
 
     /**
@@ -99,7 +99,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      */
     @Column(length = 100)
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "customerAddress")
     private String address;
 
     /**
@@ -107,7 +107,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      */
     @Temporal(TemporalType.DATE)
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "customerBirthday")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @CsvDate("yyyy-MM-dd")
     private LocalDate birthday;
@@ -116,7 +116,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      * Gender
      */
     @Column(nullable = false)
-    @CsvBindByName
+    @CsvBindByName(column = "customerGender")
     private boolean isMale;
 
     /**
@@ -124,7 +124,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "customerEmail")
     private String email;
 
     /**
@@ -132,7 +132,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "customerFacebook")
     private String facebook;
 
     /**
@@ -140,7 +140,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "customerDescription")
     private String description;
 
     /**
@@ -148,7 +148,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      */
     @Column
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "customerPoint")
     private Long point;
 
     /**
@@ -171,7 +171,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
      */
     @Column(length = 20)
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "customerCreatedBy")
     private String createdBy;
 
     /**
@@ -180,7 +180,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
-    @CsvBindByName
+    @CsvBindByName(column = "customerCreatedAt")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -190,7 +190,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
-    @CsvBindByName
+    @CsvBindByName(column = "customerLastOrderAt")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime lastOrderAt;
 
@@ -200,7 +200,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
-    @CsvBindByName
+    @CsvBindByName(column = "customerLastTransactionAt")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime lastTransactionAt;
 
@@ -212,7 +212,7 @@ public class Customer implements Identifiable, Lockable, Organizable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "customerIsDeleted")
     private Boolean isDeleted = Boolean.FALSE;
 
     @Column(nullable = false)

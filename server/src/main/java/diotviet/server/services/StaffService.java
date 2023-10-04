@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -132,14 +133,17 @@ public class StaffService {
     }
 
 
-//    /**
-//     * Get all Staff for export
-//     *
-//     * @return
-//     */
-//    public List<Staff> export() {
-//        return repository.findAll();
-//    }
+    /**
+     * Get all Staff for export
+     *
+     * @return
+     */
+    public List<Staff> export(StaffSearchRequest request) {
+        // Create filter
+        BooleanBuilder filter = dao.createFilter(request);
+
+        return repository.findBy(filter, FluentQuery.FetchableFluentQuery::all);
+    }
 //
 //    /**
 //     * Search with a string

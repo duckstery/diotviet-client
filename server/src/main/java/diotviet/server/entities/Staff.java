@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
 import com.opencsv.bean.CsvIgnore;
+import com.opencsv.bean.CsvRecurse;
 import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.InitField;
 import diotviet.server.annotations.InitHide;
@@ -49,20 +50,21 @@ public class Staff implements Identifiable, Lockable {
      * Code
      */
     @Column(length = 10)
-    @CsvBindByName
+    @CsvBindByName(column = "staffCode")
     private String code;
 
     /**
      * Name
      */
     @Column(length = 50)
-    @CsvBindByName
+    @CsvBindByName(column = "staffName")
     private String name;
 
     /**
      * User account
      */
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @CsvRecurse
     @InitField("role")
     @JsonIgnore
     @EqualsAndHashCode.Exclude
@@ -73,7 +75,7 @@ public class Staff implements Identifiable, Lockable {
      * Phone number
      */
     @Column(length = 15)
-    @CsvBindByName
+    @CsvBindByName(column = "staffPhoneNumber")
     private String phoneNumber;
 
     /**
@@ -81,7 +83,7 @@ public class Staff implements Identifiable, Lockable {
      */
     @Column(length = 100)
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "staffAddress")
     private String address;
 
     /**
@@ -89,7 +91,7 @@ public class Staff implements Identifiable, Lockable {
      */
     @Temporal(TemporalType.DATE)
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "staffBirthday")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @CsvDate("yyyy-MM-dd")
     private LocalDate birthday;
@@ -98,7 +100,7 @@ public class Staff implements Identifiable, Lockable {
      * Gender
      */
     @Column(nullable = false)
-    @CsvBindByName
+    @CsvBindByName(column = "staffIsMale")
     private boolean isMale;
 
     /**
@@ -106,7 +108,7 @@ public class Staff implements Identifiable, Lockable {
      */
     @Column
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "staffEmail")
     private String email;
 
     /**
@@ -114,7 +116,7 @@ public class Staff implements Identifiable, Lockable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "staffFacebook")
     private String facebook;
 
     /**
@@ -122,7 +124,7 @@ public class Staff implements Identifiable, Lockable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "staffDescription")
     private String description;
 
     /**
@@ -130,7 +132,7 @@ public class Staff implements Identifiable, Lockable {
      */
     @Column
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "staffPoint")
     private Long point;
 
     /**
@@ -153,7 +155,7 @@ public class Staff implements Identifiable, Lockable {
      */
     @Column(length = 20)
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "staffCreatedBy")
     private String createdBy;
 
     /**
@@ -162,7 +164,7 @@ public class Staff implements Identifiable, Lockable {
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
-    @CsvBindByName
+    @CsvBindByName(column = "staffCreatedAt")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -174,7 +176,7 @@ public class Staff implements Identifiable, Lockable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "staffIsDeleted")
     private Boolean isDeleted = Boolean.FALSE;
 
     /**
@@ -184,7 +186,7 @@ public class Staff implements Identifiable, Lockable {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @CsvBindByName
+    @CsvBindByName(column = "staffIsDeactivated")
     private Boolean isDeactivated = Boolean.FALSE;
 
     @Column(nullable = false)

@@ -2,6 +2,8 @@ package diotviet.server.entities;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvIgnore;
 import diotviet.server.constants.Role;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -42,11 +44,13 @@ public class User implements UserDetails {
      * Name
      */
     @Column(length = 30)
+    @CsvBindByName(column = "accountName")
     private String name;
     /**
      * Username
      */
     @Column(length = 50, nullable = false)
+    @CsvBindByName
     private String username;
 
     /**
@@ -54,6 +58,7 @@ public class User implements UserDetails {
      */
     @Column(length = 100, nullable = false)
     @JsonIgnore
+    @CsvBindByName
     private String password;
 
     /**
@@ -61,6 +66,7 @@ public class User implements UserDetails {
      */
     @Enumerated
     @Column(columnDefinition = "smallint")
+    @CsvBindByName
     private Role role;
 
     /**
@@ -70,6 +76,7 @@ public class User implements UserDetails {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @CsvIgnore
     private Collection<AccessToken> tokens;
 
     /**
@@ -80,12 +87,14 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @Where(clause = "expired_at > CURRENT_TIMESTAMP and is_deleted = false")
+    @CsvIgnore
     private Collection<AccessToken> validTokens;
 
     @Transient
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @CsvIgnore
     private String activeToken;
 
     /**
@@ -95,6 +104,7 @@ public class User implements UserDetails {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @CsvIgnore
     private Staff staff;
 
     // ****************************

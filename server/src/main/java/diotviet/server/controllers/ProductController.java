@@ -200,13 +200,13 @@ public class ProductController extends BaseController {
         return ok("");
     }
 
-    @GetMapping(value = "/export")
-    public ResponseEntity<?> exportCSV() {
+    @PostMapping(value = "/export")
+    public ResponseEntity<?> exportCSV(ProductSearchRequest request) {
         // Export Bean to CSV
-        byte[] bytes = export(productService.export());
+        byte[] bytes = export(productService.export(request));
 
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=csv")
+                .header("Content-Disposition", "attachment; filename=products.csv")
                 .contentLength(bytes.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new ByteArrayResource(bytes));

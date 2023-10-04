@@ -5,6 +5,7 @@ import diotviet.server.entities.Group;
 import diotviet.server.entities.Staff;
 import diotviet.server.services.GroupService;
 import diotviet.server.services.StaffService;
+import diotviet.server.services.imports.StaffImportService;
 import diotviet.server.templates.EntityHeader;
 import diotviet.server.templates.Staff.StaffInitResponse;
 import diotviet.server.templates.Staff.StaffInteractRequest;
@@ -14,11 +15,13 @@ import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Staff.StaffSearchView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,11 +42,11 @@ public class StaffController extends BaseController {
      */
     @Autowired
     private GroupService groupService;
-//    /**
-//     * Staff import service
-//     */
-//    @Autowired
-//    private StaffImportService importService;
+    /**
+     * Staff import service
+     */
+    @Autowired
+    private StaffImportService importService;
     /**
      * Utilities for Entity interact
      */
@@ -120,62 +123,40 @@ public class StaffController extends BaseController {
         return ok("");
     }
 
-//    /**
-//     * Import CSV
-//     *
-//     * @param file
-//     * @return
-//     */
-//    @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
-//        // Parse CSV file
-//        List<Staff> staffs = parse(file, Staff.class);
-//        // Prep the importer
-//        importService.prep();
-//        // Re-attach (or pull) any relationship
-//        importService.pull(staffs);
-//        // Run import
-//        importService.runImport(staffs);
-//
-//        return ok("");
-//    }
-//
-//    /**
-//     * Export CSV
-//     *
-//     * @return
-//     */
-//    @GetMapping(value = "/export")
-//    public ResponseEntity<?> exportCSV() {
-//        // Export Bean to CSV
-//        byte[] bytes = export(staffService.export());
-//
-//        return ResponseEntity.ok()
-//                .header("Content-Disposition", "attachment; filename=ahihi.imports")
-//                .contentLength(bytes.length)
-//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                .body(new ByteArrayResource(bytes));
-//    }
-//
-//    /**
-//     * Simple search
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @GetMapping(value = "/query")
-//    public ResponseEntity<?> simpleSearch(StaffSearchRequest request) {
-//        return ok(staffService.query(request));
-//    }
-//
-//    /**
-//     * Report Staff
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @GetMapping(value = "/report")
-//    public ResponseEntity<?> report(RankReportRequest request) {
-//        return ok(staffService.report(request));
-//    }
+    /**
+     * Import CSV
+     *
+     * @param file
+     * @return
+     */
+    @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
+        // Parse CSV file
+        List<Staff> staffs = parse(file, Staff.class);
+        // Prep the importer
+        importService.prep();
+        // Re-attach (or pull) any relationship
+        importService.pull(staffs);
+        // Run import
+        importService.runImport(staffs);
+
+        return ok("");
+    }
+
+    /**
+     * Export CSV
+     *
+     * @return
+     */
+    @PostMapping(value = "/export")
+    public ResponseEntity<?> exportCSV(StaffSearchRequest request) {
+        // Export Bean to CSV
+        byte[] bytes = export(staffService.export(request));
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=staffs.csv")
+                .contentLength(bytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new ByteArrayResource(bytes));
+    }
 }

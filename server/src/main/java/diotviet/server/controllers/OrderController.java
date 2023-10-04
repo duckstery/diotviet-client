@@ -18,7 +18,9 @@ import diotviet.server.utils.PrintUtils;
 import diotviet.server.views.Order.OrderSearchView;
 import diotviet.server.views.Print.Order.OrderOrderPrintView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -221,18 +223,18 @@ public class OrderController extends BaseController {
 //
 //        return ok("");
 //    }
-//
-//    @GetMapping(value = "/export")
-//    public ResponseEntity<?> exportCSV() {
-//        // Export Bean to CSV
-//        byte[] bytes = export(orderService.export());
-//
-//        return ResponseEntity.ok()
-//                .header("Content-Disposition", "attachment; filename=ahihi.imports")
-//                .contentLength(bytes.length)
-//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                .body(new ByteArrayResource(bytes));
-//    }
+
+    @PostMapping(value = "/export")
+    public ResponseEntity<?> exportCSV(OrderSearchRequest request) {
+        // Export Bean to CSV
+        byte[] bytes = export(orderService.export(request));
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=orders.csv")
+                .contentLength(bytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new ByteArrayResource(bytes));
+    }
 
     /**
      * Report Order

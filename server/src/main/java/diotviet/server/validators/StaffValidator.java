@@ -89,7 +89,7 @@ public class StaffValidator extends BusinessValidator<Staff> {
      * @param staff
      */
     private void checkPhoneNumber(Staff staff) {
-        if (repository.existsByPhoneNumberAndIdNot(staff.getPhoneNumber(), staff.getId())) {
+        if (repository.existsByPhoneNumberAndIdNotAndIsDeletedIsFalse(staff.getPhoneNumber(), staff.getId())) {
             interrupt("exists_by", "staff", "phoneNumber");
         }
     }

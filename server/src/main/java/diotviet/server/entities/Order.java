@@ -1,10 +1,7 @@
 package diotviet.server.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvCustomBindByName;
-import com.opencsv.bean.CsvDate;
-import com.opencsv.bean.CsvIgnore;
+import com.opencsv.bean.*;
 import com.querydsl.core.annotations.QueryEntity;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
@@ -61,7 +58,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      * Code
      */
     @Column(length = 10)
-    @CsvBindByName
+    @CsvBindByName(column = "orderCode")
     private String code;
 
     /**
@@ -73,7 +70,7 @@ public class Order implements Identifiable, Lockable, Organizable {
             joinColumns = {@JoinColumn(name = "order_id")},
             inverseJoinColumns = {@JoinColumn(name = "group_id")}
     )
-    @CsvCustomBindByName(converter = NameableSetField.class)
+    @CsvCustomBindByName(column = "orderGroups", converter = NameableSetField.class)
     @InitIgnore
     @ToString.Exclude
     private Set<Group> groups;
@@ -83,7 +80,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    @CsvCustomBindByName(converter = NameableField.class)
+    @CsvRecurse
     @ToString.Exclude
     private Customer customer;
 
@@ -111,7 +108,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      * Phone number
      */
     @Column(length = 15)
-    @CsvBindByName
+    @CsvBindByName(column = "orderPhoneNumber")
     private String phoneNumber;
 
     /**
@@ -119,7 +116,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      */
     @Column(length = 100)
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "orderAddress")
     private String address;
 
     /**
@@ -127,7 +124,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "orderProvisionalAmount")
     private Long provisionalAmount;
 
     /**
@@ -135,7 +132,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "orderDiscount")
     private Long discount;
 
     /**
@@ -143,20 +140,21 @@ public class Order implements Identifiable, Lockable, Organizable {
      */
     @Column(length = 4)
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "orderDiscountUnit")
     private String discountUnit;
 
     /**
      * Price after discount
      */
     @Column
-    @CsvBindByName
+    @CsvBindByName(column = "orderPaymentAmount")
     private Long paymentAmount;
 
     /**
      * Status
      */
     @Enumerated
+    @CsvBindByName(column = "orderStatus")
     @Column(columnDefinition = "smallint")
     private Status status = Status.PENDING;
 
@@ -165,7 +163,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      */
     @Column
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "orderPoint")
     private Long point;
 
     /**
@@ -173,7 +171,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "orderNote")
     private String note;
 
     /**
@@ -181,7 +179,7 @@ public class Order implements Identifiable, Lockable, Organizable {
      */
     @Column(length = 20)
     @InitHide
-    @CsvBindByName
+    @CsvBindByName(column = "orderCreatedBy")
     private String createdBy;
 
     /**
@@ -190,7 +188,7 @@ public class Order implements Identifiable, Lockable, Organizable {
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
-    @CsvBindByName
+    @CsvBindByName(column = "orderCreatedAt")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -200,7 +198,7 @@ public class Order implements Identifiable, Lockable, Organizable {
     @Temporal(TemporalType.TIMESTAMP)
     @InitHide
     @CsvDate("yyyy-MM-dd HH:mm:ss")
-    @CsvBindByName
+    @CsvBindByName(column = "orderResolvedAt")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime resolvedAt;
 

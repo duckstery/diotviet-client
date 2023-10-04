@@ -53,9 +53,10 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
    */
   const onExportRequest = () => {
     // Send request
-    axios.get(`/${key}/export`, {responseType: "blob"})
+    axios.post(`/${key}/export`, {}, {responseType: "blob"})
       // @ts-ignore
       .then(res => exportFile(`${key}_${date.formatDate(Date.now(), 'YYMMDD')}.csv`, res.data))
+      .catch(error.any)
   }
 
   /**

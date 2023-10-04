@@ -44,7 +44,7 @@ public class Product implements Identifiable, Organizable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    @CsvCustomBindByName(converter = NameableField.class)
+    @CsvCustomBindByName(column = "productCategory", converter = NameableField.class)
     @ToString.Exclude
     private Category category;
 
@@ -58,7 +58,7 @@ public class Product implements Identifiable, Organizable {
             inverseJoinColumns = {@JoinColumn(name = "group_id")}
     )
     @InitIgnore
-    @CsvCustomBindByName(converter = NameableSetField.class)
+    @CsvCustomBindByName(column = "productGroups", converter = NameableSetField.class)
     @ToString.Exclude
     private Set<Group> groups;
 
@@ -77,14 +77,14 @@ public class Product implements Identifiable, Organizable {
      * Code
      */
     @Column(length = 10)
-    @CsvBindByName
+    @CsvBindByName(column = "productCode")
     private String code;
 
     /**
      * Name
      */
     @Column(length = 50)
-    @CsvBindByName
+    @CsvBindByName(column = "productTitle")
     private String title;
 
     /**
@@ -92,7 +92,7 @@ public class Product implements Identifiable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "productDescription")
     private String description;
 
     /**
@@ -100,7 +100,7 @@ public class Product implements Identifiable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "productOriginalPrice")
     private Long originalPrice;
 
     /**
@@ -108,7 +108,7 @@ public class Product implements Identifiable, Organizable {
      */
     @Column
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "productDiscount")
     private Long discount;
 
     /**
@@ -116,21 +116,21 @@ public class Product implements Identifiable, Organizable {
      */
     @Column(length = 4)
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "productDiscountUnit")
     private String discountUnit;
 
     /**
      * Price after discount
      */
     @Column
-    @CsvBindByName
+    @CsvBindByName(column = "productActualPrice")
     private Long actualPrice;
 
     /**
      * Measure's unit
      */
     @Column(length = 10)
-    @CsvBindByName
+    @CsvBindByName(column = "productMeasureUnit")
     private String measureUnit;
 
     /**
@@ -175,6 +175,6 @@ public class Product implements Identifiable, Organizable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @InitIgnore
-    @CsvBindByName
+    @CsvBindByName(column = "productIsDeleted")
     private Boolean isDeleted = Boolean.FALSE;
 }

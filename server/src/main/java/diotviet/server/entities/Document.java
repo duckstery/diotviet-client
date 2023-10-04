@@ -33,15 +33,12 @@ public class Document implements Lockable {
     private Group group;
 
     @Column(length = 20)
-    @CsvBindByName
     private String name;
 
     @Column(columnDefinition = "varchar")
-    @CsvBindByName
     private String content;
 
     @Column
-    @CsvBindByName
     private Boolean isActive = false;
 
     @Column(nullable = false)
