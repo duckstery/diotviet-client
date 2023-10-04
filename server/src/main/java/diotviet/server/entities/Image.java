@@ -50,6 +50,7 @@ public class Image {
     @AnyDiscriminator(DiscriminatorType.STRING)
     @AnyDiscriminatorValue(discriminator = "product", entity = Product.class)
     @AnyDiscriminatorValue(discriminator = "customer", entity = Customer.class)
+    @AnyDiscriminatorValue(discriminator = "staff", entity = Staff.class)
     @Column(name = "identifiable_type")
     @Cascade({})
     @JoinTable(

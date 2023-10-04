@@ -1,5 +1,7 @@
 package diotviet.server.constants;
 
+import lombok.Getter;
+
 public enum Role {
     ADMIN(0),
     OWNER(1),
@@ -7,6 +9,7 @@ public enum Role {
     STAFF(3),
     GUEST(4);
 
+    @Getter
     private final int code;
 
     Role(int code) {

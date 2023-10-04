@@ -131,7 +131,7 @@ public class ImageService {
                 .setOwners(new ArrayList<>()));
         // Add new owner to Image
         image.getOwners().add(entity);
-
+        System.out.println(image.getOwners());
         return image;
     }
 }

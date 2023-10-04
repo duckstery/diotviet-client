@@ -15,8 +15,8 @@ public interface StaffSearchView {
      *
      * @return
      */
-    @Value("#{target.user.role}")
-    String getUser();
+    @Value("#{target.user.role.getCode()}")
+    Integer getRole();
 
     /**
      * Code

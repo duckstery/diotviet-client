@@ -5,6 +5,7 @@ import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
 import com.opencsv.bean.CsvIgnore;
 import com.querydsl.core.annotations.QueryEntity;
+import diotviet.server.annotations.InitField;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
 import diotviet.server.views.Identifiable;
@@ -55,6 +56,7 @@ public class Staff implements Identifiable, Lockable {
      * User account
      */
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @InitField("role")
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

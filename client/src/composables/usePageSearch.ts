@@ -1,5 +1,5 @@
 import {ref, onMounted} from 'vue'
-import {axios, util} from "src/boot";
+import {axios, constant, util} from "src/boot";
 import {useRouteKey} from "src/composables/useRouteKey";
 import {Ref} from "@vue/reactivity";
 import {AxiosResponse} from 'axios';
@@ -121,6 +121,8 @@ export function usePageSearch<T>(initFilter: T, initFetchParams?: (T & {search: 
       headers.value.forEach((header: QTableLocalHeader) => {
         if (['actualPrice', 'paymentAmount', 'amount'].includes(header.name)) {
           header.format = util.formatMoney
+        } else if (header.name === 'role') {
+          header.format = (value) => constant.roles()[value]?.name
         }
       })
     }

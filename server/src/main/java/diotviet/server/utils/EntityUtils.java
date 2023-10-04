@@ -1,5 +1,6 @@
 package diotviet.server.utils;
 
+import diotviet.server.annotations.InitField;
 import diotviet.server.annotations.InitHide;
 import diotviet.server.annotations.InitIgnore;
 import diotviet.server.templates.EntityHeader;
@@ -46,8 +47,10 @@ public class EntityUtils {
                 continue;
             }
 
-            // Uncapitalize field name
-            String fieldBase = field.getName();
+            // Get field name from @InitField value or through [field].getName()
+            String fieldBase = field.isAnnotationPresent(InitField.class)
+                    ? field.getAnnotation(InitField.class).value()
+                    : field.getName();
             // Get translation basename
             String basename = base + "_" + fieldBase;
             // Create EntityHeader

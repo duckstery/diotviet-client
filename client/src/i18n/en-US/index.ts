@@ -303,7 +303,6 @@ export default {
     staff_id: 'ID',
     staff_code: 'Staff code',
     staff_name: 'Staff name',
-    staff_user: 'Staff role',
     staff_role: 'Staff role',
     staff_phoneNumber: 'Phone number',
     staff_email: 'Email',

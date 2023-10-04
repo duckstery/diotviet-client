@@ -104,7 +104,6 @@ public class CustomerValidator extends BusinessValidator<Customer> {
         assertStringRequired(request, "name", 50);
         assertStringNonRequired(request, "code", 0, 10);
         assertStringNonRequired(request, "phoneNumber", 0, 15);
-        assertStringNonRequired(request, "address", 0, 11);
     }
 
     /**

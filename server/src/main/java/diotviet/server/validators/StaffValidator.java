@@ -81,7 +81,6 @@ public class StaffValidator extends BusinessValidator<Staff> {
         assertStringRequired(request, "phoneNumber", 15);
         assertNumb(request, "role", true, 0, 4);
         assertStringNonRequired(request, "code", 0, 10);
-        assertStringNonRequired(request, "address", 0, 11);
     }
 
     /**
@@ -90,7 +89,7 @@ public class StaffValidator extends BusinessValidator<Staff> {
      * @param staff
      */
     private void checkPhoneNumber(Staff staff) {
-        if (repository.existsByPhoneNumber(staff.getPhoneNumber())) {
+        if (repository.existsByPhoneNumberAndIdNot(staff.getPhoneNumber(), staff.getId())) {
             interrupt("exists_by", "staff", "phoneNumber");
         }
     }

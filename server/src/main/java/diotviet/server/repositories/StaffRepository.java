@@ -78,7 +78,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long>, QuerydslPre
      * @param phoneNumber
      * @return
      */
-    Boolean existsByPhoneNumber(String phoneNumber);
+    Boolean existsByPhoneNumberAndIdNot(String phoneNumber, Long id);
 
     /**
      * Delete Staff by ID (this operation won't delete assoc, need to delete assoc first)

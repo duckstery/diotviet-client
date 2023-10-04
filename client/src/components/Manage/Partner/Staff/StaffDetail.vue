@@ -101,10 +101,10 @@
 </template>
 
 <script>
-import DisplayField from "components/General/Other/DisplayField.vue";
 import Button from "components/General/Other/Button.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
 import LabelField from "components/General/Other/LabelField.vue";
+import DisplayField from "components/General/Other/DisplayField.vue";
 import ConstantField from "components/General/Other/ConstantField.vue";
 
 import {toRefs} from "vue";
