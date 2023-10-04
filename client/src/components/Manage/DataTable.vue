@@ -57,7 +57,7 @@
 
       <q-space v-if="$q.screen.gt.sm"/>
 
-      <ImEx v-if="!noImEx && $q.screen.gt.sm" @request="request"/>
+      <ImEx v-if="!noImEx && $q.screen.gt.sm" :legacy="legacy" @request="request"/>
       <!-- Columns visibility controls -->
       <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
                       stretch color="positive" :class="headerButtonsClasses" no-caps
@@ -147,7 +147,9 @@ export default {
       default: () => ([])
     },
     // No importer and exporter
-    noImEx: Boolean
+    noImEx: Boolean,
+    // Support legacy import
+    legacy: Boolean
   },
 
   data: () => ({

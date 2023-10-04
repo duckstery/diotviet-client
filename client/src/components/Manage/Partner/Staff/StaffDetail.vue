@@ -6,6 +6,23 @@
           {{ detail.name ?? 'Title' }}
         </div>
       </Skeleton>
+      <div class="tw-mt-2 tw-flex tw-text-sm">
+        <Skeleton v-model="isReady" height="20px" width="200px">
+          <div class="tw-flex tw-mr-3">
+            <q-icon
+              :name="`fa-solid fa-${detail.isDeactivated ? 'xmark' : 'check'}`"
+              :color="detail.isDeactivated ? 'negative' : 'positive'"
+              class="tw-mt-1"
+            />
+            <div class="tw-ml-2">{{ $t('field.activated') }}</div>
+          </div>
+        </Skeleton>
+        <Skeleton v-model="isReady" height="20px" width="200px">
+          <div class="tw-flex tw-mr-3">
+            <div class="tw-ml-2">{{ $t('field.point') }}: {{ detail.point ?? 0 }}</div>
+          </div>
+        </Skeleton>
+      </div>
       <div class="row">
         <!-- Image -->
         <div class="tw-mt-3 col-12 col-lg-4 col-md-6 tw-px-1.5">
@@ -23,7 +40,7 @@
         </div>
         <!-- Primary info -->
         <div class="tw-mt-3 col-12 col-lg-4 col-md-6 tw-px-1.5">
-          <template v-for="key in ['code', 'category', 'groups']">
+          <template v-for="key in ['code', 'name']">
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
@@ -32,6 +49,13 @@
               />
             </Skeleton>
           </template>
+          <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
+            <DisplayField
+              :modelValue="$constant.roles()[detail.role].name"
+              src="/images/role.png"
+              :label="$t('field.role')"
+            />
+          </Skeleton>
 
           <div class="tw-mt-5"/>
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
@@ -70,7 +94,7 @@
             />
           </Skeleton>
 
-          <template v-for="key in ['createdAt', 'lastOrderAt', 'lastTransactionAt']">
+          <template v-for="key in ['createdAt', 'createdBy']">
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"

@@ -11,14 +11,6 @@ public interface StaffSearchView {
     long getId();
 
     /**
-     * Role
-     *
-     * @return
-     */
-    @Value("#{target.user.role.getCode()}")
-    Integer getRole();
-
-    /**
      * Code
      *
      * @return
@@ -31,6 +23,14 @@ public interface StaffSearchView {
      * @return
      */
     String getName();
+
+    /**
+     * Role
+     *
+     * @return
+     */
+    @Value("#{target.user.role.getCode()}")
+    Integer getRole();
 
     /**
      * Email

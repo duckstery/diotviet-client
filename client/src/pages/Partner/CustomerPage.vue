@@ -10,7 +10,8 @@
     </template>
     <template #right>
       <!-- Data table -->
-      <DataTable v-model:pagination="pagination" :headers="headers" :items="items" :loading="loading"
+      <DataTable v-model:pagination="pagination" legacy
+                 :headers="headers" :items="items" :loading="loading"
                  @search="onSearch" @request="onRequest">
         <template #default="props">
           <CustomerDetail v-bind="props" @request="onRequest"/>

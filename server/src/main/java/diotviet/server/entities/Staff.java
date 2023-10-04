@@ -53,6 +53,13 @@ public class Staff implements Identifiable, Lockable {
     private String code;
 
     /**
+     * Name
+     */
+    @Column(length = 50)
+    @CsvBindByName
+    private String name;
+
+    /**
      * User account
      */
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
@@ -61,13 +68,6 @@ public class Staff implements Identifiable, Lockable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private User user;
-
-    /**
-     * Name
-     */
-    @Column(length = 50)
-    @CsvBindByName
-    private String name;
 
     /**
      * Phone number

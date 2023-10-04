@@ -7,7 +7,7 @@
       <q-item clickable v-close-popup @click="onImport(false)">
         <q-item-section>{{$t('message.from', {attr: 'CSV'})}}</q-item-section>
       </q-item>
-      <q-item clickable v-close-popup @click="onImport(true)">
+      <q-item v-if="legacy" clickable v-close-popup @click="onImport(true)">
         <q-item-section>{{$t('message.from', {attr: 'KiotViet'})}}</q-item-section>
       </q-item>
     </q-list>
@@ -28,10 +28,15 @@ export default {
 
   components: {DropdownButton, Button},
 
+  props: {
+    // Enable legacy import
+    legacy: Boolean
+  },
+
   emits: ['request'],
 
   data: () => ({
-    legacy: false
+    onLegacyImport: false
   }),
 
   methods: {
@@ -39,7 +44,7 @@ export default {
      * On import file
      */
     onImport(legacy = false) {
-      this.legacy = legacy
+      this.onLegacyImport = legacy
       this.$refs.picker.pickFiles()
     },
 
@@ -56,7 +61,7 @@ export default {
      * @param file
      */
     onPickFile(file) {
-      this.$emit('request', this.legacy ? 'legacy' : 'import', file)
+      this.$emit('request', this.onLegacyImport ? 'legacy' : 'import', file)
     },
 
     /**
