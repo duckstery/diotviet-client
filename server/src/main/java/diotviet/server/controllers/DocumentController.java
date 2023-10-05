@@ -16,6 +16,7 @@ import diotviet.server.views.Document.DocumentInitView;
 import diotviet.server.views.Print.Order.OrderOrderPrintView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +56,7 @@ public class DocumentController extends BaseController {
      * @return
      */
     @GetMapping("/index")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> index() {
         // Get Group of Type.Print
         List<Group> groups = groupService.getGroups(Type.PRINT);
@@ -74,6 +76,7 @@ public class DocumentController extends BaseController {
      * @return
      */
     @GetMapping("/group/{groupId}")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> searchByGroup(@PathVariable Long groupId) {
         // Init Document by group_id
         List<DocumentInitView> documents = service.init(groupId);
@@ -97,6 +100,7 @@ public class DocumentController extends BaseController {
      * @return
      */
     @GetMapping("{id}")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return ok(service.findById(id));
     }
@@ -108,6 +112,7 @@ public class DocumentController extends BaseController {
      * @return
      */
     @PostMapping("/store")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> store(@RequestBody DocumentInteractRequest request) {
         return ok(service.store(request));
     }
@@ -119,6 +124,7 @@ public class DocumentController extends BaseController {
      * @return
      */
     @DeleteMapping(value = "/delete/{groupId}/{id}")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> delete(@PathVariable("groupId") Long groupId, @PathVariable("id") Long id) {
         // Store item
         service.delete(groupId, id);

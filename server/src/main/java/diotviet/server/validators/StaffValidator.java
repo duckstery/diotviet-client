@@ -1,10 +1,12 @@
 package diotviet.server.validators;
 
 import diotviet.server.entities.Staff;
+import diotviet.server.entities.User;
 import diotviet.server.repositories.StaffRepository;
 import diotviet.server.templates.Staff.StaffInteractRequest;
 import diotviet.server.traits.BusinessValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -36,6 +38,8 @@ public class StaffValidator extends BusinessValidator<Staff> {
     public Staff validateAndExtract(StaffInteractRequest request) {
         // Primary validation
         validate(request);
+        // Check if user is trying to create a Staff that exceed user's role
+        checkRole(request);
         // Convert request to Staff
         Staff staff = map(request, Staff.class);
         // Check phone number
@@ -81,6 +85,22 @@ public class StaffValidator extends BusinessValidator<Staff> {
         assertStringRequired(request, "phoneNumber", 15);
         assertNumb(request, "role", true, 0, 4);
         assertStringNonRequired(request, "code", 0, 10);
+    }
+
+    /**
+     * Check if user is trying to create a Staff that exceed user's role
+     *
+     * @param request
+     */
+    private void checkRole(StaffInteractRequest request) {
+        // Get Staff's role code
+        int staffRole = request.role();
+        // Get user's role code
+        int userRole = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRole().getCode();
+
+        if (staffRole < userRole) {
+            interrupt("role_escalated", "staff", "role");
+        }
     }
 
     /**

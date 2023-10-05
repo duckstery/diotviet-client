@@ -72,7 +72,7 @@ public class JWTUtils {
                 .withSubject(userPrincipal.getName())
                 .withClaim("id", userPrincipal.getId())
                 .withClaim("username", userPrincipal.getUsername())
-                .withClaim("role", userPrincipal.getRole().toString())
+                .withClaim("role", userPrincipal.getRole().getCode())
                 .sign(algorithm);
     }
 

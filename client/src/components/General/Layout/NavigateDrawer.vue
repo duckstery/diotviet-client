@@ -25,8 +25,12 @@
 
         <Button flat icon="fa-solid fa-arrow-left-long" color="white" class="tw-mr-3 tw-mt-3 absolute-top-right"
                 :tooltip="$t('field.close')" @click="$emit('close')"/>
-        <Button flat icon="fa-solid fa-right-from-bracket" color="white" class="tw-mr-3 tw-mb-3 absolute-bottom-right"
-                :tooltip="$t('field.logout')" @click="$emit('logout')"/>
+        <div class="tw-mr-3 tw-mb-3 absolute-bottom-right">
+          <Button flat color="white" icon="fa-solid fa-key"
+                  :tooltip="$t('field.logout')" @click="$emit('password')"/>
+          <Button flat color="white" icon="fa-solid fa-right-from-bracket" class="tw-ml-2"
+                  :tooltip="$t('field.logout')" @click="$emit('logout')"/>
+        </div>
       </div>
     </q-img>
 
@@ -61,7 +65,7 @@ export default {
 
   components: {Button, IconMage},
 
-  emits: ['close', 'logout'],
+  emits: ['close', 'logout', 'password'],
 
   data: () => ({
     miniState: true,

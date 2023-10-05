@@ -23,51 +23,51 @@ const routes = [
     path: '/work',
     component: () => import('layouts/WorkLayout.vue'),
     children: [
-      r('', 'Work', () => import('pages/WorkPage.vue')),
+      r('', 'Work', () => import('pages/WorkPage.vue'), 3),
     ]
   },
   {
     path: '/product',
     component: () => import('layouts/ManageLayout.vue'),
     children: [
-      r('', 'Product', () => import('pages/Product/ProductPage.vue')),
+      r('', 'Product', () => import('pages/Product/ProductPage.vue'), 3),
     ]
   },
   {
     path: '/transaction',
     component: () => import('layouts/ManageLayout.vue'),
     children: [
-      r('', 'Transaction', () => import('pages/Transaction/TransactionPage.vue')),
-      r('order', 'Transaction.Order', () => import('pages/Transaction/OrderPage.vue')),
-      r('other', 'Transaction.Other', () => import('pages/Transaction/OtherPage.vue')),
-      r('history', 'Transaction.History', () => import('pages/Transaction/TransactionHistoryPage.vue')),
+      r('', 'Transaction', () => import('pages/Transaction/TransactionPage.vue'), 3),
+      r('order', 'Transaction.Order', () => import('pages/Transaction/OrderPage.vue'), 3),
+      r('other', 'Transaction.Other', () => import('pages/Transaction/OtherPage.vue'), 2),
+      r('history', 'Transaction.History', () => import('pages/Transaction/TransactionHistoryPage.vue'), 2),
     ]
   },
   {
     path: '/partner',
     component: () => import('layouts/ManageLayout.vue'),
     children: [
-      r('', 'Partner', () => import('pages/Partner/PartnerPage.vue')),
-      r('customer', 'Partner.Customer', () => import('pages/Partner/CustomerPage.vue')),
-      r('staff', 'Partner.Staff', () => import('pages/Partner/StaffPage.vue')),
+      r('', 'Partner', () => import('pages/Partner/PartnerPage.vue'), 3),
+      r('customer', 'Partner.Customer', () => import('pages/Partner/CustomerPage.vue'), 3),
+      r('staff', 'Partner.Staff', () => import('pages/Partner/StaffPage.vue'), 2),
     ]
   },
   {
     path: '/setting',
     component: () => import('layouts/ManageLayout.vue'),
     children: [
-      r('', 'Setting', () => import('pages/Setting/SettingPage.vue')),
-      r('print', 'Setting.Print', () => import('pages/Setting/PrintPage.vue')),
+      r('', 'Setting', () => import('pages/Setting/SettingPage.vue'), 2),
+      r('print', 'Setting.Print', () => import('pages/Setting/PrintPage.vue'), 2),
     ]
   },
   {
     path: '/report',
     component: () => import('layouts/ManageLayout.vue'),
     children: [
-      r('', 'Report', () => import('pages/Report/ReportPage.vue')),
-      r('income', 'Report.Income', () => import('pages/Report/IncomePage.vue')),
-      r('order', 'Report.Order', () => import('pages/Report/ReportOrderPage.vue')),
-      r('rank', 'Report.Rank', () => import('pages/Report/RankPage.vue')),
+      r('', 'Report', () => import('pages/Report/ReportPage.vue'), 2),
+      r('income', 'Report.Income', () => import('pages/Report/IncomePage.vue'), 2),
+      r('order', 'Report.Order', () => import('pages/Report/ReportOrderPage.vue'), 2),
+      r('rank', 'Report.Rank', () => import('pages/Report/RankPage.vue'), 1),
     ]
   },
 

@@ -24,7 +24,7 @@
                 <q-select
                   v-else v-bind="props" v-model="input[key]"
                   dense map-options emit-value use-chips option-label="name" option-value="id"
-                  :options="$constant.roles()"
+                  :options="settableRoles"
                 />
               </template>
             </InputField>
@@ -123,9 +123,11 @@ import RichTextField from "components/General/Other/RichTextField.vue";
 import DatePicker from "components/General/Other/DatePicker.vue";
 
 import {useDialogPluginComponent} from 'quasar'
-import {reactive} from 'vue'
+import {computed, reactive} from 'vue'
 import {useDialogEditor} from "src/composables/useDialogEditor";
+import {constant} from "src/boot"
 import {required, numeric, email, maxLength} from '@vuelidate/validators'
+import {useAuthStore} from "stores/auth";
 
 export default {
   name: 'StaffEditor',
@@ -180,10 +182,13 @@ export default {
   setup(props) {
     // Make a reactive input
     const input = reactive({...props.item})
+    // Get auth store
+    const store = useAuthStore()
 
     return {
       // Data
       input,
+      settableRoles: computed(() => constant.roles().filter(role => role.id >= store.getPrivilege)),
       ...useDialogEditor(input, props.mode),
     }
   },

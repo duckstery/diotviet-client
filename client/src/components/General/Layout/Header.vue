@@ -14,11 +14,17 @@
             <IconMage src="/images/man.png" color="white"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label class="tw-font-medium">{{ getUserName }}</q-item-label>
+            <q-item-label class="tw-font-medium tw-text-ellipsis tw-h-4 tw-max-w-sm tw-line-clamp-1">{{ getUserName }}</q-item-label>
             <q-item-label caption class="text-grey-13">{{ roleDisplayText }}</q-item-label>
           </q-item-section>
           <q-menu>
             <q-list>
+              <q-item clickable v-close-popup @click="onChangePassword">
+                <q-item-section avatar>
+                  <q-icon color="primary" name="fa-solid fa-key"/>
+                </q-item-section>
+                <q-item-section>{{ $t('field.password') }}</q-item-section>
+              </q-item>
               <q-item clickable v-close-popup @click="onLogout">
                 <q-item-section avatar>
                   <q-icon color="primary" name="fa-solid fa-right-from-bracket"/>
@@ -38,17 +44,19 @@
     </q-toolbar>
   </q-header>
 
-  <NavigateDrawer v-model="drawer" @logout="onLogout" @close="drawer = false"/>
+  <NavigateDrawer v-model="drawer" @logout="onLogout" @password="onChangePassword" @close="drawer = false"/>
 </template>
 
 <script>
-import {useAuthStore} from "stores/auth";
-import {mapState} from "pinia";
-
 import NavigateDrawer from "components/General/Layout/NavigateDrawer.vue";
 import Button from "components/General/Other/Button.vue";
 import Setting from "components/General/Layout/Setting.vue";
 import IconMage from "components/General/Other/IconMage.vue";
+import PasswordPanel from "components/Auth/PasswordPanel.vue";
+
+import {Dialog} from "quasar";
+import {useAuthStore} from "stores/auth";
+import {mapState} from "pinia";
 
 export default {
   name: "Header",
@@ -75,6 +83,15 @@ export default {
     onLogout() {
       this.$util.promptConfirm(this.$t('field.logout'))
         .onOk(this.logout)
+    },
+
+    /**
+     * On change password
+     */
+    onChangePassword() {
+      Dialog.create({
+        component: PasswordPanel,
+      })
     },
 
     /**

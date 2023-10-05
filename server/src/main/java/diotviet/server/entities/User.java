@@ -97,15 +97,16 @@ public class User implements UserDetails {
     @CsvIgnore
     private String activeToken;
 
-    /**
-     * Staff
-     */
-    @OneToOne(mappedBy = "user")
-    @JsonIgnore
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @CsvIgnore
-    private Staff staff;
+//    /**
+//     * Staff
+//     */
+//    @OneToOne
+//    @MapsId
+//    @JsonIgnore
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @CsvIgnore
+//    private Staff staff;
 
     // ****************************
     // Public API

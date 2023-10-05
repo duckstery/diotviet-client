@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +51,7 @@ public class TransactionController extends BaseController {
      * @return
      */
     @GetMapping("/index")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> index(TransactionSearchRequest request) {
         // Get headers
         EntityHeader[] headers = entityUtils.getHeaders(Transaction.class);
@@ -66,6 +68,7 @@ public class TransactionController extends BaseController {
      * @return
      */
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> search(TransactionSearchRequest request) {
         // Search for data and response
         return ok(new TransactionSearchResponse(service.paginate(request)));
@@ -78,6 +81,7 @@ public class TransactionController extends BaseController {
      * @return
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return ok(service.findById(id));
     }
@@ -89,6 +93,7 @@ public class TransactionController extends BaseController {
      * @return
      */
     @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> store(TransactionInteractRequest request) {
         // Store item
         service.store(request);
@@ -103,6 +108,7 @@ public class TransactionController extends BaseController {
      * @return
      */
     @GetMapping(value = "/report")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> report(DetailReportRequest request) {
         return ok(service.report(request));
     }
@@ -114,6 +120,7 @@ public class TransactionController extends BaseController {
      * @return
      */
     @GetMapping(value = "/history")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> history(DetailHistoryRequest request) {
         return ok(service.history(request));
     }

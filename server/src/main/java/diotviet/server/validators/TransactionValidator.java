@@ -1,13 +1,12 @@
 package diotviet.server.validators;
 
-import diotviet.server.entities.Product;
 import diotviet.server.entities.Transaction;
 import diotviet.server.templates.Transaction.TransactionInteractRequest;
 import diotviet.server.traits.BusinessValidator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransactionValidator extends BusinessValidator<Product> {
+public class TransactionValidator extends BusinessValidator<Transaction> {
 
     // ****************************
     // Public API

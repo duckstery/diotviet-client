@@ -200,6 +200,10 @@ export default {
     activated: 'Activated',
     deactivated: 'Deactivated',
     role: 'Role',
+    change_password: 'Change password',
+    new_password: 'New password',
+    confirm_password: 'Confirm new password',
+
 
     // ****************************
     // Month
@@ -401,6 +405,7 @@ export default {
     printer_preparing: 'Please wait while printer is being prepared',
     date_range_to_big: 'Display by date? Interval between dates is too big. Display by date will make the graph hard-to-read.',
     developing: 'Under development!',
+    match_password: 'New password does not match confirm new password',
 
     // ****************************
     // Report: Income
@@ -434,5 +439,6 @@ export default {
     status_403: 'You are not authorized to enter this page. Please go back.',
     status_404: 'Oops. Nothing here...',
     forbidden_device: 'This type of device is not allowed to open this page.',
+    unauthorized: 'Your action is unauthorized.'
   }
 }

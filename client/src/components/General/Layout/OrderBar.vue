@@ -1,5 +1,6 @@
 <template>
   <q-tabs
+    v-if="$q.screen.gt.sm"
     :model-value="getActiveId"
     @update:model-value="setActive"
 
@@ -13,7 +14,7 @@
     active-color="primary"
     active-class="d-tab-shape"
     indicator-color="transparent"
-    class="text-white tw-h-[50px] tw-max-w-[720px] q-tabs--scrollable"
+    class="text-white tw-h-[50px] tw-max-w-[580px] q-tabs--scrollable"
   >
     <q-tab
       v-for="(id, index) in getOrders"
@@ -22,7 +23,7 @@
       class="d-tab"
     >
       <q-icon class="q-tab__icon" name="receipt"/>
-      <div class="q-tab__label">{{`${$t('field.order')} ${index + 1}`}}</div>
+      <div class="q-tab__label">{{ `${$t('field.order')} ${index + 1}` }}</div>
       <Button
         flat
         size="sm"
@@ -33,6 +34,14 @@
       />
     </q-tab>
   </q-tabs>
+  <template v-else>
+    <q-select
+      :model-value="getActiveId" @update:model-value="setActive" :options="ordersAsList"
+      outlined dense map-options emit-value option-label="name" option-value="id"
+      class="text-white tw-w-[100px] tw-ml-3 q-tabs--scrollable"
+    />
+    <Button class="tw-ml-3" icon="delete" @click="removeActive" color="white" flat :tooltip="$t('field.new_order')"/>
+  </template>
   <Button icon="add" @click="onCreateOrder" color="white" flat :tooltip="$t('field.new_order')"/>
 </template>
 
@@ -49,7 +58,15 @@ export default {
 
   computed: {
     // "Order" store
-    ...mapState(useOrderStore, ["getActiveId", "getTotalSize", "getOrders"])
+    ...mapState(useOrderStore, ["getActiveId", "getTotalSize", "getOrders"]),
+
+    // Order ids as list
+    ordersAsList() {
+      // Translate order
+      const orderAsText = this.$t('field.order')
+
+      return this.getOrders.map((id, index) => ({name: `${orderAsText} ${index + 1}`, id: id}))
+    }
   },
 
   methods: {
@@ -76,6 +93,14 @@ export default {
       this.$util.promptConfirm(this.$t('message.delete_order')).onOk(() => this.removeOrder(index))
     },
 
+    /**
+     * Remove active order
+     */
+    removeActive() {
+      // Find the activeId in list
+      this.onRemoveOrder(this.getOrders.findIndex(id => id === this.getActiveId))
+    },
+
     // Order store
     ...mapActions(useOrderStore, ['setActive', 'createOrder', 'removeOrder'])
   },
@@ -91,6 +116,7 @@ export default {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
+
 .d-tab-shape:before,
 .d-tab-shape:after {
   content: "";
@@ -140,7 +166,11 @@ export default {
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

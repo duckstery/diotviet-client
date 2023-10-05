@@ -6,6 +6,13 @@
           {{ detail.name ?? 'Title' }}
         </div>
       </Skeleton>
+      <div class="tw-mt-2 tw-flex tw-text-sm">
+        <Skeleton v-model="isReady" height="20px" width="200px">
+          <div class="tw-flex tw-mr-3">
+            <div class="tw-ml-2">{{ $t('field.point') }}: {{ detail.point ?? 0 }}</div>
+          </div>
+        </Skeleton>
+      </div>
       <div class="row">
         <!-- Image -->
         <div class="tw-mt-3 col-12 col-lg-4 col-md-6 tw-px-1.5">

@@ -12,6 +12,7 @@ import org.dhatim.fastexcel.reader.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,6 +62,7 @@ public class LegacyImportController extends BaseController {
      * @return
      */
     @PostMapping(value = "product/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> importProduct(@RequestPart("file") MultipartFile file) {
         // Import legacy Product
         importCSV(productService, file);
@@ -74,6 +76,7 @@ public class LegacyImportController extends BaseController {
      * @return
      */
     @PostMapping(value = "customer/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> importCustomer(@RequestPart("file") MultipartFile file) {
         // Import legacy Customer
         importCSV(customerService, file);
@@ -87,6 +90,7 @@ public class LegacyImportController extends BaseController {
      * @return
      */
     @PostMapping(value = "order/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> importOrder(@RequestPart("file") MultipartFile file) {
         // Import legacy Customer
         importCSV(orderService, file);

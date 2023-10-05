@@ -22,6 +22,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,6 +76,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping("/index")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> index(OrderSearchRequest request) {
         // Get headers
         EntityHeader[] headers = entityUtils.getHeaders(Order.class);
@@ -93,6 +95,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping("/init/print")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> initPrint() {
         // Get active Document content
         String content = documentService.getActiveDocumentOfGroup("print_order").getContent();
@@ -110,6 +113,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> search(OrderSearchRequest request) {
         // Search for data and response
         return ok(new OrderSearchResponse(orderService.paginate(request)));
@@ -122,6 +126,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return ok(orderService.findById(id));
     }
@@ -133,6 +138,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @PostMapping(value = "/order")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> order(@RequestBody OrderInteractRequest request) {
         // Store item
         Long id = orderService.store(request, Status.PENDING);
@@ -147,6 +153,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @PostMapping(value = "/purchase")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> purchase(@RequestBody OrderInteractRequest request) {
         // Store item
         Long id = orderService.store(request, Status.RESOLVED);
@@ -161,6 +168,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @PatchMapping(value = "/patch")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> patch(@RequestBody OrderPatchRequest request) {
         // Store item
         orderService.patch(request);
@@ -175,6 +183,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping(value = "/query")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> simpleSearch(OrderSearchRequest request) {
         return ok(orderService.query(request));
     }
@@ -186,23 +195,25 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping(value = "/print/{id}")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> print(@PathVariable Long id) {
         return ok(orderService.print(id));
     }
 
-//    /**
-//     * Delete item
-//     *
-//     * @param ids
-//     * @return
-//     */
-//    @DeleteMapping(value = "/delete")
-//    public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
-//        // Store item
+    /**
+     * Delete item
+     *
+     * @param ids
+     * @return
+     */
+    @DeleteMapping(value = "/delete")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
+        // Store item
 //        orderService.delete(ids);
-//
-//        return ok("");
-//    }
+
+        return ok("");
+    }
 //
 //    /**
 //     * Import CSV
@@ -225,6 +236,7 @@ public class OrderController extends BaseController {
 //    }
 
     @PostMapping(value = "/export")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> exportCSV(OrderSearchRequest request) {
         // Export Bean to CSV
         byte[] bytes = export(orderService.export(request));
@@ -243,6 +255,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping(value = "/report")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> report(DetailReportRequest request) {
         return ok(orderService.report(request));
     }

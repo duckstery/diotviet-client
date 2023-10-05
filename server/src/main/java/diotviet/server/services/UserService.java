@@ -8,11 +8,16 @@ import diotviet.server.entities.AccessToken;
 import diotviet.server.entities.User;
 import diotviet.server.repositories.AccessTokenRepository;
 import diotviet.server.repositories.UserRepository;
+import diotviet.server.templates.User.ChangePasswordRequest;
 import diotviet.server.utils.JWTUtils;
+import diotviet.server.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,6 +39,12 @@ public class UserService implements UserDetailsService {
      */
     @Autowired
     private UserRepository repository;
+    /**
+     * User validator
+     */
+    @Autowired
+    private UserValidator validator;
+
     /**
      * Access token repository
      */
@@ -162,7 +173,6 @@ public class UserService implements UserDetailsService {
      * @return
      */
     public User register(String name, String username, Role role) {
-
         return new User()
                 .setName(name)
                 .setUsername(username)
@@ -170,9 +180,32 @@ public class UserService implements UserDetailsService {
                 .setRole(role);
     }
 
-    // ****************************
-    // Private
-    // ****************************
+    /**
+     * Change password
+     *
+     * @param request
+     * @return
+     */
+    public void changePassword(AuthenticationManager manager, ChangePasswordRequest request) {
+        try {
+            System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
+            System.out.println(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+            System.out.println(request.password());
+            // Try to validate request's password
+            Authentication authentication = manager.authenticate(new UsernamePasswordAuthenticationToken(
+                    ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername(),
+                    request.password()
+            ));
+
+            // Change password
+            User user = ((User) authentication.getPrincipal()).setPassword(encoder.encode(request.newPassword()));
+            // Save
+            repository.save(user);
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+            validator.interrupt("password_not_match", "user", "password");
+        }
+    }
 
     // ****************************
     // Overridden

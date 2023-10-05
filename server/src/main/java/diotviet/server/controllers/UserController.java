@@ -4,11 +4,14 @@ import diotviet.server.constants.Role;
 import diotviet.server.entities.AccessToken;
 import diotviet.server.entities.User;
 import diotviet.server.services.UserService;
+import diotviet.server.templates.User.ChangePasswordRequest;
 import diotviet.server.templates.User.LoginRequest;
 import diotviet.server.templates.User.SignupRequest;
 import diotviet.server.traits.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -84,6 +87,7 @@ public class UserController extends BaseController {
      * @return
      */
     @PostMapping("/register")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> register(@RequestBody SignupRequest request) {
         // Check if user is existed
         if (service.existsByUsername(request.username())) {
@@ -96,5 +100,20 @@ public class UserController extends BaseController {
         service.save(user);
 
         return ok(user);
+    }
+
+    /**
+     * Store (Create) item
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/changePassword")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<?> store(@RequestBody ChangePasswordRequest request) {
+        // Store item
+        service.changePassword(authenticationManager, request);
+
+        return ok("");
     }
 }

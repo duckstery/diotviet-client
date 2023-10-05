@@ -24,6 +24,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,6 +84,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @GetMapping("/index")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> index(ProductSearchRequest request) {
         // Get headers
         EntityHeader[] headers = entityUtils.getHeaders(Product.class);
@@ -103,6 +105,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @GetMapping("/display")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> display() {
         // Get Product
         List<ProductDisplayView> products = productService.display();
@@ -122,6 +125,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('SUPER')")
     public ResponseEntity<?> search(ProductSearchRequest request) {
         // Search for data and response
         return ok(new ProductSearchResponse(productService.paginate(request)));
@@ -134,6 +138,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return ok(productService.findById(id));
     }
@@ -145,6 +150,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> store(ProductInteractRequest request) {
         // Store item
         productService.store(request);
@@ -159,6 +165,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @PatchMapping(value = "/patch")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> patch(@RequestBody ProductPatchRequest request) {
         // Store item
         productService.patch(request);
@@ -173,6 +180,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @DeleteMapping(value = "/delete")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
         // Store item
         productService.delete(ids);
@@ -187,6 +195,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
         // Parse CSV file
         List<Product> products = parse(file, Product.class);
@@ -201,6 +210,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping(value = "/export")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> exportCSV(ProductSearchRequest request) {
         // Export Bean to CSV
         byte[] bytes = export(productService.export(request));
@@ -219,6 +229,7 @@ public class ProductController extends BaseController {
      * @return
      */
     @GetMapping(value = "/report")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> report(RankReportRequest request) {
         return ok(productService.report(request));
     }

@@ -64,16 +64,7 @@ export const useAuthStore = defineStore('auth', {
       this.jwt = payload.jwt
 
       // Privilege set
-      const role = payload.role.substring(5)
-      if (role === 'ADMIN') {
-        this.privilege = 1
-      } else if (role === 'SUPER') {
-        this.privilege = 2
-      } else if (role === 'STAFF') {
-        this.privilege = 3
-      } else {
-        this.privilege = 4
-      }
+      this.privilege = payload.role
     },
 
     /**

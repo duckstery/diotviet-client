@@ -34,6 +34,13 @@ export interface Auth {
    */
   logout(): Promise<string | void>
   /**
+   * Change password
+   *
+   * @param password
+   * @param newPassword
+   */
+  changePassword(password: string, newPassword: string): Promise<void>
+  /**
    * Reset session
    */
   reset(): void
@@ -143,6 +150,19 @@ const auth: Auth = {
   },
 
   /**
+   * Change password
+   *
+   * @param password
+   * @param newPassword
+   */
+  changePassword(password: string, newPassword: string): Promise<void> {
+    return axios.post(`${process.env.API_BASE_URL}/api/auth/changePassword`, {
+      password: password,
+      newPassword: newPassword,
+    })
+  },
+
+  /**
    * Reset
    */
   reset(): void {
@@ -241,10 +261,10 @@ export default boot(({app, router}) => {
   router.beforeEach((to, from, next) => {
     // Get path privilege (the privilege need to have to access this path)
     // @ts-ignore
-    const pathPrivilege: number = to.meta.privilege ?? 3;
+    const pathPrivilege: number = to.meta.privilege ?? 4;
 
     // The lower the privilege, the higher the role
-    if (store.getPrivilege <= pathPrivilege) {
+    if (to.name === 'Error' || store.getPrivilege <= pathPrivilege) {
       next()
     } else {
       // 403: Forbidden

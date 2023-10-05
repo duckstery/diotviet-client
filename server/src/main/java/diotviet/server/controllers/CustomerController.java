@@ -22,6 +22,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,6 +72,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @GetMapping("/index")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> index(CustomerSearchRequest request) {
         // Get headers
         EntityHeader[] headers = entityUtils.getHeaders(Customer.class);
@@ -91,6 +93,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> search(CustomerSearchRequest request) {
         // Search for data and response
         return ok(new CustomerSearchResponse(customerService.paginate(request)));
@@ -103,6 +106,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return ok(customerService.findById(id));
     }
@@ -114,6 +118,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @PostMapping(value = "/store", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> store(CustomerInteractRequest request) {
         // Store item
         return ok(customerService.store(request));
@@ -126,6 +131,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @DeleteMapping(value = "/delete")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> delete(@RequestParam("ids") Long[] ids) {
         // Store item
         customerService.delete(ids);
@@ -140,6 +146,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> importCSV(@RequestPart("file") MultipartFile file) {
         // Parse CSV file
         List<Customer> customers = parse(file, Customer.class);
@@ -159,6 +166,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @PostMapping(value = "/export")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> exportCSV(CustomerSearchRequest request) {
         // Export Bean to CSV
         byte[] bytes = export(customerService.export(request));
@@ -177,6 +185,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @GetMapping(value = "/query")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> simpleSearch(CustomerSearchRequest request) {
         return ok(customerService.query(request));
     }
@@ -188,6 +197,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @GetMapping(value = "/report")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> report(RankReportRequest request) {
         return ok(customerService.report(request));
     }
