@@ -1,6 +1,7 @@
 package diotviet.server.repositories;
 
 import com.querydsl.core.types.Predicate;
+import diotviet.server.constants.Role;
 import diotviet.server.entities.Staff;
 import diotviet.server.traits.OptimisticLockRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -52,9 +53,23 @@ public interface StaffRepository extends JpaRepository<Staff, Long>, QuerydslPre
     @EntityGraph(attributePaths = {"user", "images"})
     <T> T findByIdAndIsDeletedFalse(Long id, Class<T> classType);
 
+    /**
+     * Find all Staff with User
+     *
+     * @return
+     */
     @Override
     @EntityGraph(attributePaths = {"user"})
     List<Staff> findAll();
+
+    /**
+     * Find all Staff with User by id
+     *
+     * @param longs
+     * @return
+     */
+    @EntityGraph(attributePaths = {"user"})
+    int countByIdInAndUserRoleGreaterThan(List<Long> ids, Role role);
 
     /**
      * Get first by code

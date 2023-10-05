@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -78,6 +79,15 @@ public class UserService implements UserDetailsService {
      */
     public static String getRequester() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName();
+    }
+
+    /**
+     * Get User role
+     *
+     * @return
+     */
+    public static Role getRole() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRole();
     }
 
     /**
@@ -205,6 +215,23 @@ public class UserService implements UserDetailsService {
             e.printStackTrace();
             validator.interrupt("password_not_match", "user", "password");
         }
+    }
+
+    /**
+     * Reset User's passwords
+     *
+     * @param ids
+     */
+    public void resetPassword(Long[] ids) {
+        // Get Users by ids
+        List<User> users = repository.findAllById(List.of(ids));
+
+        // Reset all password to '123456'
+        for (User user : users) {
+            user.setPassword(encoder.encode("123456"));
+        }
+        // Save all
+        repository.saveAll(users);
     }
 
     // ****************************

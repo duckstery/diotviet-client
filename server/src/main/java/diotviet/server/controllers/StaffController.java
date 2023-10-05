@@ -7,10 +7,7 @@ import diotviet.server.services.GroupService;
 import diotviet.server.services.StaffService;
 import diotviet.server.services.imports.StaffImportService;
 import diotviet.server.templates.EntityHeader;
-import diotviet.server.templates.Staff.StaffInitResponse;
-import diotviet.server.templates.Staff.StaffInteractRequest;
-import diotviet.server.templates.Staff.StaffSearchRequest;
-import diotviet.server.templates.Staff.StaffSearchResponse;
+import diotviet.server.templates.Staff.*;
 import diotviet.server.traits.BaseController;
 import diotviet.server.utils.EntityUtils;
 import diotviet.server.views.Staff.StaffSearchView;
@@ -109,6 +106,22 @@ public class StaffController extends BaseController {
     public ResponseEntity<?> store(StaffInteractRequest request) {
         // Store item
         return ok(staffService.store(request));
+    }
+
+
+    /**
+     * Partial update item
+     *
+     * @param request
+     * @return
+     */
+    @PatchMapping(value = "/patch")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<?> patch(@RequestBody StaffPatchRequest request) {
+        // Store item
+        staffService.patch(request);
+
+        return ok("");
     }
 
     /**

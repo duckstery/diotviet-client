@@ -93,8 +93,8 @@
     <q-card-section v-if="!$constant.isStatusAborted(detail.status)" class="tw-flex tw-pt-0">
       <q-space/>
       <Skeleton v-model="isReady" height="40px" width="300px" skeleton-class="tw-w-full">
-        <Button :label="$t('field.history')" icon="fa-solid fa-clock-rotate-left"
-                stretch color="secondary" class="tw-ml-2" no-caps @click="request('history')"/>
+<!--        <Button :label="$t('field.history')" icon="fa-solid fa-clock-rotate-left"-->
+<!--                stretch color="secondary" class="tw-ml-2" no-caps @click="request('history')"/>-->
         <Button :label="$t('field.print')" icon="fa-solid fa-print"
                 stretch color="secondary" class="tw-ml-2" no-caps @click="onPrint"/>
         <template v-if="!$constant.isStatusResolved(detail.status)">

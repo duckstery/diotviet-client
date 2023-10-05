@@ -92,9 +92,9 @@
     <q-card-section class="tw-flex tw-pt-0">
       <q-space/>
       <Skeleton v-model="isReady" height="40px" width="300px" skeleton-class="tw-w-full">
-        <Button :label="$t('field.history')" icon="fa-solid fa-clock-rotate-left"
-                stretch color="secondary" class="tw-ml-2" no-caps @click="request('history')"/>
-        <q-separator class="tw-ml-2" inset vertical/>
+<!--        <Button :label="$t('field.history')" icon="fa-solid fa-clock-rotate-left"-->
+<!--                stretch color="secondary" class="tw-ml-2" no-caps @click="request('history')"/>-->
+<!--        <q-separator class="tw-ml-2" inset vertical/>-->
         <Button :label="$t('field.edit')" icon="fa-solid fa-pen-to-square"
                 stretch color="primary" class="tw-ml-2" no-caps @click="request('update', this.detail)"/>
         <Button :label="$t('field.copy')" icon="fa-solid fa-copy"

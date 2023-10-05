@@ -169,16 +169,19 @@ const error: ErrorHandler = {
       // @ts-ignore
       const httpCode = error.response.status
 
-      // Get handler of httpCode
-      // @ts-ignore
-      if (typeof this[`$${httpCode}`] === 'function') {
-        // Check if case of httpCode is an array, if not, convert to array
+      // Check if cases has case for [httpCode]
+      if (typeof cases === 'object' && cases.hasOwnProperty(`$${httpCode}`)) {
+        // Get handler of httpCode
         // @ts-ignore
-        const bindArgs = Array.isArray(cases[httpCode]) ? cases[httpCode] : [null, cases[httpCode]]
-        // Execute the corresponding http status handler
-        // @ts-ignore
-        this[`$${httpCode}`].bind(...bindArgs)(error)
-        // @ts-ignore
+        if (typeof this[`$${httpCode}`] === 'function') {
+          // Check if case of httpCode is an array, if not, convert to array
+          // @ts-ignore
+          const bindArgs = Array.isArray(cases[httpCode]) ? cases[httpCode] : [null, cases[httpCode]]
+          // Execute the corresponding http status handler
+          // @ts-ignore
+          this[`$${httpCode}`].bind(...bindArgs)(error)
+          // @ts-ignore
+        }
       } else if (typeof cases['default'] === 'function') {
         // @ts-ignore Else if default case is present, execute it
         cases['default'](error)

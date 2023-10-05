@@ -21,7 +21,7 @@ public class Image {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "image_seq")
-    @SequenceGenerator(name = "image_seq", sequenceName = "image_seq")
+    @SequenceGenerator(name = "image_seq", sequenceName = "image_seq", allocationSize = 10)
     private long id;
 
     /**

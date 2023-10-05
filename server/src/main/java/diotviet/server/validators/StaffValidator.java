@@ -3,12 +3,14 @@ package diotviet.server.validators;
 import diotviet.server.entities.Staff;
 import diotviet.server.entities.User;
 import diotviet.server.repositories.StaffRepository;
+import diotviet.server.services.UserService;
 import diotviet.server.templates.Staff.StaffInteractRequest;
 import diotviet.server.traits.BusinessValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,8 +40,15 @@ public class StaffValidator extends BusinessValidator<Staff> {
     public Staff validateAndExtract(StaffInteractRequest request) {
         // Primary validation
         validate(request);
-        // Check if user is trying to create a Staff that exceed user's role
-        checkRole(request);
+
+        // Only check for edit operation
+        if (Objects.nonNull(request.id())) {
+            // Check if User has higher privilege than target
+            hasHigherPrivilegeThan(List.of(request.id()));
+        }
+
+        // Check if User is trying to create a Staff that exceed user's role
+        checkAssignedRole(request);
         // Convert request to Staff
         Staff staff = map(request, Staff.class);
         // Check phone number
@@ -55,20 +64,15 @@ public class StaffValidator extends BusinessValidator<Staff> {
     }
 
     /**
-     * Check if staff is valid by id
+     * Check if current Staff (or User) has higher privilege than specific Staffs (or Users)
      *
-     * @param id
-     * @return
+     * @param ids
      */
-    public Staff isValid(Long id) {
-        // Get Staff that is not deleted by id
-        Staff staff = repository.findByIdAndIsDeletedFalse(id, Staff.class);
-        // Check if staff is not exist
-        if (Objects.isNull(staff)) {
-            interrupt("inconsistent_data", "staff");
+    public void hasHigherPrivilegeThan(List<Long> ids) {
+        // Check if the length of [ids] is equals the count of User with Role less than current User that has id in [ids]
+        if (ids.size() != repository.countByIdInAndUserRoleGreaterThan(ids, UserService.getRole())) {
+            interrupt("can_not_reset", "");
         }
-
-        return staff;
     }
 
     // ****************************
@@ -92,11 +96,11 @@ public class StaffValidator extends BusinessValidator<Staff> {
      *
      * @param request
      */
-    private void checkRole(StaffInteractRequest request) {
+    private void checkAssignedRole(StaffInteractRequest request) {
         // Get Staff's role code
         int staffRole = request.role();
         // Get user's role code
-        int userRole = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRole().getCode();
+        int userRole = UserService.getRole().getCode();
 
         if (staffRole < userRole) {
             interrupt("role_escalated", "staff", "role");

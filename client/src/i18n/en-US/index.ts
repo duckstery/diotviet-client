@@ -203,7 +203,7 @@ export default {
     change_password: 'Change password',
     new_password: 'New password',
     confirm_password: 'Confirm new password',
-
+    reset_password: 'Reset password',
 
     // ****************************
     // Month

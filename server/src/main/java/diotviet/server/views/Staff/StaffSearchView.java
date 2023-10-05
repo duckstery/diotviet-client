@@ -1,8 +1,9 @@
 package diotviet.server.views.Staff;
 
+import diotviet.server.views.Lockable;
 import org.springframework.beans.factory.annotation.Value;
 
-public interface StaffSearchView {
+public interface StaffSearchView extends Lockable {
     /**
      * ID
      *

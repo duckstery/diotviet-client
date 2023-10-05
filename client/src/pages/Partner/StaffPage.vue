@@ -11,7 +11,7 @@
     <template #right>
       <!-- Data table -->
       <DataTable v-model:pagination="pagination" no-im
-                 :headers="headers" :items="items" :loading="loading"
+                 :headers="headers" :items="items" :loading="loading" :operations="operations"
                  @search="onSearch" @request="onRequest">
         <template #default="props">
           <StaffDetail v-bind="props" @request="onRequest"/>
@@ -75,6 +75,12 @@ export default {
         {label: this.$t('field.staff'), to: '/partner/staff', icon: 'fa-user-tie'},
       ]
     },
+    // Operations
+    operations() {
+      return [
+        {key: 'reset_password', event: 'patch', target: 'password', icon: 'fa-check', color: 'positive'},
+      ]
+    }
   }
 }
 </script>

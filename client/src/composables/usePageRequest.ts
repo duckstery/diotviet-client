@@ -3,6 +3,7 @@ import {axios, util, notify, error} from "src/boot";
 import {useI18n} from 'vue-i18n';
 import {useRouteKey} from "src/composables/useRouteKey";
 import {Component} from "vue"
+import {AxiosError} from "axios";
 
 // *************************************************
 // Typed
@@ -78,7 +79,11 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
       .then(onSuccessOperation)
       .catch(error.switch({
         410: fetchCb,
-        default: (err: Error) => notify($t('message.fail', {attr: $t('field.operation')}), 'negative', err)
+        default: (err: AxiosError) => notify(
+          `${$t('message.fail', {attr: $t('field.operation')})}: ${err.response.data.message}`,
+          'negative',
+          err
+        )
       }))
   }
 
