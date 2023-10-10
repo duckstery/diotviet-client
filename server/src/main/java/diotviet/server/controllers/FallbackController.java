@@ -58,4 +58,14 @@ public class FallbackController extends BaseController {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return ok("hello");
     }
+
+    /**
+     * Health check
+     *
+     * @return
+     */
+    @GetMapping("/health")
+    public ResponseEntity<?> health() {
+        return ResponseEntity.ok("");
+    }
 }
