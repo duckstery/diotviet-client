@@ -1,6 +1,7 @@
 import {LocalStorage} from "quasar";
 import {createMD5} from "hash-wasm";
-
+import {boot} from 'quasar/wrappers';
+import {IHasher} from "hash-wasm/dist/lib/WASMInterface";
 
 // *************************************************
 // Typed
@@ -37,9 +38,9 @@ export type AdvanceStorage = LocalStorage & {
 // *************************************************
 
 // Create an increasing MD5 hash-er
-const md5 = (await createMD5()).init().update("{\"pass\":\"aDBLqfkwVtVZpf9kFAwQt_4VvyY39nM6\",\"data\":\"")
+let md5: IHasher
 // Save state
-const state = md5.save()
+let state: Uint8Array
 
 export const AdvanceStorage: AdvanceStorage = {
   ...LocalStorage,
@@ -100,3 +101,10 @@ export const AdvanceStorage: AdvanceStorage = {
     return undefined
   }
 }
+
+export default boot(async ({app}) => {
+  // Create an increasing MD5 hash-er
+  md5 = (await createMD5()).init().update("{\"pass\":\"aDBLqfkwVtVZpf9kFAwQt_4VvyY39nM6\",\"data\":\"")
+  // Save state
+  state = md5.save()
+})
