@@ -1,0 +1,116 @@
+// app global css in SCSS form
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "https://fonts.googleapis.com/css?family=Pacifico:400,500,700";
+
+.brand {
+  font-family: 'Pacifico', sans-serif;
+  font-weight: bolder;
+}
+
+.virtual-scrollbar {
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    border-radius: 10px;
+    background-color: #F5F5F5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #555;
+  }
+}
+
+// Override Tinymce Dialog z-index
+.tox-dialog-wrap__backdrop {
+  z-index: 2001 !important;
+}
+.tox .tox-dialog {
+  z-index: 2002 !important;
+}
+
+.body--light {
+  .brand {
+    color: #f5f5f5;
+  }
+
+  // Brand -- light
+  .text-brand {
+    color: #000 !important;
+  }
+  .bg-brand-soft {
+    background: #fff;
+  }
+  .bg-brand {
+    background: #fff !important;
+  }
+  .print-preview {
+    border: solid $primary;
+    border-radius: 12px;
+  }
+}
+.body--dark {
+  .brand {
+    color: #f5f5f5;
+  }
+
+  // Brand -- dark
+  .text-brand {
+    color: #FFFFFFDE !important;
+  }
+  .bg-brand-soft {
+    background: $dark;
+  }
+  .bg-brand {
+    background: $dark !important;
+  }
+
+  // Primary -- dark
+  .text-primary {
+    color: #1976D2DE !important;
+  }
+  .bg-primary {
+    background: #1976D2DE !important;
+  }
+
+  .text-warning {
+    color: $yellow-9 !important;
+  }
+  .bg-warning {
+    background: $yellow-9 !important;
+  }
+
+  // Primary -- dark
+  .text-teal {
+    color: #009688DE !important;
+  }
+  .bg-teal {
+    background: #009688DE !important;
+  }
+
+  // Text -- dark
+  .q-dark {
+    color: #FFFFFFDE !important;
+  }
+
+  .text-grey-3 {
+    color: $grey-10 !important;
+  }
+  .bg-grey-3 {
+    background: $grey-10 !important;
+  }
+  .print-preview {
+    border: solid #1976D2DE;
+    border-radius: 12px;
+  }
+}
