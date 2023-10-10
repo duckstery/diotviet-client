@@ -95,7 +95,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping("/init/print")
-    @PreAuthorize("hasAuthority('SUPER')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<?> initPrint() {
         // Get active Document content
         String content = documentService.getActiveDocumentOfGroup("print_order").getContent();
