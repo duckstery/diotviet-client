@@ -2,5 +2,15 @@
   "routes": [
     { "handle": "filesystem" },
     { "src": "/.*", "dest": "/" }
+  ],
+  "rewrites": [
+    {
+      "source": "/api",
+      "destination": "https://diotviet-xkqlatwh.b4a.run/"
+    },
+    {
+      "source": "/files",
+      "destination": "https://diotviet-xkqlatwh.b4a.run/"
+    }
   ]
 }
