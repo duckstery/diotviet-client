@@ -1,14 +1,10 @@
 {
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
     {
       "source": "/:path((?!api/).*)",
       "destination": "/"
-    },
-    {
-      "source": "/api/:path*/index",
-      "destination": "https://diotviet-xkqlatwh.b4a.run/api/:path*/index"
     },
     {
       "source": "/api/:path*",
