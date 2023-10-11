@@ -5,6 +5,10 @@
   ],
   "rewrites": [
     {
+      "source": "/:path((?!api/).*)",
+      "destination": "/"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://diotviet-xkqlatwh.b4a.run/api/:path*"
     }
