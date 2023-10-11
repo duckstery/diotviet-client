@@ -5,12 +5,13 @@
   ],
   "rewrites": [
     {
-      "source": "/api",
-      "destination": "https://diotviet-xkqlatwh.b4a.run/"
-    },
-    {
-      "source": "/files",
-      "destination": "https://diotviet-xkqlatwh.b4a.run/"
+      "source": "/api/:path*",
+      "destination": "https://diotviet-xkqlatwh.b4a.run/api/:path*"
     }
-  ]
+  ],
+  "cleanUrls": true,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": null
 }
