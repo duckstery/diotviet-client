@@ -403,7 +403,7 @@ export default {
     least_document: 'You must have at least 1 document',
     print_unavailable: 'Printing is unavailable here',
     printer_preparing: 'Please wait while printer is being prepared',
-    date_range_to_big: 'Display by date? Interval between dates is too big. Display by date will make the graph hard-to-read.',
+    date_range_to_big: 'Do you want to display by date? Interval between dates is too big. Display by date will make the graph hard-to-read.',
     developing: 'Under development!',
     match_password: 'New password does not match confirm new password',
 
