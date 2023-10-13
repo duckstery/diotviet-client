@@ -57,7 +57,7 @@
 
       <q-space v-if="$q.screen.gt.sm"/>
 
-      <ImEx v-if="!noImEx && $q.screen.gt.sm" :legacy="legacy" :no-import="noIm" @request="request"/>
+      <ImEx v-if="!noImEx && privilege === 0 && $q.screen.gt.sm" :legacy="legacy" :no-import="noIm" @request="request"/>
       <!-- Columns visibility controls -->
       <DropdownButton :label="$t('field.display_col')" icon="fa-solid fa-eye"
                       stretch color="positive" :class="headerButtonsClasses" no-caps
@@ -113,6 +113,8 @@ import ExpandableTr from "components/Manage/ExpandableTr.vue";
 import ImEx from "components/Manage/ImEx.vue";
 import DataTableItem from "components/Manage/DataTableItem.vue";
 import DataTableHeader from "components/Manage/DataTableHeader.vue";
+import {mapState} from "pinia";
+import {useAuthStore} from "stores/auth";
 
 export default {
   name: 'DataTable',
@@ -166,6 +168,8 @@ export default {
   }),
 
   computed: {
+    // "Order" store
+    ...mapState(useAuthStore, ['privilege']),
     // Localized header
     localizedHeaders() {
       return this.headers.map(header => {

@@ -122,7 +122,7 @@ export function usePageSearch<T>(initFilter: T, initFetchParams?: (T & {search: 
         if (['actualPrice', 'paymentAmount', 'amount'].includes(header.name)) {
           header.format = util.formatMoney
         } else if (header.name === 'role') {
-          header.format = (value) => constant.roles()[value]?.name
+          header.format = (value: number) => constant.roles()[value]?.name
         }
       })
     }
