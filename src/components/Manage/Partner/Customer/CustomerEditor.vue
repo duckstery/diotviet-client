@@ -128,6 +128,7 @@ import TextField from "components/General/Other/TextField.vue";
 import UploadMage from "components/General/Other/UploadMage.vue";
 import RichTextField from "components/General/Other/RichTextField.vue";
 import DatePicker from "components/General/Other/DatePicker.vue";
+import {useKeyEnforcer} from "src/composables/useKeyEnforcer";
 
 export default {
   name: 'CustomerEditor',
@@ -182,6 +183,8 @@ export default {
   setup(props) {
     // Make a reactive input
     const input = reactive({...props.item})
+    // Use key enforcer
+    useKeyEnforcer("customer")
 
     return {
       // Data
