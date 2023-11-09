@@ -2,7 +2,7 @@
   <!-- Detail section -->
   <div class="row tw-mt-0.5">
     <TextField v-model="bill.quantity" compact required type="number" class="tw-ml-10 tw-w-14"
-               :label="$t('field.quantity')"/>
+               :label="$t('field.quantity')" @blur="onResetQuantity"/>
     <TextField
         :model-value="value.actualPrice"
 
@@ -162,7 +162,7 @@ export default {
       // Bill
       bill: bill, note: ref(''),
       // Put range control on bill.quantity
-      ...useRangeControl(toRef(bill, 'quantity'), 99, 1),
+      ...useRangeControl(toRef(bill, 'quantity'), 99, null),
       // Put price control on bill.quantity
       ...usePriceControl(bill, 'originalPrice', 'actualPrice'),
     }
@@ -199,6 +199,17 @@ export default {
   },
 
   methods: {
+    /**
+     * Reset quantity when blur
+     */
+    onResetQuantity() {
+      console.warn(this.bill.quantity)
+      // Check if user try to input 0 or null to quantity
+      if (this.bill.quantity === '0' || this.$util.isUnset(this.$util.nullIfEmpty(this.bill.quantity))) {
+        // Reset to 1 after blur
+        this.bill.quantity = '1'
+      }
+    },
     /**
      * On reset local bill
      */

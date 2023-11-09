@@ -70,7 +70,7 @@ export function usePriceControl(
       }),
 
       // Control original price max and min value
-      originalMaxMinUnwatch: watch(() => refObj[originalKey], (value) => {
+      originalMaxMinUnwatch: watch(() => refObj[originalKey], (value, oldValue) => {
 
         // Get value as integer
         const intValue = parseInt(value);
@@ -78,11 +78,15 @@ export function usePriceControl(
           nextTick(() => refObj[originalKey] = '999999999')
         } else if (intValue < 0) {
           nextTick(() => refObj[originalKey] = '0')
+        } else if (isNaN(intValue)) {
+          nextTick(() => refObj[originalKey] = '0')
+        } else if (oldValue === '0') {
+          nextTick(() => refObj[originalKey] = intValue.toString())
         }
       }),
 
       // Control discount max and min value
-      discountMaxMinUnwatch: watch(() => refObj.discount, (value) => {
+      discountMaxMinUnwatch: watch(() => refObj.discount, (value, oldValue) => {
         // Get value as integer
         const intValue = parseInt(value);
         // Can not lower than 0
@@ -97,6 +101,8 @@ export function usePriceControl(
           nextTick(() => refObj.discount = '100')
         } else if (isNaN(intValue) || intValue === null || intValue === undefined) {
           nextTick(() => refObj.discount = '0')
+        } else if (oldValue === '0') {
+          nextTick(() => refObj.discount = intValue.toString())
         }
       }),
 
