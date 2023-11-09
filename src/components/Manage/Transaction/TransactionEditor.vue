@@ -46,6 +46,7 @@
                     v-bind="props" v-model="v$.input[key].$model" compact input-class="tw-p-0" required
                     :mask="key === 'amount' ? '###,###,###,###' : ''"
                     :placeholder="key === 'code' ? $t('message.blank_for_auto') : ''"
+                    @blur="onResetAmount(key)"
                 />
               </template>
             </InputField>
@@ -99,7 +100,7 @@ export default {
       reason: ''
     })
     // Use range control on 'amount'
-    useRangeControl(toRef(input, 'amount'), 999999999999, 1000)
+    useRangeControl(toRef(input, 'amount'), 999999999999, 0)
 
     return {
       typeOptions: computed(() => [
@@ -107,6 +108,9 @@ export default {
         {label: $t('field.spend'), val: -1, color: 'negative', icon: 'fa-solid fa-minus'}
       ]),
       input: input,
+      onResetAmount: (key) => {
+        if (key === 'amount' && input.amount.length < 4) input.amount = '1000'
+      },
       ...useDialogEditor(input, props.mode),
     }
   },
