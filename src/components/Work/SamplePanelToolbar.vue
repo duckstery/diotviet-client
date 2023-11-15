@@ -14,6 +14,13 @@
       :tooltip="$t('field.create_transaction')"
       @click="onCreateStream"
   />
+  <Button
+    color="secondary"
+    class="tw-p-2 tw-ml-3"
+    icon="fa-solid fa-ticket"
+    :tooltip="$t('field.create_ticket')"
+    @click="onCreateTicket"
+  />
 
   <q-space/>
 
@@ -27,6 +34,9 @@ import Button from "components/General/Other/Button.vue";
 import CustomerQuery from "components/Work/CustomerQuery.vue";
 import {useOrderProcessor} from "src/composables/useOrderProcessor";
 import {useTransactionEditor} from "src/composables/useTransactionEditor";
+import {useTicketCreator} from "src/composables/useTicketCreator";
+import {computed} from "vue";
+import {useOrderStore} from "stores/order";
 
 export default {
   name: 'SamplePanelToolbar',
@@ -41,7 +51,8 @@ export default {
   setup() {
     return {
       onProcess: useOrderProcessor(null),
-      onCreateStream: useTransactionEditor()
+      onCreateStream: useTransactionEditor(),
+      onCreateTicket: useTicketCreator(useOrderStore().getActiveCustomer)
     }
   },
 

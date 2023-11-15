@@ -146,6 +146,7 @@ export default {
     print_receipt: 'Biên lai',
     print_import: 'Nhập khẩu',
     print_export: 'Xuất khẩu',
+    print_ticket: 'Vé',
     help: 'Giúp đỡ',
     reset: 'Cài lại',
     new: 'Mới',
@@ -204,6 +205,7 @@ export default {
     new_password: 'Mật khẩu mới',
     confirm_password: 'Xác nhận mật khẩu mới',
     reset_password: 'Đặt lại mật khẩu',
+    create_ticket: 'Tạo vé',
 
     // ****************************
     // Month
@@ -356,7 +358,15 @@ export default {
     transaction_id: 'ID',
     transaction_type: 'Kiểu',
     transaction_amount: 'Số tiền',
-    transaction_createdAt: 'Thời gian tạo'
+    transaction_createdAt: 'Thời gian tạo',
+
+    // ****************************
+    // Entity: Ticket
+    // ****************************
+    ticket_value: 'Giá trị vé',
+    ticket_code: 'Mã khách hàng',
+    ticket_name: 'Khách hàng',
+    ticket_phoneNumber: 'Số điện thoại',
   },
 
   // ****************************

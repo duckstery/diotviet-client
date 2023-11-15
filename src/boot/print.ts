@@ -61,6 +61,12 @@ export type PrintGeneratorResource = {
   size?: number
   generators?: PrintGenerators
 }
+// Print options
+export type PrintOptions = {
+  logger: (() => void)
+  qrWidth?: number
+  bcHeight?: number
+}
 
 // *************************************************
 // Implementation
@@ -71,31 +77,34 @@ export class Printer implements IPrinter {
   private _isDirty: boolean
   private _element: Element | null
   private _isReady: boolean
-  private readonly _logger: () => void
 
   readonly tags: PrintTag[]
 
   generators: PrintGenerators | undefined;
   template: string;
+  options: PrintOptions;
 
   /**
    * Constructors
    *
    * @param template
    * @param tags
-   * @param logger
+   * @param options
    */
-  constructor(template: string, tags: PrintTag[], logger: (() => void) | null | undefined) {
+  constructor(template: string, tags: PrintTag[], options: PrintOptions) {
     this._data = null
     this._isDirty = false
     this._element = null
     this._isReady = false
-    this._logger = logger ?? (() => {
-    })
 
     this.template = template
     this.tags = tags
     this.generators = undefined
+    this.options = _.defaultsDeep({}, options, {
+      logger: (() => {/**/}),
+      qrWidth: 150,
+      bcHeight: 50
+    })
 
     util.async(() => {
       // Build generators
@@ -135,7 +144,7 @@ export class Printer implements IPrinter {
   async generate(): Promise<Element | null> {
     // Check if Printer is ready
     if (!this._isReady) {
-      this._logger()
+      this.options.logger()
       return null
     }
     // Check if is not dirty, return cached element
@@ -165,7 +174,7 @@ export class Printer implements IPrinter {
   print(): void {
     // Check if Printer is ready
     if (!this._isReady) {
-      this._logger()
+      this.options.logger()
       return
     }
 
@@ -346,7 +355,7 @@ export class Printer implements IPrinter {
    * @return {string}
    */
   private async _generateQRCode(content: string): Promise<string> {
-    return `<div id="qrcode" title="${content}"><img src="${await QRCode.toDataURL(content, {width: 150})}" alt="Scan me!"></div>`
+    return `<div id="qrcode" title="${content}"><img src="${await QRCode.toDataURL(content, {width: this.options.qrWidth})}" alt="Scan me!"></div>`
   }
 
   /**
@@ -360,7 +369,7 @@ export class Printer implements IPrinter {
     const canvas = document.createElement('canvas')
     // Create Barcode
     // @ts-ignore
-    JsBarcode(canvas, content, {height: 50, font: 'Arial'})
+    JsBarcode(canvas, content, {height: bcHeight, font: 'Arial'})
 
     return `<div id="barcode" title="${content}"><img src="${canvas.toDataURL("image/png")}" alt="Scan me!"></div>`
   }
@@ -432,13 +441,12 @@ const print = (element: string | null) => {
 /**
  * Build template to actual HTML element
  *
- * @param {string} template
- * @param {[PrintTag]} tags
- * @param logger
- * @return {IPrinter}
+ * @param template
+ * @param tags
+ * @param options
  */
-const buildPrinter = (template: string, tags: PrintTag[], logger: (() => void) | null | undefined = null): Printer => {
-  return new Printer(template, tags, logger)
+const buildPrinter = (template: string, tags: PrintTag[], options: PrintOptions): Printer => {
+  return new Printer(template, tags, options)
 }
 
 export {buildPrinter, print}

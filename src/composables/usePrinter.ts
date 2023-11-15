@@ -58,7 +58,7 @@ export function usePrinter(api: string, callback: ((res: AxiosResponse<LocalAxio
         printer.value = buildPrinter(
           res.data.payload.template,
           res.data.payload.tags,
-          () => notify($t('message.printer_preparing'), 'warning')
+          {logger: () => notify($t('message.printer_preparing'), 'warning'),}
         )
       })
       .catch(error.any)

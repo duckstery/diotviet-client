@@ -158,13 +158,13 @@ export default {
 
       // Only care about non-manual mceInsertContent command
       if (command.command === 'mceInsertContent' && !value.manual) {
-        // Stop event from running
-        command.preventDefault()
-        command.stopImmediatePropagation()
-        command.stopPropagation()
-
         // Check if that tag is copied and pasted
         if (value.paste) {
+          // Stop event from running
+          command.preventDefault()
+          command.stopImmediatePropagation()
+          command.stopPropagation()
+
           // Insert pasted content
           return this.editor.insertContent(this.updateTagsTimestamp(value.content), {manual: true})
         }
@@ -173,6 +173,11 @@ export default {
         const printableTag = this.$util.div(value.content ?? value).querySelector('.printable-tag')
         // This means that tag is dragged and dropped
         if (!this.$util.isUnset(printableTag)) {
+          // Stop event from running
+          command.preventDefault()
+          command.stopImmediatePropagation()
+          command.stopPropagation()
+
           // This action must occur after id removal from onAfterDeleteIterableTag
           this.$nextTick(() => this.$nextTick(() => this.tryToInsertTag(this.searchTag(this.tags, printableTag.id.substring(39)))))
         }

@@ -13,6 +13,19 @@ export function useAdvanceStorage<Id extends string = string, S extends StateTre
   const key = `store_${useStore.$id}`
   // Create store
   const store = useStore()
+  // Init fetch
+  const initFetch = () => {
+    if (typeof onFetch === 'function') {
+      nextTick(async () => {
+        // Fetch data
+        const data = await onFetch()
+        // Save data to AdvanceStorage
+        AdvanceStorage.setStrict(key, data)
+        // Init store's state
+        store.$patch({...data})
+      }).catch(error.log)
+    }
+  }
 
   // Check if AdvanceStorage contains entry
   if (AdvanceStorage.has(key)) {
@@ -22,16 +35,11 @@ export function useAdvanceStorage<Id extends string = string, S extends StateTre
     if (data !== undefined) {
       // Init store's state
       store.$patch({...data})
-    } else if (typeof onFetch === 'function') {
-      nextTick(async () => {
-        // Fetch data
-        data = await onFetch()
-        // Save data to AdvanceStorage
-        AdvanceStorage.setStrict(key, data)
-        // Init store's state
-        store.$patch({...data})
-      }).catch(error.log)
+    } else {
+      initFetch()
     }
+  } else {
+    initFetch()
   }
 
   // Transfer store's state to AdvanceStorage

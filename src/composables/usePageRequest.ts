@@ -80,6 +80,7 @@ export function usePageRequest(invoker: () => any | Component, customizer: () =>
       .catch(error.switch({
         410: fetchCb,
         default: (err: AxiosError) => notify(
+          // @ts-ignore
           `${$t('message.fail', {attr: $t('field.operation')})}: ${err.response.data.message}`,
           'negative',
           err

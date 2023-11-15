@@ -146,6 +146,7 @@ export default {
     print_receipt: 'Receipt',
     print_import: 'Import',
     print_export: 'Export',
+    print_ticket: 'Ticket',
     help: 'Help',
     reset: 'Reset',
     new: 'New',
@@ -204,6 +205,7 @@ export default {
     new_password: 'New password',
     confirm_password: 'Confirm new password',
     reset_password: 'Reset password',
+    create_ticket: 'Create ticket',
 
     // ****************************
     // Month
@@ -356,7 +358,15 @@ export default {
     transaction_id: 'Transaction id',
     transaction_type: 'Type',
     transaction_amount: 'Amount',
-    transaction_createdAt: 'Created at'
+    transaction_createdAt: 'Created at',
+
+    // ****************************
+    // Entity: Ticket
+    // ****************************
+    ticket_value: 'Ticket value',
+    ticket_code: 'Customer code',
+    ticket_name: 'Customer name',
+    ticket_phoneNumber: 'Customer phone number',
   },
 
   // ****************************

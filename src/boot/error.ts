@@ -182,6 +182,7 @@ const error: ErrorHandler = {
           this[`$${httpCode}`].bind(...bindArgs)(error)
           // @ts-ignore
         }
+        // @ts-ignore
       } else if (typeof cases['default'] === 'function') {
         // @ts-ignore Else if default case is present, execute it
         cases['default'](error)
