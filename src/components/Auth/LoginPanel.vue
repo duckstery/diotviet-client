@@ -1,7 +1,7 @@
 <template>
   <q-card class="tw-w-1/3 tw-m-auto" flat>
     <q-bar class="bg-primary">
-      <IconMage src="/images/duck.png"/>
+      <IconMage src="images/duck.png"/>
       <q-toolbar-title class="brand tw-ml-3">DiotViet</q-toolbar-title>
       <q-space/>
       <Button flat text-color="white" :icon="castIcon" @click="onYeahAwesome"/>
@@ -16,12 +16,12 @@
 
       <TextField v-model="credential.username" :label="$t('field.username')" class="tw-mt-4">
         <template #before>
-          <IconMage src="/images/user.png"/>
+          <IconMage src="images/user.png"/>
         </template>
       </TextField>
       <TextField v-model="credential.password" :label="$t('field.password')" class="tw-mt-4" type="password">
         <template #before>
-          <IconMage src="/images/pass.png"/>
+          <IconMage src="images/pass.png"/>
         </template>
       </TextField>
       <div class="tw-flex">

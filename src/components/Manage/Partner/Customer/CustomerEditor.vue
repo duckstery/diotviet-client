@@ -32,7 +32,7 @@
             </InputField>
 
             <InputField
-              src="/images/gender.png"
+              src="images/gender.png"
               bottom
               :label="$t('field.gender')"
               :vuelidate="v$.input.isMale"

@@ -10,7 +10,7 @@
         <div class="row">
           <div class="tw-mt-3 col-12 tw-pr-5">
             <InputField
-                src="/images/setup.png"
+                src="images/setup.png"
                 bottom
                 :label="$t('field.type')"
                 :vuelidate="v$.input.type"

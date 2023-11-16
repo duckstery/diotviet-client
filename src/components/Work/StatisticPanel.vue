@@ -4,7 +4,7 @@
                     :style="`max-height: ${maxHeight}px`">
       <div class="row">
         <div class="col-5 tw-px-2">
-          <LabelField src="/images/note.png" :label="$t('field.note')" class="tw-pt-2"/>
+          <LabelField src="images/note.png" :label="$t('field.note')" class="tw-pt-2"/>
           <div class="">
             <q-input
               v-model="getActiveOrder.note"
@@ -24,7 +24,7 @@
           <DisplayField
             :model-value="getActiveOrder.provisionalAmount"
             mask="###,###,###,###"
-            src="/images/provisional_amount.png"
+            src="images/provisional_amount.png"
             inner-class="tw-w-28"
             :label="$t('field.provisional_amount')"
             space
@@ -32,7 +32,7 @@
 
           <!-- Discount -->
           <div class="flex">
-            <LabelField src="/images/discount.png" :label="$t('field.discount')" class="tw-pt-2"/>
+            <LabelField src="images/discount.png" :label="$t('field.discount')" class="tw-pt-2"/>
             <q-toggle
               v-model="getActiveOrder.discountUnit"
 
@@ -60,7 +60,7 @@
             <DisplayField
               :model-value="getActiveOrder.paymentAmount"
               mask="###,###,###,###"
-              src="/images/payment_amount.png"
+              src="images/payment_amount.png"
               inner-class="tw-w-28"
               :label="$t('field.payment_amount')"
               space

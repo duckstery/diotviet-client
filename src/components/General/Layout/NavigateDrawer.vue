@@ -18,7 +18,7 @@
     <q-img v-if="$q.screen.lt.md" :src="imageSrc" style="height: 150px; z-index: 1">
       <div class="absolute tw-w-full tw-h-full">
         <q-avatar size="56px" class="q-mb-sm">
-          <IconMage src="/images/man.png" color="white" size="56px"/>
+          <IconMage src="images/man.png" color="white" size="56px"/>
         </q-avatar>
         <div class=" text-weight-bold">{{ name }}</div>
         <div>{{ $t(`field.role_${privilege}`) }}</div>

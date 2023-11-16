@@ -52,7 +52,7 @@
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
             <DisplayField
               :modelValue="$constant.roles()[detail.role].name"
-              src="/images/role.png"
+              src="images/role.png"
               :label="$t('field.role')"
             />
           </Skeleton>

@@ -35,7 +35,7 @@
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
             <DisplayField
               custom
-              src="/images/info.png"
+              src="images/info.png"
               :label="$t('field.status')"
             >
               <ConstantField :value="detail.status" target="status" class="tw-my-auto tw-pt-3 tw-ml-3"/>

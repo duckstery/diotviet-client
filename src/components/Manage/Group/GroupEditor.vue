@@ -10,14 +10,14 @@
         <div class="row">
           <div class="tw-mt-3 col-12">
             <InputField
-              src="/images/name.png" :label="$t(`field.name`)" :vuelidate="v$.input.name"
+              src="images/name.png" :label="$t(`field.name`)" :vuelidate="v$.input.name"
             >
               <template #default="props">
                 <TextField v-model="v$.input.name.$model" v-bind="props" compact input-class="tw-p-0"/>
               </template>
             </InputField>
             <InputField
-              src="/images/category.png" :label="$t('field.type')" :vuelidate="v$.input.type"
+              src="images/category.png" :label="$t('field.type')" :vuelidate="v$.input.type"
             >
               <template #default="props">
                 <TextField :model-value="$constant.types()[item.type]['name']"

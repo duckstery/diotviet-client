@@ -10,7 +10,7 @@
             </q-tabs>
           </q-toolbar>
           <q-toolbar>
-            <IconMage src="/images/print.png" color="white"/>
+            <IconMage src="images/print.png" color="white"/>
             <Select v-model="activeDoc.id"
                     :placeholder="$t('field.template')" :options="docs"
                     emit-value color="primary" bg-color="brand" class="tw-w-1/4 tw-ml-3">

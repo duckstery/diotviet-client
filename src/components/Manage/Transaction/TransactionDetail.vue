@@ -12,7 +12,7 @@
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
             <DisplayField
               custom
-              src="/images/setup.png"
+              src="images/setup.png"
               :label="$t('field.type')"
             >
               <ConstantField :value="detail.type" target="type" class="tw-my-auto tw-pt-3 tw-ml-3"/>
@@ -21,14 +21,14 @@
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
             <DisplayField
               mask="###,###,###,###"
-              src="/images/amount.png"
+              src="images/amount.png"
               :modelValue="detail.amount"
               :label="$t('field.amount')"
             />
           </Skeleton>
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
             <DisplayField
-              src="/images/created_at.png"
+              src="images/created_at.png"
               :modelValue="detail.createdAt"
               :label="$t('field.created_at')"
             />
