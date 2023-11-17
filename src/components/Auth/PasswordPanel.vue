@@ -11,7 +11,7 @@
           <div class="tw-mt-3 col-12 tw-pr-5">
             <InputField
               v-for="key in ['password', 'newPassword', 'confirmPassword']"
-              :src="`/images/${key === 'password' ? '' : 'new_'}pass.png`"
+              :src="`images/${key === 'password' ? '' : 'new_'}pass.png`"
               :label="$t(`field.${$util.camelToSnake(key)}`)"
               :vuelidate="v$.input[key]"
               :space="$q.screen.gt.xs"

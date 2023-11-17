@@ -34,7 +34,7 @@
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
-                :src="`/images/${key}.png`"
+                :src="`images/${key}.png`"
                 :label="$t(`field.${key}`)"
               />
             </Skeleton>
@@ -44,7 +44,7 @@
           <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
             <DisplayField
               custom
-              :src="`/images/gender.png`"
+              :src="`images/gender.png`"
               :label="$t(`field.gender`)"
             >
               <ConstantField :value="detail.isMale" target="gender" class="tw-my-auto tw-pt-3 tw-ml-3"/>
@@ -55,7 +55,7 @@
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
-                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :src="`images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
                 :interactive="key !== 'birthday'"
                 @interact="onInteract(key, detail[key])"
@@ -81,7 +81,7 @@
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
-                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :src="`images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
               />
             </Skeleton>

@@ -13,7 +13,7 @@
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
-                :src="`/images/${key}.png`"
+                :src="`images/${key}.png`"
                 :label="$t(`field.${key}`)"
               />
             </Skeleton>
@@ -23,7 +23,7 @@
               <DisplayField
                 interactive
                 :modelValue="detail[key]"
-                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :src="`images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
                 @interact="onInteract(key, detail[key])"
               />
@@ -45,7 +45,7 @@
             <Skeleton v-model="isReady" height="30px" skeleton-class="tw-mt-2.5">
               <DisplayField
                 :modelValue="detail[key]"
-                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :src="`images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
               />
             </Skeleton>
@@ -82,7 +82,7 @@
                 space
                 mask="###,###,###,###"
                 :modelValue="detail[key]"
-                :src="`/images/${$util.camelToSnake(key)}.png`"
+                :src="`images/${$util.camelToSnake(key)}.png`"
                 :label="$t(`field.${$util.camelToSnake(key)}`)"
               />
             </Skeleton>

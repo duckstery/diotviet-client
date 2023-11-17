@@ -37,7 +37,7 @@
             </InputField>
             <InputField
                 v-for="key in ['amount', 'reason']"
-                :src="`/images/${key}.png`"
+                :src="`images/${key}.png`"
                 :label="$t(`field.${key}`)"
                 :vuelidate="v$.input[key]"
             >

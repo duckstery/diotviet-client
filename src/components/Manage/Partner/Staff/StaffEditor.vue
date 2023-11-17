@@ -11,7 +11,7 @@
           <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
             <InputField
               v-for="key in ['code', 'name', 'role']"
-              :src="`/images/${key}.png`"
+              :src="`images/${key}.png`"
               :label="$t(`field.${key}`)"
               :vuelidate="v$.input[key]"
             >
@@ -58,7 +58,7 @@
 
             <InputField
               v-for="key in ['birthday']"
-              :src="`/images/${$util.camelToSnake(key)}.png`"
+              :src="`images/${$util.camelToSnake(key)}.png`"
               :label="$t(`field.${$util.camelToSnake(key)}`)"
               :vuelidate="v$.input[key]"
             >
@@ -71,7 +71,7 @@
           <div class="tw-mt-3 col-12 col-md-6 tw-pr-5">
             <InputField
               v-for="key in ['address', 'phoneNumber', 'email', 'facebook']"
-              :src="`/images/${$util.camelToSnake(key)}.png`"
+              :src="`images/${$util.camelToSnake(key)}.png`"
               :label="$t(`field.${$util.camelToSnake(key)}`)"
               :vuelidate="v$.input[key]"
             >
@@ -87,7 +87,7 @@
           <div v-for="key in ['file', 'description']" class="tw-mt-3 col-12">
             <InputField
               horizontal
-              :src="`/images/${key === 'file' ? 'image' : 'note'}.png`"
+              :src="`images/${key === 'file' ? 'image' : 'note'}.png`"
               :label="$t(`field.${key === 'file' ? 'image' : key}`)"
               :vuelidate="v$.input[key]"
             >
