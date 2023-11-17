@@ -125,7 +125,7 @@ import {toRefs} from "vue";
 import {usePageRowDetail} from "src/composables/usePageRowDetail";
 import {useInteractiveField} from "src/composables/useInteractiveField";
 import {useDiscountCalculator} from "src/composables/useDiscountCalculator";
-import {useOrderProcessor} from "src/composables/useOrderProcessor";
+import {useOrderProcessorEditor} from "src/composables/useOrderProcessorEditor";
 import {error} from "src/boot";
 
 export default {
@@ -165,7 +165,7 @@ export default {
       ...pageRowDetail,
       ...useInteractiveField(),
       getDiscountAmount: useDiscountCalculator(),
-      onHandleOrder: useOrderProcessor(pageRowDetail.detail),
+      onHandleOrder: useOrderProcessorEditor(pageRowDetail.detail),
     }
   },
 

@@ -49,7 +49,7 @@ import {Dark} from "quasar";
 import {useI18n} from "vue-i18n";
 
 export default {
-  name: 'OrderEditorAction',
+  name: 'OrderProcessorAction',
 
   components: {IconMage, TextField, Button},
 

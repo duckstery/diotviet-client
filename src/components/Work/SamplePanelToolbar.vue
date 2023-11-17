@@ -32,7 +32,7 @@
 import TextField from "components/General/Other/TextField.vue";
 import Button from "components/General/Other/Button.vue";
 import CustomerQuery from "components/Work/CustomerQuery.vue";
-import {useOrderProcessor} from "src/composables/useOrderProcessor";
+import {useOrderProcessorEditor} from "src/composables/useOrderProcessorEditor";
 import {useTransactionEditor} from "src/composables/useTransactionEditor";
 import {useTicketCreator} from "src/composables/useTicketCreator";
 import {computed} from "vue";
@@ -50,7 +50,7 @@ export default {
 
   setup() {
     return {
-      onProcess: useOrderProcessor(null),
+      onProcess: useOrderProcessorEditor(null),
       onCreateStream: useTransactionEditor(),
       onCreateTicket: useTicketCreator(useOrderStore().getActiveCustomer)
     }

@@ -1,6 +1,6 @@
 import {Dialog, DialogChainObject} from "quasar";
 // @ts-ignore
-import OrderProcessor from "components/Manage/Transaction/Order/OrderProcessor.vue";
+import OrderProcessorEditor from "components/Manage/Transaction/Order/OrderProcessorEditor.vue";
 import {Ref} from "@vue/reactivity";
 import {notify, util} from "src/boot";
 import {useI18n} from "vue-i18n";
@@ -13,7 +13,7 @@ import {inject} from "vue";
  * @param printerInjectKey
  * @return {function(): DialogChainObject}
  */
-export function useOrderProcessor(detailRef: Ref<{ code: string }> | null, printerInjectKey: string = 'printer'): () => DialogChainObject {
+export function useOrderProcessorEditor(detailRef: Ref<{ code: string }> | null, printerInjectKey: string = 'printer'): () => DialogChainObject {
   // Get $t
   const $t = useI18n().t
   // Try to inject printer
@@ -25,7 +25,7 @@ export function useOrderProcessor(detailRef: Ref<{ code: string }> | null, print
 
   // Invoke dialog
   return () => Dialog.create({
-    component: OrderProcessor,
+    component: OrderProcessorEditor,
     // @ts-ignore
     componentProps: {selectedCode: util.isUnset(detailRef) ? null : detailRef.value.code, printer: printer}
   })
