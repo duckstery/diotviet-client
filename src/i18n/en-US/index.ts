@@ -206,6 +206,7 @@ export default {
     confirm_password: 'Confirm new password',
     reset_password: 'Reset password',
     create_ticket: 'Create ticket',
+    inspect_identity: 'Inspect identity',
 
     // ****************************
     // Month
@@ -416,6 +417,9 @@ export default {
     date_range_to_big: 'Do you want to display by date? Interval between dates is too big. Display by date will make the graph hard-to-read.',
     developing: 'Under development!',
     match_password: 'New password does not match confirm new password',
+    process_order_manage_hint: 'Handle customer\'s orders',
+    create_transaction_manage_hint: 'Create out-stream usage',
+    inspect_identity_manage_hint: 'Scan code for customer\'s identity',
 
     // ****************************
     // Report: Income

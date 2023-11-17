@@ -1,6 +1,7 @@
 import {boot} from 'quasar/wrappers'
 import axios, {CanceledError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios'
 import Qs from "qs";
+import {Platform} from "quasar";
 
 // *************************************************
 // Typed
@@ -69,7 +70,7 @@ axiosInstance.interceptors.response.use(function (response) {
 })
 
 // Config Axios
-axiosInstance.defaults.baseURL = `${process.env.API_BASE_URL}${process.env.API_PREFIX_PATH}`
+axiosInstance.defaults.baseURL = `${Platform.is.capacitor ? process.env.API_BASE_CAPACITOR_URL : process.env.API_BASE_URL}${process.env.API_PREFIX_PATH}`
 // @ts-ignore
 axiosInstance.defaults.headers = {
   'Accept': 'application/json;charset=utf-8',

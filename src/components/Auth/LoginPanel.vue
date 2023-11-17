@@ -1,5 +1,5 @@
 <template>
-  <q-card class="tw-w-1/3 tw-m-auto" flat>
+  <q-card class="tw-w-[480px] tw-m-auto" flat>
     <q-bar class="bg-primary">
       <IconMage src="images/duck.png"/>
       <q-toolbar-title class="brand tw-ml-3">DiotViet</q-toolbar-title>

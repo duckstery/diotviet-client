@@ -70,6 +70,15 @@ const routes = [
       r('rank', 'Report.Rank', () => import('pages/Report/RankPage.vue'), 1),
     ]
   },
+  {
+    path: '/operation',
+    component: () => import('layouts/AndroidLayout.vue'),
+    children: [
+      r('process_order', 'ProcessOrder', () => import('pages/Operation/ProcessOrderPage.vue'), 3),
+      r('create_transaction', 'CreateTransaction', () => import('pages/Operation/CreateTransactionPage.vue'), 3),
+      r('inspect_identity', 'InspectIdentity', () => import('pages/Operation/InspectIdentityPage.vue'), 3),
+    ]
+  },
 
   // Error page
   {

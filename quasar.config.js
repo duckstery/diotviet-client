@@ -80,6 +80,7 @@ module.exports = configure(function (ctx) {
       // analyze: true,
       env: {
         API_BASE_URL: process.env.API_BASE_URL,
+        API_BASE_CAPACITOR_URL: process.env.API_BASE_CAPACITOR_URL,
         API_PREFIX_PATH: process.env.API_PREFIX_PATH
       },
       // rawDefine: {}

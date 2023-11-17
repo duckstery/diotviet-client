@@ -1,7 +1,10 @@
 <template>
   <Page>
     <div class="col-12">
-      <div class="row tw-h-full">
+      <div v-if="$q.platform.is.capacitor" class="tw-h-full">
+        <ManagePanel/>
+      </div>
+      <div v-else class="row tw-h-full">
         <div class="col-6">
           <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
         </div>
@@ -23,7 +26,7 @@ import StatisticPanel from "components/Work/StatisticPanel.vue";
 
 import {computed, defineComponent, unref} from 'vue'
 import {useMounted, templateRef} from "@vueuse/core";
-import {useQuasar} from 'quasar';
+import {Platform, useQuasar} from 'quasar';
 import {useOrderStore} from "stores/order";
 import {axios, error, util, notify} from "src/boot";
 import {useI18n} from "vue-i18n";
@@ -32,13 +35,17 @@ import {useAdvanceStorage} from "src/composables/useAdvanceStorage";
 import {useProductStore} from "stores/product";
 import {storeToRefs} from "pinia";
 import _ from "lodash";
+import ManagePanel from "components/Work/ManagePanel.vue";
 
 export default defineComponent({
   name: 'WorkPage',
 
-  components: {Page, StatisticPanel, ItemPanel, OrderPanel},
+  components: {ManagePanel, Page, StatisticPanel, ItemPanel, OrderPanel},
 
   setup() {
+    // Run nothing if using Capacitor
+    if (Platform.is.capacitor) return {};
+
     // Get "Order" store
     const orderStore = useAdvanceStorage(useOrderStore)
 

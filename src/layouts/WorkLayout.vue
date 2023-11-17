@@ -1,9 +1,11 @@
 <template>
   <q-layout view="hHh Lpr fFr">
     <Header>
-      <SampleQuery/>
+      <template v-if="!$q.platform.is.capacitor">
+        <SampleQuery/>
 
-      <OrderBar/>
+        <OrderBar/>
+      </template>
     </Header>
 
     <q-page-container>
@@ -27,9 +29,12 @@ export default {
   components: {SampleQuery, Header, Footer, OrderBar, TextField},
 
   mounted() {
-    // Block device with screen size smaller than [md] except desktop
-    if (this.$q.screen.lt.md && !this.$q.platform.is.desktop) {
-      this.$router.push({name: 'Error', params: {status: 403}, query: {error: 'forbidden_device'}})
+    // Check if not enter through Capacitor
+    if (!this.$q.platform.is.capacitor) {
+      // Block device with screen size smaller than [md] except desktop
+      if (this.$q.screen.lt.md && !this.$q.platform.is.desktop) {
+        this.$router.push({name: 'Error', params: {status: 403}, query: {error: 'forbidden_device'}})
+      }
     }
   }
 }

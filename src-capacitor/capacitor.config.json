@@ -1,0 +1,10 @@
+{
+  "appId": "diotviet.client",
+  "appName": "Diotviet",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "http",
+    "allowNavigation": "http://localhost:8080",
+    "url": "http://172.16.16.116:3001"
+  }
+}

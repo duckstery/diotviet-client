@@ -1,7 +1,7 @@
 <template>
   <q-header v-bind="$attrs" reveal class="bg-primary text-white tw-z-[1000]">
     <q-toolbar>
-      <IconMage src="images/duck.png" force-visual rounded/>
+      <IconMage src="images/duck.png" class="tw-cursor-pointer" force-visual rounded @click="$router.push({name: 'Work'})"/>
 
       <slot/>
 
