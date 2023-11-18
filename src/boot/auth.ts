@@ -226,9 +226,8 @@ export default boot(({app, router}) => {
         router.push({name: 'Login'})
       }
     } catch (e) {
-      if (process.env.DEV) {
-        console.warn(e)
-      }
+      console.warn(error)
+      console.warn(e)
     }
 
     throw error

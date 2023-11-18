@@ -35,7 +35,7 @@ import Tooltip from "components/General/Other/Tooltip.vue";
 
 import {Dialog} from "quasar";
 import {util} from "src/boot";
-import {computed} from "vue";
+import {computed, toRaw, watch} from "vue";
 import {mapActions} from "pinia";
 import {useOrderStore} from "stores/order";
 import {useMaxWidth} from "src/composables/useMaxWidth";
@@ -58,7 +58,7 @@ export default {
     // Resources
     const select = templateRef('select')
     const maxWidth = useMaxWidth(() => select.value.$el.querySelector("input"), 0.7)
-    const getActiveCustomer = computed(() => useOrderStore().getActiveCustomer)
+    const getActiveCustomer = computed(() => toRaw(useOrderStore().getActiveCustomer))
 
     // Selected info
     const selectedInfo = computed(() => {

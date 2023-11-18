@@ -21,7 +21,7 @@ import OrderPanel from "components/Work/OrderPanel.vue";
 import ItemPanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
 
-import {computed, defineComponent, unref} from 'vue'
+import {computed, defineComponent, toRaw, unref} from 'vue'
 import {useMounted, templateRef} from "@vueuse/core";
 import {useQuasar} from 'quasar';
 import {useOrderStore} from "stores/order";
@@ -41,6 +41,8 @@ export default defineComponent({
   setup() {
     // Get "Order" store
     const orderStore = useAdvanceStorage(useOrderStore)
+    // Get activeCustomer
+    const activeCustomer = computed(() => toRaw(useOrderStore().getActiveCustomer))
 
     // Get i18n
     const $t = useI18n().t
@@ -49,7 +51,7 @@ export default defineComponent({
 
     // Validate before create Order
     const validate = () => {
-      if (util.isUnset(orderStore.getActiveCustomer)) {
+      if (util.isUnset(activeCustomer.value)) {
         notify($t("message.specify_customer"), 'negative')
       } else if (_.isEmpty(orderStore.getActiveOrder.items)) {
         notify($t("message.specify_least_item"), 'negative')
