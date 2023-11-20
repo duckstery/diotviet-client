@@ -82,9 +82,8 @@ import InputField from "components/General/Other/InputField.vue";
 import OrderProcessorAction from "components/Manage/Transaction/Order/OrderProcessorAction.vue";
 import Skeleton from "components/General/Other/Skeleton.vue";
 
-import {Platform, useDialogPluginComponent} from 'quasar'
+import {Platform} from 'quasar'
 import {computed, nextTick, onMounted, ref, toRef, watch, provide} from "vue";
-import {useDialogEditor} from "src/composables/useDialogEditor";
 import {useDebounceModel} from "src/composables/useDebounceModel";
 import {useSimpleSearch} from "src/composables/useSimpleSearch";
 import {useSimpleGrouper} from "src/composables/useSimpleGrouper";

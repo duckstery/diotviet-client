@@ -369,7 +369,7 @@ export class Printer implements IPrinter {
     const canvas = document.createElement('canvas')
     // Create Barcode
     // @ts-ignore
-    JsBarcode(canvas, content, {height: bcHeight, font: 'Arial'})
+    JsBarcode(canvas, content, {height: this.options.bcHeight, font: 'Arial'})
 
     return `<div id="barcode" title="${content}"><img src="${canvas.toDataURL("image/png")}" alt="Scan me!"></div>`
   }
