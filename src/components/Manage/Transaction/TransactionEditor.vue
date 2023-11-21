@@ -1,6 +1,6 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onHide">
-    <q-card class="q-dialog-plugin tw-w-[550px] tw-max-h-[600px] bg-grey-3">
+  <q-dialog v-bind="$attrs" ref="dialogRef" @hide="onHide">
+    <q-card :class="cardClasses">
       <q-card-section>
         <div class="tw-text-lg tw-font-semibold">
           {{ $t('field.create_transaction') }}
@@ -68,7 +68,7 @@ import TextField from "components/General/Other/TextField.vue";
 import InputField from "components/General/Other/InputField.vue";
 import Button from "components/General/Other/Button.vue";
 
-import {useDialogPluginComponent} from 'quasar'
+import {Platform, useDialogPluginComponent} from 'quasar'
 import {useDialogEditor} from "src/composables/useDialogEditor";
 import {computed, reactive, toRef} from "vue";
 import {required} from "@vuelidate/validators";
@@ -102,6 +102,16 @@ export default {
     // Use range control on 'amount'
     useRangeControl(toRef(input, 'amount'), 999999999999, 0)
 
+    // Component properties
+    const cardClasses = computed(() => ({
+      'q-dialog-plugin': true,
+      'tw-w-[550px]': !Platform.is.capacitor,
+      'tw-max-h-[600px]': !Platform.is.capacitor,
+      'bg-grey-3': !Platform.is.capacitor,
+      'tw-w-full': Platform.is.capacitor,
+      'shadow-0': Platform.is.capacitor
+    }))
+
     return {
       typeOptions: computed(() => [
         {label: $t('field.collect'), val: 1, color: 'positive', icon: 'fa-solid fa-plus'},
@@ -111,6 +121,7 @@ export default {
       onResetAmount: (key) => {
         if (key === 'amount' && input.amount.length < 4) input.amount = '1000'
       },
+      cardClasses: cardClasses,
       ...useDialogEditor(input, props.mode),
     }
   },

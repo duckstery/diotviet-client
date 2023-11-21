@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" maximized class="tw-visible tw-bg-transparent" seamless
-            @show="startScan" @before-hide="stopScan">
+            @show="startScan" @before-hide="stopScan" @hide="onDialogHide">
     <q-card class="q-dialog-plugin tw-bg-transparent">
       <q-bar class="tw-h-[50px] bg-primary text-white">
         {{ $t('field.scanning') }}
