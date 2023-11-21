@@ -206,6 +206,7 @@ export default {
     confirm_password: 'Xác nhận mật khẩu mới',
     reset_password: 'Đặt lại mật khẩu',
     create_ticket: 'Tạo vé',
+    scanning: 'Đang quét',
 
     // ****************************
     // Month
@@ -416,6 +417,8 @@ export default {
     date_range_to_big: 'Bạn có muốn hiển thị theo ngày? Khoảng cách giữa các ngày quá lớn. Hiển thị theo ngày sẽ làm cho biểu đồ khó đọc.',
     developing: 'Đang trong quá trình phát triển!',
     match_password: 'Mật khẩu mới không khớp với mật khẩu xác nhận',
+    not_supported: 'Không hỗ trợ',
+    permission_denied: 'Quyền hạn đã bị từ chối',
 
     // ****************************
     // Report: Income

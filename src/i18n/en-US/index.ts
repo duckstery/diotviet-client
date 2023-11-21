@@ -207,6 +207,7 @@ export default {
     reset_password: 'Reset password',
     create_ticket: 'Create ticket',
     inspect_identity: 'Inspect identity',
+    scanning: 'Scanning',
 
     // ****************************
     // Month
@@ -420,6 +421,8 @@ export default {
     process_order_manage_hint: 'Handle customer\'s orders',
     create_transaction_manage_hint: 'Create out-stream usage',
     inspect_identity_manage_hint: 'Scan code for customer\'s identity',
+    not_supported: 'Not supported',
+    permission_denied: 'Permission denied',
 
     // ****************************
     // Report: Income

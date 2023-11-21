@@ -1,17 +1,21 @@
 <template>
+  <q-space v-if="$q.platform.is.capacitor"/>
   <q-slide-transition :duration="150" @hide="state = 0">
     <div v-if="showPrompt && !$util.isUnset(action)" class="tw-my-auto">
+      <q-chip v-if="$q.platform.is.capacitor" square :text-color="chipTextColor" :color="action.color">
+        <q-icon :name="action.icon"/>
+      </q-chip>
       <q-chip
-        square removable
+        v-else square removable
         :text-color="chipTextColor" :color="action.color" :icon="action.icon" :label="action.verb"
         @remove="reset"
       />
     </div>
   </q-slide-transition>
-  <q-space key="space"/>
+  <q-space v-if="!$q.platform.is.capacitor"/>
   <q-slide-transition :duration="150" @hide="state = 2">
     <div v-if="showActions" class="tw-my-auto tw-flex">
-      <Button key="process" flat color="secondary" icon="fa-solid fa-print"
+      <Button v-if="!$q.platform.is.capacitor" key="process" flat color="secondary" icon="fa-solid fa-print"
               :label="$t('field.print')" @click="print"/>
       <template v-if="!isResolved">
         <Button key="process" flat color="info" icon="fa-solid fa-circle-dot" class="tw-ml-3"
@@ -87,6 +91,7 @@ export default {
     }
     // Reset action
     const reset = () => {
+      console.warn('ahihi')
       action.value = null
       // By transitioning back to state 1, prompt will also be hidden
       hanging()
