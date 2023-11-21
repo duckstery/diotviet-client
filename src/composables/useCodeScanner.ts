@@ -1,34 +1,30 @@
-import {BarcodeScanner} from '@capacitor-mlkit/barcode-scanning';
+import {BarcodeScanner, Barcode} from '@capacitor-mlkit/barcode-scanning';
 import {notify} from "src/boot";
 import {useI18n} from "vue-i18n";
-import {Dialog, DialogChainObject} from "quasar";
+import {Dialog} from "quasar";
 // @ts-ignore
 import CodeScanner from "components/Work/CodeScanner.vue";
 
-// *************************************************
-// Typed
-// *************************************************
-
-export type UseCodeScannerResources = {
-  scanCode: () => Promise<DialogChainObject>
-}
 
 // *************************************************
 // Implementation
 // *************************************************
 
-export function useCodeScanner(): UseCodeScannerResources {
+/**
+ * Setup code scanner
+ *
+ * @param onSuccess
+ */
+export function useCodeScanner(onSuccess: (code: Barcode) => void): () => Promise<void> {
   const $t = useI18n().t
 
-  return {
-    scanCode: async () => {
-      // Check if not supported
-      if (!await isSupported()) notify($t('message.not_supported'), 'negative')
-      // Check if app does not have permission
-      if (!await hasPermissions()) notify($t('message.permission_denied'), 'negative')
+  return async () => {
+    // Check if not supported
+    if (!await isSupported()) notify($t('message.not_supported'), 'negative')
+    // Check if app does not have permission
+    if (!await hasPermissions()) notify($t('message.permission_denied'), 'negative')
 
-      return Dialog.create({component: CodeScanner})
-    }
+    Dialog.create({component: CodeScanner}).onOk(onSuccess)
   }
 }
 

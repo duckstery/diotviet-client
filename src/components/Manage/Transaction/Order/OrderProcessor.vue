@@ -178,6 +178,9 @@ export default {
       onMounted(() => search.query = `${props.selectedCode}`)
     }
 
+    // Setup code scanner
+    const scanCode = useCodeScanner((code) => search.query = code.rawValue)
+
     // Get screen usableHeight
     const globalVars = inject('globalVars')
     // Component properties
@@ -211,7 +214,7 @@ export default {
     }))
     return {
       isGroupByStatus, getFilterIcon, getFilterTooltip,
-      scanCode: useCodeScanner().scanCode,
+      scanCode: scanCode,
       active, isActiveReady, showToolbar, setActiveOrder,
       search, debounce, reload,
       // Capacitor involved

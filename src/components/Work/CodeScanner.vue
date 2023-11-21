@@ -18,7 +18,7 @@
 import Button from "components/General/Other/Button.vue";
 
 import {useDialogPluginComponent} from 'quasar'
-import {BarcodeScanner} from "@capacitor-mlkit/barcode-scanning";
+import {BarcodeFormat, BarcodeScanner} from "@capacitor-mlkit/barcode-scanning";
 import {templateRef} from "@vueuse/core";
 import {onMounted, onUnmounted} from "vue";
 
@@ -86,7 +86,9 @@ export default {
       });
 
       // Start the barcode scanner
-      await BarcodeScanner.startScan();
+      await BarcodeScanner.startScan({
+        formats: [BarcodeFormat.QrCode, BarcodeFormat.Code128]
+      });
     };
 
     // Stop scanning process
