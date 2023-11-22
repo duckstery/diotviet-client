@@ -207,6 +207,11 @@ export default {
     reset_password: 'Đặt lại mật khẩu',
     create_ticket: 'Tạo vé',
     scanning: 'Đang quét',
+    scan_identity: 'Quét danh tính',
+    invalidate: 'Vô hiệu hóa',
+    invalid_identity: 'Danh tính không hợp lệ',
+    empty: 'Rỗng',
+    error: 'Lỗi',
 
     // ****************************
     // Month
@@ -419,6 +424,11 @@ export default {
     match_password: 'Mật khẩu mới không khớp với mật khẩu xác nhận',
     not_supported: 'Không hỗ trợ',
     permission_denied: 'Quyền hạn đã bị từ chối',
+    nothing_to_invalidate: 'Không có gì để vô hiệu hóa',
+    invalid_invalidate: 'Không thể vô hiệu hóa mã vô hiệu',
+    invalid_code: 'Mã QR này không hợp lệ',
+    please_scan: 'Xin hãy quét mã QR',
+    call_customer: 'Gọi khách hàng',
 
     // ****************************
     // Report: Income

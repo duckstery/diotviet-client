@@ -208,6 +208,14 @@ export default {
     create_ticket: 'Create ticket',
     inspect_identity: 'Inspect identity',
     scanning: 'Scanning',
+    scan_identity: 'Scan identity',
+    invalidate: 'Invalidate',
+    invalid_identity: 'Invalid identity',
+    empty: 'Empty',
+    error: 'Error',
+    valid: 'Valid',
+    invalid: 'Invalid',
+    call_customer: 'Call customer',
 
     // ****************************
     // Month
@@ -423,6 +431,10 @@ export default {
     inspect_identity_manage_hint: 'Scan code for customer\'s identity',
     not_supported: 'Not supported',
     permission_denied: 'Permission denied',
+    nothing_to_invalidate: 'Nothing to invalidate',
+    invalid_invalidate: 'Can not invalidate invalid code',
+    invalid_code: 'This QR code is invalid',
+    please_scan: 'Please scan a QR code',
 
     // ****************************
     // Report: Income

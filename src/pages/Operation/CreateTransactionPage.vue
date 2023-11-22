@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-grey-3 tw-p-5 tw-flex tw-h-screen">
+  <q-page class="bg-grey-3 tw-p-5 tw-flex">
     <TransactionEditor :model-value="true" seamless @before-hide="$router.back"/>
   </q-page>
 </template>

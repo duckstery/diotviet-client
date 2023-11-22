@@ -2,10 +2,11 @@
   <q-header v-bind="$attrs" reveal class="bg-primary text-white tw-z-[1000]">
     <q-toolbar>
       <IconMage src="images/duck.png" class="tw-cursor-pointer" force-visual rounded @click="$router.push({name: 'Work'})"/>
+      <q-toolbar-title v-if="$q.platform.is.capacitor" class="brand">DiotViet</q-toolbar-title>
 
       <slot/>
 
-      <q-space/>
+      <q-space v-if="!$q.platform.is.capacitor"/>
       <!-- Setting -->
       <Setting flat class="tw-ml-3"/>
       <template v-if="$q.screen.gt.sm">

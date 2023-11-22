@@ -109,7 +109,7 @@ export default {
       'tw-max-h-[600px]': !Platform.is.capacitor,
       'bg-grey-3': !Platform.is.capacitor,
       'tw-w-full': Platform.is.capacitor,
-      'shadow-0': Platform.is.capacitor
+      'shadow-0': Platform.is.capacitor,
     }))
 
     return {

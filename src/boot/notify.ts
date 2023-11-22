@@ -22,7 +22,7 @@ export type Notifier = (content: string, type?: 'positive' | 'negative' | 'warni
  * @param {string} type
  * @param {Error} err
  */
-const notify: Notifier = (content: string, type = 'positive', err: Error | null = null) => {
+const notify: Notifier = (content: string, type: 'positive' | 'negative' | 'warning' = 'positive', err: Error | null = null) => {
   if (process.env.DEV) {
     if (type === 'warning') {
       console.warn(content)
@@ -39,7 +39,10 @@ const notify: Notifier = (content: string, type = 'positive', err: Error | null 
     position: 'top-right',
     textColor: 'white',
     actions: [
-      {icon: 'close', color: 'white', handler: () => { /* ... */ }}
+      {
+        icon: 'close', color: 'white', handler: () => { /* ... */
+        }
+      }
     ]
   })
 }

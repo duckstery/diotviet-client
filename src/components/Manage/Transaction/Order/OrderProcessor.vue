@@ -1,12 +1,12 @@
 <template>
-  <q-card :class="cardClassesObject">
+  <q-card :class="cardClassesObject" :style="`max-height: ${globalVars.usableHeight}px`">
     <q-card-section class="tw-p-3 tw-flex">
       <TextField v-model="debounce.search.value" icon="fa-solid fa-search" class="tw-flex-1"
                  :placeholder="$t('message.search_orders')"/>
       <Button class="tw-w-[41px] tw-ml-2" color="primary" :icon="getFilterIcon" :tooltip="getFilterTooltip"
               @click="isGroupByStatus = !isGroupByStatus"/>
       <Button v-if="$q.platform.is.capacitor"
-              class="tw-w-[41px] tw-ml-2" color="primary" icon="fa-solid fa-camera" :tooltip="getFilterTooltip"
+              class="tw-w-[41px] tw-ml-2" color="primary" icon="fa-solid fa-barcode" :tooltip="getFilterTooltip"
               @click="scanCode"/>
     </q-card-section>
     <q-card-section class="tw-p-3 tw-pt-0">
@@ -15,9 +15,8 @@
       </div>
       <q-virtual-scroll
         v-else
-        :items="search.data"
+        :items="search.data" :class="scrollClassesObject" :style="`max-height: ${globalVars.usableHeight - 126}px`"
         #default="{ item, index }"
-        :class="scrollClassesObject"
       >
         <div v-if="item.isLabel" class="text-primary tw-text-lg tw-font-bold tw-mt-3 tw-h-[32px]">
           {{ item.label }}
@@ -184,29 +183,15 @@ export default {
     // Get screen usableHeight
     const globalVars = inject('globalVars')
     // Component properties
-    const cardClassesObject = computed(() => {
-      // Card classes
-      const output = {
-        'tw-w-[550px]': true,
-        'bg-grey-3': true,
-        'tw-max-h-[600px]': !Platform.is.capacitor,
-      }
-      // Add the tw class for usableHeight
-      output[`tw-max-h-[${globalVars.usableHeight}px]`] = Platform.is.capacitor
-
-      return output
-    })
-    const scrollClassesObject = computed(() => {
-      // Scroll classes
-      const output = {
-        'tw-max-h-[500px]': !Platform.is.capacitor,
-        'virtual-scrollbar': true,
-      }
-      // Search bar: 64; OrderProcessorAction: 50; space between scroll and OrderProcessorAction: 12
-      output[`tw-max-h-[${globalVars.usableHeight - 64 - 50 - 12}px]`] = Platform.is.capacitor
-
-      return output
-    })
+    const cardClassesObject = computed(() => ({
+      'tw-w-[550px]': true,
+      'bg-grey-3': true,
+      'tw-max-h-[600px]': !Platform.is.capacitor,
+    }))
+    const scrollClassesObject = computed(() => ({
+      'tw-max-h-[500px]': !Platform.is.capacitor,
+      'virtual-scrollbar': true,
+    }))
     const statusClassesObject = computed(() => ({'tw-ml-2': Platform.is.capacitor}))
     const actionStylesObject = computed(() => ({
       'box-shadow': Platform.is.capacitor ? 'none' : 'inset 0 1px 0 0 rgba(73,76,106,.5),0 -4px 8px 0 rgba(0,0,0,.2)',
@@ -218,6 +203,7 @@ export default {
       active, isActiveReady, showToolbar, setActiveOrder,
       search, debounce, reload,
       // Capacitor involved
+      globalVars: globalVars,
       cardClassesObject: cardClassesObject,
       scrollClassesObject: scrollClassesObject,
       statusClassesObject: statusClassesObject,

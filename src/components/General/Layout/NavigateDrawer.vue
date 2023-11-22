@@ -78,7 +78,7 @@ export default {
     },
     // Default
     links() {
-      const links = this.$q.screen.lt.md ? [] : [
+      const links = this.$q.screen.lt.md && !this.$q.platform.is.capacitor ? [] : [
         {
           key: 'store',
           icon: 'fa-store',

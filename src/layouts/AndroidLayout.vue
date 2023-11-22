@@ -16,9 +16,10 @@ import Header from "components/General/Layout/Header.vue";
 
 import {useRouter} from "vue-router";
 import {Platform} from "quasar";
+import Button from "components/General/Other/Button.vue";
 
 export default {
-  components: {Header, Footer},
+  components: {Button, Header, Footer},
 
   setup() {
     // Check if not using capacitor, then forbid to enter this route
