@@ -429,6 +429,7 @@ export default {
     invalid_code: 'Mã QR này không hợp lệ',
     please_scan: 'Xin hãy quét mã QR',
     call_customer: 'Gọi khách hàng',
+    server: 'Máy chủ',
 
     // ****************************
     // Report: Income

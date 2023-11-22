@@ -55,6 +55,17 @@
             <Button src="images/setup.png" color="primary" stretch flat :label="$t('field.setup')"
                     class="tw-w-full" @click="onSetup('print')"/>
           </div>
+          <q-banner class="tw-mt-1">
+            <template v-slot:avatar>
+              <IconMage src="images/server.png"/>
+            </template>
+            <div class="tw-font-medium">{{ $t('field.server') }}</div>
+          </q-banner>
+          <div class="tw-mx-3 tw-p-3 tw-border-dotted tw-border-blue-500 tw-rounded-md tw-flex">
+            <TextField v-model="server" class="tw-max-w-[200px]"/>
+            <q-space/>
+            <Button flat color="primary" icon="fa-solid fa-floppy-disk" :label="$t('field.save')" @click="saveServer"/>
+          </div>
         </q-card-section>
       </q-card>
     </q-popup-proxy>
@@ -66,16 +77,19 @@ import {env} from "boot/env";
 
 import Button from "components/General/Other/Button.vue";
 import IconMage from "components/General/Other/IconMage.vue";
+import TextField from "components/General/Other/TextField.vue";
+import {Platform} from "quasar";
 
 export default {
   name: 'Setting',
 
-  components: {IconMage, Button},
+  components: {TextField, IconMage, Button},
 
   data: () => ({
     language: env.get("language") ?? 'en', // Default is English
     display: env.get("display") ?? 'light', // Default is light
     optimize: env.get("optimize") ?? 'visual', // Default is visual
+    server: env.get("server") ?? 'http://localhost:8080' // Default is [http://localhost:8080]
   }),
 
   computed: {
@@ -114,6 +128,18 @@ export default {
      */
     onSetup(key) {
       this.$router.push({name: `Setting.${this.$_.capitalize(key)}`})
+    },
+
+    /**
+     * Save server
+     */
+    saveServer() {
+      // Save to env
+      this.$env.set('server', this.server)
+      // Apply server to axios
+      this.$axios.defaults.baseURL = `${this.server}/api`
+      // Notify
+      this.$notify(this.$t('message.success', {attr: this.$t('field.operation')}))
     }
   },
 

@@ -216,6 +216,7 @@ export default {
     valid: 'Valid',
     invalid: 'Invalid',
     call_customer: 'Call customer',
+    server: 'Server',
 
     // ****************************
     // Month
