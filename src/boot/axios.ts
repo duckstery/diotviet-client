@@ -1,5 +1,12 @@
 import {boot} from 'quasar/wrappers'
-import axios, {CanceledError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios'
+import axios, {
+  CanceledError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  AxiosError
+} from 'axios'
 import Qs from "qs";
 import {Platform} from "quasar";
 
@@ -62,7 +69,7 @@ axiosInstance.interceptors.response.use(function (response) {
   // Do something if error is a CanceledError
   if (error instanceof CanceledError) {
     // @ts-ignore
-    throw new Error(error.config.signal.reason)
+    return Promise.reject(new Error(error.config.signal.reason))
   }
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error

@@ -466,6 +466,7 @@ export default {
   // ****************************
   error: {
     limit_exceeded: 'Total size has exceeded maximum limit',
+    status_401: 'Session is expired',
     status_403: 'You are not authorized to enter this page. Please go back.',
     status_404: 'Oops. Nothing here...',
     forbidden_device: 'This type of device is not allowed to open this page.',

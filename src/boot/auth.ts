@@ -3,6 +3,7 @@ import {Cookies, date, Platform} from "quasar"
 import {axios} from "./axios"
 import {useAuthStore} from "stores/auth"
 import {HttpStatusCode} from "axios";
+import {useI18n} from "vue-i18n";
 
 // *************************************************
 // Typed
@@ -205,6 +206,9 @@ function decodeJWT(jwt: string): Token {
 }
 
 export default boot(({app, router}) => {
+  // Get i18n
+  const $t = app.config.globalProperties.$t
+
   // Register request interceptor to embed JWT and priorly check for JWT validity
   axios.interceptors.request.use(function (config) {
     // Check if target API is /login
@@ -228,6 +232,15 @@ export default boot(({app, router}) => {
   // Check if response return a 401, then reset Auth and redirect to LoginPage
   axios.interceptors.response.use(null, function (error) {
     try {
+      // Check if error is "Token expired", then mark it as Unauthorized
+      if (error.message === "Token expired") {
+        error.response = {
+          status: HttpStatusCode.Unauthorized,
+          data: {message: $t('error.status_401')}
+        }
+      }
+
+      // Check if having 401
       if (error.response.status === HttpStatusCode.Unauthorized) {
         // Reset auth
         auth.reset()

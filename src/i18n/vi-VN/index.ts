@@ -460,6 +460,7 @@ export default {
   // ****************************
   error: {
     limit_exceeded: 'Tổng kích thước đã vượt quá giới hạn tối đa',
+    status_401: 'Phiên làm việc đã hết hạn',
     status_403: 'Bạn không được phép vào trang này. Xin hãy quay lại.',
     status_404: 'Ối. Không có gì ở đây đâu...',
     forbidden_device: 'Loại thiết bị này không được phép mở trang này.',
