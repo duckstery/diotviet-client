@@ -251,7 +251,6 @@ module.exports = configure(function (ctx) {
         publish: {
           'provider': 'github',
           'repo': 'diotviet-client-release',
-          'vPrefixedTagName': false,
           'private': true
         }
       }
