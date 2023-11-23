@@ -105,7 +105,7 @@ module.exports = configure(function (ctx) {
           // you need to set i18n resource including paths !
           include: path.resolve(__dirname, './src/i18n/**')
         }]
-      ]
+      ],
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
@@ -221,7 +221,7 @@ module.exports = configure(function (ctx) {
 
       inspectPort: 5858,
 
-      bundler: 'packager', // 'packager' or 'builder'
+      bundler: 'builder', // 'packager' or 'builder'
 
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
@@ -239,7 +239,20 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'diotviet'
+        appId: 'diotviet.client',
+        productName: 'Diotviet',
+        win: {
+          target: 'nsis'
+        },
+        nsis: {
+          oneClick: false,
+          allowToChangeInstallationDirectory: true,
+        },
+        publish: {
+          'provider': 'github',
+          'repo': 'duckstery/diotviet-client',
+          'vPrefixedTagName': false
+        }
       }
     },
 

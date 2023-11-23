@@ -212,6 +212,10 @@ export default {
     invalid_identity: 'Danh tính không hợp lệ',
     empty: 'Rỗng',
     error: 'Lỗi',
+    valid: 'Có hiệu lực',
+    invalid: 'Hết hiệu lực',
+    call_customer: 'Gọi khách hàng',
+    server: 'Máy chủ',
 
     // ****************************
     // Month
@@ -428,8 +432,7 @@ export default {
     invalid_invalidate: 'Không thể vô hiệu hóa mã vô hiệu',
     invalid_code: 'Mã QR này không hợp lệ',
     please_scan: 'Xin hãy quét mã QR',
-    call_customer: 'Gọi khách hàng',
-    server: 'Máy chủ',
+    update_available: 'Có bản cập nhật mới. Bạn có muốn cập nhật không?',
 
     // ****************************
     // Report: Income

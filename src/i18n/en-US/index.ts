@@ -436,6 +436,7 @@ export default {
     invalid_invalidate: 'Can not invalidate invalid code',
     invalid_code: 'This QR code is invalid',
     please_scan: 'Please scan a QR code',
+    update_available: 'An update is available. Do you want to update?',
 
     // ****************************
     // Report: Income
