@@ -49,18 +49,26 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // Set autoDownload = false
+  autoUpdater.autoDownload = false
   // Check for updates
   ipcMain.handle('check-for-updates', async () => {
     // On update-available
-    autoUpdater.on('update-available', (info) => {
-      mainWindow.webContents.send('update-available', info)
+    autoUpdater.on('update-available', () => {
+      mainWindow.webContents.send('update-available')
     })
 
     await autoUpdater.checkForUpdates()
   })
 
   // Updates
-  ipcMain.on('updates', () => autoUpdater.quitAndInstall())
+  ipcMain.on('updates', async () => {
+    // On update-downloaded, quit and install
+    autoUpdater.on('update-downloaded', async () => autoUpdater.quitAndInstall())
+    // Download updates
+    await autoUpdater.downloadUpdate()
+  })
+
   const mainWindow = createWindow()
 });
 
