@@ -250,8 +250,8 @@ module.exports = configure(function (ctx) {
         },
         publish: {
           'provider': 'github',
-          'repo': 'duckstery/diotviet-client',
-          'vPrefixedTagName': false
+          'vPrefixedTagName': false,
+          'private': true
         }
       }
     },
