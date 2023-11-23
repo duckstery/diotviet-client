@@ -4,7 +4,6 @@
 
 <script>
 import {defineComponent} from 'vue'
-import {autoUpdater} from "electron-updater";
 
 export default defineComponent({
   name: 'App',
@@ -25,14 +24,15 @@ export default defineComponent({
      * Check for updates
      */
     async checkForUpdates() {
-      autoUpdater.on('update-available', (info) => {
+      // onUpdateAvailable
+      window.mainAPI.onUpdateAvailable((info) => {
         console.warn(info)
-        this.$util.promptConfirm(this.$t('message.update_available'))
-          .onOk(async () => {
-            autoUpdater.quitAndInstall()
-          });
+        // Ask if user want to update
+        this.$util.promptConfirm(this.$t('message.update_available')).onOk(() => window.mainAPI.updates());
       })
-      await autoUpdater.checkForUpdatesAndNotify()
+
+      // Check for updates
+      window.mainAPI.checkForUpdates()
     }
   },
 

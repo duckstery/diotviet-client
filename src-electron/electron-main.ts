@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'path';
 import os from 'os';
+import {autoUpdater} from "electron-updater";
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
@@ -43,9 +44,25 @@ function createWindow() {
   });
 
   mainWindow.maximize()
+
+  return mainWindow
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  // Check for updates
+  ipcMain.handle('check-for-updates', async () => {
+    // On update-available
+    autoUpdater.on('update-available', (info) => {
+      mainWindow.webContents.send('update-available', info)
+    })
+
+    await autoUpdater.checkForUpdates()
+  })
+
+  // Updates
+  ipcMain.on('updates', () => autoUpdater.quitAndInstall())
+  const mainWindow = createWindow()
+});
 
 app.on('window-all-closed', () => {
   if (platform !== 'darwin') {

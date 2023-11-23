@@ -4,8 +4,7 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
-  InternalAxiosRequestConfig,
-  AxiosError
+  InternalAxiosRequestConfig
 } from 'axios'
 import Qs from "qs";
 import {Platform} from "quasar";
