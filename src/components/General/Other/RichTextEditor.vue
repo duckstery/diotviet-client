@@ -1,7 +1,7 @@
 <template>
   <div class="rich-text-editor">
     <Skeleton :model-value="!loading && isReady" :height="height">
-      <Editor v-model="model" tinymce-script-src="/tinymce/tinymce.min.js" :init="init"/>
+      <Editor v-model="model" tinymce-script-src="tinymce/tinymce.min.js" :init="init"/>
     </Skeleton>
   </div>
 </template>
