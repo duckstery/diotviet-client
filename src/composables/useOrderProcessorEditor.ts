@@ -13,7 +13,9 @@ import {inject} from "vue";
  * @param printerInjectKey
  * @return {function(): DialogChainObject}
  */
-export function useOrderProcessorEditor(detailRef: Ref<{ code: string }> | null, printerInjectKey: string = 'printer'): () => DialogChainObject {
+export function useOrderProcessorEditor(detailRef: Ref<{
+  code: string
+}> | null, printerInjectKey: string = 'printer'): () => DialogChainObject {
   // Get $t
   const $t = useI18n().t
   // Try to inject printer
@@ -23,10 +25,17 @@ export function useOrderProcessorEditor(detailRef: Ref<{ code: string }> | null,
     printer = {print: () => notify($t('message.print_unavailable'), 'warning')}
   }
 
+  // @ts-ignore Try to inject globalVars
+  let globalVars: {usableHeight: number} = inject('globalVars')
+
   // Invoke dialog
   return () => Dialog.create({
     component: OrderProcessorEditor,
     // @ts-ignore
-    componentProps: {selectedCode: util.isUnset(detailRef) ? null : detailRef.value.code, printer: printer}
+    componentProps: {
+      selectedCode: util.isUnset(detailRef) ? null : detailRef?.value.code,
+      printer: printer,
+      height: globalVars.usableHeight
+    }
   })
 }

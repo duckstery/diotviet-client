@@ -1,5 +1,5 @@
 <template>
-  <q-card :class="cardClassesObject" :style="`max-height: ${globalVars.usableHeight}px`">
+  <q-card :class="cardClassesObject" :style="`max-height: ${height}px`">
     <q-card-section class="tw-p-3 tw-flex">
       <TextField v-model="debounce.search.value" icon="fa-solid fa-search" class="tw-flex-1"
                  :placeholder="$t('message.search_orders')"/>
@@ -15,7 +15,7 @@
       </div>
       <q-virtual-scroll
         v-else
-        :items="search.data" :class="scrollClassesObject" :style="`max-height: ${globalVars.usableHeight - 126}px`"
+        :items="search.data" :class="scrollClassesObject" :style="`max-height: ${height - 126}px`"
         #default="{ item, index }"
       >
         <div v-if="item.isLabel" class="text-primary tw-text-lg tw-font-bold tw-mt-3 tw-h-[32px]">
@@ -102,7 +102,9 @@ export default {
     // Selected id
     selectedCode: String,
     // Printer
-    printer: Object
+    printer: Object,
+    // Height
+    height: Number
   },
 
   setup(props) {
@@ -180,8 +182,6 @@ export default {
     // Setup code scanner
     const scanCode = useCodeScanner((code) => search.query = code.rawValue)
 
-    // Get screen usableHeight
-    const globalVars = inject('globalVars')
     // Component properties
     const cardClassesObject = computed(() => ({
       'tw-w-[550px]': true,
@@ -203,7 +203,6 @@ export default {
       active, isActiveReady, showToolbar, setActiveOrder,
       search, debounce, reload,
       // Capacitor involved
-      globalVars: globalVars,
       cardClassesObject: cardClassesObject,
       scrollClassesObject: scrollClassesObject,
       statusClassesObject: statusClassesObject,

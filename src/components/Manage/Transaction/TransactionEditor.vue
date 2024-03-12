@@ -107,7 +107,7 @@ export default {
       'q-dialog-plugin': true,
       'tw-w-[550px]': !Platform.is.capacitor,
       'tw-max-h-[600px]': !Platform.is.capacitor,
-      'bg-grey-3': !Platform.is.capacitor,
+      'bg-grey-3': Platform.is.capacitor,
       'tw-w-full': Platform.is.capacitor,
       'shadow-0': Platform.is.capacitor,
     }))
