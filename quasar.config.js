@@ -23,7 +23,7 @@ module.exports = configure(function (ctx) {
     },
 
     bin: {
-      windowsAndroidStudio: 'E:\\Programs\\Android Studio\\bin\\studio64.exe'
+      windowsAndroidStudio: 'C:\\Users\\HuuDuc\\AppData\\Local\\Programs\\Android Studio\\bin\\studio64.exe'
     },
 
     // https://v2.quasar.dev/quasar-cli/prefetch-feature

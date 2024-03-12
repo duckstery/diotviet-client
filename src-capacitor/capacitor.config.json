@@ -4,6 +4,7 @@
   "webDir": "www",
   "server": {
     "androidScheme": "http",
-    "allowNavigation": "http://localhost:8080"
+    "allowNavigation": "http://localhost:8080",
+    "url": "http://172.16.16.222:3001"
   }
 }
