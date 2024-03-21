@@ -65,7 +65,7 @@
         <RichTextEditor v-model="activeDoc.content" height="600px" :loading="loading" :tags="tags"/>
       </div>
       <div class="col-12 col-md-6 tw-px-2 tw-pt-[88px]">
-        <div class="print-preview tw-min-h-[512px] tw-p-1" id="test" v-html="test"></div>
+        <div class="print-preview tw-min-h-[512px] tw-p-1" v-html="preview"></div>
       </div>
     </div>
   </Page>
@@ -80,10 +80,10 @@ import IconMage from "components/General/Other/IconMage.vue";
 import TextField from "components/General/Other/TextField.vue";
 
 import {onMounted, ref, reactive, watch, nextTick} from "vue";
-import {axios, error, notify, util} from "src/boot"
+import {axios, buildPrinter, error, notify, util} from "src/boot"
 import {useI18n} from "vue-i18n";
 import _ from "lodash";
-import QRCode from 'qrcode'
+import {useDebounceModel} from "src/composables/useDebounceModel";
 
 export default {
   name: 'PrintPage',
@@ -279,6 +279,25 @@ export default {
         // Set content
         activeDoc.ref.localContent = value
       }
+
+      currentContent.value = activeDoc.content
+    })
+
+    // ****************************
+    // Preview
+    // ****************************
+    // Preview
+    const preview = ref('')
+    // Create debounce model for active.content
+    const debouncedContent = ref('')
+    const currentContent = useDebounceModel(debouncedContent, 500)
+    // Watch for debouncedContent changed
+    watch(debouncedContent, (value) => {
+      // Printer
+      const printer = buildPrinter(value, tags.value, {logger: () => false})
+      // Set printer data
+      printer.data = example.value
+      printer.generate().then(element => preview.value = element.innerHTML)
     })
 
     // ****************************
@@ -317,6 +336,7 @@ export default {
       // Document
       tags: tags, activeDoc: activeDoc, docs: docs, docNamingRules: docNamingRules, example: example,
       add: add, save: save, reset: reset, remove: remove,
+      preview: preview,
       // General
       groups: groups, activeGroupId: activeGroupId
     }

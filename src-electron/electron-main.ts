@@ -56,11 +56,6 @@ app.on('second-instance', () => {
 })
 
 app.whenReady().then(() => {
-  // Get client script path
-  ipcMain.handle('get-client-script-path', (_event, path) => {
-    return app.isPackaged ? join('.', 'resources', 'scripts', path) : path
-  })
-
   // Set autoDownload = false
   autoUpdater.autoDownload = false
   // Check for updates
