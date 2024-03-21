@@ -81,7 +81,7 @@ const env: Env = {
    * @return {boolean}
    */
   isOptimizeVisual() {
-    return this.get('optimize') === 'visual'
+    return this.get('optimize') !== 'speed'
   }
 }
 

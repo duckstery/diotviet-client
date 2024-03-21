@@ -75,7 +75,7 @@ export default {
         toolbar_mode: 'sliding',
         contextmenu: 'link image table',
         skin: this.$q.dark.isActive ? 'oxide-dark' : 'oxide',
-        content_css: [this.$q.dark.isActive ? 'dark' : 'default', '/src/css/tinymce_components.scss'],
+        content_css: [this.$q.dark.isActive ? 'dark' : 'default', 'tinymce/tinymce_components.scss'],
         body_class: this.$q.dark.isActive ? 'body--dark' : 'body--light',
         promotion: false,
         elementpath: false,

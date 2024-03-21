@@ -1,12 +1,13 @@
 {
   "name": "diotviet",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Diotviet frontend source code",
   "productName": "Diotviet",
   "author": "ducdao2504@gmail.com",
   "private": true,
   "scripts": {
-    "build": "quasar build",
+    "build": "quasar build --mode electron",
+    "publish": "quasar build --mode electron --publish always",
     "upgrade": "npx npm-check-updates -u",
     "lint": "eslint --ext .js,.vue ./",
     "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",

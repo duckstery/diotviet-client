@@ -1,5 +1,5 @@
 import {app, BrowserWindow, ipcMain} from 'electron';
-import {resolve} from 'path';
+import {resolve, join} from 'path';
 import {platform} from 'os';
 import {autoUpdater} from "electron-updater";
 
@@ -48,7 +48,19 @@ function createWindow() {
   return mainWindow
 }
 
+// Detect multiple instance
+if (!app.requestSingleInstanceLock()) app.quit()
+
+app.on('second-instance', () => {
+  if (mainWindow) mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.focus()
+})
+
 app.whenReady().then(() => {
+  // Get client script path
+  ipcMain.handle('get-client-script-path', (_event, path) => {
+    return app.isPackaged ? join('.', 'resources', 'scripts', path) : path
+  })
+
   // Set autoDownload = false
   autoUpdater.autoDownload = false
   // Check for updates

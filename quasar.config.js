@@ -254,7 +254,14 @@ module.exports = configure(function (ctx) {
           'provider': 'github',
           'repo': 'diotviet-client-release',
           'private': true
-        }
+        },
+        // extraResources: [
+        //   {
+        //     "from": "./public/tinymce/",
+        //     "to": "scripts/tinymce",
+        //     "filter": ["**/*"]
+        //   },
+        // ]
       }
     },
 

@@ -31,6 +31,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('mainAPI', {
+  getClientScriptPath: (path: string) => ipcRenderer.invoke('get-client-script-path', path),
   checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
   onUpdateAvailable: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => ipcRenderer.on('update-available', callback),
   updates: () => ipcRenderer.send('updates')
