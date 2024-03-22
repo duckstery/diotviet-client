@@ -1,6 +1,7 @@
 import {boot} from 'quasar/wrappers'
 import {Cookies, date, Platform, LocalStorage} from "quasar"
 import {axios} from "./axios"
+import {env} from "./env"
 import {useAuthStore} from "stores/auth"
 import {HttpStatusCode} from "axios";
 
@@ -9,10 +10,6 @@ import {HttpStatusCode} from "axios";
 // *************************************************
 
 export interface Auth {
-  /**
-   * Base url
-   */
-  baseUrl: string
   /**
    * Subscribe JWT
    *
@@ -76,11 +73,6 @@ const store = useAuthStore();
 
 const auth: Auth = {
   /**
-   * Base url
-   */
-  baseUrl: `${Platform.is.capacitor ? process.env.API_BASE_CAPACITOR_URL : process.env.API_BASE_URL}`,
-
-  /**
    * Subscribe JWT
    *
    * @param {string} jwt
@@ -134,7 +126,7 @@ const auth: Auth = {
    * @returns {Promise<void>}
    */
   login(credential: Credential): Promise<string | void> {
-    return axios.post(`${this.baseUrl}/api/auth/login`, credential)
+    return axios.post('/auth/login', credential)
       .then(res => {
         // Subscribe JWT
         this.subscribe(res.data.payload.token)
@@ -150,7 +142,7 @@ const auth: Auth = {
    * @returns {Promise<void>}
    */
   logout(): Promise<string | void> {
-    return axios.get(`${this.baseUrl}/api/auth/logout`)
+    return axios.get('/auth/logout')
       .then(res => {
         // Reset Auth
         this.reset()
@@ -167,7 +159,7 @@ const auth: Auth = {
    * @param newPassword
    */
   changePassword(password: string, newPassword: string): Promise<void> {
-    return axios.post(`${this.baseUrl}/api/auth/changePassword`, {
+    return axios.post('/auth/changePassword', {
       password: password,
       newPassword: newPassword,
     })
@@ -215,7 +207,7 @@ export default boot(({app, router}) => {
   axios.interceptors.request.use(function (config) {
     // Check if target API is /login
     // @ts-ignore
-    if (config.url.includes("/api/auth/login")) {
+    if (config.url.includes("/auth/login")) {
       // This API won't be affect if token is expired
       return config
     }
