@@ -20,7 +20,22 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfigs signingConfigs.release
         }
+    }
+
+    signingConfigs {
+
+       release {
+           storeFile file("C:\\Users\\HuuDuc\\Downloads\\diotviet.jsk")
+           storePassword "diotviet123"
+           keyAlias "key0"
+           keyPassword "diotviet123"
+
+           // Optional, specify signing versions used
+           v1SigningEnabled true
+           v2SigningEnabled true
+       }
     }
 }
 
