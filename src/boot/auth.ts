@@ -1,9 +1,8 @@
 import {boot} from 'quasar/wrappers'
-import {Cookies, date, Platform} from "quasar"
+import {Cookies, date, Platform, LocalStorage} from "quasar"
 import {axios} from "./axios"
 import {useAuthStore} from "stores/auth"
 import {HttpStatusCode} from "axios";
-import {useI18n} from "vue-i18n";
 
 // *************************************************
 // Typed
@@ -93,6 +92,7 @@ const auth: Auth = {
 
       // Save JWT to cookie
       Cookies.set(tokenKey, jwt, {path: '/', expires: new Date(payload.exp * 1000), sameSite: 'Lax'})
+      LocalStorage.set(tokenKey, jwt)
       // Save JWT and payload to $store
       store.subscribe({...payload, jwt})
     } catch (e) {
@@ -101,6 +101,7 @@ const auth: Auth = {
       }
       // Clear cookie
       Cookies.remove(tokenKey)
+      LocalStorage.remove(tokenKey)
       // Reset store
       store.reset()
     }
@@ -178,6 +179,7 @@ const auth: Auth = {
   reset(): void {
     // Clear cookie
     Cookies.remove(tokenKey)
+    LocalStorage.remove(tokenKey)
     // Reset store
     store.reset()
   }
@@ -260,7 +262,8 @@ export default boot(({app, router}) => {
     // Check if "from" name is undefined
     if (from.name === undefined) {
       // Since this is the first time accessing the page, init store (Pinia)
-      auth.subscribe(Cookies.get(tokenKey))
+      // auth.subscribe(Cookies.get(tokenKey))
+      auth.subscribe(LocalStorage.getItem(tokenKey) ?? '')
     }
 
     // Check if user is authenticated

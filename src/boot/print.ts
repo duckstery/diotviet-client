@@ -434,7 +434,12 @@ export class Printer implements IPrinter {
  */
 const print = (element: string | null) => {
   if (!util.isUnset(util.nullIfEmpty(element))) {
-    printJS({printable: element, type: 'raw-html'})
+    printJS({
+      printable: element,
+      type: 'raw-html',
+      targetStyles: ['*'],
+      style: `@import url('https://fonts.googleapis.com/css?family=Oswald:400,500,700');body {font-family: 'Oswald'}`,
+    })
   }
 }
 
