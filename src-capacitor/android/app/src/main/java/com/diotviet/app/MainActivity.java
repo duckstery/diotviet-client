@@ -1,4 +1,4 @@
-package diotviet.client;
+package com.diotviet.app;
 
 import com.getcapacitor.BridgeActivity;
 

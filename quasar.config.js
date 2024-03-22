@@ -213,7 +213,7 @@ module.exports = configure(function (ctx) {
     capacitor: {
       hideSplashscreen: false,
 
-      appName: 'Diotviet'
+      appName: 'diotviet',
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/developing-electron-apps/configuring-electron

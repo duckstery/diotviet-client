@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">Diotviet</string>
     <string name="title_activity_main">Diotviet</string>
-    <string name="package_name">diotviet.client</string>
-    <string name="custom_url_scheme">diotviet.client</string>
+    <string name="package_name">com.diotviet.app</string>
+    <string name="custom_url_scheme">com.diotviet.app</string>
 </resources>
