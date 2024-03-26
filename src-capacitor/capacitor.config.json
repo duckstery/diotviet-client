@@ -3,6 +3,7 @@
   "appName": "Diotviet",
   "webDir": "www",
   "server": {
-    "cleartext": true
+    "cleartext": true,
+    "url": "http://172.16.16.222:3001"
   }
 }

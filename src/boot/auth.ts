@@ -1,7 +1,6 @@
 import {boot} from 'quasar/wrappers'
-import {Cookies, date, Platform, LocalStorage} from "quasar"
-import {axios} from "./axios"
-import {env} from "./env"
+import {date} from "quasar"
+import {axios, env} from "./index"
 import {useAuthStore} from "stores/auth"
 import {HttpStatusCode} from "axios";
 
@@ -15,7 +14,7 @@ export interface Auth {
    *
    * @param jwt
    */
-  subscribe(jwt: string): void
+  subscribe(jwt: string): Promise<void>
   /**
    * Get user info
    */
@@ -44,7 +43,7 @@ export interface Auth {
   /**
    * Reset session
    */
-  reset(): void
+  reset(): Promise<void>
 }
 
 // User data
@@ -77,14 +76,14 @@ const auth: Auth = {
    *
    * @param {string} jwt
    */
-  subscribe(jwt) {
+  async subscribe(jwt: string) {
     try {
       // Decode jwt
       const payload = decodeJWT(jwt)
 
-      // Save JWT to cookie
-      Cookies.set(tokenKey, jwt, {path: '/', expires: new Date(payload.exp * 1000), sameSite: 'Lax'})
-      LocalStorage.set(tokenKey, jwt)
+      // Save JWT
+      // Cookies.set(tokenKey, jwt, {path: '/', expires: new Date(payload.exp * 1000), sameSite: 'Lax'})
+      await env.set(tokenKey, jwt)
       // Save JWT and payload to $store
       store.subscribe({...payload, jwt})
     } catch (e) {
@@ -92,8 +91,8 @@ const auth: Auth = {
         console.warn(e)
       }
       // Clear cookie
-      Cookies.remove(tokenKey)
-      LocalStorage.remove(tokenKey)
+      // Cookies.remove(tokenKey)
+      await env.remove(tokenKey)
       // Reset store
       store.reset()
     }
@@ -168,12 +167,12 @@ const auth: Auth = {
   /**
    * Reset
    */
-  reset(): void {
-    // Clear cookie
-    Cookies.remove(tokenKey)
-    LocalStorage.remove(tokenKey)
+  reset(): Promise<void> {
     // Reset store
     store.reset()
+    // Clear cookie
+    // Cookies.remove(tokenKey)
+    return env.remove(tokenKey)
   }
 }
 
@@ -250,12 +249,12 @@ export default boot(({app, router}) => {
   })
 
   // Register middleware to check if user is authenticated
-  router.beforeEach((to, from, next) => {
+  router.beforeEach(async (to, from, next) => {
     // Check if "from" name is undefined
     if (from.name === undefined) {
       // Since this is the first time accessing the page, init store (Pinia)
       // auth.subscribe(Cookies.get(tokenKey))
-      auth.subscribe(LocalStorage.getItem(tokenKey) ?? '')
+      auth.subscribe((await env.get(tokenKey)) ?? '')
     }
 
     // Check if user is authenticated

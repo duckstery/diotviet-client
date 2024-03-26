@@ -17,9 +17,9 @@ import {axios} from 'boot/axios'
 import {env} from 'boot/env'
 
 // Set axios Accept-Language header
-axios.interceptors.request.use((config) => {
+axios.interceptors.request.use(async (config) => {
   // Set Accept-Language header
-  config.headers['Accept-Language'] = env.get('language')
+  config.headers['Accept-Language'] = await env.get('language')
 
   return config
 })

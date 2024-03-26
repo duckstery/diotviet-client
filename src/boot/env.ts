@@ -1,5 +1,6 @@
 import {boot} from 'quasar/wrappers'
-import {LocalStorage} from 'quasar'
+import {LocalStorage, Platform} from 'quasar'
+import {Preferences} from "@capacitor/preferences";
 import {util} from './util'
 import {useEnvStore} from "stores/env";
 
@@ -20,14 +21,20 @@ export interface Env {
    *
    * @param key
    */
-  get(key: string): any
+  get(key: string): Promise<any>
   /**
    * Set env by key
    *
    * @param key
    * @param value
    */
-  set(key: string, value: any): void
+  set(key: string, value: any): Promise<void>
+  /**
+   * Remove env by key
+   *
+   * @param key
+   */
+  remove(key: string): Promise<void>
   /**
    * Check if optimizing by visual
    */
@@ -58,10 +65,10 @@ const env: Env = {
    * Get item in LocalStorage
    *
    * @param {string} key
-   * @returns {any}
+   * @returns {Promise<any>}
    */
-  get(key) {
-    return LocalStorage.getItem(key)
+  async get(key: string): Promise<any> {
+    return Platform.is.capacitor ? (await Preferences.get({key: key})).value : LocalStorage.getItem(key)
   },
   /**
    * Set item to LocalStorage
@@ -69,10 +76,23 @@ const env: Env = {
    * @param {String} key
    * @param {any} value
    */
-  set(key, value) {
+  async set(key: string, value: any) {
     // Set in Pinia
     $store.setEnv(key, value)
-    return LocalStorage.set(key, value)
+    if (Platform.is.capacitor) {
+      return Preferences.set({key: key, value: value})
+    } else {
+      return LocalStorage.set(key, value)
+    }
+  },
+
+  /**
+   * Remove item
+   *
+   * @param key
+   */
+  async remove(key: string) {
+    return Platform.is.capacitor ? Preferences.remove({key: key}) : LocalStorage.remove(key)
   },
 
   /**
@@ -80,17 +100,17 @@ const env: Env = {
    *
    * @return {boolean}
    */
-  isOptimizeVisual() {
-    return this.get('optimize') !== 'speed'
+  isOptimizeVisual(): boolean {
+    return $store.optimize !== 'speed'
   }
 }
 
-export default boot(({app}) => {
+export default boot(async ({app}) => {
   app.config.globalProperties.$env = env
   // Setup store
-  $store.language = env.get('language')
-  $store.display = env.get('display')
-  $store.optimize = env.get('optimize')
+  $store.language = await env.get('language')
+  $store.display = await env.get('display')
+  $store.optimize = await env.get('optimize')
 })
 
 export {env}

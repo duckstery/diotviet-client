@@ -86,10 +86,10 @@ export default {
   components: {TextField, IconMage, Button},
 
   data: () => ({
-    language: env.get("language") ?? 'en', // Default is English
-    display: env.get("display") ?? 'light', // Default is light
-    optimize: env.get("optimize") ?? 'visual', // Default is visual
-    server: env.get("server") ?? 'http://localhost:8080' // Default is [http://localhost:8080]
+    language: 'en', // Default is English
+    display: 'light', // Default is light
+    optimize: 'visual', // Default is visual
+    server: 'http://localhost:8080' // Default is [http://localhost:8080]
   }),
 
   computed: {
@@ -115,10 +115,11 @@ export default {
      * @param value
      */
     onChangeEnv(key, value) {
+      const old = this[key]
       // Set local value
       this[key] = value
-      // Set to LocalStorage
-      this.$env.set(key, value)
+      // Set to env
+      this.$env.set(key, value).then(() => key === 'optimize' && old !== value && window.location.reload())
     },
 
     /**
@@ -146,16 +147,19 @@ export default {
   watch: {
     // Handler for changing language
     language(value) {
-      this.$i18n.locale = value
+      this.$i18n.locale = value ?? ''
     },
     // Handler for changing display
     isLight(value) {
       this.$q.dark.set(!value)
-    },
-    // Handler for changing optimize aspect
-    isOptimizeVisual() {
-      window.location.reload()
     }
   },
+
+  async mounted() {
+    this.language = await this.$env.get("language") ?? 'en'
+    this.display = await this.$env.get("display") ?? 'light'
+    this.optimize = await this.$env.get("optimize") ?? 'visual'
+    this.server = await this.$env.get("server") ?? 'http://localhost:8080'
+  }
 }
 </script>

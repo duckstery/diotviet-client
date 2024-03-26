@@ -38,7 +38,7 @@ export default {
   computed: {
     // Check if optimize for visual
     isOptimizeVisual() {
-      return this.forceVisual || this.$env.get('optimize') !== 'speed'
+      return this.forceVisual || this.$env.isOptimizeVisual()
     },
     // Parse img source to icon
     getParsedIcon() {

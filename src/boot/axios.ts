@@ -85,7 +85,10 @@ axiosInstance.defaults.headers = {
 }
 axiosInstance.defaults.withCredentials = false
 
-export default boot(({app}) => {
+export default boot(async ({app}) => {
+  // Get server
+  const server = `${await app.config.globalProperties.$env.get('server')}/api`
+  if (!!server) axiosInstance.defaults.baseURL = server
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axiosInstance

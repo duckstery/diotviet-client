@@ -8,14 +8,14 @@ import {defineComponent} from 'vue'
 export default defineComponent({
   name: 'App',
 
-  mounted() {
+  async mounted() {
     // Initiate locale setting
-    this.$i18n.locale = this.$env.get("language") ?? 'en'
+    this.$i18n.locale = (await this.$env.get("language")) ?? 'en'
     // Initiate display setting
-    this.$q.dark.set(this.$env.get("display") === 'dark')
+    this.$q.dark.set((await this.$env.get("display")) === 'dark')
     // Check for updates (only for Electron)
     if (this.$q.platform.is.electron) {
-      this.checkForUpdates()
+      await this.checkForUpdates()
     }
   },
 

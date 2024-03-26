@@ -105,10 +105,7 @@ export default {
         message: this.$t('easter.awesome'),
         icon: 'thumb_up', color: 'accent',
         actions: [
-          {
-            dense: true, icon: 'fa-solid fa-xmark', color: 'white', handler: () => { /* ... */
-            }
-          }
+          {dense: true, icon: 'fa-solid fa-xmark', color: 'white', handler: () => false}
         ]
       })
     },
