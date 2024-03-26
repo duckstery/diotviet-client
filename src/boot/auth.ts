@@ -207,7 +207,7 @@ export default boot(({app, router}) => {
   axios.interceptors.request.use(function (config) {
     // Check if target API is /login
     // @ts-ignore
-    if (config.url.includes("/auth/login")) {
+    if (config.url.includes("/auth/login") || config.url?.includes("/fallback")) {
       // This API won't be affect if token is expired
       return config
     }
