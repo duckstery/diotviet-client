@@ -108,6 +108,12 @@ export default {
         })
         .catch(this.$notifyErr)
     }
+  },
+
+  watch: {
+    '$q.screen.gt.sm'(val) {
+      if (val) setTimeout(() => this.drawer = val, 100)
+    }
   }
 }
 </script>
