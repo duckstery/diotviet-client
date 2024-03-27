@@ -1,5 +1,5 @@
 import {boot} from 'quasar/wrappers'
-import {date} from "quasar"
+import {date, Platform} from "quasar"
 import {axios, env} from "./index"
 import {useAuthStore} from "stores/auth"
 import {HttpStatusCode} from "axios";
@@ -254,7 +254,7 @@ export default boot(({app, router}) => {
     if (from.name === undefined) {
       // Since this is the first time accessing the page, init store (Pinia)
       // auth.subscribe(Cookies.get(tokenKey))
-      auth.subscribe((await env.get(tokenKey)) ?? '')
+      await auth.subscribe((await env.get(tokenKey)) ?? '')
     }
 
     // Check if user is authenticated

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div v-for="op in operations" class="col-6 tw-p-2">
+      <div v-for="op in operations" class="col-6">
         <q-card v-ripple flat bordered :key="op.key" @click="onExecuteOperation(op.key)">
           <q-img :src="`images/${op.key}.png`" fit="contain"/>
 
