@@ -9,7 +9,7 @@
           <OrderPanel :max-height="orderPanelHeight" :style="`max-height: ${orderPanelHeight}px`"/>
         </div>
         <div class="col-6">
-          <ItemPanel :items="items" ref="itemPanel" @order="onOpe('order')" @purchase="onOpe('purchase')"/>
+          <SamplePanel :items="items" ref="itemPanel" @order="onOpe('order')" @purchase="onOpe('purchase')"/>
           <StatisticPanel class="tw-mt-3.5 tw-flex-grow"
                           :max-height="statisticPanelHeight" :style="`height: ${statisticPanelHeight}px`"/>
         </div>
@@ -21,10 +21,11 @@
 <script>
 import Page from "components/General/Layout/Page.vue";
 import OrderPanel from "components/Work/OrderPanel.vue";
-import ItemPanel from "components/Work/SamplePanel.vue";
+import SamplePanel from "components/Work/SamplePanel.vue";
 import StatisticPanel from "components/Work/StatisticPanel.vue";
+import ManagePanel from "components/Work/ManagePanel.vue";
 
-import {computed, defineComponent, toRaw, unref} from 'vue'
+import {computed, defineComponent, ref, toRaw, unref, watch} from 'vue'
 import {useMounted, templateRef} from "@vueuse/core";
 import {Platform, useQuasar} from 'quasar';
 import {useOrderStore} from "stores/order";
@@ -35,12 +36,11 @@ import {useAdvanceStorage} from "src/composables/useAdvanceStorage";
 import {useProductStore} from "stores/product";
 import {storeToRefs} from "pinia";
 import _ from "lodash";
-import ManagePanel from "components/Work/ManagePanel.vue";
 
 export default defineComponent({
   name: 'WorkPage',
 
-  components: {ManagePanel, Page, StatisticPanel, ItemPanel, OrderPanel},
+  components: {ManagePanel, Page, StatisticPanel, SamplePanel, OrderPanel},
 
   setup() {
     // Run nothing if using Capacitor
@@ -69,31 +69,43 @@ export default defineComponent({
       return false
     }
 
+    // Check if order info is changed to avoid duplication bug
+    const recentCreatedOrder = ref(null)
+    watch(() => orderStore.getActiveOrder, () => recentCreatedOrder.value = null, {deep: true})
     // Setup Printer
     const resources = usePrinter('/product/display', res => items.value = res.data.payload.items)
     // On operation
     const onOpe = (type) => {
+      // Only printing Order
+      if (recentCreatedOrder.value !== null && recentCreatedOrder.value >= 0) return fetchAndPrint()
+      // Check if should creating order
       if (validate()) {
+        // Set recent order id as -1, to prevent duplication process
+        recentCreatedOrder.value = -1
+        // Send api
         axios.post(`/order/${type}`, unref(orderStore.getCleanActiveOrder))
           // Get Order print data
           .then(res => {
             notify($t('message.order_create'))
-            axios.get(`/order/print/${res.data.payload}`).then(resources.print).catch(error.any)
+            recentCreatedOrder.value = res.data.payload
+            fetchAndPrint()
           })
           .catch(error.any)
       }
     }
+    // Fetch and print recent order
+    const fetchAndPrint = () => axios.get(`/order/print/${recentCreatedOrder.value}`).then(resources.print).catch(error.any)
 
     // Check if page is mounted
     const isMounted = useMounted()
     // Products for display
     const {items} = storeToRefs(useProductStore())
 
-    // ItemPanel's reference
+    // SamplePanel's reference
     const itemPanel = templateRef('itemPanel')
     // Calculate OrderPanel (by subtract header height and top, bot padding from screen height
     const orderPanelHeight = computed(() => $q.screen.height - 50 - 40)
-    // Calculate StatisticPanel height (by subtract ItemPanel height from OrderPanel)
+    // Calculate StatisticPanel height (by subtract SamplePanel height from OrderPanel)
     const statisticPanelHeight = computed(() => isMounted.value
       ? Math.max(orderPanelHeight.value - itemPanel.value?.$el.offsetHeight - 20, 134)
       : 0)
