@@ -89,7 +89,8 @@ export function usePageSearch<T>(initFilter: T, initFetchParams?: (T & {search: 
    */
   const onSearch = (data: QTableOnSearch) => {
     // Save search content
-    previousSearch.value = data ? <string>data.search : ''
+    const previous = data ? <string>data.search : ''
+    if (previous !== '') previousSearch.value = previous
     // Call API to get data for table
     axios.get(`/${key}/search`, {
       params: {
